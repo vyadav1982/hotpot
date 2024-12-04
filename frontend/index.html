@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hotpot | Bon without Bone</title>
+    <meta name="description" content="Hotpot | Bon without Bone">
+    <link rel="icon" type="image/png" href="/assets/hotpot/manifest/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/assets/hotpot/manifest/favicon.svg" />
+    <link rel="shortcut icon" href="/assets/hotpot/manifest/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/hotpot/manifest/apple-touch-icon.png" />
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="theme-color" content="#000000">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#000000">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Hotpot | Bon without Bone" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="mobile-web-app-capable" content="yes">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+  </head>
+  <body>
+    <div id="root" vaul-drawer-wrapper="true"></div>
+	<script>
+        window.csrf_token = '{{ csrf_token }}';
+        if (!window.frappe) window.frappe = {};
+        window.app_name = "{{ app_name }}";
+        frappe.boot = JSON.parse({{ boot }});
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

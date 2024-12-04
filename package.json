@@ -1,0 +1,19 @@
+{
+  "name": "hotpot",
+  "description": "Hotpot | Bon without Bone",
+  "author": "BytePanda Technologies Pvt. Ltd.",
+  "license": "GPL-3.0",
+  "aworkspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd hotpot && yarn dev",
+    "build": "cd hotpot && yarn build",
+    "format": "yarn format-web",
+    "postinstall": "yarn install-web && yarn install-desk",
+    "install-desk": "cd hotpot && yarn install",
+    "install-web": "cd hotpot && yarn install",
+    "format-web": "cd hotpot && yarn format"
+  }
+}
