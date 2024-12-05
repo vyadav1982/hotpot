@@ -24,8 +24,8 @@ import {
 import {
   AuthResponse,
   FrappeError,
+  useFrappeAuth,
   useFrappeGetCall,
-  useFrappePostCall,
 } from 'frappe-react-sdk';
 import { LoginContext, LoginInputs } from '@/types/Auth/Login';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -52,7 +52,7 @@ function LoginPage() {
   const [error, setError] = React.useState<FrappeError | null>(null);
   const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const passwordRef = React.useRef<HTMLInputElement>(null);
-  const { call: hotpotlogin } = useFrappePostCall('hotpot.api.firebase_login');
+  const { login: hotpotlogin } = useFrappeAuth();
   const isSubmittingRef = React.useRef(false);
   const submitCountRef = React.useRef(0);
 
@@ -92,17 +92,17 @@ function LoginPage() {
             // setLoginWithTwoFAResponse(res);
           }
         } else {
-          const retval = await hotpotlogin({
-            email: values.email,
-            password: values.password,
-          });
-          if (retval.message.status === 'error') {
-            setError(retval.message as FrappeError);
-          } else {
+          try {
+            await hotpotlogin({
+              username: values.email,
+              password: values.password,
+            });
             const URL = import.meta.env.VITE_BASE_NAME
               ? `/${import.meta.env.VITE_BASE_NAME}`
               : ``;
-            window.location.replace(`${URL}/`);
+            window.location.replace(`${URL}/server`);
+          } catch (error) {
+            setError(error as FrappeError);
           }
         }
       } catch (error) {
@@ -137,13 +137,7 @@ function LoginPage() {
 
   return (
     <div className="flex h-screen">
-      <div className="hidden w-1/2 bg-gray-100 lg:block">
-        <img
-          src="/placeholder.png?height=800&width=800"
-          alt="Login"
-          className="h-full w-full object-cover"
-        />
-      </div>
+      <div className="hidden w-1/2 bg-orange-300 lg:block"></div>
       <div className="flex w-full items-center justify-center lg:w-1/2">
         <Card className="w-[350px]">
           <CardHeader>

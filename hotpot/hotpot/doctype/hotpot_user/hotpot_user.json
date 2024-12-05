@@ -1,19 +1,29 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:employee_id",
  "creation": "2024-12-04 14:22:21.608683",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "employee_id",
   "employee_name",
-  "is_active"
+  "role",
+  "email",
+  "is_active",
+  "breakfast",
+  "lunch",
+  "evening_snack",
+  "dinner"
  ],
  "fields": [
   {
    "fieldname": "employee_id",
    "fieldtype": "Data",
-   "label": "Employee ID"
+   "in_list_view": 1,
+   "label": "Employee ID",
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "employee_name",
@@ -21,18 +31,57 @@
    "label": "Employee Name"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Is Active",
+   "search_index": 1
+  },
+  {
+   "default": "Hotpot User",
+   "fieldname": "role",
+   "fieldtype": "Select",
+   "label": "Role",
+   "options": "Hotpot User\nHotpot Server",
+   "search_index": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "E Mail"
+  },
+  {
+   "default": "1",
+   "fieldname": "breakfast",
+   "fieldtype": "Check",
+   "label": "Breakfast"
+  },
+  {
+   "default": "1",
+   "fieldname": "lunch",
+   "fieldtype": "Check",
+   "label": "Lunch"
+  },
+  {
+   "default": "1",
+   "fieldname": "evening_snack",
+   "fieldtype": "Check",
+   "label": "Evening Snack"
+  },
+  {
+   "default": "1",
+   "fieldname": "dinner",
+   "fieldtype": "Check",
+   "label": "Dinner"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-04 14:24:46.480055",
+ "modified": "2024-12-04 16:11:52.415503",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -50,5 +99,6 @@
  ],
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "employee_name"
 }

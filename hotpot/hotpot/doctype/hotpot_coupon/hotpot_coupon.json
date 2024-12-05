@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{title}_{employee_id}_{coupon_date}",
+ "creation": "2024-12-04 16:08:46.120130",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_tmpb",
+  "amended_from",
+  "employee_id",
+  "title",
+  "coupon_date",
+  "coupon_time",
+  "served_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_tmpb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Hotpot Coupon",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Title",
+   "options": "Breakfast\nLunch\nEvening Snack\nDinner",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "employee_id",
+   "fieldtype": "Link",
+   "label": "Employee Id",
+   "options": "Hotpot User",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "coupon_date",
+   "fieldtype": "Date",
+   "label": "Coupon Date",
+   "read_only": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "coupon_time",
+   "fieldtype": "Time",
+   "label": "Coupon Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "served_by",
+   "fieldtype": "Link",
+   "label": "Served By",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-12-05 05:18:46.173349",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Coupon",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

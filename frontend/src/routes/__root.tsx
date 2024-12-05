@@ -15,16 +15,20 @@ export const Route = createRootRouteWithContext<{
         !location.href.startsWith('/hotpot/login?redirect-to'))
     ) {
       if (location.pathname !== '/hotpot/login') {
-        if (location.pathname === '/hotpot' || location.pathname === '/hotpot/') {
+        if (
+          location.pathname === '/hotpot' ||
+          location.pathname === '/hotpot/'
+        ) {
           window.location.href = '/hotpot/login';
         } else {
-          window.location.href = '/hotpot/login?redirect-to=' + location.pathname;
+          window.location.href =
+            '/hotpot/login?redirect-to=' + location.pathname;
         }
       }
     }
 
     if (!!context.sessionUser && location.href.startsWith('/hotpot/login')) {
-      window.location.href = '/hotpot';
+      window.location.href = '/hotpot/server';
     }
   },
   pendingComponent: () => <p>Login pending...</p>,

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { FrappeError } from 'frappe-react-sdk';
-import { ErrorCallout } from '@/components/callouts/ErrorCallout';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle } from 'lucide-react';
 
 interface ErrorBannerProps {
   error?: Partial<FrappeError> | null;
@@ -14,7 +15,9 @@ interface ParsedErrorMessage {
   indicator?: string;
 }
 
-const getErrorMessages = (error?: FrappeError | null): ParsedErrorMessage[] => {
+const getErrorMessages = (
+  error?: Partial<FrappeError> | null,
+): ParsedErrorMessage[] => {
   if (!error) return [];
   let eMessages: ParsedErrorMessage[] = [];
 
@@ -56,29 +59,51 @@ export const ErrorBanner: React.FC<ErrorBannerProps> = ({
   overrideHeading,
   children,
 }) => {
-  const messages = React.useMemo(() => getErrorMessages(error), [error]);
+  const [visibleError, setVisibleError] =
+    React.useState<Partial<FrappeError> | null>(null);
+  const messages = React.useMemo(
+    () => getErrorMessages(visibleError),
+    [visibleError],
+  );
 
-  if (messages.length === 0 || !error) return null;
+  React.useEffect(() => {
+    if (error) {
+      setVisibleError(error);
+      const timer = setTimeout(() => {
+        setVisibleError(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      setVisibleError(null);
+    }
+  }, [error]);
+
+  if (messages.length === 0 || !visibleError) return null;
 
   return (
-    <ErrorCallout>
-      {overrideHeading && (
-        <h3 className="mb-2 text-lg font-semibold">{overrideHeading}</h3>
-      )}
-      {messages.map((m, i) => (
-        <div key={i} className="mb-2">
-          {m.title && m.title !== 'Message' && m.title !== 'Error' && (
-            <h4 className="font-medium">{m.title}</h4>
-          )}
-          <div
-            dangerouslySetInnerHTML={{
-              __html: m.message,
-            }}
-          />
-        </div>
-      ))}
-      {children}
-    </ErrorCallout>
+    <Alert variant="destructive" className="flex items-center gap-2">
+      <AlertTriangle className="h-4 w-4" />
+      <AlertDescription className="m-0 flex items-center gap-2">
+        {overrideHeading && (
+          <AlertTitle className="mb-2 text-lg font-semibold">
+            {overrideHeading}
+          </AlertTitle>
+        )}
+        {messages.map((m, i) => (
+          <div key={i} className="flex items-center gap-1">
+            {m.title && m.title !== 'Message' && m.title !== 'Error' && (
+              <span className="font-medium">{m.title}:</span>
+            )}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: m.message,
+              }}
+            />
+          </div>
+        ))}
+        {children}
+      </AlertDescription>
+    </Alert>
   );
 };
 

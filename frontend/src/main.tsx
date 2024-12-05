@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { routeTree } from './routeTree.gen';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { getSessionUserId } from '@/utils/session';
-import { ConfirmDialogProvider } from './components/common/confirm-dialog';
+import { ConfirmDialogProvider } from './components/ConfirmDialog';
 import { ThemeProvider } from './components/ThemeProvider';
 import { FullPageLoader } from './components/FullPageLoader';
 

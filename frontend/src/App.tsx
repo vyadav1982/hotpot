@@ -3,6 +3,8 @@ import { FrappeProvider } from 'frappe-react-sdk';
 import { UserProvider } from '@/utils/auth/UserProvider';
 import Cookies from 'js-cookie';
 import { Toaster } from '@/components/ui/toaster';
+import { DialogProvider } from './utils/DialogProvider';
+import { GenericDialog } from './components/GenericDialog';
 
 /** Following keys will not be cached in app cache */
 const NO_CACHE_KEYS = [
@@ -45,9 +47,12 @@ export default function App() {
         siteName={getSiteName()}
         enableSocket={false}
       >
-        <UserProvider>
-          <Outlet />
-        </UserProvider>
+        <DialogProvider>
+          <UserProvider>
+            <Outlet />
+            <GenericDialog />
+          </UserProvider>
+        </DialogProvider>
       </FrappeProvider>
       <Toaster />
     </>

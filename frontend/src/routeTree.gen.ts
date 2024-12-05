@@ -11,15 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/_index'
+import { Route as ServerImport } from './routes/server'
 import { Route as LoginImport } from './routes/login'
-import { Route as IndexIndexImport } from './routes/_index/index'
-import { Route as IndexProfileImport } from './routes/_index/profile'
+import { Route as CouponImport } from './routes/coupon'
 
 // Create/Update Routes
 
-const IndexRoute = IndexImport.update({
-  id: '/_index',
+const ServerRoute = ServerImport.update({
+  id: '/server',
+  path: '/server',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -29,27 +29,21 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexIndexRoute = IndexIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => IndexRoute,
-} as any)
-
-const IndexProfileRoute = IndexProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => IndexRoute,
+const CouponRoute = CouponImport.update({
+  id: '/coupon',
+  path: '/coupon',
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_index': {
-      id: '/_index'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof IndexImport
+    '/coupon': {
+      id: '/coupon'
+      path: '/coupon'
+      fullPath: '/coupon'
+      preLoaderRoute: typeof CouponImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -59,75 +53,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/_index/profile': {
-      id: '/_index/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof IndexProfileImport
-      parentRoute: typeof IndexImport
-    }
-    '/_index/': {
-      id: '/_index/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexIndexImport
-      parentRoute: typeof IndexImport
+    '/server': {
+      id: '/server'
+      path: '/server'
+      fullPath: '/server'
+      preLoaderRoute: typeof ServerImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface IndexRouteChildren {
-  IndexProfileRoute: typeof IndexProfileRoute
-  IndexIndexRoute: typeof IndexIndexRoute
-}
-
-const IndexRouteChildren: IndexRouteChildren = {
-  IndexProfileRoute: IndexProfileRoute,
-  IndexIndexRoute: IndexIndexRoute,
-}
-
-const IndexRouteWithChildren = IndexRoute._addFileChildren(IndexRouteChildren)
-
 export interface FileRoutesByFullPath {
-  '': typeof IndexRouteWithChildren
+  '/coupon': typeof CouponRoute
   '/login': typeof LoginRoute
-  '/profile': typeof IndexProfileRoute
-  '/': typeof IndexIndexRoute
+  '/server': typeof ServerRoute
 }
 
 export interface FileRoutesByTo {
+  '/coupon': typeof CouponRoute
   '/login': typeof LoginRoute
-  '/profile': typeof IndexProfileRoute
-  '/': typeof IndexIndexRoute
+  '/server': typeof ServerRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_index': typeof IndexRouteWithChildren
+  '/coupon': typeof CouponRoute
   '/login': typeof LoginRoute
-  '/_index/profile': typeof IndexProfileRoute
-  '/_index/': typeof IndexIndexRoute
+  '/server': typeof ServerRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/profile' | '/'
+  fullPaths: '/coupon' | '/login' | '/server'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/profile' | '/'
-  id: '__root__' | '/_index' | '/login' | '/_index/profile' | '/_index/'
+  to: '/coupon' | '/login' | '/server'
+  id: '__root__' | '/coupon' | '/login' | '/server'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRouteWithChildren
+  CouponRoute: typeof CouponRoute
   LoginRoute: typeof LoginRoute
+  ServerRoute: typeof ServerRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRouteWithChildren,
+  CouponRoute: CouponRoute,
   LoginRoute: LoginRoute,
+  ServerRoute: ServerRoute,
 }
 
 export const routeTree = rootRoute
@@ -140,27 +115,19 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_index",
-        "/login"
+        "/coupon",
+        "/login",
+        "/server"
       ]
     },
-    "/_index": {
-      "filePath": "_index.tsx",
-      "children": [
-        "/_index/profile",
-        "/_index/"
-      ]
+    "/coupon": {
+      "filePath": "coupon.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
     },
-    "/_index/profile": {
-      "filePath": "_index/profile.tsx",
-      "parent": "/_index"
-    },
-    "/_index/": {
-      "filePath": "_index/index.tsx",
-      "parent": "/_index"
+    "/server": {
+      "filePath": "server.tsx"
     }
   }
 }
