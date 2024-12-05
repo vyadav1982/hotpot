@@ -8,8 +8,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd hotpot && yarn dev",
-    "build": "cd hotpot && yarn build",
+    "dev": "cd frontend && yarn dev",
+    "build": "cd frontend && yarn build",
     "format": "yarn format-web",
     "postinstall": "yarn install-web && yarn install-desk",
     "install-desk": "cd hotpot && yarn install",
