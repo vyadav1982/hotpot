@@ -13,7 +13,7 @@
     "format": "yarn format-web",
     "postinstall": "yarn install-web && yarn install-desk",
     "install-desk": "cd hotpot && yarn install",
-    "install-web": "cd hotpot && yarn install",
-    "format-web": "cd hotpot && yarn format"
+    "install-web": "cd frontend && yarn install",
+    "format-web": "cd frontend && yarn format"
   }
 }
