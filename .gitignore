@@ -21,7 +21,6 @@ wheels/
 .installed.cfg
 *.egg
 tags
-MANIFEST
 
 # Environments
 .env
