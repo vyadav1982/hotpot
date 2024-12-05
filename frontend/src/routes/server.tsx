@@ -1,23 +1,24 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useState, useCallback, useEffect, useContext } from 'react';
 import QrReader from 'react-qr-reader';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import { Camera } from 'lucide-react';
-import { extractCouponInfo, getMealType } from '@/utils/coupon';
+import {
+  coupon_from_info,
+  extractCouponInfo,
+  getMealType,
+  is_coupon_valid,
+} from '@/utils/coupon';
 import { useDialog } from '@/hooks/use-dialog';
 import { HotpotCoupon } from '@/types/Hotpot/HotpotCoupon';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 import { UserContext } from '@/utils/auth/UserProvider';
+import { TopBar } from '@/components/TopBar';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/server')({
   component: () => (
@@ -28,7 +29,7 @@ export const Route = createFileRoute('/server')({
 });
 
 function ServerPage() {
-  const { logout } = useContext(UserContext);
+  const { currentUser, logout } = useContext(UserContext);
   const [scanning, setScanning] = useState(false);
   const [scannedData, setScannedData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -160,11 +161,44 @@ function ServerPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <TopBar
+        className="px-4 pt-3 sm:px-8"
+        leftContent={
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <img
+                src="/assets/hotpot/manifest/favicon.svg"
+                alt="Hotpot Logo"
+                className=" h-10 w-10 cursor-pointer sm:h-12 sm:w-12"
+              />
+            </Link>
+            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+          </div>
+        }
+        rightContent={
+          <div className="flex gap-2">
+            {false && (
+              <Link to="/coupon" className="w-full">
+                <Button type="button" variant="outline">
+                  Get Coupon
+                </Button>
+              </Link>
+            )}
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        }
+      />
+
       <div className="container mx-auto flex-1 p-4">
         <Card className="mx-auto w-full max-w-md">
           <CardHeader>
-            <CardTitle>Hotpot Server Portal</CardTitle>
-            <CardDescription>Scan employee QR codes here</CardDescription>
+            {scannedData && couponExists === false ? (
+              <CardTitle className="text-center">Serving Now</CardTitle>
+            ) : (
+              <CardTitle className="text-center">Scan QR codes here</CardTitle>
+            )}
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -207,12 +241,41 @@ function ServerPage() {
               {scannedData && (
                 <div className="space-y-4">
                   {couponExists === false ? (
-                    <Button
-                      onClick={() => handleCreateCoupon()}
-                      className="w-full"
-                    >
-                      Issue {getMealType()}
-                    </Button>
+                    <>
+                      <Alert>
+                        {is_coupon_valid(coupon_from_info(scannedData)) ? (
+                          <AlertTitle>Coupon yet to be Served</AlertTitle>
+                        ) : (
+                          <AlertTitle>Coupon Cannot be Served</AlertTitle>
+                        )}
+                        <AlertDescription>
+                          <>
+                            <p>
+                              Employee:{' '}
+                              {coupon_from_info(scannedData)?.employee_id}
+                            </p>
+                            <p>Type: {coupon_from_info(scannedData)?.title}</p>
+                            <p>
+                              Time: {coupon_from_info(scannedData)?.coupon_time}
+                            </p>
+                            <p>
+                              Date: {coupon_from_info(scannedData)?.coupon_date}
+                            </p>
+                          </>
+                        </AlertDescription>
+                      </Alert>
+                      <Button
+                        onClick={() => handleCreateCoupon()}
+                        className="w-full"
+                        disabled={
+                          getMealType() !== coupon_from_info(scannedData)?.title
+                        }
+                      >
+                        {is_coupon_valid(coupon_from_info(scannedData))
+                          ? 'Invalid / Expired Coupon'
+                          : 'Issue ' + getMealType()}
+                      </Button>
+                    </>
                   ) : couponExists === true ? (
                     <Alert>
                       <AlertTitle>
@@ -243,17 +306,6 @@ function ServerPage() {
         </Card>
         <div className="mx-auto w-full max-w-md">
           <ErrorBanner error={apiCreateError} />
-        </div>
-      </div>
-      <div className="container mx-auto p-4">
-        <div className="mx-auto w-full max-w-md">
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
         </div>
       </div>
     </div>

@@ -47,12 +47,12 @@ export default function App() {
         siteName={getSiteName()}
         enableSocket={false}
       >
-        <DialogProvider>
-          <UserProvider>
+        <UserProvider>
+          <DialogProvider>
             <Outlet />
             <GenericDialog />
-          </UserProvider>
-        </DialogProvider>
+          </DialogProvider>
+        </UserProvider>
       </FrappeProvider>
       <Toaster />
     </>

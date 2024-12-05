@@ -53,3 +53,11 @@ jspm_packages/
 
 # Aider AI Chat
 .aider*
+
+# build files
+dist/
+mobile/dev-dist
+hotpot/public/hotpot
+hotpot/public/node_modules
+hotpot/www/hotpot.html
+*.env

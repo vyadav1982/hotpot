@@ -4,6 +4,8 @@ app_publisher = "Bytepanda Technologies Pvt. Ltd."
 app_description = "Food Coupon App"
 app_email = "info@bytepanda.in"
 app_license = "unlicense"
+app_logo = "/assets/hotpot/manifest/icon-512x512.png"
+app_logo_url = "/assets/hotpot/manifest/icon-512x512.png"
 
 # Apps
 # ------------------
@@ -11,22 +13,40 @@ app_license = "unlicense"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "hotpot",
-# 		"logo": "/assets/hotpot/logo.png",
-# 		"title": "Hotpot",
-# 		"route": "/hotpot",
-# 		"has_permission": "hotpot.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": "hotpot",
+		"logo": "/assets/hotpot/manifest/Hotpot.png",
+		"title": "Hotpot",
+		"route": "/hotpot",
+		"has_permission": "hotpot.permissions.check_app_permission",
+	}
+]
+
+extend_bootinfo = "hotpot.boot.boot_session"
+
+fixtures = [
+	{
+		"doctype": "Role",
+		"filters": {
+			"name": [
+				"in",
+				[
+					"Hotpot Admin",
+					"Hotpot User",
+					"Hotpot Server",
+				],
+			]
+		},
+	},
+]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/hotpot/css/hotpot.css"
-# app_include_js = "/assets/hotpot/js/hotpot.js"
+app_include_css = "hotpot.bundle.css"
+app_include_js = "hotpot.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/hotpot/css/hotpot.css"
@@ -86,13 +106,13 @@ app_license = "unlicense"
 # ------------
 
 # before_install = "hotpot.install.before_install"
-# after_install = "hotpot.install.after_install"
+after_install = "hotpot.install.after_install"
 
 # Uninstallation
 # ------------
 
 # before_uninstall = "hotpot.uninstall.before_uninstall"
-# after_uninstall = "hotpot.uninstall.after_uninstall"
+after_uninstall = "hotpot.uninstall.after_uninstall"
 
 # Integration Setup
 # ------------------
@@ -244,3 +264,8 @@ export_python_type_annotations = True
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+website_route_rules = [
+	{"from_route": "/hotpot/<path:app_path>", "to_route": "hotpot"},
+	{"from_route": "/hotpot_mobile/<path:app_path>", "to_route": "hotpot"},
+]

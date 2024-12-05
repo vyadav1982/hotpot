@@ -7,9 +7,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +19,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import {
@@ -30,6 +30,7 @@ import {
 import { LoginContext, LoginInputs } from '@/types/Auth/Login';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
@@ -117,10 +118,6 @@ function LoginPage() {
     [hotpotlogin, loginContext, isLoggingIn],
   );
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     fieldName: 'email' | 'password',
@@ -137,13 +134,34 @@ function LoginPage() {
 
   return (
     <div className="flex h-screen">
-      <div className="hidden w-1/2 bg-orange-300 lg:block"></div>
-      <div className="flex w-full items-center justify-center lg:w-1/2">
-        <Card className="w-[350px]">
-          <CardHeader>
-            <CardTitle>Login</CardTitle>
-            <CardDescription>
-              Enter your email and password to login.
+      <div className="hidden w-1/2 bg-gradient-to-br from-orange-400 to-orange-600 lg:flex lg:items-center lg:justify-center">
+        <div className="text-center">
+          <img
+            src="/assets/hotpot/manifest/favicon.svg"
+            alt="Hotpot Logo"
+            className="mx-auto h-32 w-32"
+          />
+          <h1 className="mt-8 text-4xl font-bold text-white">
+            Welcome to Hotpot
+          </h1>
+          <p className="mt-4 text-lg text-white/80">
+            Your Digital Food Coupon Solution
+          </p>
+        </div>
+      </div>
+      <div className="flex w-full items-center justify-center bg-gradient-to-b from-orange-50 to-white p-4 lg:w-1/2">
+        <Card className="w-[350px] shadow-xl">
+          <CardHeader className="space-y-1">
+            <div className="flex items-center justify-center lg:hidden">
+              <img
+                src="/assets/hotpot/manifest/favicon.svg"
+                alt="Hotpot Logo"
+                className="h-16 w-16"
+              />
+            </div>
+            <CardTitle className="text-center text-2xl">Login</CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to continue
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -152,35 +170,19 @@ function LoginPage() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
-                  {error.message ||
-                    'An error occurred during login. Please try again.'}
+                  {error.message || 'Something went wrong'}
                 </AlertDescription>
               </Alert>
             )}
             <Form {...form}>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!isSubmittingRef.current && !isLoggingIn) {
-                    form.handleSubmit(onSubmit)();
-                  } else {
-                    console.log('Form submission prevented');
-                  }
-                }}
-                className="space-y-8"
-              >
+              <form className="space-y-4">
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Enter your email"
-                          {...field}
-                          onKeyDown={(e) => handleKeyDown(e, 'email')}
-                        />
+                        <Input placeholder="Email" type="email" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -191,51 +193,53 @@ function LoginPage() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Input
+                            placeholder="Password"
                             type={showPassword ? 'text' : 'password'}
-                            placeholder="Enter your password"
+                            className="pr-10"
                             {...field}
-                            ref={passwordRef}
-                            onKeyDown={(e) => handleKeyDown(e, 'password')}
                           />
-                          <Button
+                          <button
                             type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                            onClick={togglePasswordVisibility}
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                           >
                             {showPassword ? (
-                              <EyeOff className="h-4 w-4 text-gray-500" />
+                              <EyeOff className="h-4 w-4" />
                             ) : (
-                              <Eye className="h-4 w-4 text-gray-500" />
+                              <Eye className="h-4 w-4" />
                             )}
-                            <span className="sr-only">
-                              {showPassword ? 'Hide password' : 'Show password'}
-                            </span>
-                          </Button>
+                          </button>
                         </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isLoggingIn}>
-                  {isLoggingIn ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Logging in...
-                    </>
-                  ) : (
-                    'Login'
-                  )}
-                </Button>
               </form>
             </Form>
           </CardContent>
+          <CardFooter className="flex flex-col gap-4">
+            <Button
+              type="submit"
+              className="w-full bg-orange-500 hover:bg-orange-600"
+              disabled={isLoggingIn}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              {isLoggingIn ? 'Logging in...' : 'Login'}
+            </Button>
+            <Link to="/coupon" className="w-full">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-orange-200 hover:bg-orange-50"
+              >
+                Get Coupon
+              </Button>
+            </Link>
+          </CardFooter>
         </Card>
       </div>
     </div>

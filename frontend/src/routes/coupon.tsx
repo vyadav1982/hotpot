@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import {
   Card,
@@ -17,12 +18,17 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import { HotpotCoupon } from '@/types/Hotpot/HotpotCoupon';
+import { TopBar } from '@/components/TopBar';
+import { UserContext } from '@/utils/auth/UserProvider';
+import { useDialog } from '@/hooks/use-dialog';
 
 export const Route = createFileRoute('/coupon')({
   component: CouponPage,
 });
 
 function CouponPage() {
+  const { currentUser, logout } = useContext(UserContext);
+  const { showConfirmDialog } = useDialog();
   const userRole = 'Hotpot User';
   const [employeeId, setEmployeeId] = useState('');
   const [couponConsumed, setCouponConsumed] = useState(false);
@@ -67,67 +73,102 @@ function CouponPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await showConfirmDialog({
+        title: 'Confirm Logout',
+        description: 'Are you sure you want to logout?',
+        confirmLabel: 'Logout',
+        variant: 'destructive',
+        onConfirm: async () => {
+          await logout();
+        },
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <Card className="mx-auto w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Hotpot Coupon System</CardTitle>
-          <CardDescription>Manage your hotpot coupons here</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {userRole === 'Hotpot User' && (
-              <div className="space-y-2">
-                <Label htmlFor="employee-id">Employee ID</Label>
-                <Input
-                  id="employee-id"
-                  placeholder="Enter your employee ID"
-                  value={employeeId}
-                  onChange={(e) => setEmployeeId(e.target.value)}
-                />
-                <Button
-                  className="w-full"
-                  onClick={handleGenerateQRCode}
-                  disabled={!employeeId}
-                >
-                  Generate QR Code
-                </Button>
-              </div>
-            )}
-
-            {userRole === 'Hotpot User' && showQRCode && !couponConsumed && (
-              <div className="flex justify-center">
-                <QRCodeSVG value={qrValue} size={200} />
-              </div>
-            )}
-
-            {couponConsumed && (
-              <Alert>
-                <AlertTitle>Coupon Already Consumed</AlertTitle>
-                <AlertDescription>
-                  {consumptionInfo ? (
-                    <>
-                      <p>Time: {consumptionInfo.coupon_time}</p>
-                      <p>Date: {consumptionInfo.coupon_date}</p>
-                    </>
-                  ) : (
-                    <p>Coupon has been consumed successfully.</p>
-                  )}
-                </AlertDescription>
-              </Alert>
-            )}
+    <div className="flex min-h-screen flex-col">
+      <TopBar
+        className="px-4 pt-3 sm:px-8"
+        leftContent={
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <img
+                src="/assets/hotpot/manifest/favicon.svg"
+                alt="Hotpot Logo"
+                className=" h-10 w-10 cursor-pointer sm:h-12 sm:w-12"
+              />
+            </Link>
+            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          {userRole === 'Hotpot User' && !consumptionInfo && (
-            <p className="text-sm text-gray-500">
-              {'Show this QR code to the server'}
-            </p>
-          )}
-        </CardFooter>
-      </Card>
-      <div className="mx-auto w-full max-w-md">
-        <ErrorBanner error={couponError} />
+        }
+        rightContent={
+          <div className="flex gap-2">
+            <Link to="/server">
+              <Button type="button" variant="outline">
+                Serve
+              </Button>
+            </Link>
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        }
+      />
+
+      <div className="container mx-auto flex-1 p-4">
+        <Card className="mx-auto w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-center">Your QR Code</CardTitle>
+            <CardDescription className="text-center">
+              Show this to get your meal
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <ErrorBanner error={couponError} />
+              {userRole === 'Hotpot User' && (
+                <div className="space-y-2">
+                  <Label htmlFor="employee-id">Employee ID</Label>
+                  <Input
+                    id="employee-id"
+                    value={employeeId}
+                    onChange={(e) => setEmployeeId(e.target.value)}
+                    className="bg-white dark:bg-black"
+                  />
+                  <Button
+                    onClick={handleGenerateQRCode}
+                    className="w-full"
+                    disabled={!employeeId}
+                  >
+                    Generate QR Code
+                  </Button>
+                </div>
+              )}
+
+              {userRole === 'Hotpot User' && showQRCode && !couponConsumed && (
+                <div className="overflow-hidden rounded-lg border-2 border-dashed border-orange-200 p-4 dark:border-orange-800">
+                  <div className="flex aspect-square items-center justify-center bg-white dark:bg-black">
+                    <QRCodeSVG value={qrValue} size={200} />
+                  </div>
+                </div>
+              )}
+
+              {couponConsumed && (
+                <Alert>
+                  <AlertTitle>Coupon Already Used</AlertTitle>
+                  <AlertDescription>
+                    This coupon has already been used. Please wait for the next
+                    meal time.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -5,7 +5,6 @@ import frappe
 from frappe import _
 from frappe.utils.telemetry import capture
 
-
 no_cache = 1
 
 SCRIPT_TAG_PATTERN = re.compile(r"\<script[^<]*\</script\>")

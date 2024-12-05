@@ -5,7 +5,6 @@ from frappe.utils import today
 
 
 def get_meal_of_time(time):
-	return "Breakfast"
 	# Define time ranges
 	if 7 <= time.hour < 10:
 		return "Breakfast"
@@ -13,7 +12,7 @@ def get_meal_of_time(time):
 		return "Lunch"
 	elif 17 <= time.hour < 19:
 		return "Evening Snack"
-	elif 19 <= time.hour < 24:
+	elif 19 <= time.hour < 21:
 		return "Dinner"
 	else:
 		return None
