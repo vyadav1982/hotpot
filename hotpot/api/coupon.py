@@ -65,6 +65,38 @@ def create_coupon(data):
 		return {"created": False, "coupon": frappe.get_doc("Hotpot Coupon", extract_coupon_info(data))}
 
 
+@frappe.whitelist(allow_guest=True)
+def get_coupon_for_guest(data):
+	if not frappe.exists("Hotpot User", data.mobile):
+		new_user = frappe.new_doc("Hotpot User")
+		new_user.employee_name = data["name"]
+		new_user.employee_id = data["mobile"]
+		new_user.is_guest = True
+		new_user.save(ignore_permissions=True)
+
+	created_coupons = []
+	meal_types = {
+		"Breakfast": data.get("breakfast", False),
+		"Lunch": data.get("lunch", False),
+		"Evening Snack": data.get("evening_snacks", False),
+		"Dinner": data.get("dinner", False),
+	}
+
+	for meal, is_selected in meal_types.items():
+		if is_selected:
+			coupon = {
+				"employee_name": data["name"],
+				"mobile": data["mobile"],
+				"coupon_date": datetime.now().date(),
+				"coupon_time": datetime.now().replace(microsecond=0).time(),
+				"meal_title": meal,
+			}
+
+			created_coupons.append(coupon)
+
+	return created_coupons
+
+
 def extract_coupon_info(input_str: str) -> str | None:
 	# Split the string by underscore
 	parts = input_str.split("_")

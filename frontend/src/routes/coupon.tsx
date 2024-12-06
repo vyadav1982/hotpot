@@ -150,7 +150,7 @@ function CouponPage() {
               )}
 
               {userRole === 'Hotpot User' && showQRCode && !couponConsumed && (
-                <div className="overflow-hidden rounded-lg border-2 border-dashed border-orange-200 p-4 dark:border-orange-800">
+                <div className="overflow-hidden rounded-lg border-2 border-solid border-orange-200 p-4 dark:border-orange-800">
                   <div className="flex aspect-square items-center justify-center bg-white dark:bg-black">
                     <QRCodeSVG value={qrValue} size={200} />
                   </div>

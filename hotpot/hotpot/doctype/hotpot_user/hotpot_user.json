@@ -14,7 +14,8 @@
   "breakfast",
   "lunch",
   "evening_snack",
-  "dinner"
+  "dinner",
+  "is_guest"
  ],
  "fields": [
   {
@@ -73,11 +74,18 @@
    "fieldname": "dinner",
    "fieldtype": "Check",
    "label": "Dinner"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_guest",
+   "fieldtype": "Check",
+   "label": "Is Guest",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-04 16:11:52.415503",
+ "modified": "2024-12-06 15:58:38.611743",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

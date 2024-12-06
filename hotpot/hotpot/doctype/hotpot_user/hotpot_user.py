@@ -21,6 +21,7 @@ class HotpotUser(Document):
 		employee_name: DF.Data | None
 		evening_snack: DF.Check
 		is_active: DF.Check
+		is_guest: DF.Check
 		lunch: DF.Check
 		role: DF.Literal["Hotpot User", "Hotpot Server"]
 	# end: auto-generated types
