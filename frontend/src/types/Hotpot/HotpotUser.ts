@@ -19,12 +19,8 @@ export interface HotpotUser {
   email?: string;
   /**	Is Active : Check	*/
   is_active?: 0 | 1;
-  /**	Breakfast : Check	*/
-  breakfast?: 0 | 1;
-  /**	Lunch : Check	*/
-  lunch?: 0 | 1;
-  /**	Evening Snack : Check	*/
-  evening_snack?: 0 | 1;
-  /**	Dinner : Check	*/
-  dinner?: 0 | 1;
+  /**	Is Guest : Check	*/
+  is_guest?: 0 | 1;
+  /**	Guest Of : Link - Hotpot User	*/
+  guest_of?: string;
 }

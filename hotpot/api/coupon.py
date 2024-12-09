@@ -67,7 +67,7 @@ def create_coupon(data):
 
 @frappe.whitelist(allow_guest=True)
 def get_coupon_for_guest(data):
-	if not frappe.db.exists("Hotpot User", data.mobile):
+	if not frappe.db.exists("Hotpot User", data.get("mobile")):
 		new_user = frappe.new_doc("Hotpot User")
 		new_user.employee_name = data["name"]
 		new_user.employee_id = data["mobile"]

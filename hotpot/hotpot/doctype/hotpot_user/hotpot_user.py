@@ -14,15 +14,12 @@ class HotpotUser(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		breakfast: DF.Check
-		dinner: DF.Check
 		email: DF.Data | None
 		employee_id: DF.Data
 		employee_name: DF.Data | None
-		evening_snack: DF.Check
+		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_guest: DF.Check
-		lunch: DF.Check
 		role: DF.Literal["Hotpot User", "Hotpot Server"]
 	# end: auto-generated types
 
