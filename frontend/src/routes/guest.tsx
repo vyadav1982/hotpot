@@ -19,9 +19,14 @@ import {
 } from '@/components/ui/form';
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { QRCodeSVG } from 'qrcode.react';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 
 export const Route = createFileRoute('/guest')({
-  component: RouteComponent,
+  component: () => (
+    <ProtectedRoute>
+      <AdminGuestPage />
+    </ProtectedRoute>
+  ),
 });
 
 const guestSchema = z.object({
@@ -53,7 +58,7 @@ const guestSchema = z.object({
     .optional(),
 });
 
-function RouteComponent() {
+function AdminGuestPage() {
   const [showQr, setShowQr] = useState(false);
   const [qr, setQr] = useState([]);
   const { currentUser, logout } = useContext(UserContext);
