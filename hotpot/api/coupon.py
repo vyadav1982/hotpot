@@ -4,28 +4,36 @@ import frappe
 from frappe.utils import today
 
 
-def get_meal_of_time(time):
+@frappe.whitelist(allow_guest=True)
+def get_current_coupon_type():
+	time = datetime.now()
 	# Define time ranges
-	if 7 <= time.hour < 10:
-		return "Breakfast"
-	elif 13 <= time.hour < 15:
-		return "Lunch"
-	elif 17 <= time.hour < 19:
-		return "Evening Snack"
-	elif 19 <= time.hour < 21:
-		return "Dinner"
+	coupon_type_list = frappe.get_list(
+		"Hotpot Coupon Type",
+		filters=[
+			["start_hour", "<=", time.hour * 100 + time.minute],
+			["end_hour", ">", time.hour * 100 + time.minute],
+			["is_active", "=", True],
+		],
+		pluck="name",
+	)
+
+	if len(coupon_type_list) > 1:
+		frappe.throw("Error: Multiple coupons found for this time of day. Please contact system manager")
+
+	if len(coupon_type_list) == 1:
+		return coupon_type_list[0]
 	else:
-		return None
+		return frappe.throw("No coupon available at this time")
 
 
 @frappe.whitelist(allow_guest=True)
 def get_coupon_for_employee_id(employee_id):
 	if not frappe.db.exists("Hotpot User", employee_id):
 		return frappe.throw(f"Employee ID: {employee_id} does not exist")
-	title = get_meal_of_time(datetime.now())
+	title = get_current_coupon_type()
 	coupon_date = today()
-	if not title:
-		return frappe.throw("No coupon available at this time")
+
 	if not frappe.db.exists("Hotpot Coupon", f"{title}_{employee_id}_{coupon_date}"):
 		coupon = frappe.new_doc(doctype="Hotpot Coupon")
 		coupon.employee_id = employee_id

@@ -1,0 +1,91 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:title",
+ "creation": "2024-12-09 04:15:49.439836",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "column_break_qouy",
+  "start_hour",
+  "column_break_xohp",
+  "end_hour",
+  "column_break_qsue",
+  "is_active"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "start_hour",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Start Hour",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "end_hour",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "End Hour",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_qouy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xohp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_qsue",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-12-09 04:57:16.136628",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Coupon Type",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title"
+}

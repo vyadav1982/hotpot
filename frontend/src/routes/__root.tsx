@@ -29,6 +29,13 @@ export const Route = createRootRouteWithContext<{
 
       if (!!context.sessionUser && location.href.startsWith('/hotpot/login')) {
         window.location.href = '/hotpot/server';
+      } else {
+        if (
+          location.pathname === '/hotpot' ||
+          location.pathname === '/hotpot/'
+        ) {
+          window.location.href = '/hotpot/login';
+        }
       }
     } else if (
       context.sessionUser &&

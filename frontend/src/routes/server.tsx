@@ -6,11 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { ErrorBanner } from '@/components/ErrorBanner';
-import { Camera } from 'lucide-react';
+import { Camera, CookingPot, TriangleAlert } from 'lucide-react';
 import {
   coupon_from_info,
   extractCouponInfo,
-  getMealType,
   is_coupon_valid,
 } from '@/utils/coupon';
 import { useDialog } from '@/hooks/use-dialog';
@@ -19,6 +18,7 @@ import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { TopBar } from '@/components/TopBar';
 import { Link } from '@tanstack/react-router';
+import useCurrentCouponType from '@/hooks/useCurrentCouponType';
 
 export const Route = createFileRoute('/server')({
   component: () => (
@@ -30,6 +30,7 @@ export const Route = createFileRoute('/server')({
 
 function ServerPage() {
   const { currentUser, logout } = useContext(UserContext);
+  const { currentCouponType } = useCurrentCouponType();
   const [scanning, setScanning] = useState(false);
   const [scannedData, setScannedData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +93,7 @@ function ServerPage() {
     setIsReaderReady(false);
     setScannedData(null);
     setCouponExists(null);
+    setCouponDoc(undefined);
     setError(null);
   }, []);
 
@@ -240,13 +242,28 @@ function ServerPage() {
 
               {scannedData && (
                 <div className="space-y-4">
-                  {couponExists === false ? (
+                  {couponExists === false && !!scannedData && !couponDoc ? (
                     <>
-                      <Alert>
-                        {is_coupon_valid(coupon_from_info(scannedData)) ? (
+                      <Alert
+                        className={
+                          is_coupon_valid(
+                            coupon_from_info(scannedData),
+                            currentCouponType,
+                          )
+                            ? ''
+                            : 'bg-red-50'
+                        }
+                      >
+                        {is_coupon_valid(
+                          coupon_from_info(scannedData),
+                          currentCouponType,
+                        ) ? (
                           <AlertTitle>Coupon yet to be Served</AlertTitle>
                         ) : (
-                          <AlertTitle>Coupon Cannot be Served</AlertTitle>
+                          <AlertTitle className="flex items-center gap-2">
+                            <TriangleAlert className="text-red-600" />
+                            ERROR: Coupon Cannot be Served
+                          </AlertTitle>
                         )}
                         <AlertDescription>
                           <>
@@ -268,18 +285,25 @@ function ServerPage() {
                         onClick={() => handleCreateCoupon()}
                         className="w-full"
                         disabled={
-                          getMealType() !== coupon_from_info(scannedData)?.title
+                          !is_coupon_valid(
+                            coupon_from_info(scannedData),
+                            currentCouponType,
+                          )
                         }
                       >
-                        {is_coupon_valid(coupon_from_info(scannedData))
-                          ? 'Invalid / Expired Coupon'
-                          : 'Issue ' + getMealType()}
+                        {is_coupon_valid(
+                          coupon_from_info(scannedData),
+                          currentCouponType,
+                        )
+                          ? 'Issue ' + currentCouponType
+                          : 'Invalid / Expired Coupon'}
                       </Button>
                     </>
                   ) : couponExists === true ? (
-                    <Alert>
-                      <AlertTitle>
-                        This coupon has already been Served.
+                    <Alert className="bg-red-50">
+                      <AlertTitle className="gap-2">
+                        <TriangleAlert className="text-red-600" />
+                        ERROR: Meal has already been Served.
                       </AlertTitle>
                       <AlertDescription>
                         <>
@@ -290,7 +314,22 @@ function ServerPage() {
                         </>
                       </AlertDescription>
                     </Alert>
-                  ) : null}
+                  ) : (
+                    <Alert className="bg-green-50">
+                      <AlertTitle className="gap-2">
+                        <CookingPot className="text-green-600" />
+                        SUCCESS: Meal Served{' '}
+                      </AlertTitle>
+                      <AlertDescription>
+                        <>
+                          <p>Type: {couponDoc?.title}</p>
+                          <p>Time: {couponDoc?.coupon_time}</p>
+                          <p>Date: {couponDoc?.coupon_date}</p>
+                          <p>Served By: {couponDoc?.served_by}</p>
+                        </>
+                      </AlertDescription>
+                    </Alert>
+                  )}
 
                   <Button
                     onClick={handleReset}

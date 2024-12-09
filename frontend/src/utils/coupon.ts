@@ -20,14 +20,6 @@ export function extractCouponInfo(input: string) {
   return `${prefix}_${datePart}`;
 }
 
-export const getMealType = () => {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 11) return 'Breakfast';
-  if (hour >= 11 && hour < 15) return 'Lunch';
-  if (hour >= 15 && hour < 18) return 'Evening Snacks';
-  return 'Dinner';
-};
-
 export function coupon_from_info(
   input_str: string,
 ): Partial<HotpotCoupon> | null {
@@ -65,10 +57,11 @@ export function today() {
   return `${year}-${month}-${day}`;
 }
 
-export function is_coupon_valid(coupon: Partial<HotpotCoupon> | null) {
+export function is_coupon_valid(
+  coupon: Partial<HotpotCoupon> | null,
+  couponType: string | undefined,
+) {
   return (
-    !!coupon &&
-    getMealType() === coupon?.title &&
-    today() === coupon?.coupon_date
+    !!coupon && couponType === coupon?.title && today() === coupon?.coupon_date
   );
 }
