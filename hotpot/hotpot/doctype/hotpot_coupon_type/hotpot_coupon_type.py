@@ -1,7 +1,7 @@
 # Copyright (c) 2024, Bytepanda Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
 
 
@@ -20,4 +20,12 @@ class HotpotCouponType(Document):
 		title: DF.Data
 	# end: auto-generated types
 
-	pass
+	def validate(self):
+		if self.start_hour > 2359:
+			frappe.throw("Start hour cannot be greater than 2359.")
+		elif self.end_hour <= self.start_hour:
+			frappe.throw("End hour cannot be less than or equal to start hour.")
+		elif self.end_hour > 2359:
+			frappe.throw("End hour cannot be greater than 2359.")
+		elif self.start_hour % 100 > 59 or self.end_hour % 100 > 59:
+			frappe.throw("Minutes cannot be greater than 59")

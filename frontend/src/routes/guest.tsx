@@ -20,11 +20,16 @@ import {
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { QRCodeSVG } from 'qrcode.react';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
+import { Loader2 } from 'lucide-react';
+import { UserListContext, UserListProvider } from '@/utils/UserListProvider';
+import { InputField } from '@/components/InputField';
 
 export const Route = createFileRoute('/guest')({
   component: () => (
     <ProtectedRoute>
-      <AdminGuestPage />
+      <UserListProvider>
+        <AdminGuestPage />
+      </UserListProvider>
     </ProtectedRoute>
   ),
 });
@@ -63,10 +68,21 @@ function AdminGuestPage() {
   const [qr, setQr] = useState([]);
   const { currentUser, logout } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
+  const { users } = useContext(UserListContext);
   const form = useForm<z.infer<typeof guestSchema>>({
     resolver: zodResolver(guestSchema),
+    defaultValues: {
+      empId: '',
+      name: '',
+      mobile: '',
+      breakfast: false,
+      lunch: false,
+      evening_snacks: false,
+      dinner: false,
+    },
   });
-  const { call: getCoupon } = useFrappePostCall(
+  let { reset } = form;
+  const { call: getCoupon, loading } = useFrappePostCall(
     'hotpot.api.coupon.get_coupon_for_guest',
   );
   const handleLogout = async () => {
@@ -122,8 +138,8 @@ function AdminGuestPage() {
         return '';
     }
   }
-  const reset = () => {
-    form.reset();
+  const resetForm = () => {
+    reset();
     setShowQr(false);
     setQr([]);
   };
@@ -172,8 +188,11 @@ function AdminGuestPage() {
                     <FormItem>
                       <FormLabel>Guest Of</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Emp ID of the guest's host"
+                        <InputField
+                          placeholder={"Guest's host name"}
+                          data={users}
+                          labelField={'employee_name'}
+                          valueField={'employee_id'}
                           {...field}
                         />
                       </FormControl>
@@ -304,10 +323,26 @@ function AdminGuestPage() {
             </div>
 
             <div className="flex justify-center space-x-2">
-              <Button type="submit" className="w-full sm:w-auto">
-                Generate QR for Guest
-              </Button>
-              <Button onClick={reset} className="w-full sm:w-auto">
+              {loading ? (
+                <Button disabled>
+                  <Loader2 className="animate-spin" />
+                  Generating...
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className="w-full sm:w-auto"
+                  disabled={
+                    !form.getValues('breakfast') &&
+                    !form.getValues('lunch') &&
+                    !form.getValues('evening_snacks') &&
+                    !form.getValues('dinner')
+                  }
+                >
+                  Generate QR for Guest
+                </Button>
+              )}
+              <Button onClick={resetForm} className="w-full sm:w-auto">
                 Reset
               </Button>
             </div>
@@ -318,13 +353,13 @@ function AdminGuestPage() {
         <div className="overflow-hidden rounded-xl border-2 border-dashed border-orange-300 bg-gray-50 p-6 shadow-md">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {qr && qr.length > 0 ? (
-              qr.map((item, index) => (
+              qr.map((item:any, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-white p-4 shadow-md"
                 >
                   <QRCodeSVG
-                    value={item}
+                    value={`${item.meal_title}_${item.mobile}_${item.coupon_date}${item.coupon_time}`}
                     size={180}
                     className="border-2 border-solid"
                   />

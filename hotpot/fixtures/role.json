@@ -26,13 +26,13 @@
   "two_factor_auth": 0
  },
  {
-  "desk_access": 0,
+  "desk_access": 1,
   "disabled": 0,
   "docstatus": 0,
   "doctype": "Role",
   "home_page": null,
   "is_custom": 0,
-  "modified": "2024-12-04 14:24:02.773992",
+  "modified": "2024-12-09 14:41:58.622173",
   "name": "Hotpot Admin",
   "restrict_to_domain": null,
   "role_name": "Hotpot Admin",
