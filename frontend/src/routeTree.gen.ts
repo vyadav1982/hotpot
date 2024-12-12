@@ -14,6 +14,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ServerImport } from './routes/server'
 import { Route as LoginImport } from './routes/login'
 import { Route as GuestImport } from './routes/guest'
+import { Route as DashboardImport } from './routes/dashboard'
 import { Route as CouponImport } from './routes/coupon'
 
 // Create/Update Routes
@@ -36,6 +37,12 @@ const GuestRoute = GuestImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CouponRoute = CouponImport.update({
   id: '/coupon',
   path: '/coupon',
@@ -51,6 +58,13 @@ declare module '@tanstack/react-router' {
       path: '/coupon'
       fullPath: '/coupon'
       preLoaderRoute: typeof CouponImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
     '/guest': {
@@ -81,6 +95,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/coupon': typeof CouponRoute
+  '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
@@ -88,6 +103,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/coupon': typeof CouponRoute
+  '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
@@ -96,6 +112,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/coupon': typeof CouponRoute
+  '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
@@ -103,15 +120,16 @@ export interface FileRoutesById {
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/coupon' | '/guest' | '/login' | '/server'
+  fullPaths: '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
   fileRoutesByTo: FileRoutesByTo
-  to: '/coupon' | '/guest' | '/login' | '/server'
-  id: '__root__' | '/coupon' | '/guest' | '/login' | '/server'
+  to: '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
+  id: '__root__' | '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   CouponRoute: typeof CouponRoute
+  DashboardRoute: typeof DashboardRoute
   GuestRoute: typeof GuestRoute
   LoginRoute: typeof LoginRoute
   ServerRoute: typeof ServerRoute
@@ -119,6 +137,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   CouponRoute: CouponRoute,
+  DashboardRoute: DashboardRoute,
   GuestRoute: GuestRoute,
   LoginRoute: LoginRoute,
   ServerRoute: ServerRoute,
@@ -135,6 +154,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/coupon",
+        "/dashboard",
         "/guest",
         "/login",
         "/server"
@@ -142,6 +162,9 @@ export const routeTree = rootRoute
     },
     "/coupon": {
       "filePath": "coupon.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.tsx"
     },
     "/guest": {
       "filePath": "guest.tsx"
