@@ -50,7 +50,7 @@ export const UserListProvider = ({ children }: PropsWithChildren) => {
       timeout = setTimeout(() => {
         mutate();
         // Mutate the user list as well ??
-        // globalMutate(`user_list`);
+        globalMutate(`hotpot.api.users.get_list`);
         setNewUpdatesAvailable(false);
       }, 1000); // 1 second
     }
