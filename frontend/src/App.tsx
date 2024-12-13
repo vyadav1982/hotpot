@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { Toaster } from '@/components/ui/toaster';
 import { DialogProvider } from './utils/DialogProvider';
 import { GenericDialog } from './components/GenericDialog';
+import { ThemeToggle } from './components/ThemeToggle';
 
 /** Following keys will not be cached in app cache */
 const NO_CACHE_KEYS = [
@@ -49,6 +50,9 @@ export default function App() {
       >
         <UserProvider>
           <DialogProvider>
+            <div className="absolute bottom-12 right-8">
+              <ThemeToggle />
+            </div>
             <Outlet />
             <GenericDialog />
           </DialogProvider>
