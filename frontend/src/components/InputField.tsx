@@ -53,9 +53,12 @@ export const InputField = ({
         onChange={(e) => {
           setQuery(e.target.value);
           setSelectedName('');
-          setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsOpen(true);
+        }}
       />
 
       {isOpen && (
@@ -68,9 +71,9 @@ export const InputField = ({
               <div
                 key={item[valueField]}
                 onClick={() => handleSelect(item)}
-                className="cursor-pointer px-3 py-2 text-sm  hover:rounded-md"
+                className="cursor-pointer px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#1d1b18]"
               >
-                {item[labelField]}({item[valueField]})
+                  {item[labelField]}({item[valueField]})
               </div>
             ))
           ) : (
