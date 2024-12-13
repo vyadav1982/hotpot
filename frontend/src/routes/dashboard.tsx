@@ -349,7 +349,9 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
               <CardHeader>
                 <CardTitle className="text-lg font-bold">{item.name}</CardTitle>
                 <CardDescription className="text-sm">
-                  {item.start_hour} - {item.end_hour}
+                  {`${Math.floor(item.start_hour / 100)}:${String(item.start_hour % 100).padStart(2, '0')}`}{' '}
+                  -{' '}
+                  {`${Math.floor(item.end_hour / 100)}:${String(item.end_hour % 100).padStart(2, '0')}`}
                 </CardDescription>
               </CardHeader>
               <CardContent>
