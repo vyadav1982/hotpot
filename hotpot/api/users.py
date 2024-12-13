@@ -10,7 +10,7 @@ def get_current_user():
 def get_list():
 	return frappe.db.get_list(
 		"Hotpot User",
-		fields=["name","employee_id", "employee_name"],
+		fields=["name", "employee_id", "employee_name"],
 		filters=[
 			["is_active", "=", 1],
 			["is_guest", "=", 0],

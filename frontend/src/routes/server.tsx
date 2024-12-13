@@ -179,13 +179,11 @@ function ServerPage() {
         }
         rightContent={
           <div className="flex gap-2">
-            {false && (
-              <Link to="/coupon" className="w-full">
-                <Button type="button" variant="outline">
-                  Get Coupon
-                </Button>
-              </Link>
-            )}
+            <Link to="/dashboard" className="w-full">
+              <Button type="button" variant="outline">
+                Dashboard
+              </Button>
+            </Link>
             <Button variant="destructive" onClick={handleLogout}>
               Logout
             </Button>

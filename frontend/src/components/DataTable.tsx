@@ -52,9 +52,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4 space-x-2">
+      <div className="flex items-center space-x-2 py-4">
         <Input
-          placeholder="Filter Employee Id..."
+          placeholder="Filter By Employee Id..."
           value={(table.getColumn('empId')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('empId')?.setFilterValue(event.target.value)
@@ -62,7 +62,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <Input
-          placeholder="Filter Employee Name..."
+          placeholder="Filter By Employee Name..."
           value={(table.getColumn('empName')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('empName')?.setFilterValue(event.target.value)

@@ -353,7 +353,7 @@ function AdminGuestPage() {
         <div className="overflow-hidden rounded-xl border-2 border-dashed border-orange-300 bg-gray-50 p-6 shadow-md">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {qr && qr.length > 0 ? (
-              qr.map((item:any, index) => (
+              qr.map((item: any, index) => (
                 <div
                   key={index}
                   className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-white p-4 shadow-md"

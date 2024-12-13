@@ -53,6 +53,7 @@ export const InputField = ({
         onChange={(e) => {
           setQuery(e.target.value);
           setSelectedName('');
+          setIsOpen(true);
         }}
         onFocus={() => setIsOpen(true)}
       />
@@ -60,14 +61,14 @@ export const InputField = ({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute z-10 my-1 w-full rounded-md border bg-[#040917] shadow-md "
+          className="absolute z-10 my-1 w-full rounded-md border shadow-md "
         >
           {filteredData.length > 0 ? (
             filteredData.map((item: any) => (
               <div
                 key={item[valueField]}
                 onClick={() => handleSelect(item)}
-                className="cursor-pointer px-3 py-2 text-sm  hover:rounded-md hover:bg-[#141f41]"
+                className="cursor-pointer px-3 py-2 text-sm  hover:rounded-md"
               >
                 {item[labelField]}({item[valueField]})
               </div>

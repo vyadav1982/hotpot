@@ -61,7 +61,6 @@ def create_coupon(data):
 		coupon.save(ignore_permissions=True)
 		return {"created": True, "coupon": coupon}
 	else:
-		print(extract_coupon_info(data))
 		return {"created": False, "coupon": frappe.get_doc("Hotpot Coupon", extract_coupon_info(data))}
 
 

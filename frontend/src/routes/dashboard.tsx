@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { useFrappePostCall } from 'frappe-react-sdk';
@@ -35,20 +35,12 @@ import {
   CouponCountContext,
   CouponCountProvider,
 } from '@/utils/CouponCountProvider';
+import { TopBar } from '@/components/TopBar';
+import { UserContext } from '@/utils/auth/UserProvider';
+import { useDialog } from '@/hooks/use-dialog';
+
 export const Route = createFileRoute('/dashboard')({
-  component: () => {
-    const [date, setDate] = useState<DateRange | undefined>({
-      from: new Date(),
-      to: new Date(),
-    });
-    return (
-      <CouponProvider date={date}>
-        <CouponCountProvider date={date}>
-          <RouteComponent setDate={setDate} date={date} />
-        </CouponCountProvider>
-      </CouponProvider>
-    );
-  },
+  component: DashboardWrapperComponent,
 });
 
 type MealRecord = {
@@ -112,13 +104,32 @@ const columns: ColumnDef<MealRecord>[] = [
     accessorKey: 'date',
   },
 ];
+
 interface RouteComponentProps {
   setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
   date: DateRange | undefined;
 }
-function RouteComponent({ setDate, date }: RouteComponentProps) {
+
+function DashboardWrapperComponent() {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: new Date(),
+  });
+  return (
+    <CouponProvider date={date}>
+      <CouponCountProvider date={date}>
+        <DashboardComponent setDate={setDate} date={date} />
+      </CouponCountProvider>
+    </CouponProvider>
+  );
+}
+
+function DashboardComponent({ setDate, date }: RouteComponentProps) {
+  const { currentUser, logout } = useContext(UserContext);
+  const { showConfirmDialog } = useDialog();
   const [cards, setCards] = useState([]);
   const [selectedValue, setSelectedValue] = useState('today');
+
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
@@ -166,7 +177,12 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
 
   const { coupons } = useContext(CouponContext);
   const { CouponsCount } = useContext(CouponCountContext);
-  const data = convertMapToArray(coupons);
+  const [data, setData] = useState<MealRecord[]>([]);
+
+  useEffect(() => {
+    setData(convertMapToArray(coupons));
+  }, [coupons]);
+
   const { call: getCouponType } = useFrappePostCall(
     'hotpot.api.dashboard.get_coupon_type_list',
   );
@@ -182,10 +198,13 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
       });
     }
     if (selectedValue === 'custom') {
-      setDate(date);
+      setDate({
+        from: date?.from,
+        to: date?.to,
+      });
     }
     if (selectedValue === 'this_week') {
-      let date = new Date();
+      const date = new Date();
       setDate({
         from: new Date(
           date.setDate(
@@ -202,122 +221,171 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
       });
     }
   };
+
   useEffect(() => {
     fetchCouponTypes();
   }, []);
+
   useEffect(() => {
     setDateRange();
   }, [selectedValue]);
+
+  const handleLogout = async () => {
+    try {
+      await showConfirmDialog({
+        title: 'Confirm Logout',
+        description: 'Are you sure you want to logout?',
+        confirmLabel: 'Logout',
+        variant: 'destructive',
+        onConfirm: async () => {
+          await logout();
+        },
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#040917] p-6 text-white">
-      {/* Header Section */}
-      <div className="mb-6 flex flex-wrap items-center justify-between rounded-lg bg-[#0e1a30] p-4 shadow-lg">
-        <div className="flex items-center gap-4">
-          {
-            <div>
-              {'Total Consumed Coupons : '}
-              {CouponsCount.total_coupons}
-            </div>
-          }
-          {selectedValue === 'custom' && (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant={'outline'}
-                  className={cn(
-                    'flex w-[300px] items-center justify-start gap-2 rounded-md border border-[#1e2d48] bg-[#131c2b] text-left font-medium text-white shadow-md hover:bg-[#1a273b]',
-                    !date && 'text-muted-foreground',
-                  )}
-                >
-                  <CalendarIcon className="h-5 w-5" />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, 'LLL dd, y')} -{' '}
-                        {format(date.to, 'LLL dd, y')}
-                      </>
+    <div className="min-h-screen">
+      <TopBar
+        className="px-4 pt-3 sm:px-8"
+        leftContent={
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <img
+                src="/assets/hotpot/manifest/favicon.svg"
+                alt="Hotpot Logo"
+                className=" h-10 w-10 cursor-pointer sm:h-12 sm:w-12"
+              />
+            </Link>
+            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+          </div>
+        }
+        rightContent={
+          <div className="flex gap-2">
+            <Link to="/server">
+              <Button type="button" variant="outline">
+                Serve
+              </Button>
+            </Link>
+            <Button variant="destructive" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        }
+      />
+      <div className="px-24">
+        {/* Header Section */}
+        <Card className="my-6 flex flex-wrap items-center justify-between rounded-lg p-4 shadow-md">
+          <div className="flex items-center gap-4">
+            {'Total Consumed Coupons : '}
+            {CouponsCount.total_coupons}
+          </div>
+          <div className="flex">
+            {selectedValue === 'custom' && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    variant={'outline'}
+                    className={cn(
+                      'mr-2 flex w-[300px] items-center justify-start gap-2 rounded-md border text-left font-medium shadow-md',
+                      !date && 'text-muted-foreground',
+                    )}
+                  >
+                    <CalendarIcon className="h-5 w-5" />
+                    {date?.from ? (
+                      date.to ? (
+                        <>
+                          {format(date.from, 'LLL dd, y')} -{' '}
+                          {format(date.to, 'LLL dd, y')}
+                        </>
+                      ) : (
+                        format(date.from, 'LLL dd, y')
+                      )
                     ) : (
-                      format(date.from, 'LLL dd, y')
-                    )
-                  ) : (
-                    'Select Date'
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto rounded-lg border border-[#1e2d48] bg-[#131c2b] p-0 shadow-lg">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                  className="p-2"
-                />
-              </PopoverContent>
-            </Popover>
-          )}
+                      'Select Date'
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto rounded-lg border p-0 shadow-lg">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={(selected) => {
+                      console.log(selected);
+                      setDate({
+                        from: selected?.from,
+                        to: selected?.to,
+                      });
+                    }}
+                    numberOfMonths={2}
+                    className="p-2"
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+
+            <Select value={selectedValue} onValueChange={setSelectedValue}>
+              <SelectTrigger className="w-[180px] rounded-md border font-medium shadow-md">
+                <SelectValue placeholder="Select a filter" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="today">Today</SelectItem>
+                  <SelectItem value="this_week">This Week</SelectItem>
+                  <SelectItem value="this_month">This Month</SelectItem>
+                  <SelectItem value="custom">Custom</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
+
+        {/* Cards Section */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {cards.map((item: any, index: number) => (
+            <Card key={index} className="rounded-lg border shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold">{item.name}</CardTitle>
+                <CardDescription className="text-sm">
+                  {item.start_hour} - {item.end_hour}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {item.name === 'Breakfast' && (
+                  <p className="text-sm">
+                    Total Consumed Coupon: {CouponsCount.breakfast_coupons}
+                  </p>
+                )}
+                {item.name === 'Lunch' && (
+                  <p className="text-sm">
+                    Total Consumed Coupon: {CouponsCount.lunch_coupons}
+                  </p>
+                )}
+                {item.name === 'Evening Snack' && (
+                  <p className="text-sm">
+                    Total Consumed Coupon :{' '}
+                    {CouponsCount.evening_snacks_coupons}
+                  </p>
+                )}
+                {item.name === 'Dinner' && (
+                  <p className="text-sm">
+                    Total Consumed Coupon: {CouponsCount.dinner_coupons}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          ))}
         </div>
-        <Select value={selectedValue} onValueChange={setSelectedValue}>
-          <SelectTrigger className="w-[180px] rounded-md border border-[#1e2d48] bg-[#131c2b] font-medium text-white shadow-md hover:bg-[#1a273b]">
-            <SelectValue placeholder="Select a filter" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="today">Today</SelectItem>
-              <SelectItem value="this_week">This Week</SelectItem>
-              <SelectItem value="this_month">This Month</SelectItem>
-              <SelectItem value="custom">Custom</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
 
-      {/* Cards Section */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {cards.map((item: any, index: number) => (
-          <Card
-            key={index}
-            className="rounded-lg border border-[#1e2d48] bg-[#0e1a30] shadow-lg transition-transform hover:scale-105 hover:shadow-xl"
-          >
-            <CardHeader>
-              <CardTitle className="text-lg font-bold text-white">
-                {item.name}
-              </CardTitle>
-              <CardDescription className="text-sm text-[#9da6b4]">
-                {item.start_hour} - {item.end_hour}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {item.name === 'Breakfast' && (
-                <p className="text-sm text-[#c5cedd]">
-                  Total Consumed Coupon: {CouponsCount.breakfast_coupons}
-                </p>
-              )}
-              {item.name === 'Lunch' && (
-                <p className="text-sm text-[#c5cedd]">
-                  Total Consumed Coupon: {CouponsCount.lunch_coupons}
-                </p>
-              )}
-              {item.name === 'Evening Snack' && (
-                <p className="text-sm text-[#c5cedd]">
-                  Total Consumed Coupon : {CouponsCount.evening_snacks_coupons}
-                </p>
-              )}
-              {item.name === 'Dinner' && (
-                <p className="text-sm text-[#c5cedd]">
-                  Total Consumed Coupon: {CouponsCount.dinner_coupons}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Table Section */}
-      <div className="mt-6 rounded-lg border border-[#1e2d48] bg-[#0e1a30] p-4 shadow-lg">
-        <DataTable columns={columns} data={data} />
+        {/* Table Section */}
+        <div className="mt-6 rounded-lg border p-4 shadow-lg">
+          <DataTable columns={columns} data={data} />
+        </div>
       </div>
     </div>
   );

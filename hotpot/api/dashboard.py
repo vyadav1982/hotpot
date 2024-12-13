@@ -7,7 +7,11 @@ from frappe import _
 
 @frappe.whitelist(allow_guest=True)
 def get_coupon_type_list():
-	coupon_type_list = frappe.db.get_list("Hotpot Coupon Type", fields=["name", "start_hour", "end_hour"])
+	coupon_type_list = frappe.db.get_list(
+		"Hotpot Coupon Type",
+		fields=["name", "start_hour", "end_hour"],
+		order_by="start_hour",
+	)
 	return coupon_type_list
 
 
@@ -20,10 +24,7 @@ def get_coupon_list(params):
 	month2, date2, year2 = to_date.split("/")
 	from_date = year1 + "-" + month1 + "-" + date1
 	to_date = year2 + "-" + month2 + "-" + date2
-	users = get_users(
-		from_date,
-		to_date
-	)
+	users = get_users(from_date, to_date)
 	if len(users) == 0:
 		return []
 	user_Id = []
@@ -31,18 +32,18 @@ def get_coupon_list(params):
 		user_Id.append(user.get("employee_id"))
 	placeholders = ", ".join(["%s"] * len(user_Id))
 	query = f"""
-		SELECT 
-			a.employee_id, 
-			a.title, 
-			b.employee_name, 
-			a.coupon_date, 
-			a.coupon_time, 
+		SELECT
+			a.employee_id,
+			a.title,
+			b.employee_name,
+			a.coupon_date,
+			a.coupon_time,
 			a.served_by
 		FROM `tabHotpot Coupon` AS a
 		INNER JOIN `tabHotpot User` AS b
 		ON a.employee_id = b.employee_id
-		WHERE a.coupon_date >= %s 
-		AND a.coupon_date <= %s 
+		WHERE a.coupon_date >= %s
+		AND a.coupon_date <= %s
 		AND a.employee_id IN ({placeholders})
 		ORDER BY a.coupon_date DESC;
 	"""
@@ -70,10 +71,6 @@ def get_users(from_date, to_date):
 	"""
 
 	users = frappe.db.sql(query, params, as_dict=True)
-	print("SQL Query:", query % tuple(params))
-	print(users)
-
-	print("++__--" * 2, from_date, to_date, users)
 	return users
 
 

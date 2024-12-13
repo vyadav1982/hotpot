@@ -16,9 +16,11 @@ import {
 import { DateRange } from 'react-day-picker';
 
 export const CouponContext = createContext<{
-  coupons: CouponFields[];
+  coupons:
+    | Map<string, [{ coupon_title?: string; coupon_time?: string }]>
+    | undefined;
 }>({
-  coupons: [],
+  coupons: undefined,
 });
 interface CouponProviderProps extends PropsWithChildren {
   date: DateRange | undefined;
@@ -28,7 +30,7 @@ export type CouponFields = Pick<
   HotpotCoupon,
   'employee_id' | 'title' | 'coupon_date' | 'coupon_time' | 'served_by'
 >;
-export type CouponFieldsWithCount = CouponFields & {
+export type CouponFieldsWithName = CouponFields & {
   employee_name: string;
 };
 
@@ -43,7 +45,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     error: couponsError,
     mutate,
     isLoading,
-  } = useFrappeGetCall<{ message: CouponFieldsWithCount[] }>(
+  } = useFrappeGetCall<{ message: CouponFieldsWithName[] }>(
     'hotpot.api.dashboard.get_coupon_list',
     {
       params: {
@@ -88,7 +90,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     >();
     if (data?.message) {
       Array.isArray(data?.message) &&
-        data.message.forEach((coupon: CouponFieldsWithCount) => {
+        data.message.forEach((coupon: CouponFieldsWithName) => {
           const key = `${coupon.employee_id}//${coupon.coupon_date}//${coupon.employee_name}`;
           if (!myData.has(key)) {
             myData.set(key, [{}]);
