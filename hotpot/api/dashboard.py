@@ -16,58 +16,63 @@ def get_coupon_list(params):
 	params = frappe.parse_json(params)
 	from_date = params.get("from")
 	to_date = params.get("to")
-	page_no = params.get("page")
+	month1, date1, year1 = from_date.split("/")
+	month2, date2, year2 = to_date.split("/")
+	from_date = year1 + "-" + month1 + "-" + date1
+	to_date = year2 + "-" + month2 + "-" + date2
 	users = get_users(
-		page_no,
 		from_date,
-		to_date,
-		limit=5,
+		to_date
 	)
+	if len(users) == 0:
+		return []
 	user_Id = []
 	for user in users:
 		user_Id.append(user.get("employee_id"))
-	filters = {"coupon_date": ["between", [from_date, to_date]], "employee_id": ["in", user_Id]}
-	coupon_list = frappe.db.get_list(
-		"Hotpot Coupon",
-		filters=filters,
-		fields=["employee_id", "title", "coupon_date", "coupon_time", "served_by"],
-		limit_start=(page_no - 1) * 10,
-		limit_page_length=4,
-	)
+	placeholders = ", ".join(["%s"] * len(user_Id))
+	query = f"""
+		SELECT 
+			a.employee_id, 
+			a.title, 
+			b.employee_name, 
+			a.coupon_date, 
+			a.coupon_time, 
+			a.served_by
+		FROM `tabHotpot Coupon` AS a
+		INNER JOIN `tabHotpot User` AS b
+		ON a.employee_id = b.employee_id
+		WHERE a.coupon_date >= %s 
+		AND a.coupon_date <= %s 
+		AND a.employee_id IN ({placeholders})
+		ORDER BY a.coupon_date DESC;
+	"""
+	params_sql = [from_date, to_date] + [str(uid) for uid in user_Id]
+
+	coupon_list = frappe.db.sql(query, params_sql, as_dict=True)
 	return coupon_list
 
 
 @frappe.whitelist(allow_guest=True)
-def get_users(page_no, from_date, to_date, limit=2):
-	offset = (page_no - 1) * limit
-	limit = 3
-	from_date = datetime.strptime(from_date, "%d/%m/%Y").strftime("%Y-%m-%d")
-	to_date = datetime.strptime(to_date, "%d/%m/%Y").strftime("%Y-%m-%d")
+def get_users(from_date, to_date):
+	params = (from_date, to_date)
 
-	params = (from_date, to_date, limit, offset)
-	# users = frappe.db.get_all(
-	# 	"Hotpot User",
-	# 	fields=["employee_id"],
-	# 	limit_page_length=limit,
-	# 	limit_start=offset,
-	# 	pluck="employee_id",
-	# )
-	# return users
 	query = """
-        SELECT u.employee_id
-        FROM `tabHotpot User` AS u
-        INNER JOIN (
-        SELECT employee_id, MAX(modified) AS last_activity
-        FROM `tabHotpot Coupon`
-        WHERE coupon_date >= %s AND coupon_date <= %s
-        GROUP BY employee_id
-            ) c ON c.employee_id = u.employee_id
-            ORDER BY 
-                c.last_activity DESC,
-                u.employee_id
-            LIMIT %s OFFSET %s;
-    """
+	    SELECT u.employee_id
+	    FROM `tabHotpot User` AS u
+	    INNER JOIN (
+	    SELECT employee_id
+	    FROM `tabHotpot Coupon`
+	    WHERE coupon_date >= %s AND coupon_date <= %s
+	    GROUP BY employee_id
+	        ) c ON c.employee_id = u.employee_id
+	        ORDER BY
+	            u.employee_id;
+	"""
+
 	users = frappe.db.sql(query, params, as_dict=True)
+	print("SQL Query:", query % tuple(params))
+	print(users)
+
 	print("++__--" * 2, from_date, to_date, users)
 	return users
 
@@ -75,18 +80,8 @@ def get_users(page_no, from_date, to_date, limit=2):
 @frappe.whitelist(allow_guest=True)
 def get_coupon_type_count(params):
 	params = frappe.parse_json(params)
-	# print(
-	#     "++" * 30,
-	#     datetime.strptime(params.get("from"),  "%m/%d/%Y"),
-	#     datetime.strptime(params.get("to"),  "%m/%d/%Y"),
-	# )
 	from_date = (datetime.strptime(params.get("from"), "%m/%d/%Y"),)
 	to_date = (datetime.strptime(params.get("to"), "%m/%d/%Y"),)
-	# print(type( datetime.strptime(params.get("from"),  "%m/%d/%Y")))
-	# print(type((datetime.strptime(params.get("from"), "%m/%d/%Y") - timedelta(days=1))))
-	# from_date = (datetime.strptime(params.get("from"),  "%m/%d/%Y") - timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-	# to_date = (datetime.strptime(params.get("to"),  "%m/%d/%Y") + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S")
-	# print("//" * 30, from_date, to_date)
 	total_coupons = frappe.db.count("Hotpot Coupon", {"coupon_date": ["between", [from_date, to_date]]})
 	breakfast_coupons = frappe.db.count(
 		"Hotpot Coupon", {"title": "Breakfast", "coupon_date": ["between", [from_date, to_date]]}

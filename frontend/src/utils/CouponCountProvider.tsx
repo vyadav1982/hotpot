@@ -98,5 +98,5 @@ export const CouponCountProvider = ({
     <CouponCountContext.Provider value={{ CouponsCount }}>
       {children}
     </CouponCountContext.Provider>
-  );
+);
 };

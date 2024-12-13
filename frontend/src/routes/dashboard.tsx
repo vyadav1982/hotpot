@@ -69,6 +69,7 @@ const columns: ColumnDef<MealRecord>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="p-0"
         >
           Employee Id
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -83,6 +84,7 @@ const columns: ColumnDef<MealRecord>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="p-0"
         >
           Employee Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -100,6 +102,7 @@ const columns: ColumnDef<MealRecord>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="p-0"
         >
           Date
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -126,13 +129,13 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
     });
 
     mapData.forEach((value: any, key: any) => {
-      const [empId, date] = key.split('//');
+      const [empId, date, employee_name] = key.split('//');
       const mapKey = `${empId}_${date}`;
       let entry = entryMap.get(mapKey);
       if (!entry) {
         entry = {
           empId,
-          empName: 'Unknown',
+          empName: employee_name,
           date,
           ...initializeMeals(),
         };
@@ -163,7 +166,6 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
 
   const { coupons } = useContext(CouponContext);
   const { CouponsCount } = useContext(CouponCountContext);
-  console.log(CouponsCount);
   const data = convertMapToArray(coupons);
   const { call: getCouponType } = useFrappePostCall(
     'hotpot.api.dashboard.get_coupon_type_list',
@@ -213,7 +215,7 @@ function RouteComponent({ setDate, date }: RouteComponentProps) {
         <div className="flex items-center gap-4">
           {
             <div>
-              {'Total Consumed coupons : '}
+              {'Total Consumed Coupons : '}
               {CouponsCount.total_coupons}
             </div>
           }

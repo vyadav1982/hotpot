@@ -28,6 +28,9 @@ export type CouponFields = Pick<
   HotpotCoupon,
   'employee_id' | 'title' | 'coupon_date' | 'coupon_time' | 'served_by'
 >;
+export type CouponFieldsWithCount = CouponFields & {
+  employee_name: string;
+};
 
 export const CouponProvider = ({ children, date }: CouponProviderProps) => {
   const { mutate: globalMutate } = useSWRConfig();
@@ -40,13 +43,12 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     error: couponsError,
     mutate,
     isLoading,
-  } = useFrappeGetCall<{ message: CouponFields[] }>(
+  } = useFrappeGetCall<{ message: CouponFieldsWithCount[] }>(
     'hotpot.api.dashboard.get_coupon_list',
     {
       params: {
         from: date?.from?.toLocaleDateString(),
         to: date?.to?.toLocaleDateString(),
-        page: 1,
       },
     },
     'hotpot.api.dashboard.get_coupon_list',
@@ -85,20 +87,20 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
       [{ coupon_title?: string; coupon_time?: string }]
     >();
     if (data?.message) {
-      data.message.forEach((coupon: CouponFields) => {
-        const key = `${coupon.employee_id}//${coupon.coupon_date}`;
-        if (!myData.has(key)) {
-          myData.set(key, [{}]);
-        }
-        const obj = myData.get(key);
-        if (obj) {
-          let entry: { coupon_title?: string; coupon_time?: string } = {};
-          entry.coupon_title = coupon.title;
-
-          entry.coupon_time = coupon.coupon_time;
-          obj.push(entry);
-        }
-      });
+      Array.isArray(data?.message) &&
+        data.message.forEach((coupon: CouponFieldsWithCount) => {
+          const key = `${coupon.employee_id}//${coupon.coupon_date}//${coupon.employee_name}`;
+          if (!myData.has(key)) {
+            myData.set(key, [{}]);
+          }
+          const obj = myData.get(key);
+          if (obj) {
+            let entry: { coupon_title?: string; coupon_time?: string } = {};
+            entry.coupon_title = coupon.title;
+            entry.coupon_time = coupon.coupon_time;
+            obj.push(entry);
+          }
+        });
     }
     return {
       coupons: data?.message ? myData : [],
