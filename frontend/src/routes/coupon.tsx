@@ -21,6 +21,7 @@ import { HotpotCoupon } from '@/types/Hotpot/HotpotCoupon';
 import { TopBar } from '@/components/TopBar';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
+import { Logo } from '@/components/Logo';
 
 export const Route = createFileRoute('/coupon')({
   component: CouponPage,
@@ -96,11 +97,7 @@ function CouponPage() {
         leftContent={
           <div className="flex items-center gap-3">
             <Link to="/login">
-              <img
-                src="/assets/hotpot/manifest/favicon.svg"
-                alt="Hotpot Logo"
-                className=" h-10 w-10 cursor-pointer sm:h-12 sm:w-12"
-              />
+              <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
             <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
           </div>
