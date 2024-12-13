@@ -103,16 +103,18 @@ function CouponPage() {
           </div>
         }
         rightContent={
-          <div className="flex gap-2">
-            <Link to="/server">
-              <Button type="button" variant="outline">
-                Serve
+          currentUser && (
+            <div className="flex gap-2">
+              <Link to="/server">
+                <Button type="button" variant="outline">
+                  Serve
+                </Button>
+              </Link>
+              <Button variant="destructive" onClick={handleLogout}>
+                Logout
               </Button>
-            </Link>
-            <Button variant="destructive" onClick={handleLogout}>
-              Logout
-            </Button>
-          </div>
+            </div>
+          )
         }
       />
 
