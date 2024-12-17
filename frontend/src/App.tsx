@@ -50,7 +50,7 @@ export default function App() {
       >
         <UserProvider>
           <DialogProvider>
-            <div className="absolute bottom-12 right-8">
+            <div className="fixed bottom-12 right-8 z-50 rounded-full shadow-md">
               <ThemeToggle />
             </div>
             <Outlet />

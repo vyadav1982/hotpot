@@ -6,40 +6,39 @@ import {
   useFrappeGetCall,
   useSWRConfig,
 } from 'frappe-react-sdk';
-import {
-  PropsWithChildren,
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { DateRange } from 'react-day-picker';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { DateRangeContext } from './DateRangeProvider';
 
-export const CouponContext = createContext<{
+type CouponProviderState = {
   coupons:
     | Map<string, [{ coupon_title?: string; coupon_time?: string }]>
     | undefined;
-}>({
+  isLoading: boolean;
+};
+
+const initialState: CouponProviderState = {
   coupons: undefined,
-});
-interface CouponProviderProps extends PropsWithChildren {
-  date: DateRange | undefined;
-}
+  isLoading: false,
+};
+
+export const CouponContext = createContext<CouponProviderState>(initialState);
+
+type CouponProviderProps = {
+  children: React.ReactNode;
+};
 
 export type CouponFields = Pick<
   HotpotCoupon,
   'employee_id' | 'title' | 'coupon_date' | 'coupon_time' | 'served_by'
 >;
+
 export type CouponFieldsWithName = CouponFields & {
   employee_name: string;
 };
 
-export const CouponProvider = ({ children, date }: CouponProviderProps) => {
+export const CouponProvider = ({ children, ...props }: CouponProviderProps) => {
   const { mutate: globalMutate } = useSWRConfig();
-  useEffect(() => {
-    mutate();
-    globalMutate(`hotpot.api.dashboard.get_coupon_list`);
-  }, [date]);
+  const { date } = useContext(DateRangeContext);
   const {
     data,
     error: couponsError,
@@ -53,7 +52,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
         to: date?.to?.toLocaleDateString(),
       },
     },
-    'hotpot.api.dashboard.get_coupon_list',
+    `hotpot.api.dashboard.get_coupon_list_${date?.from?.toLocaleDateString()}_${date?.to?.toLocaleDateString()}`,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -83,6 +82,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     mutate();
     setNewUpdatesAvailable(true);
   });
+
   const { coupons } = useMemo(() => {
     const myData = new Map<
       string,
@@ -123,7 +123,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
   }
 
   return (
-    <CouponContext.Provider value={{ coupons }}>
+    <CouponContext.Provider {...props} value={{ coupons, isLoading }}>
       {children}
     </CouponContext.Provider>
   );

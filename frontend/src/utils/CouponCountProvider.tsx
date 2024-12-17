@@ -5,33 +5,32 @@ import {
   useFrappeGetCall,
   useSWRConfig,
 } from 'frappe-react-sdk';
-import {
-  PropsWithChildren,
-  createContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { DateRange } from 'react-day-picker';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { DateRangeContext } from './DateRangeProvider';
 
-export const CouponCountContext = createContext<{
+type CouponCountProviderState = {
   CouponsCount: any;
-}>({
-  CouponsCount: [],
-});
-interface CouponCountProviderProps extends PropsWithChildren {
-  date: DateRange | undefined;
-}
+};
+
+const initialState: CouponCountProviderState = {
+  CouponsCount: undefined,
+};
+
+export const CouponCountContext =
+  createContext<CouponCountProviderState>(initialState);
+
+type CouponCountProviderProps = {
+  children: React.ReactNode;
+};
 
 export const CouponCountProvider = ({
   children,
-  date,
+  ...props
 }: CouponCountProviderProps) => {
   const { mutate: globalMutate } = useSWRConfig();
-  useEffect(() => {
-    mutate();
-    globalMutate(`hotpot.api.dashboard.get_coupon_type_count`);
-  }, [date]);
+
+  const { date } = useContext(DateRangeContext);
+
   const {
     data,
     error: couponsError,
@@ -45,7 +44,7 @@ export const CouponCountProvider = ({
         to: date?.to?.toLocaleDateString(),
       },
     },
-    'hotpot.api.coupons.get_coupon_type_count',
+    `hotpot.api.coupons.get_coupon_type_count_${date?.from?.toLocaleDateString()}_${date?.to?.toLocaleDateString()}`,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -95,7 +94,7 @@ export const CouponCountProvider = ({
   }
 
   return (
-    <CouponCountContext.Provider value={{ CouponsCount }}>
+    <CouponCountContext.Provider {...props} value={{ CouponsCount }}>
       {children}
     </CouponCountContext.Provider>
   );

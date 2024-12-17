@@ -29,7 +29,6 @@ import { format } from 'date-fns';
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
-import { DateRange } from 'react-day-picker';
 import { CouponContext, CouponProvider } from '@/utils/CouponProvider';
 import {
   CouponCountContext,
@@ -39,6 +38,9 @@ import { TopBar } from '@/components/TopBar';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
+import { useDebouncedCallback } from 'use-debounce';
+import { DateRangeContext, DateRangeProvider } from '@/utils/DateRangeProvider';
+import { FullPageLoader } from '@/components/FullPageLoader';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardWrapperComponent,
@@ -106,31 +108,24 @@ const columns: ColumnDef<MealRecord>[] = [
   },
 ];
 
-interface RouteComponentProps {
-  setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
-  date: DateRange | undefined;
-}
-
 function DashboardWrapperComponent() {
-  const [date, setDate] = useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(),
-  });
   return (
-    <CouponProvider date={date}>
-      <CouponCountProvider date={date}>
-        <DashboardComponent setDate={setDate} date={date} />
-      </CouponCountProvider>
-    </CouponProvider>
+    <DateRangeProvider>
+      <CouponProvider>
+        <CouponCountProvider>
+          <DashboardComponent key="dashboard" />
+        </CouponCountProvider>
+      </CouponProvider>
+    </DateRangeProvider>
   );
 }
 
-function DashboardComponent({ setDate, date }: RouteComponentProps) {
+function DashboardComponent() {
   const { currentUser, logout } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const [cards, setCards] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('today');
-
+  const { date, setDate, selectedValue, setSelectedValue } =
+    useContext(DateRangeContext);
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
@@ -176,7 +171,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
     return Array.from(entryMap.values());
   };
 
-  const { coupons } = useContext(CouponContext);
+  const { coupons, isLoading } = useContext(CouponContext);
   const { CouponsCount } = useContext(CouponCountContext);
   const [data, setData] = useState<MealRecord[]>([]);
 
@@ -191,45 +186,18 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
     const response = await getCouponType({});
     setCards(response.message);
   };
-  const setDateRange = () => {
-    if (selectedValue === 'today') {
-      setDate({
-        from: new Date(),
-        to: new Date(),
-      });
-    }
-    if (selectedValue === 'custom') {
-      setDate({
-        from: date?.from,
-        to: date?.to,
-      });
-    }
-    if (selectedValue === 'this_week') {
-      const date = new Date();
-      setDate({
-        from: new Date(
-          date.setDate(
-            date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1),
-          ),
-        ),
-        to: new Date(),
-      });
-    }
-    if (selectedValue === 'this_month') {
-      setDate({
-        from: new Date(2024, new Date().getMonth(), 1),
-        to: new Date(),
-      });
-    }
-  };
 
   useEffect(() => {
     fetchCouponTypes();
   }, []);
 
-  useEffect(() => {
-    setDateRange();
-  }, [selectedValue]);
+  // Create a debounced version of setDate
+  const debouncedSetCouponDate = useDebouncedCallback((selected) => {
+    setDate({
+      from: selected?.from,
+      to: selected?.to,
+    });
+  }, 300);
 
   const handleLogout = async () => {
     try {
@@ -246,6 +214,10 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
       console.error('Error during logout:', error);
     }
   };
+
+  if (isLoading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <div className="min-h-screen">
@@ -314,10 +286,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
                     selected={date}
                     onSelect={(selected) => {
                       console.log(selected);
-                      setDate({
-                        from: selected?.from,
-                        to: selected?.to,
-                      });
+                      debouncedSetCouponDate(selected);
                     }}
                     numberOfMonths={2}
                     className="p-2"
