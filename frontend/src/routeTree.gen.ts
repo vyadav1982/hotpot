@@ -16,6 +16,8 @@ import { Route as LoginImport } from './routes/login'
 import { Route as GuestImport } from './routes/guest'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as CouponImport } from './routes/coupon'
+import { Route as UsersUserUserIdImport } from './routes/users/user.$userId'
+import { Route as UsersHistoryUserIdImport } from './routes/users/history.$userId'
 
 // Create/Update Routes
 
@@ -46,6 +48,18 @@ const DashboardRoute = DashboardImport.update({
 const CouponRoute = CouponImport.update({
   id: '/coupon',
   path: '/coupon',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersUserUserIdRoute = UsersUserUserIdImport.update({
+  id: '/users/user/$userId',
+  path: '/users/user/$userId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UsersHistoryUserIdRoute = UsersHistoryUserIdImport.update({
+  id: '/users/history/$userId',
+  path: '/users/history/$userId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,6 +102,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServerImport
       parentRoute: typeof rootRoute
     }
+    '/users/history/$userId': {
+      id: '/users/history/$userId'
+      path: '/users/history/$userId'
+      fullPath: '/users/history/$userId'
+      preLoaderRoute: typeof UsersHistoryUserIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/users/user/$userId': {
+      id: '/users/user/$userId'
+      path: '/users/user/$userId'
+      fullPath: '/users/user/$userId'
+      preLoaderRoute: typeof UsersUserUserIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -99,6 +127,8 @@ export interface FileRoutesByFullPath {
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
+  '/users/history/$userId': typeof UsersHistoryUserIdRoute
+  '/users/user/$userId': typeof UsersUserUserIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -107,6 +137,8 @@ export interface FileRoutesByTo {
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
+  '/users/history/$userId': typeof UsersHistoryUserIdRoute
+  '/users/user/$userId': typeof UsersUserUserIdRoute
 }
 
 export interface FileRoutesById {
@@ -116,14 +148,38 @@ export interface FileRoutesById {
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
   '/server': typeof ServerRoute
+  '/users/history/$userId': typeof UsersHistoryUserIdRoute
+  '/users/user/$userId': typeof UsersUserUserIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
+  fullPaths:
+    | '/coupon'
+    | '/dashboard'
+    | '/guest'
+    | '/login'
+    | '/server'
+    | '/users/history/$userId'
+    | '/users/user/$userId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
-  id: '__root__' | '/coupon' | '/dashboard' | '/guest' | '/login' | '/server'
+  to:
+    | '/coupon'
+    | '/dashboard'
+    | '/guest'
+    | '/login'
+    | '/server'
+    | '/users/history/$userId'
+    | '/users/user/$userId'
+  id:
+    | '__root__'
+    | '/coupon'
+    | '/dashboard'
+    | '/guest'
+    | '/login'
+    | '/server'
+    | '/users/history/$userId'
+    | '/users/user/$userId'
   fileRoutesById: FileRoutesById
 }
 
@@ -133,6 +189,8 @@ export interface RootRouteChildren {
   GuestRoute: typeof GuestRoute
   LoginRoute: typeof LoginRoute
   ServerRoute: typeof ServerRoute
+  UsersHistoryUserIdRoute: typeof UsersHistoryUserIdRoute
+  UsersUserUserIdRoute: typeof UsersUserUserIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -141,6 +199,8 @@ const rootRouteChildren: RootRouteChildren = {
   GuestRoute: GuestRoute,
   LoginRoute: LoginRoute,
   ServerRoute: ServerRoute,
+  UsersHistoryUserIdRoute: UsersHistoryUserIdRoute,
+  UsersUserUserIdRoute: UsersUserUserIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -157,7 +217,9 @@ export const routeTree = rootRoute
         "/dashboard",
         "/guest",
         "/login",
-        "/server"
+        "/server",
+        "/users/history/$userId",
+        "/users/user/$userId"
       ]
     },
     "/coupon": {
@@ -174,6 +236,12 @@ export const routeTree = rootRoute
     },
     "/server": {
       "filePath": "server.tsx"
+    },
+    "/users/history/$userId": {
+      "filePath": "users/history.$userId.tsx"
+    },
+    "/users/user/$userId": {
+      "filePath": "users/user.$userId.tsx"
     }
   }
 }
