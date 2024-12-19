@@ -9,7 +9,7 @@ from frappe import _
 def get_coupon_type_list():
 	coupon_type_list = frappe.db.get_list(
 		"Hotpot Coupon Type",
-		fields=["name", "start_hour", "end_hour"],
+		fields=["name", "start_hour", "end_hour", "buffer_time"],
 		order_by="start_hour",
 	)
 	return coupon_type_list
