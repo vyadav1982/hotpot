@@ -73,7 +73,7 @@ export const InputField = ({
                 onClick={() => handleSelect(item)}
                 className="cursor-pointer px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#1d1b18]"
               >
-                  {item[labelField]}({item[valueField]})
+                  {item[labelField]} ({item[valueField]})
               </div>
             ))
           ) : (
