@@ -51,7 +51,6 @@ export const Route = createRootRouteWithContext<{
   component: () => (
     <>
       <App></App>
-      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-left" />}
     </>
   ),
   notFoundComponent: () => <PageNotFound />,
