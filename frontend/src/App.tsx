@@ -52,7 +52,6 @@ export default function App() {
             <div className="fixed bottom-3 right-8 z-50">
               <ThemeToggle />
             </div>
-            <Toaster />
             <Outlet />
             <GenericDialog />
           </DialogProvider>

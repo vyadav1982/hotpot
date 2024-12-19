@@ -50,15 +50,13 @@
    "default": "Today",
    "fieldname": "coupon_date",
    "fieldtype": "Date",
-   "label": "Coupon Date",
-   "read_only": 1
+   "label": "Coupon Date"
   },
   {
    "default": "Now",
    "fieldname": "coupon_time",
    "fieldtype": "Time",
-   "label": "Coupon Time",
-   "read_only": 1
+   "label": "Coupon Time"
   },
   {
    "fieldname": "served_by",
@@ -70,7 +68,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-05 05:18:46.173349",
+ "modified": "2024-12-16 12:20:31.306111",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",
@@ -93,5 +91,6 @@
  ],
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

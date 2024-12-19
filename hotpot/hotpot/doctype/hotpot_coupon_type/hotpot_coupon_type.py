@@ -14,6 +14,7 @@ class HotpotCouponType(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		buffer_time: DF.Int
 		end_hour: DF.Int
 		is_active: DF.Check
 		start_hour: DF.Int

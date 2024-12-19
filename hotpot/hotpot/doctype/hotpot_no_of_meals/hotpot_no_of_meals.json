@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-16 11:19:20.409441",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "no_of_meals"
+ ],
+ "fields": [
+  {
+   "fieldname": "no_of_meals",
+   "fieldtype": "Int",
+   "label": "No of Meals",
+   "non_negative": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-12-16 11:19:59.791996",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot No of Meals",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

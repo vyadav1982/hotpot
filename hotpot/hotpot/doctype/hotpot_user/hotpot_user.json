@@ -13,7 +13,8 @@
   "column_break_eopt",
   "is_active",
   "is_guest",
-  "guest_of"
+  "guest_of",
+  "coupon_count"
  ],
  "fields": [
   {
@@ -67,11 +68,17 @@
   {
    "fieldname": "column_break_eopt",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "coupon_count",
+   "fieldtype": "Int",
+   "label": "Coupon Count",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-09 05:45:26.351759",
+ "modified": "2024-12-18 17:03:43.145688",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
@@ -95,5 +102,6 @@
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": [],
- "title_field": "employee_name"
+ "title_field": "employee_name",
+ "track_changes": 1
 }

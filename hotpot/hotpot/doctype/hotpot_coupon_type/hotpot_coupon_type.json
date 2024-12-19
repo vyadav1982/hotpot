@@ -12,7 +12,8 @@
   "column_break_xohp",
   "end_hour",
   "column_break_qsue",
-  "is_active"
+  "is_active",
+  "buffer_time"
  ],
  "fields": [
   {
@@ -60,11 +61,17 @@
   {
    "fieldname": "column_break_qsue",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "2",
+   "fieldname": "buffer_time",
+   "fieldtype": "Int",
+   "label": "Buffer Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-09 04:57:16.136628",
+ "modified": "2024-12-17 14:09:30.213621",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon Type",
