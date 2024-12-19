@@ -46,13 +46,13 @@ export default function App() {
           provider: localStorageProvider,
         }}
         siteName={getSiteName()}
-        enableSocket={false}
       >
         <UserProvider>
           <DialogProvider>
-            <div className="absolute bottom-12 right-8">
+            <div className="fixed bottom-3 right-8 z-50">
               <ThemeToggle />
             </div>
+            <Toaster />
             <Outlet />
             <GenericDialog />
           </DialogProvider>
