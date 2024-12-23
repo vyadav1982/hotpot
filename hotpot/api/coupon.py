@@ -231,13 +231,13 @@ def get_past_coupon_list(params):
 	offset = (page - 1) * 10
 	# upto yesterday
 	query = """
-		select title,coupon_time,coupon_date,creation
+		select title,coupon_time,coupon_date,creation,name,emoji_reaction,feedback
 		from `tabHotpot Coupon`
 		where employee_id=%s and coupon_date<%s and coupon_date>=%s
 		order by coupon_date desc
 		limit %s offset %s
 	"""
-	print(query, (employee_id, to_date, from_date, 10, offset))
+	# print(query, (employee_id, to_date, from_date, 10, offset))
 	result = frappe.db.sql(query, (employee_id, to_date, from_date, 10, offset), as_dict=True)
 	return result
 
