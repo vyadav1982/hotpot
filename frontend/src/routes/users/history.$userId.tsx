@@ -2,28 +2,12 @@ import { Logo } from '@/components/Logo';
 import { TopBar } from '@/components/TopBar';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { useDialog } from '@/hooks/use-dialog';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { DateRangeContext, DateRangeProvider } from '@/utils/DateRangeProvider';
@@ -34,9 +18,10 @@ import {
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
 import { useContext, useState } from 'react';
 import { DateRange } from 'react-day-picker';
+import { useFrappeUpdateDoc } from 'frappe-react-sdk';
+import { useToast } from '@/hooks/use-toast';
 
 export const Route = createFileRoute('/users/history/$userId')({
   component: HistoryWrapperComponent,
@@ -68,6 +53,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
   const { showConfirmDialog } = useDialog();
   const { logout } = useContext(UserContext);
   const { previousCoupons, downcount } = useContext(PreviousCouponListContext);
+  const { toast } = useToast();
   const handleLogout = async () => {
     try {
       await showConfirmDialog({
@@ -82,6 +68,26 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
     } catch (error) {
       console.error('Error during logout:', error);
     }
+  };
+  const { updateDoc } = useFrappeUpdateDoc();
+  const handleFeedbackSubmit = ({ coupon, selectedEmoji, feedback }: any) => {
+    updateDoc('Hotpot Coupon', coupon.name, {
+      emoji_reaction: selectedEmoji,
+      feedback: feedback,
+    })
+      .then(() => {
+        toast({
+          title: 'Success',
+          description: 'Feedback submitted successfully.',
+        });
+      })
+      .catch(() => {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Error in submittin feedback.',
+        });
+      });
   };
   return (
     <div className="min-h-screen">
@@ -141,96 +147,58 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
             />
           </PopoverContent>
         </Popover>
-
-        <Table>
-          {previousCoupons && previousCoupons.length > 0 ? (
-            <TableCaption>A list of your Previous Coupons</TableCaption>
-          ) : (
-            <TableCaption>No Data at this moment.</TableCaption>
+        <div className=" grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {previousCoupons && previousCoupons.length === 0 && (
+            <div className="w-full text-center">
+              No previous coupons founds.
+            </div>
           )}
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Meal</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Generation Time</TableHead>
-              <TableHead>Coupon</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {previousCoupons.map((coupon, index) => (
-              <TableRow
-                key={
-                  coupon.coupon_time +
-                  '' +
-                  coupon.coupon_date +
-                  '' +
-                  coupon.title
+          {previousCoupons &&
+            previousCoupons.length > 0 &&
+            previousCoupons.map((coupon: any) => (
+              <PrevuousCouponCard
+                key={coupon?.coupon_time + coupon?.coupon_date + coupon.title}
+                coupon={coupon}
+                handleFeedbackSubmit={handleFeedbackSubmit}
+              />
+            ))}
+        </div>
+
+        {previousCoupons && previousCoupons.length > 0 && (
+          <div className="flex items-center  justify-between  py-4 ">
+            <div className="flex items-center justify-start space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (page - 1 < 1) {
+                    return;
+                  } else {
+                    setPage(page - 1);
+                  }
+                }}
+                disabled={page == 1}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage(page + 1)}
+                disabled={
+                  downcount == 0 ||
+                  (!!downcount && page === Math.ceil(downcount / 10))
                 }
               >
-                <TableCell className="font-medium">{coupon.title}</TableCell>
-                <TableCell>{coupon.coupon_date}</TableCell>
-                <TableCell>
-                  {coupon.coupon_time} ({coupon.creation.split(' ')[0]})
-                </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button>Show Coupon</Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-[250px]">
-                      <DialogHeader>
-                        <DialogTitle>{`${previousCoupons[index].title} ${previousCoupons[index].coupon_date}`}</DialogTitle>
-                        <DialogDescription>
-                          <QRCodeSVG
-                            value={`${previousCoupons[index].title}_${userId}_${previousCoupons[index].coupon_date}${previousCoupons[index].coupon_time}`}
-                            size={200}
-                            className="border-2 border-solid border-white"
-                          />
-                        </DialogDescription>
-                      </DialogHeader>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-      {previousCoupons && previousCoupons.length > 0 && (
-        <div className="flex items-center  justify-between  py-4">
-          <div className="flex items-center justify-start space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (page - 1 < 1) {
-                  return;
-                } else {
-                  setPage(page - 1);
-                }
-              }}
-              disabled={page == 1}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPage(page + 1)}
-              disabled={
-                downcount == 0 ||
-                (!!downcount && page === Math.ceil(downcount / 10))
-              }
-            >
-              Next
-            </Button>
-            <div>
-              Showing page {page} out of{' '}
-              {downcount && Math.ceil(downcount / 10)}
+                Next
+              </Button>
+              <div>
+                Page {page} out of {downcount && Math.ceil(downcount / 10)}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
