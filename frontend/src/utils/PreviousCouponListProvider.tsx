@@ -29,7 +29,7 @@ export const PreviousCouponListContext = createContext<{
 
 export type CouponFields = Pick<
   HotpotCoupon,
-  'title' | 'coupon_date' | 'coupon_time' | 'creation'
+  'title' | 'coupon_date' | 'coupon_time' | 'creation' | 'emoji_reaction' | 'feedback' | 'name'
 >;
 interface UpcomingCouponListProps extends PropsWithChildren {
   employee_id: string;
