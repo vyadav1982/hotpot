@@ -19,8 +19,8 @@ class HotpotCoupon(Document):
 		coupon_time: DF.Time | None
 		emoji_reaction: DF.Data | None
 		employee_id: DF.Link
+		feedback: DF.Data | None
 		served_by: DF.Link | None
-		suggestion: DF.Data | None
 		title: DF.Literal["Breakfast", "Lunch", "Evening Snack", "Dinner"]
 	# end: auto-generated types
 

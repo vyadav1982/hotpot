@@ -14,7 +14,7 @@
   "coupon_time",
   "served_by",
   "emoji_reaction",
-  "suggestion"
+  "feedback"
  ],
  "fields": [
   {
@@ -72,15 +72,15 @@
    "label": "Emoji Reaction"
   },
   {
-   "fieldname": "suggestion",
+   "fieldname": "feedback",
    "fieldtype": "Data",
-   "label": "Suggestion"
+   "label": "Feedback"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-20 12:45:45.591611",
+ "modified": "2024-12-23 13:07:39.860996",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",
