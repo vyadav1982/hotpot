@@ -12,7 +12,7 @@
  "is_hidden": 0,
  "label": "Hotpot Workspace",
  "links": [],
- "modified": "2024-12-09 14:41:22.814033",
+ "modified": "2024-12-20 12:56:05.953836",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Workspace",
@@ -50,6 +50,18 @@
    "label": "Hotpot Coupon Type",
    "link_to": "Hotpot Coupon Type",
    "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Hotpot Coupons History",
+   "link_to": "Hotpot Coupons History",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Hotpot No of Meals",
+   "link_to": "Hotpot No of Meals",
    "type": "DocType"
   }
  ],

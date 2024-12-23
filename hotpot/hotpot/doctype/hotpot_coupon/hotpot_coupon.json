@@ -12,7 +12,9 @@
   "title",
   "coupon_date",
   "coupon_time",
-  "served_by"
+  "served_by",
+  "emoji_reaction",
+  "suggestion"
  ],
  "fields": [
   {
@@ -63,12 +65,22 @@
    "fieldtype": "Link",
    "label": "Served By",
    "options": "User"
+  },
+  {
+   "fieldname": "emoji_reaction",
+   "fieldtype": "Data",
+   "label": "Emoji Reaction"
+  },
+  {
+   "fieldname": "suggestion",
+   "fieldtype": "Data",
+   "label": "Suggestion"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-16 12:20:31.306111",
+ "modified": "2024-12-20 12:45:45.591611",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",

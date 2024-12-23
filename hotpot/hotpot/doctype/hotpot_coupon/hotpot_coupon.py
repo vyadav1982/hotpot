@@ -17,8 +17,10 @@ class HotpotCoupon(Document):
 		amended_from: DF.Link | None
 		coupon_date: DF.Date | None
 		coupon_time: DF.Time | None
+		emoji_reaction: DF.Data | None
 		employee_id: DF.Link
 		served_by: DF.Link | None
+		suggestion: DF.Data | None
 		title: DF.Literal["Breakfast", "Lunch", "Evening Snack", "Dinner"]
 	# end: auto-generated types
 
