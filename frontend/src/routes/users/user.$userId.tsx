@@ -24,13 +24,7 @@ import {
   BadgeMinus,
   BadgePlus,
   CalendarIcon,
-  Eye,
-  Frown,
   Loader2,
-  Meh,
-  Send,
-  Smile,
-  SmilePlus,
   Wallet,
 } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
@@ -43,18 +37,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import {
   UpcomingCouponListContext,
   UpcomingCouponListProvider,
@@ -64,7 +48,6 @@ import {
   PreviousCouponListContext,
   PreviousCouponListProvider,
 } from '@/utils/PreviousCouponListProvider';
-import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
@@ -131,7 +114,6 @@ function UserComponent({
   const [token, setToken] = useState(0);
   const [couponHistory, setCouponHistory] = useState([]);
   const [activeTab, setActiveTab] = useState('generate_coupon');
-  const [selectedEmoji, setSelectedEmoji] = useState('');
   const { call: getCouponType } = useFrappePostCall(
     'hotpot.api.dashboard.get_coupon_type_list',
   );
@@ -282,15 +264,15 @@ function UserComponent({
       emoji_reaction: selectedEmoji,
       feedback: feedback,
     })
-      .then((message: string) => {
+      .then(() => {
         toast({
           title: 'Success',
           description: 'Feedback submitted successfully.',
         });
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
-          variant:'destructive',
+          variant: 'destructive',
           title: 'Error',
           description: 'Error in submittin feedback.',
         });
@@ -523,37 +505,35 @@ function UserComponent({
           </div>
           {upcomingCoupons && upcomingCoupons.length > 0 && (
             <div className="mx-4 mt-8 flex items-center justify-end space-x-4 ">
-              <div className='flex space-x-4'>
-                
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (upPage - 1 < 1) {
-                    return;
-                  } else {
-                    setUpPage(upPage - 1);
-                  }
-                }}
-                disabled={upPage == 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setUpPage(upPage + 1)}
-                disabled={
-                  upcount == 0 ||
-                  (!!upcount && upPage === Math.ceil(upcount / 10))
-                }
+              <div className="flex space-x-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    if (upPage - 1 < 1) {
+                      return;
+                    } else {
+                      setUpPage(upPage - 1);
+                    }
+                  }}
+                  disabled={upPage == 1}
                 >
-                Next
-              </Button>
-                </div>
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setUpPage(upPage + 1)}
+                  disabled={
+                    upcount == 0 ||
+                    (!!upcount && upPage === Math.ceil(upcount / 10))
+                  }
+                >
+                  Next
+                </Button>
+              </div>
               <div>
-                Page {upPage} out of{' '}
-                {upcount && Math.ceil(upcount / 10)}
+                Page {upPage} out of {upcount && Math.ceil(upcount / 10)}
               </div>
             </div>
           )}

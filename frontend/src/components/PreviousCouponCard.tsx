@@ -13,33 +13,32 @@ import { Button } from './ui/button';
 export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   const [selectedEmoji, setSelectedEmoji] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [feedbackPresent, setFeedbackPresent]  =useState(false);
-  const [isEditable,setIsEditable] = useState(true);
-  useEffect(()=>{
-    if(coupon.emoji_reaction!==null && coupon.emoji_reaction!==''){
+  const [feedbackPresent, setFeedbackPresent] = useState(false);
+  const [isEditable, setIsEditable] = useState(true);
+  useEffect(() => {
+    if (coupon.emoji_reaction !== null && coupon.emoji_reaction !== '') {
       setSelectedEmoji(coupon.emoji_reaction);
       setFeedbackPresent(true);
       setIsEditable(false);
     }
-    if(coupon.feedback!==null && coupon.feedback!==''){
+    if (coupon.feedback !== null && coupon.feedback !== '') {
       setFeedback(coupon.feedback);
       setFeedbackPresent(true);
       setIsEditable(false);
     }
-
-  },[coupon])
+  }, [coupon]);
   const handleEmojiClick = (emoji: any) => {
-    if(isEditable && emoji===selectedEmoji){
+    if (isEditable && emoji === selectedEmoji) {
       setSelectedEmoji('');
-      return ;
+      return;
     }
-    if(isEditable){
+    if (isEditable) {
       setSelectedEmoji(emoji);
     }
   };
 
   const handleFeedbackChange = (event: any) => {
-    if(isEditable){
+    if (isEditable) {
       setFeedback(event.target.value);
     }
   };
@@ -99,7 +98,13 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             value={feedback}
             onChange={handleFeedbackChange}
           />
-          <Button className="w-1/4" onClick={handleSubmit} disabled={feedback==='' && selectedEmoji==='' || feedbackPresent}>
+          <Button
+            className="w-1/4"
+            onClick={handleSubmit}
+            disabled={
+              (feedback === '' && selectedEmoji === '') || feedbackPresent
+            }
+          >
             Submit
           </Button>
         </div>
