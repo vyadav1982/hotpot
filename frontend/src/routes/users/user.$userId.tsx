@@ -64,6 +64,14 @@ import {
   PreviousCouponListProvider,
 } from '@/utils/PreviousCouponListProvider';
 import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Qr } from '@/components/Qr';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -267,6 +275,7 @@ function UserComponent({
       });
   };
   const { data } = useFrappeGetDoc('Hotpot User', userId);
+  console.log(userId);
   useEffect(() => {
     if (activeTab === 'see_transaction_history') {
       const fetchCouponHistory = async () => {
@@ -289,7 +298,7 @@ function UserComponent({
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className ="min-h-screen">
       <TopBar
         className="px-4 pt-3 sm:px-8"
         leftContent={
@@ -322,9 +331,7 @@ function UserComponent({
                   }`}
                 />
               </div>
-              <span className="text-lg font-semibold">
-                {token}
-              </span>
+              <span className="text-lg font-semibold">{token}</span>
             </div>
             <Button variant="destructive" onClick={handleLogout}>
               Logout
@@ -339,19 +346,19 @@ function UserComponent({
       >
         <TabsList>
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
-            Generate Coupons
+            Generate
           </TabsTrigger>
           <TabsTrigger value="upcoming_coupons" className="tabs-trigger">
-            Upcoming Coupons
+            Upcoming
           </TabsTrigger>
           <TabsTrigger
             value="previously_generated_coupons"
             className="tabs-trigger"
           >
-            Previously Generated Coupons
+            Previous
           </TabsTrigger>
           <TabsTrigger value="see_transaction_history" className="tabs-trigger">
-            Coupon History
+            Transactions
           </TabsTrigger>
         </TabsList>
 
@@ -441,9 +448,23 @@ function UserComponent({
         </TabsContent>
         <TabsContent
           value="upcoming_coupons"
-          className="tab-content rounded-lg p-4"
+          className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
         >
-          <Table>
+          {upcomingCoupons.map((coupon) => (
+            <Card
+              key={coupon.name}
+              className="transform shadow-md transition duration-200 ease-in-out hover:scale-105"
+            >
+              <CardHeader>
+                <CardTitle>{coupon.title}</CardTitle>
+                <CardDescription>{coupon.coupon_date}</CardDescription>
+              </CardHeader>
+              <CardContent className="flex justify-center blur-[1.5px]">
+                <Qr />
+              </CardContent>
+            </Card>
+          ))}
+          {/* <Table>
             {upcomingCoupons && upcomingCoupons.length > 0 ? (
               <TableCaption>A list of your Upcoming Coupons</TableCaption>
             ) : (
@@ -538,7 +559,7 @@ function UserComponent({
             <div>
               Showing page {upPage} out of {upcount && Math.ceil(upcount / 10)}
             </div>
-          </div>
+          </div> */}
         </TabsContent>
         <TabsContent
           value="previously_generated_coupons"
