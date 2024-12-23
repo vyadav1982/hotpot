@@ -16,6 +16,7 @@ import {
   useFrappeGetDoc,
   useFrappePostCall,
   useFrappePutCall,
+  useFrappeUpdateDoc,
 } from 'frappe-react-sdk';
 import {
   ArrowUpRight,
@@ -72,6 +73,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Qr } from '@/components/Qr';
+import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -274,8 +276,27 @@ function UserComponent({
         });
       });
   };
+  const { updateDoc } = useFrappeUpdateDoc();
+  const handleFeedbackSubmit = ({ coupon, selectedEmoji, feedback }: any) => {
+    updateDoc('Hotpot Coupon', coupon.name, {
+      emoji_reaction: selectedEmoji,
+      feedback: feedback,
+    })
+      .then((message: string) => {
+        toast({
+          title: 'Success',
+          description: 'Feedback submitted successfully.',
+        });
+      })
+      .catch((err) => {
+        toast({
+          variant:'destructive',
+          title: 'Error',
+          description: 'Error in submittin feedback.',
+        });
+      });
+  };
   const { data } = useFrappeGetDoc('Hotpot User', userId);
-  console.log(userId);
   useEffect(() => {
     if (activeTab === 'see_transaction_history') {
       const fetchCouponHistory = async () => {
@@ -298,7 +319,7 @@ function UserComponent({
   }, []);
 
   return (
-    <div className ="min-h-screen">
+    <div className="min-h-screen">
       <TopBar
         className="px-4 pt-3 sm:px-8"
         leftContent={
@@ -446,218 +467,127 @@ function UserComponent({
             </div>
           </div>
         </TabsContent>
-        <TabsContent
-          value="upcoming_coupons"
-          className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-        >
-          {upcomingCoupons.map((coupon) => (
-            <Card
-              key={coupon.name}
-              className="transform shadow-md transition duration-200 ease-in-out hover:scale-105"
-            >
-              <CardHeader>
-                <CardTitle>{coupon.title}</CardTitle>
-                <CardDescription>{coupon.coupon_date}</CardDescription>
-              </CardHeader>
-              <CardContent className="flex justify-center blur-[1.5px]">
-                <Qr />
-              </CardContent>
-            </Card>
-          ))}
-          {/* <Table>
-            {upcomingCoupons && upcomingCoupons.length > 0 ? (
-              <TableCaption>A list of your Upcoming Coupons</TableCaption>
-            ) : (
-              <TableCaption>No Data at this moment.</TableCaption>
+        <TabsContent value="upcoming_coupons">
+          <div className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {upcomingCoupons && upcomingCoupons.length === 0 && (
+              <div className="text-center">No upcoming coupons found.</div>
             )}
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Meal</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Generation Time</TableHead>
-                <TableHead>Coupon</TableHead>
-                <TableHead>Operation</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {upcomingCoupons.map((coupon, index) => (
-                <TableRow
-                  key={
-                    coupon.coupon_time +
-                    '' +
-                    coupon.coupon_date +
-                    '' +
-                    coupon.title
-                  }
-                >
-                  <TableCell className="font-medium">{coupon.title}</TableCell>
-                  <TableCell>{coupon.coupon_date}</TableCell>
-                  <TableCell>
-                    {coupon.coupon_time} ({coupon.creation.split(' ')[0]})
-                  </TableCell>
-                  <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button>
-                          <Eye />
-                          Show Coupon
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-[250px]">
-                        <DialogHeader>
-                          <DialogTitle>{`${upcomingCoupons[index].title} ${upcomingCoupons[index].coupon_date}`}</DialogTitle>
-                          <DialogDescription>
-                            <QRCodeSVG
-                              value={`${upcomingCoupons[index].title}_${userId}_${upcomingCoupons[index].coupon_date}${upcomingCoupons[index].coupon_time}`}
-                              size={200}
-                              className="border-2 border-solid border-white"
-                            />
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        <DialogFooter></DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => handleCancelMeal(upcomingCoupons[index])}
+            {upcomingCoupons &&
+              upcomingCoupons.length > 0 &&
+              upcomingCoupons.map((coupon, index) => (
+                <Dialog key={coupon.name}>
+                  <DialogTrigger asChild>
+                    <Card
+                      key={coupon.name}
+                      className="transform rounded-lg shadow-lg transition-transform duration-200 ease-in-out hover:scale-105"
                     >
-                      Cancel Meal
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                      <CardHeader>
+                        <CardTitle className="text-center text-lg font-medium">
+                          {coupon.title}
+                        </CardTitle>
+                        <CardDescription className="text-center text-sm">
+                          {coupon.coupon_date}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex justify-center p-4 blur-[1.5px]">
+                        <Qr />
+                      </CardContent>
+                    </Card>
+                  </DialogTrigger>
+                  <DialogContent className="mx-auto max-w-md rounded-lg p-6 shadow-lg">
+                    <DialogHeader>
+                      <DialogDescription className="text-center">
+                        <div className="mb-4 flex justify-center">
+                          <QRCodeSVG
+                            value={`${upcomingCoupons[index].title}_${userId}_${upcomingCoupons[index].coupon_date}${upcomingCoupons[index].coupon_time}`}
+                            size={200}
+                            className="rounded-lg border"
+                          />
+                        </div>
+                        <div className="flex justify-center">
+                          <Button
+                            onClick={() =>
+                              handleCancelMeal(upcomingCoupons[index])
+                            }
+                            className="w-[200px]"
+                          >
+                            Cancel Meal
+                          </Button>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter />
+                  </DialogContent>
+                </Dialog>
               ))}
-            </TableBody>
-          </Table>
-          <div className="flex items-center justify-start space-x-2 py-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (upPage - 1 < 1) {
-                  return;
-                } else {
-                  setUpPage(upPage - 1);
-                }
-              }}
-              disabled={upPage == 1}
-            >
-              Previous
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setUpPage(upPage + 1)}
-              disabled={
-                upcount == 0 ||
-                (!!upcount && upPage === Math.ceil(upcount / 10))
-              }
-            >
-              Next
-            </Button>
-            <div>
-              Showing page {upPage} out of {upcount && Math.ceil(upcount / 10)}
-            </div>
-          </div> */}
-        </TabsContent>
-        <TabsContent
-          value="previously_generated_coupons"
-          className="tab-content rounded-lg p-4"
-        >
-          <Table>
-            {previousCoupons && previousCoupons.length > 0 ? (
-              <TableCaption>
-                A list of your Previous Coupons(This month)
-              </TableCaption>
-            ) : (
-              <TableCaption>No Data at this moment.</TableCaption>
-            )}
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Meal</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Generation Time</TableHead>
-                <TableHead>Feedback</TableHead>
-                <TableHead>Suggestion</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {previousCoupons.map((coupon, index) => (
-                <TableRow
-                  key={
-                    coupon.coupon_time +
-                    '' +
-                    coupon.coupon_date +
-                    '' +
-                    coupon.title
+          </div>
+          {upcomingCoupons && upcomingCoupons.length > 0 && (
+            <div className="mx-4 mt-8 flex items-center justify-end space-x-4 ">
+              <div className='flex space-x-4'>
+                
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (upPage - 1 < 1) {
+                    return;
+                  } else {
+                    setUpPage(upPage - 1);
                   }
+                }}
+                disabled={upPage == 1}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setUpPage(upPage + 1)}
+                disabled={
+                  upcount == 0 ||
+                  (!!upcount && upPage === Math.ceil(upcount / 10))
+                }
                 >
-                  <TableCell className="font-medium">{coupon.title}</TableCell>
-                  <TableCell>{coupon.coupon_date}</TableCell>
-                  <TableCell>
-                    {coupon.coupon_time} ({coupon.creation.split(' ')[0]})
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-between ">
-                      <button
-                        className={`${selectedEmoji === `positive_${index}` ? 'rounded-full bg-green-300' : 'rounded-full p-1  transition hover:bg-green-300'}`}
-                        title="Loved it!"
-                        onClick={() => setSelectedEmoji(`positive_${index}`)}
-                        // onClick={() => handleFeedback('positive')}
-                      >
-                        <SmilePlus />
-                      </button>
-                      <button
-                        className={`${selectedEmoji === `good_${index}` ? 'rounded-full bg-yellow-300' : 'rounded-full p-1 transition hover:bg-yellow-300'}`}
-                        title="It was good"
-                        onClick={() => setSelectedEmoji(`good_${index}`)}
-                        // onClick={() => handleFeedback('neutral')}
-                      >
-                        <Smile />
-                      </button>
-                      <button
-                        className={`${selectedEmoji === `okay_${index}` ? 'rounded-full bg-orange-300' : 'rounded-full p-1 transition hover:bg-orange-300'}`}
-                        title="It was Okay"
-                        onClick={() => setSelectedEmoji(`okay_${index}`)}
-                        // onClick={() => handleFeedback('negative')}
-                      >
-                        <Meh />
-                      </button>
-                      <button
-                        className={`${selectedEmoji === `negative_${index}` ? 'rounded-full bg-red-300' : 'rounded-full p-1 transition hover:bg-red-300'}`}
-                        title="Didn't like it"
-                        onClick={() => setSelectedEmoji(`negative_${index}`)}
-                        // onClick={() => handleFeedback('negative')}
-                      >
-                        <Frown />
-                      </button>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-between">
-                      <Input
-                        type="text"
-                        placeholder="Feedback"
-                        title="Type your feedback here"
-                        className="w-[70%]"
-                      />
-                      <Button
-                        className="ml-2 transition-all duration-300 "
-                        title="Send Feedback"
-                        // onClick={() => handleSubmitFeedback(coupon)}
-                      >
-                        <Send /> Feedback
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
+                Next
+              </Button>
+                </div>
+              <div>
+                Page {upPage} out of{' '}
+                {upcount && Math.ceil(upcount / 10)}
+              </div>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="previously_generated_coupons">
+          <div className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {previousCoupons && previousCoupons.length === 0 && (
+              <div className="w-full text-center">
+                No previous coupons founds.
+              </div>
+            )}
+            {previousCoupons &&
+              previousCoupons.length > 0 &&
+              previousCoupons.map((coupon: any) => (
+                <PrevuousCouponCard
+                  key={coupon?.coupon_time + coupon?.coupon_date + coupon.title}
+                  coupon={coupon}
+                  handleFeedbackSubmit={handleFeedbackSubmit}
+                />
               ))}
-            </TableBody>
-          </Table>
+          </div>
           {previousCoupons && previousCoupons.length > 0 && (
-            <div className="flex items-center  justify-between  py-4">
-              <div className="flex items-center justify-start space-x-2">
+            // mx-4 mt-8 flex items-center justify-end space-x-4
+            <div className="mx-4 mt-8  flex  items-center justify-between">
+              <div>
+                <Link to={`/users/history/${userId}`}>
+                  <Button>
+                    Flashback
+                    <ArrowUpRight />
+                  </Button>
+                </Link>
+              </div>
+              <div className="flex space-x-4">
                 <Button
                   variant="outline"
                   size="sm"
@@ -684,17 +614,9 @@ function UserComponent({
                   Next
                 </Button>
                 <div>
-                  Showing page {downPage} out of{' '}
+                  Page {downPage} out of{' '}
                   {downcount && Math.ceil(downcount / 10)}
                 </div>
-              </div>
-              <div>
-                <Link to={`/users/history/${userId}`}>
-                  <Button>
-                    Back in Time
-                    <ArrowUpRight />
-                  </Button>
-                </Link>
               </div>
             </div>
           )}
