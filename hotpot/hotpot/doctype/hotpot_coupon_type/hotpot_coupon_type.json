@@ -13,7 +13,8 @@
   "end_hour",
   "column_break_qsue",
   "is_active",
-  "buffer_time"
+  "buffer_time",
+  "value"
  ],
  "fields": [
   {
@@ -67,11 +68,17 @@
    "fieldname": "buffer_time",
    "fieldtype": "Int",
    "label": "Buffer Time"
+  },
+  {
+   "fieldname": "value",
+   "fieldtype": "Int",
+   "label": "Value",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-17 14:09:30.213621",
+ "modified": "2024-12-24 12:15:53.824489",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon Type",

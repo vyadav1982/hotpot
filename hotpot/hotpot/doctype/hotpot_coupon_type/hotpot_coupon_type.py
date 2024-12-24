@@ -19,6 +19,7 @@ class HotpotCouponType(Document):
 		is_active: DF.Check
 		start_hour: DF.Int
 		title: DF.Data
+		value: DF.Int
 	# end: auto-generated types
 
 	def validate(self):
