@@ -173,6 +173,8 @@ function UserComponent({
         variant: 'destructive',
         title: 'Warning',
         description: 'Please select a date range.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
       });
       return;
     }
@@ -188,26 +190,24 @@ function UserComponent({
 
       const count = response.message.pop();
       setToken(count);
-      response.message.length >= 1 &&
+      if (response.message.length >= 1) {
         response.message.forEach((msg: string) => {
           toast({
             variant: 'destructive',
             title: `Error`,
-            description: msg,
+            description: msg.slice(0, -8),
+            className:
+              'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
           });
         });
-      // if (response.message.length >= 1) {
-      //   toast({
-      //     variant: 'destructive',
-      //     title: `Error`,
-      //     description: 'Some Coupons might not be generated.',
-      //   });
-      // } else {
-      //   toast({
-      //     title: 'Success',
-      //     description: `Coupons have been generated successfully.`,
-      //   });
-      // }
+      } else {
+        toast({
+          title: 'Success',
+          description: `Coupons have been generated successfully.`,
+          className:
+            'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+        });
+      }
     } catch (error) {
       console.error('Error Generating coupon:', couponError);
     }
@@ -229,6 +229,8 @@ function UserComponent({
         variant: 'destructive',
         title: 'Error',
         description: 'Cannot cancel the coupon at this moment.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
       });
       return;
     }
@@ -250,11 +252,15 @@ function UserComponent({
               variant: 'destructive',
               title: 'Error',
               description: 'Failed to update the coupon count.',
+              className:
+                'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
             });
           });
         toast({
           title: 'Success',
           description: 'Coupon has been cancelled successfully.',
+          className:
+            'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       })
       .catch(() => {
@@ -262,6 +268,8 @@ function UserComponent({
           variant: 'destructive',
           title: 'Error',
           description: 'Failed to cancel the coupon.',
+          className:
+            'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       });
   };
@@ -280,6 +288,8 @@ function UserComponent({
           toast({
             title: 'Success',
             description: 'Feedback submitted successfully.',
+            className:
+              'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
           });
           resolve('submitted');
         })
@@ -287,7 +297,9 @@ function UserComponent({
           toast({
             variant: 'destructive',
             title: 'Error',
-            description: 'Error in submittin feedback.',
+            description: 'Error in submitting feedback.',
+            className:
+              'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
           });
           reject('error');
         });
@@ -570,15 +582,15 @@ function UserComponent({
           {previousCoupons && previousCoupons.length > 0 && (
             // mx-4 mt-8 flex items-center justify-end space-x-4
             <div className="mx-4 mt-8  flex  items-center justify-between">
-              <div>
+              {/* <div className="flex"> */}
+              <div className="flex space-x-4">
                 <Link to={`/users/history/${userId}`}>
-                  <Button>
+                  <Button size="sm" variant="outline">
                     Flashback
                     <ArrowUpRight />
                   </Button>
                 </Link>
-              </div>
-              <div className="flex space-x-4">
+                {/* </div> */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -605,8 +617,7 @@ function UserComponent({
                   Next
                 </Button>
                 <div>
-                  Page {downPage} out of{' '}
-                  {downcount && Math.ceil(downcount / 10)}
+                  {downPage} - {downcount && Math.ceil(downcount / 10)}
                 </div>
               </div>
             </div>

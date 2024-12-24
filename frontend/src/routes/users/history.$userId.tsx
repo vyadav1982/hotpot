@@ -79,6 +79,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
         toast({
           title: 'Success',
           description: 'Feedback submitted successfully.',
+          className: 'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       })
       .catch(() => {
@@ -86,6 +87,8 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
           variant: 'destructive',
           title: 'Error',
           description: 'Error in submittin feedback.',
+          className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       });
   };
