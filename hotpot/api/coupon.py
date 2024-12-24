@@ -124,8 +124,8 @@ def create_coupon(params):
 	to_date = datetime.strptime(to_date, "%Y-%m-%d")
 	coupon_count = coupon_count[0].get("coupon_count")
 	day_difference = (to_date - from_date).days
-	if (day_difference) * len(meal_type) > coupon_count:
-		return {"message": "Not enough coupons available for this employee"}
+	# if (day_difference) * len(meal_type) > coupon_count:
+	# 	return {"message": "Not enough coupons available for this employee"}
 	query = f"""
 		select title,start_hour
 		from `tabHotpot Coupon Type`
@@ -137,6 +137,11 @@ def create_coupon(params):
 		for meal in meal_type:
 			print("++" * 10, x)
 			print(from_date + timedelta(days=x), x)
+			db_meal_value = frappe.db.get_value("Hotpot Coupon Type", meal, "value")
+			#check coupon_count and value first
+			if (coupon_count < db_meal_value):
+				output.append(f"Insufficient coupons for {meal} on {from_date + timedelta(days=x)}")
+				continue
 			# booking in between buffer time
 			if (
 				from_date + timedelta(days=x)
@@ -167,7 +172,7 @@ def create_coupon(params):
 					meal + "_" + employee_id + "_" + (from_date + timedelta(days=x)).strftime("%Y-%m-%d"),
 				):
 					coupon.save(ignore_permissions=True)
-					coupon_count -= 1
+					coupon_count -= db_meal_value
 					doc = frappe.new_doc("Hotpot Coupons History")
 					doc.employee_id = employee_id
 					doc.type = "Creation"
