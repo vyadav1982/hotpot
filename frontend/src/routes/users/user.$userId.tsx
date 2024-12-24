@@ -57,6 +57,8 @@ import {
 } from '@/components/ui/card';
 import { Qr } from '@/components/Qr';
 import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
+import { ConfirmMealCancelButtons } from '@/components/ConfirmMealCancelButtons';
+import { DialogTitle } from '@radix-ui/react-dialog';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -186,26 +188,31 @@ function UserComponent({
 
       const count = response.message.pop();
       setToken(count);
-      if (response.message.length >= 1) {
-        toast({
-          variant: 'destructive',
-          title: `Error`,
-          description: 'Some Coupons might not be generated.',
+      response.message.length >= 1 &&
+        response.message.forEach((msg: string) => {
+          toast({
+            variant: 'destructive',
+            title: `Error`,
+            description: msg,
+          });
         });
-      } else {
-        toast({
-          title: 'Success',
-          description: `Coupons have been generated successfully.`,
-        });
-      }
+      // if (response.message.length >= 1) {
+      //   toast({
+      //     variant: 'destructive',
+      //     title: `Error`,
+      //     description: 'Some Coupons might not be generated.',
+      //   });
+      // } else {
+      //   toast({
+      //     title: 'Success',
+      //     description: `Coupons have been generated successfully.`,
+      //   });
+      // }
     } catch (error) {
       console.error('Error Generating coupon:', couponError);
     }
   };
   const handleCancelMeal = async (cancelMeal: any) => {
-    if (!window.confirm('Are you sure you want to cancel this coupon?')) {
-      return;
-    }
     const currentMealBuffer: any = cards.filter(
       (c: any) => c.name == cancelMeal.title,
     );
@@ -259,24 +266,32 @@ function UserComponent({
       });
   };
   const { updateDoc } = useFrappeUpdateDoc();
-  const handleFeedbackSubmit = ({ coupon, selectedEmoji, feedback }: any) => {
-    updateDoc('Hotpot Coupon', coupon.name, {
-      emoji_reaction: selectedEmoji,
-      feedback: feedback,
-    })
-      .then(() => {
-        toast({
-          title: 'Success',
-          description: 'Feedback submitted successfully.',
-        });
+  const handleFeedbackSubmit = ({
+    coupon,
+    selectedEmoji,
+    feedback,
+  }: any): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      updateDoc('Hotpot Coupon', coupon.name, {
+        emoji_reaction: selectedEmoji,
+        feedback: feedback,
       })
-      .catch(() => {
-        toast({
-          variant: 'destructive',
-          title: 'Error',
-          description: 'Error in submittin feedback.',
+        .then(() => {
+          toast({
+            title: 'Success',
+            description: 'Feedback submitted successfully.',
+          });
+          resolve('submitted');
+        })
+        .catch(() => {
+          toast({
+            variant: 'destructive',
+            title: 'Error',
+            description: 'Error in submittin feedback.',
+          });
+          reject('error');
         });
-      });
+    });
   };
   const { data } = useFrappeGetDoc('Hotpot User', userId);
   useEffect(() => {
@@ -347,7 +362,7 @@ function UserComponent({
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList>
+        <TabsList className="flex items-start justify-center">
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
             Generate
           </TabsTrigger>
@@ -358,7 +373,7 @@ function UserComponent({
             value="previously_generated_coupons"
             className="tabs-trigger"
           >
-            Previous
+            Feedback
           </TabsTrigger>
           <TabsTrigger value="see_transaction_history" className="tabs-trigger">
             Transactions
@@ -370,7 +385,7 @@ function UserComponent({
           className="tab-content rounded-lg  p-4"
         >
           <div className="flex flex-col gap-6 rounded-lg p-6 shadow-lg">
-            <div className="flex items-center  justify-between">
+            <div className="flex items-center  justify-center">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -450,7 +465,7 @@ function UserComponent({
           </div>
         </TabsContent>
         <TabsContent value="upcoming_coupons">
-          <div className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-4 grid grid-cols-1 gap-6 p-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {upcomingCoupons && upcomingCoupons.length === 0 && (
               <div className="text-center">No upcoming coupons found.</div>
             )}
@@ -461,9 +476,9 @@ function UserComponent({
                   <DialogTrigger asChild>
                     <Card
                       key={coupon.name}
-                      className="transform rounded-lg shadow-lg transition-transform duration-200 ease-in-out hover:scale-105"
+                      className="transform rounded-lg shadow-lg transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
                     >
-                      <CardHeader>
+                      <CardHeader className="p-0 pt-4">
                         <CardTitle className="text-center text-lg font-medium">
                           {coupon.title}
                         </CardTitle>
@@ -471,31 +486,27 @@ function UserComponent({
                           {coupon.coupon_date}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="flex justify-center p-4 blur-[1.5px]">
+                      <CardContent className="flex justify-center p-0 blur-[1.5px]">
                         <Qr />
                       </CardContent>
                     </Card>
                   </DialogTrigger>
                   <DialogContent className="mx-auto max-w-md rounded-lg p-6 shadow-lg">
+                    <DialogTitle></DialogTitle>
                     <DialogHeader>
                       <DialogDescription className="text-center">
-                        <div className="mb-4 flex justify-center">
+                        <div className="mb-2 flex justify-center">
                           <QRCodeSVG
                             value={`${upcomingCoupons[index].title}_${userId}_${upcomingCoupons[index].coupon_date}${upcomingCoupons[index].coupon_time}`}
                             size={200}
                             className="rounded-lg border"
                           />
                         </div>
-                        <div className="flex justify-center">
-                          <Button
-                            onClick={() =>
-                              handleCancelMeal(upcomingCoupons[index])
-                            }
-                            className="w-[200px]"
-                          >
-                            Cancel Meal
-                          </Button>
-                        </div>
+                        <ConfirmMealCancelButtons
+                          handleCancel={() =>
+                            handleCancelMeal(upcomingCoupons[index])
+                          }
+                        />
                       </DialogDescription>
                     </DialogHeader>
                     <DialogFooter />
@@ -540,7 +551,7 @@ function UserComponent({
         </TabsContent>
 
         <TabsContent value="previously_generated_coupons">
-          <div className="mx-4 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mx-4 grid grid-cols-1 gap-6 p-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {previousCoupons && previousCoupons.length === 0 && (
               <div className="w-full text-center">
                 No previous coupons founds.
@@ -603,7 +614,7 @@ function UserComponent({
         </TabsContent>
         <TabsContent
           value="see_transaction_history"
-          className="tab-content rounded-lg p-4"
+          className="tab-content rounded-lg p-4 md:p-8"
         >
           <div className="relative border-l-2 border-gray-300 pl-4">
             {couponHistory.length === 0 && (
