@@ -11,7 +11,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 
 export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
-  const [selectedEmoji, setSelectedEmoji] = useState('');
+  const [selectedEmoji, setSelectedEmoji] = useState('It was good');
   const [feedback, setFeedback] = useState('');
   const [feedbackPresent, setFeedbackPresent] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
@@ -43,8 +43,12 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
     }
   };
 
-  const handleSubmit = () => {
-    handleFeedbackSubmit({ coupon, selectedEmoji, feedback });
+  const handleSubmit = async () => {
+    const res = await handleFeedbackSubmit({ coupon, selectedEmoji, feedback });
+    if (res === 'submitted') {
+      setIsEditable(false);
+      setFeedbackPresent(true);
+    }
   };
 
   return (
@@ -61,7 +65,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
         <div className="flex w-full justify-around">
           <div title="Loved it!" onClick={() => handleEmojiClick('Loved it!')}>
             <SmilePlus
-              className={`rounded-full hover:bg-green-400 ${selectedEmoji === 'Loved it!' && 'bg-green-400'}`}
+              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-green-400'} ${selectedEmoji === 'Loved it!' && 'bg-green-400'}`}
             />
           </div>
           <div
@@ -69,7 +73,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick('It was good')}
           >
             <Smile
-              className={`rounded-full hover:bg-orange-400 ${selectedEmoji === 'It was good' && 'bg-orange-400'}`}
+              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-orange-400'} ${selectedEmoji === 'It was good' && 'bg-orange-400'}`}
             />
           </div>
           <div
@@ -77,7 +81,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick('It was Okay')}
           >
             <Meh
-              className={`rounded-full hover:bg-yellow-400 ${selectedEmoji === 'It was Okay' && 'bg-yellow-400'}`}
+              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-yellow-400'} ${selectedEmoji === 'It was Okay' && 'bg-yellow-400'}`}
             />
           </div>
           <div
@@ -85,7 +89,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick("Didn't like it")}
           >
             <Frown
-              className={`rounded-full hover:bg-red-400 ${selectedEmoji === "Didn't like it" && 'bg-red-400'}`}
+              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-red-400'} ${selectedEmoji === "Didn't like it" && 'bg-red-400'}`}
             />
           </div>
         </div>
@@ -97,6 +101,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             className="w-3/4"
             value={feedback}
             onChange={handleFeedbackChange}
+            disabled={feedbackPresent}
           />
           <Button
             className="w-1/4"
