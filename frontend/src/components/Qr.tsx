@@ -15,8 +15,8 @@ export const Qr: React.FC<QrAttributes> = ({
       xmlns="http://www.w3.org/2000/svg"
       viewBox="-32 -32 128.00 128.00"
       xmlSpace="preserve"
-      width="125px"
-      height="125px"
+      width="250px"
+      height="250px"
       stroke="currentcolor"
       className={className}
     >

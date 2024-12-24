@@ -109,7 +109,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
           </div>
         }
       />
-      <div className="mx-4 my-4  flex  flex-col items-start justify-between gap-6  rounded-lg  p-4 shadow-lg">
+      <div className="mx-4 my-4  flex  flex-col items-start justify-between gap-6  rounded-lg  p-4 ">
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -166,7 +166,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
 
         {previousCoupons && previousCoupons.length > 0 && (
           <div className="flex items-center  justify-between  py-4 ">
-            <div className="flex items-center justify-start space-x-2">
+            <div className="flex items-center justify-end space-x-2">
               <Button
                 variant="outline"
                 size="sm"
