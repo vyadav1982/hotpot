@@ -38,9 +38,6 @@ export const UpcomingCouponListProvider = ({
   upPage,
 }: UpcomingCouponListProps) => {
   const { mutate: globalMutate } = useSWRConfig();
-  useEffect(() => {
-    mutate();
-  }, [upPage, employee_id]);
   const {
     data,
     error: upcomingCouponsError,
@@ -54,7 +51,7 @@ export const UpcomingCouponListProvider = ({
         page: upPage,
       },
     },
-    'hotpot.api.coupon.get_upcoming_coupon_list',
+    `hotpot.api.coupon.get_upcoming_coupon_list${employee_id}${upPage}`,
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -81,7 +78,7 @@ export const UpcomingCouponListProvider = ({
       timeout = setTimeout(() => {
         mutate();
         // Mutate the user list as well ??
-        globalMutate(`hotpot.api.upcomingCoupons.get_list`);
+        globalMutate(`hotpot.api.coupon.get_upcoming_coupon_list`);
         setNewUpdatesAvailable(false);
       }, 1000); // 1 second
     }
@@ -93,6 +90,7 @@ export const UpcomingCouponListProvider = ({
    * Instead, throttle this - wait for all events to subside
    */
   useFrappeDocTypeEventListener('Hotpot User', () => {
+    mutate();
     setNewUpdatesAvailable(true);
   });
 
