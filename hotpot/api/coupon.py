@@ -140,7 +140,7 @@ def create_coupon(params):
 			db_meal_value = frappe.db.get_value("Hotpot Coupon Type", meal, "value")
 			#check coupon_count and value first
 			if (coupon_count < db_meal_value):
-				output.append(f"Insufficient coupons for {meal} on {from_date + timedelta(days=x)}")
+				output.append(f"Insufficient coupons for {meal} on {(from_date + timedelta(days=x)).strftime('%Y-%m-%d')}")
 				continue
 			# booking in between buffer time
 			if (
@@ -149,7 +149,7 @@ def create_coupon(params):
 				and abs((current_time.hour * 100 + current_time.minute) - (meal_types[meal]))
 				<= (frappe.db.get_value("Hotpot Coupon Type", meal, "buffer_time")) * 100
 			):
-				output.append(f"Very less time left for {meal} on {from_date}")
+				output.append(f"Very less time left for {meal} on {(from_date + timedelta(days=x)).strftime('%Y-%m-%d')}")
 				continue
 			# booking in meal time or after meal time
 			if not (
