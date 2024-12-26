@@ -91,7 +91,6 @@ function UserWrapperComponent() {
           setUpPage={setUpPage}
           downPage={downPage}
           setDownPage={setDownPage}
-          key="userComponent"
         />
       </PreviousCouponListProvider>
     </UpcomingCouponListProvider>
@@ -195,7 +194,7 @@ function UserComponent({
           toast({
             variant: 'destructive',
             title: `Error`,
-            description: msg.slice(0, -8),
+            description: msg,
             className:
               'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
           });
@@ -433,7 +432,8 @@ function UserComponent({
                       date <=
                         new Date(
                           new Date().setDate(new Date().getDate() - 1),
-                        ) ||
+                        ) 
+                        ||
                       date >
                         new Date(
                           new Date().getFullYear(),
@@ -527,8 +527,8 @@ function UserComponent({
               ))}
           </div>
           {upcomingCoupons && upcomingCoupons.length > 0 && (
-            <div className="mx-4 mt-8 flex items-center justify-end space-x-4 ">
-              <div className="flex space-x-4">
+            <div className="flex items-center  justify-center  py-4 ">
+              <div className="flex items-center gap-4  py-4 ">
                 <Button
                   variant="outline"
                   size="sm"
@@ -554,9 +554,9 @@ function UserComponent({
                 >
                   Next
                 </Button>
-              </div>
-              <div>
-                Page {upPage} out of {upcount && Math.ceil(upcount / 10)}
+                <div>
+                  Page {upPage} - {upcount && Math.ceil(upcount / 10)}
+                </div>
               </div>
             </div>
           )}
@@ -580,18 +580,11 @@ function UserComponent({
               ))}
           </div>
           {previousCoupons && previousCoupons.length > 0 && (
-            // mx-4 mt-8 flex items-center justify-end space-x-4
-            <div className="mx-4 mt-8  flex  items-center justify-between">
-              {/* <div className="flex"> */}
-              <div className="flex space-x-4">
-                <Link to={`/users/history/${userId}`}>
-                  <Button size="sm" variant="outline">
-                    Flashback
-                    <ArrowUpRight />
-                  </Button>
-                </Link>
-                {/* </div> */}
+            <div className="flex flex-col items-center  justify-center gap-4 py-8">
+              {/* <div className="flex items-center gap-4  py-4 "> */}
+              <div className="flex items-center gap-4">
                 <Button
+                  className="disabled:cursor-crosshair"
                   variant="outline"
                   size="sm"
                   onClick={() => {
@@ -617,10 +610,19 @@ function UserComponent({
                   Next
                 </Button>
                 <div>
-                  {downPage} - {downcount && Math.ceil(downcount / 10)}
+                  Page {downPage} - {downcount && Math.ceil(downcount / 10)}
                 </div>
               </div>
+              <div>
+                <Link to={`/users/history/${userId}`}>
+                  <Button size="sm" variant="outline">
+                    Flashback
+                    <ArrowUpRight />
+                  </Button>
+                </Link>
+              </div>
             </div>
+            // </div>
           )}
         </TabsContent>
         <TabsContent

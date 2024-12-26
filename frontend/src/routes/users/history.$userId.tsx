@@ -79,7 +79,8 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
         toast({
           title: 'Success',
           description: 'Feedback submitted successfully.',
-          className: 'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+          className:
+            'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       })
       .catch(() => {
@@ -88,7 +89,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
           title: 'Error',
           description: 'Error in submittin feedback.',
           className:
-          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+            'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
       });
   };
@@ -112,7 +113,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
           </div>
         }
       />
-      <div className="mx-4 my-4  flex  flex-col items-start justify-between gap-6  rounded-lg  p-4 ">
+      <div className="mx-4 my-4  flex  flex-col items-center justify-center gap-6  rounded-lg  p-4 ">
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -169,7 +170,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
 
         {previousCoupons && previousCoupons.length > 0 && (
           <div className="flex items-center  justify-between  py-4 ">
-            <div className="flex items-center justify-end space-x-2">
+            <div className="flex items-center  gap-4  py-4 ">
               <Button
                 variant="outline"
                 size="sm"
@@ -196,7 +197,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
                 Next
               </Button>
               <div>
-                Page {page} out of {downcount && Math.ceil(downcount / 10)}
+                Page {page} - {downcount && Math.ceil(downcount / 10)}
               </div>
             </div>
           </div>
