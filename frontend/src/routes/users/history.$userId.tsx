@@ -22,6 +22,7 @@ import { useContext, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { useFrappeUpdateDoc } from 'frappe-react-sdk';
 import { useToast } from '@/hooks/use-toast';
+import CardPagination from '@/components/CardPagination';
 
 export const Route = createFileRoute('/users/history/$userId')({
   component: HistoryWrapperComponent,
@@ -169,38 +170,43 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
         </div>
 
         {previousCoupons && previousCoupons.length > 0 && (
-          <div className="flex items-center  justify-between  py-4 ">
-            <div className="flex items-center  gap-4  py-4 ">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (page - 1 < 1) {
-                    return;
-                  } else {
-                    setPage(page - 1);
-                  }
-                }}
-                disabled={page == 1}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setPage(page + 1)}
-                disabled={
-                  downcount == 0 ||
-                  (!!downcount && page === Math.ceil(downcount / 10))
-                }
-              >
-                Next
-              </Button>
-              <div>
-                Page {page} - {downcount && Math.ceil(downcount / 10)}
-              </div>
-            </div>
-          </div>
+          <CardPagination
+            page={page}
+            totalPages={downcount}
+            onPageChange={setPage}
+          />
+          // <div className="flex items-center  justify-between  py-4 ">
+          //   <div className="flex items-center  gap-4  py-4 ">
+          //     <Button
+          //       variant="outline"
+          //       size="sm"
+          //       onClick={() => {
+          //         if (page - 1 < 1) {
+          //           return;
+          //         } else {
+          //           setPage(page - 1);
+          //         }
+          //       }}
+          //       disabled={page == 1}
+          //     >
+          //       Previous
+          //     </Button>
+          //     <Button
+          //       variant="outline"
+          //       size="sm"
+          //       onClick={() => setPage(page + 1)}
+          //       disabled={
+          //         downcount == 0 ||
+          //         (!!downcount && page === Math.ceil(downcount / 10))
+          //       }
+          //     >
+          //       Next
+          //     </Button>
+          //     <div>
+          //       Page {page} - {downcount && Math.ceil(downcount / 10)}
+          //     </div>
+          //   </div>
+          // </div>
         )}
       </div>
     </div>
