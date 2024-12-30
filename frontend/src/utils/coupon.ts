@@ -38,7 +38,7 @@ export function coupon_from_info(
 
   // Extract the date part (assuming it's always in YYYY-MM-DD format)
   const coupon_date = parts[2].slice(0, 10);
-  const coupon_time = parts[2].slice(11);
+  const coupon_time = parts[2].slice(10);
 
   // Combine the parts
   return {
