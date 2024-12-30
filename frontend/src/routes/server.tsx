@@ -380,43 +380,40 @@ function ServerPage() {
                           </Alert>
                         );
                       }
-                      () => {
-                        setDisableServe(false);
-                        return (
-                          <>
-                            <Alert className="bg-green-300">
-                              <AlertTitle className="flex items-center gap-2">
-                                <CookingPot className="text-green-600" />
-                                SUCCESS: Meal Ready to Be Served
-                              </AlertTitle>
-                              <AlertDescription>
-                                <>
-                                  <p>Type: {title}</p>
-                                  <p>Time: {coupon_time}</p>
-                                  <p>Date: {coupon_date}</p>
-                                </>
-                              </AlertDescription>
-                            </Alert>
-                            {!loading ? (
-                              <Button
-                                onClick={() => handleServeCoupon(couponDoc)}
-                                className="w-full"
-                                disabled={disableServe}
-                              >
-                                Serve Meal
-                              </Button>
-                            ) : (
-                              <Button
-                                onClick={() => handleServeCoupon(couponDoc)}
-                                className="w-full"
-                              >
-                                <Loader2 className="animate-spin" />
-                                Serving Meal....
-                              </Button>
-                            )}
-                          </>
-                        );
-                      };
+
+                      return (
+                        <>
+                          <Alert className="bg-green-300">
+                            <AlertTitle className="flex items-center gap-2">
+                              <CookingPot className="text-green-600" />
+                              SUCCESS: Meal Ready to Be Served
+                            </AlertTitle>
+                            <AlertDescription>
+                              <>
+                                <p>Type: {title}</p>
+                                <p>Time: {coupon_time}</p>
+                                <p>Date: {coupon_date}</p>
+                              </>
+                            </AlertDescription>
+                          </Alert>
+                          {!loading ? (
+                            <Button
+                              onClick={() => handleServeCoupon(couponDoc)}
+                              className="w-full"
+                            >
+                              Serve Meal
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => handleServeCoupon(couponDoc)}
+                              className="w-full"
+                            >
+                              <Loader2 className="animate-spin" />
+                              Serving Meal....
+                            </Button>
+                          )}
+                        </>
+                      );
                     })()}
 
                     <Button
