@@ -37,6 +37,8 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogOverlay,
+  DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
 import {
@@ -58,7 +60,8 @@ import {
 import { Qr } from '@/components/Qr';
 import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
 import { ConfirmMealCancelButtons } from '@/components/ConfirmMealCancelButtons';
-import { DialogTitle } from '@radix-ui/react-dialog';
+import CardPagination from '@/components/CardPagination';
+import CardUpcoming from '@/components/CardUpcoming';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -245,6 +248,12 @@ function UserComponent({
         })
           .then(() => {
             setToken(token + 1);
+            toast({
+              title: 'Success',
+              description: 'Coupon count has been updated successfully.',
+              className:
+                'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+            });
           })
           .catch(() => {
             toast({
@@ -270,7 +279,7 @@ function UserComponent({
           className:
             'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
-      });
+      })
   };
   const { updateDoc } = useFrappeUpdateDoc();
   const handleFeedbackSubmit = ({
@@ -432,8 +441,7 @@ function UserComponent({
                       date <=
                         new Date(
                           new Date().setDate(new Date().getDate() - 1),
-                        ) 
-                        ||
+                        ) ||
                       date >
                         new Date(
                           new Date().getFullYear(),
@@ -511,7 +519,7 @@ function UserComponent({
                           <QRCodeSVG
                             value={`${upcomingCoupons[index].title}_${userId}_${upcomingCoupons[index].coupon_date}${upcomingCoupons[index].coupon_time}`}
                             size={200}
-                            className="rounded-lg border"
+                            className=" border border-white"
                           />
                         </div>
                         <ConfirmMealCancelButtons
@@ -527,38 +535,11 @@ function UserComponent({
               ))}
           </div>
           {upcomingCoupons && upcomingCoupons.length > 0 && (
-            <div className="flex items-center  justify-center  py-4 ">
-              <div className="flex items-center gap-4  py-4 ">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (upPage - 1 < 1) {
-                      return;
-                    } else {
-                      setUpPage(upPage - 1);
-                    }
-                  }}
-                  disabled={upPage == 1}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setUpPage(upPage + 1)}
-                  disabled={
-                    upcount == 0 ||
-                    (!!upcount && upPage === Math.ceil(upcount / 10))
-                  }
-                >
-                  Next
-                </Button>
-                <div>
-                  Page {upPage} - {upcount && Math.ceil(upcount / 10)}
-                </div>
-              </div>
-            </div>
+            <CardPagination
+              page={upPage}
+              totalPages={upcount}
+              onPageChange={setUpPage}
+            />
           )}
         </TabsContent>
 
@@ -581,7 +562,6 @@ function UserComponent({
           </div>
           {previousCoupons && previousCoupons.length > 0 && (
             <div className="flex flex-col items-center  justify-center gap-4 py-8">
-              {/* <div className="flex items-center gap-4  py-4 "> */}
               <div className="flex items-center gap-4">
                 <Button
                   className="disabled:cursor-crosshair"
