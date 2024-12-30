@@ -29,7 +29,7 @@ def update_coupon_count(params):
 	coupon = params.get("coupon")
 	print(coupon)
 	doc = frappe.get_doc("Hotpot User", employee_id)
-	doc.coupon_count = int(coupon_count) + 1
+	doc.coupon_count = int(coupon_count)
 	doc.save()
 	frappe.db.commit()
 	doc = frappe.new_doc("Hotpot Coupons History")
