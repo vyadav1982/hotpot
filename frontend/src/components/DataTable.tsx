@@ -1,5 +1,8 @@
 import { Button } from '@/components/ui/button';
 import * as React from 'react';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import {
   ColumnDef,
   flexRender,
@@ -21,6 +24,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Download } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -35,6 +47,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [selectedValue, setSelectedValue] = React.useState<string>('');
   const table = useReactTable({
     data,
     columns,
@@ -50,9 +63,59 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleExport = (format: string) => {
+    console.log('format', format);
+    setSelectedValue(format);
+    if (format === 'pdf') {
+      exportToPDF(data);
+    } else if (format === 'csv') {
+      exportToCSV(data);
+    } else if (format === 'xlsx') {
+      exportToExcel(data);
+    } else if (format === 'invoice') {
+      generateInvoice(data);
+    } else {
+      return;
+    }
+  };
+
+  const exportToPDF = (data: any) => {
+    const doc = new jsPDF();
+    doc.text('Table Export', 14, 10);
+    const tableHeaders = Object.keys(data[0]);
+    const tableRows = data.map((item: any) => Object.values(item));
+    doc.autoTable({
+      head: [tableHeaders],
+      body: tableRows,
+    });
+    doc.save('table.pdf');
+  };
+
+  const exportToCSV = (data: any) => {
+    const headers = Object.keys(data[0]).join(',') + '\n';
+    const rows = data
+      .map((row: any) => Object.values(row).join(','))
+      .join('\n');
+    const blob = new Blob([headers + rows], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'table.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+  const exportToExcel = (data: any) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Table');
+
+    XLSX.writeFile(workbook, 'MealRecord.xlsx');
+  };
+  const generateInvoice = (data:any) => {};
+
   return (
     <div>
-      <div className="flex items-center space-x-2 py-4">
+      <div className="flex items-center justify-between space-x-2 py-4">
         <Input
           placeholder="Filter By Employee Id..."
           value={(table.getColumn('empId')?.getFilterValue() as string) ?? ''}
@@ -69,6 +132,36 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <div onClick={() => handleExport(selectedValue)}>
+          <Select
+            value={selectedValue}
+            onValueChange={(value) => handleExport(value)}
+          >
+            <SelectTrigger className="flex w-[180px] items-center gap-2 rounded-md border px-4 py-2 shadow-sm">
+              <Download onClick={() => handleExport} />
+              <SelectValue
+                placeholder="Export As"
+                className="font-medium text-gray-700"
+              />
+            </SelectTrigger>
+            <SelectContent className="w-[180px] rounded-md border border-gray-300  shadow-lg">
+              <SelectGroup>
+                <SelectItem value="xlsx" className="px-4 py-2">
+                  Excel
+                </SelectItem>
+                <SelectItem value="csv" className="px-4 py-2">
+                  CSV
+                </SelectItem>
+                <SelectItem value="pdf" className="px-4 py-2">
+                  PDF
+                </SelectItem>
+                <SelectItem value="invoice" className="px-4 py-2">
+                  Invoice
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
