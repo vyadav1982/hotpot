@@ -206,8 +206,9 @@ def get_upcoming_coupon_list(params):
 	employee_id = params.get("employee_id")
 	page = params.get("page")
 	today = date.today()
-	last_day = calendar.monthrange(today.year, today.month)[1]
-	last_date = date(today.year, today.month, last_day)
+	# last_day = calendar.monthrange(today.year, today.month)[1]
+	# last_date = date(today.year, today.month, last_day)
+	last_date = today + timedelta(days=30)
 	offset = (page - 1) * 10
 	# form today onwards
 
