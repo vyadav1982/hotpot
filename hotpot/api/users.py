@@ -22,12 +22,10 @@ def get_list():
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_count(params):
-	print("+++" * 10, params)
 	params = frappe.parse_json(params)
 	employee_id = params.get("userId")
 	coupon_count = params.get("token")
 	coupon = params.get("coupon")
-	print(coupon)
 	doc = frappe.get_doc("Hotpot User", employee_id)
 	doc.coupon_count = int(coupon_count)
 	doc.save()

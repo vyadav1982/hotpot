@@ -7,7 +7,6 @@ from frappe.model.document import Document
 def set_user_password(site, user, password, logout_all_sessions=False):
 	from frappe.utils.password import update_password
 	
-	print("##"*10,site,user,password)
 
 	if not password:
 		raise ValueError("Password cannot be empty.")

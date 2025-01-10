@@ -21,4 +21,6 @@ export interface HotpotCoupon {
   coupon_time?: string;
   /**	Served By : Link - User	*/
   served_by?: string;
+  /** Status : Select  */
+  status: 'Upcoming' | 'Consumed' | 'Expired'
 }

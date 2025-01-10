@@ -55,7 +55,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
     <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg font-semibold">
-          <div className=" flex overflow-x-hidden text-left">
+          <div className=" flex-1 overflow-x-hidden text-left">
             {coupon.title}
           </div>
           {coupon.status && (
