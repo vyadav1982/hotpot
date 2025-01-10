@@ -502,10 +502,20 @@ function UserComponent({
                       className="transform rounded-lg shadow-lg transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
                     >
                       <CardHeader className="p-0 pt-4">
-                        <CardTitle className="text-center text-lg font-medium">
-                          {coupon.title}
+                        <CardTitle className="flex items-center justify-between text-lg font-semibold">
+                          <div className="mx-4 flex-1 overflow-clip text-left">
+                            {coupon.title}
+                          </div>
+                          {coupon.status && (
+                            <div
+                              className="mx-4 lg:mx-2 rounded-full bg-yellow-500 px-3 py-1 text-sm font-normal text-black
+                              "
+                            >
+                              {coupon.status.toUpperCase()}
+                            </div>
+                          )}
                         </CardTitle>
-                        <CardDescription className="text-center text-sm">
+                        <CardDescription className="mt-2 text-center text-sm ">
                           {coupon.coupon_date}
                         </CardDescription>
                       </CardHeader>

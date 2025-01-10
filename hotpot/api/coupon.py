@@ -140,8 +140,6 @@ def create_coupon(params):
     output = []
     for x in range(day_difference + 1):
         for meal in meal_type:
-            print("++" * 10, x)
-            print(from_date + timedelta(days=x), x)
             db_meal_value = frappe.db.get_value("Hotpot Coupon Type", meal, "value")
             #check coupon_count and value first
             if (coupon_count < db_meal_value):
@@ -178,7 +176,7 @@ def create_coupon(params):
                     meal + "_" + employee_id + "_" + (from_date + timedelta(days=x)).strftime("%Y-%m-%d"),
                 ):
                     coupon.save(ignore_permissions=True)
-                    coupon_count -= db_meal_value
+                    coupon_count = coupon_count - db_meal_value
                     doc = frappe.new_doc("Hotpot Coupons History")
                     doc.employee_id = employee_id
                     doc.type = "Creation"
@@ -221,7 +219,7 @@ def get_upcoming_coupon_list(params):
     query = """
         select name,title,coupon_time,coupon_date,creation,status
         from `tabHotpot Coupon`
-        where employee_id=%s and coupon_date>=%s and coupon_date<=%s
+        where employee_id=%s and coupon_date>=%s and coupon_date<=%s and status ='Upcoming'
         order by coupon_date asc
         limit %s offset %s 
     """
@@ -249,13 +247,12 @@ def get_past_coupon_list(params):
     update_coupon_status(employee_id,meal_types,to_date)
     # upto yesterday
     query = """
-        select title,coupon_time,coupon_date,creation,name,emoji_reaction,feedback
+        select title,coupon_time,coupon_date,creation,name,emoji_reaction,feedback,status
         from `tabHotpot Coupon`
-        where employee_id=%s and coupon_date<%s and coupon_date>=%s
+        where employee_id=%s and coupon_date<%s and coupon_date>=%s and status!='Upcoming'
         order by coupon_date desc
         limit %s offset %s
     """
-    # print(query, (employee_id, to_date, from_date, 10, offset))
     result = frappe.db.sql(query, (employee_id, to_date, from_date, 10, offset), as_dict=True)
     return result
 
@@ -284,18 +281,15 @@ def update_coupon_status(employee_id,meal_types,to_date):
         },
         fields=["name", "title","status"]
     )
-    print("##"*10,coupons_to_update)
 
     for coupon in coupons_to_update:
         meal_end_hour = int(meal_types.get(coupon["title"])) 
-        print("**"*10,meal_end_hour, coupon["name"])
         if current_time >= meal_end_hour:
             doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
             doc.status = "Expired"
             doc.save()
             frappe.db.commit()
             # frappe.db.set_value("Hotpot Coupon", coupon["name"], "status", "Expired")
-            print(f"Updated coupon {coupon['name']} to 'expired'")
 
 
 

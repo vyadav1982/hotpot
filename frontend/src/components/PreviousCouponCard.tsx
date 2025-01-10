@@ -54,8 +54,24 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   return (
     <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title}>
       <CardHeader>
-        <CardTitle className="text-center text-lg font-medium">
-          {coupon.title}
+        <CardTitle className="flex items-center justify-between text-lg font-semibold">
+          <div className=" flex overflow-x-hidden text-left">
+            {coupon.title}
+          </div>
+          {coupon.status && (
+            <div
+              className={`rounded-full px-3 py-1 text-sm font-normal text-black
+            lg:mx-1 ${
+              coupon.status === 'Consumed'
+                ? 'bg-green-500 text-white'
+                : coupon.status === 'Expired'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-black'
+            }`}
+            >
+              {coupon.status.toUpperCase()}
+            </div>
+          )}
         </CardTitle>
         <CardDescription className="text-center text-sm">
           {coupon.coupon_date}
@@ -65,7 +81,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
         <div className="flex w-full justify-around">
           <div title="Loved it!" onClick={() => handleEmojiClick('Loved it!')}>
             <SmilePlus
-              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-green-400'} ${selectedEmoji === 'Loved it!' && 'bg-green-400'}`}
+              className={`rounded-full ${!feedbackPresent && 'hover:bg-green-400'} ${selectedEmoji === 'Loved it!' && 'bg-green-400'}`}
             />
           </div>
           <div
@@ -73,7 +89,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick('It was good')}
           >
             <Smile
-              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-orange-400'} ${selectedEmoji === 'It was good' && 'bg-orange-400'}`}
+              className={`rounded-full ${!feedbackPresent && 'hover:bg-orange-400'} ${selectedEmoji === 'It was good' && 'bg-orange-400'}`}
             />
           </div>
           <div
@@ -81,7 +97,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick('It was Okay')}
           >
             <Meh
-              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-yellow-400'} ${selectedEmoji === 'It was Okay' && 'bg-yellow-400'}`}
+              className={`rounded-full ${!feedbackPresent && 'hover:bg-yellow-400'} ${selectedEmoji === 'It was Okay' && 'bg-yellow-400'}`}
             />
           </div>
           <div
@@ -89,7 +105,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             onClick={() => handleEmojiClick("Didn't like it")}
           >
             <Frown
-              className={`rounded-full ${(!feedbackPresent) && 'hover:bg-red-400'} ${selectedEmoji === "Didn't like it" && 'bg-red-400'}`}
+              className={`rounded-full ${!feedbackPresent && 'hover:bg-red-400'} ${selectedEmoji === "Didn't like it" && 'bg-red-400'}`}
             />
           </div>
         </div>
