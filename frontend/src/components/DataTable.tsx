@@ -68,15 +68,12 @@ export function DataTable<TData, TValue>({
     setSelectedValue(format);
     if (format === 'pdf') {
       exportToPDF(data);
-    } else if (format === 'csv') {
-      exportToCSV(data);
     } else if (format === 'xlsx') {
       exportToExcel(data);
-    } else if (format === 'invoice') {
-      generateInvoice(data);
-    } else {
+    }else {
       return;
     }
+    setSelectedValue('');
   };
 
   const exportToPDF = (data: any) => {
@@ -91,19 +88,6 @@ export function DataTable<TData, TValue>({
     doc.save('table.pdf');
   };
 
-  const exportToCSV = (data: any) => {
-    const headers = Object.keys(data[0]).join(',') + '\n';
-    const rows = data
-      .map((row: any) => Object.values(row).join(','))
-      .join('\n');
-    const blob = new Blob([headers + rows], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'table.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
   const exportToExcel = (data: any) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -111,7 +95,6 @@ export function DataTable<TData, TValue>({
 
     XLSX.writeFile(workbook, 'MealRecord.xlsx');
   };
-  const generateInvoice = (data:any) => {};
 
   return (
     <div>
@@ -149,14 +132,8 @@ export function DataTable<TData, TValue>({
                 <SelectItem value="xlsx" className="px-4 py-2">
                   Excel
                 </SelectItem>
-                <SelectItem value="csv" className="px-4 py-2">
-                  CSV
-                </SelectItem>
                 <SelectItem value="pdf" className="px-4 py-2">
                   PDF
-                </SelectItem>
-                <SelectItem value="invoice" className="px-4 py-2">
-                  Invoice
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
