@@ -5,6 +5,7 @@ from frappe.twofactor import two_factor_is_enabled
 from frappe.utils.html_utils import get_icon_html
 from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys
 from frappe.utils.password import get_decrypted_password
+import json
 
 no_cache = True
 
@@ -59,3 +60,55 @@ def get_context():
 	context["disable_signup"] = frappe.get_website_settings("disable_signup")
 
 	return context
+
+
+
+@frappe.whitelist(allow_guest=True)
+def user_signUp(data):
+    try:
+        data = json.loads(data)
+        emp_id = data.get("empId")
+        email = data.get("email")
+        
+        if frappe.db.exists("Hotpot User", {"employee_id": emp_id}):
+            return {
+                "status": "error",
+                "message": f"Employee ID {emp_id} already exists."
+            }
+
+        if frappe.db.exists("Hotpot User", {"email": email}):
+            return {
+                "status": "error",
+                "message": f"Email {email} already exists."
+            }
+
+        new_user = frappe.get_doc({
+            "doctype": "Hotpot User",
+            "employee_id": emp_id,
+			"employee_name":data.get("name"),
+			"mobile_no":data.get("mobile"),
+            "email": email,
+            "password": data.get("password"), 
+			"coupon_count" : 60,
+        })
+        new_user.insert(ignore_permissions=True)
+        frappe.db.commit()
+
+        return {
+            "status": "success",
+            "message": "User created successfully.",
+            "data": new_user.as_dict()
+        }
+
+    except json.JSONDecodeError:
+        return {
+            "status": "error",
+            "message": "Invalid data format."
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "User Sign-Up Error")
+        return {
+            "status": "error",
+            "message": f"An error occurred: {str(e)}"
+        }
+
