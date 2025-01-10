@@ -10,6 +10,8 @@
   "employee_name",
   "role",
   "email",
+  "mobile_no",
+  "password",
   "column_break_eopt",
   "is_active",
   "is_guest",
@@ -74,11 +76,22 @@
    "fieldtype": "Int",
    "label": "Coupon Count",
    "non_negative": 1
+  },
+  {
+   "default": "+91- ",
+   "fieldname": "mobile_no",
+   "fieldtype": "Phone",
+   "label": "Mobile no."
+  },
+  {
+   "fieldname": "password",
+   "fieldtype": "Password",
+   "label": "Password"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-18 17:03:43.145688",
+ "modified": "2025-01-07 08:53:11.122662",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

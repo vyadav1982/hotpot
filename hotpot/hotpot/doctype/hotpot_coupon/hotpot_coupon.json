@@ -14,7 +14,8 @@
   "coupon_time",
   "served_by",
   "emoji_reaction",
-  "feedback"
+  "feedback",
+  "status"
  ],
  "fields": [
   {
@@ -75,12 +76,24 @@
    "fieldname": "feedback",
    "fieldtype": "Data",
    "label": "Feedback"
+  },
+  {
+   "fieldname": "emoji_reaction_copy",
+   "fieldtype": "Data",
+   "label": "Emoji Reaction Copy"
+  },
+  {
+   "default": "Expired",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Upcoming\nExpired\nConsumed"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-23 13:07:39.860996",
+ "modified": "2025-01-07 09:58:51.018634",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",

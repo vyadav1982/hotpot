@@ -21,6 +21,7 @@ class HotpotCoupon(Document):
 		employee_id: DF.Link
 		feedback: DF.Data | None
 		served_by: DF.Link | None
+		status: DF.Literal["Upcoming", "Expired", "Consumed"]
 		title: DF.Literal["Breakfast", "Lunch", "Evening Snack", "Dinner"]
 	# end: auto-generated types
 
