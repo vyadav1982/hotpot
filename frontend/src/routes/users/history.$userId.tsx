@@ -23,6 +23,7 @@ import { DateRange } from 'react-day-picker';
 import { useFrappeUpdateDoc } from 'frappe-react-sdk';
 import { useToast } from '@/hooks/use-toast';
 import CardPagination from '@/components/CardPagination';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 
 export const Route = createFileRoute('/users/history/$userId')({
   component: HistoryWrapperComponent,
@@ -36,16 +37,18 @@ function HistoryWrapperComponent() {
   const { userId } = Route.useParams();
   const [page, setPage] = useState(1);
   return (
-    <DateRangeProvider>
-      <PreviousCouponListProvider employee_id={userId} downPage={page}>
-        <HistoryComponent
-          key="history"
-          userId={userId}
-          page={page}
-          setPage={setPage}
-        />
-      </PreviousCouponListProvider>
-    </DateRangeProvider>
+    <ProtectedRoute>
+      <DateRangeProvider>
+        <PreviousCouponListProvider employee_id={userId} downPage={page}>
+          <HistoryComponent
+            key="history"
+            userId={userId}
+            page={page}
+            setPage={setPage}
+          />
+        </PreviousCouponListProvider>
+      </DateRangeProvider>
+    </ProtectedRoute>
   );
 }
 

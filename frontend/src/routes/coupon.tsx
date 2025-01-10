@@ -22,9 +22,14 @@ import { TopBar } from '@/components/TopBar';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 
 export const Route = createFileRoute('/coupon')({
-  component: CouponPage,
+  component: () => (
+    <ProtectedRoute>
+      <CouponPage />
+    </ProtectedRoute>
+  ),
 });
 
 function CouponPage() {

@@ -37,7 +37,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
@@ -61,7 +60,7 @@ import { Qr } from '@/components/Qr';
 import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
 import { ConfirmMealCancelButtons } from '@/components/ConfirmMealCancelButtons';
 import CardPagination from '@/components/CardPagination';
-import CardUpcoming from '@/components/CardUpcoming';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -84,19 +83,21 @@ function UserWrapperComponent() {
   const [upPage, setUpPage] = useState(1);
   const [downPage, setDownPage] = useState(1);
   return (
-    <UpcomingCouponListProvider employee_id={userId} upPage={upPage}>
-      <PreviousCouponListProvider employee_id={userId} downPage={downPage}>
-        <UserComponent
-          setDate={setDate}
-          date={date}
-          userId={userId}
-          upPage={upPage}
-          setUpPage={setUpPage}
-          downPage={downPage}
-          setDownPage={setDownPage}
-        />
-      </PreviousCouponListProvider>
-    </UpcomingCouponListProvider>
+    <ProtectedRoute>
+      <UpcomingCouponListProvider employee_id={userId} upPage={upPage}>
+        <PreviousCouponListProvider employee_id={userId} downPage={downPage}>
+          <UserComponent
+            setDate={setDate}
+            date={date}
+            userId={userId}
+            upPage={upPage}
+            setUpPage={setUpPage}
+            downPage={downPage}
+            setDownPage={setDownPage}
+          />
+        </PreviousCouponListProvider>
+      </UpcomingCouponListProvider>
+    </ProtectedRoute>
   );
 }
 function UserComponent({
@@ -115,7 +116,7 @@ function UserComponent({
   const { toast } = useToast();
   let { upcomingCoupons, upcount } = useContext(UpcomingCouponListContext);
   const { previousCoupons, downcount } = useContext(PreviousCouponListContext);
-  const [token, setToken] = useState(0);
+  const [token, setToken] = useState(-1);
   const [couponHistory, setCouponHistory] = useState([]);
   const [activeTab, setActiveTab] = useState('generate_coupon');
   const { call: getCouponType } = useFrappePostCall(
@@ -279,7 +280,7 @@ function UserComponent({
           className:
             'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
         });
-      })
+      });
   };
   const { updateDoc } = useFrappeUpdateDoc();
   const handleFeedbackSubmit = ({
@@ -315,25 +316,21 @@ function UserComponent({
   };
   const { data } = useFrappeGetDoc('Hotpot User', userId);
   useEffect(() => {
-    if (activeTab === 'see_transaction_history') {
-      const fetchCouponHistory = async () => {
-        const response = await getCouponsHistory({ employee_id: userId });
-        response.message.sort(
-          (a: { creation: string }, b: { creation: string }) => {
-            const dateA = new Date(a.creation).getTime();
-            const dateB = new Date(b.creation).getTime();
-            return dateB - dateA;
-          },
-        );
-        setCouponHistory(response.message);
-      };
-      fetchCouponHistory();
-    }
-  }, [activeTab]);
-  useEffect(() => {
+    const fetchCouponHistory = async () => {
+      const response = await getCouponsHistory({ employee_id: userId });
+      response.message.sort(
+        (a: { creation: string }, b: { creation: string }) => {
+          const dateA = new Date(a.creation).getTime();
+          const dateB = new Date(b.creation).getTime();
+          return dateB - dateA;
+        },
+      );
+      setCouponHistory(response.message);
+    };
+    fetchCouponHistory();
     fetchCouponTypes();
-    setToken(data.coupon_count);
-  }, []);
+    data && setToken(data.coupon_count);
+  }, [data]);
 
   return (
     <div className="min-h-screen">
@@ -350,26 +347,32 @@ function UserComponent({
         rightContent={
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-3 p-4 ">
-              <div
-                className={`rounded-full p-3 ${
-                  token > 50
-                    ? 'bg-green-100 text-green-600'
-                    : token > 20
-                      ? 'bg-yellow-100 text-yellow-600'
-                      : 'bg-red-100 text-red-600'
-                }`}
-              >
-                <Wallet
-                  className={`h-6 w-6 ${
-                    token > 50
-                      ? 'text-green-600'
-                      : token > 20
-                        ? 'text-yellow-600'
-                        : 'text-red-600'
-                  }`}
-                />
-              </div>
-              <span className="text-lg font-semibold">{token}</span>
+              {token >= 0 ? (
+                <>
+                  <div
+                    className={`rounded-full p-3 ${
+                      token > 50
+                        ? 'bg-green-100 text-green-600'
+                        : token > 20
+                          ? 'bg-yellow-100 text-yellow-600'
+                          : 'bg-red-100 text-red-600'
+                    }`}
+                  >
+                    <Wallet
+                      className={`h-6 w-6 ${
+                        token > 50
+                          ? 'text-green-600'
+                          : token > 20
+                            ? 'text-yellow-600'
+                            : 'text-red-600'
+                      }`}
+                    />
+                  </div>
+                  <span className="text-lg font-semibold">{token}</span>
+                </>
+              ) : (
+                <Loader2 className="animate-spin" />
+              )}
             </div>
             <Button variant="destructive" onClick={handleLogout}>
               Logout

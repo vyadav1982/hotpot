@@ -39,6 +39,7 @@ import { TopBar } from '@/components/TopBar';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardWrapperComponent,
@@ -117,11 +118,13 @@ function DashboardWrapperComponent() {
     to: new Date(),
   });
   return (
-    <CouponProvider date={date}>
-      <CouponCountProvider date={date}>
-        <DashboardComponent setDate={setDate} date={date} />
-      </CouponCountProvider>
-    </CouponProvider>
+    <ProtectedRoute>
+      <CouponProvider date={date}>
+        <CouponCountProvider date={date}>
+          <DashboardComponent setDate={setDate} date={date} />
+        </CouponCountProvider>
+      </CouponProvider>
+    </ProtectedRoute>
   );
 }
 
@@ -134,10 +137,10 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
-      breakfast: 'Not consumed',
-      lunch: 'Not consumed',
-      evening_snacks: 'Not consumed',
-      dinner: 'Not consumed',
+      breakfast: '-',
+      lunch: '-',
+      evening_snacks: '-',
+      dinner: '-',
     });
 
     mapData.forEach((value: any, key: any) => {
@@ -217,7 +220,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
     }
     if (selectedValue === 'this_month') {
       setDate({
-        from: new Date(2024, new Date().getMonth(), 1),
+        from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         to: new Date(),
       });
     }
