@@ -508,7 +508,7 @@ function UserComponent({
                           </div>
                           {coupon.status && (
                             <div
-                              className="mx-4 lg:mx-2 rounded-full bg-yellow-500 px-3 py-1 text-sm font-normal text-black
+                              className="mx-4 lg:mx-2 rounded-full bg-yellow-300 px-3 py-1 text-sm font-normal text-black
                               "
                             >
                               {coupon.status.toUpperCase()}
