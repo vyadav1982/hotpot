@@ -130,6 +130,7 @@ function ServerPage() {
       updateDoc('Hotpot Coupon', couponDoc.name, {
         docstatus: 1,
         served_by: currentUser,
+        status : "Redeemed"
       })
         .then(() => {
           resolve();

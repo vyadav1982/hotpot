@@ -29,7 +29,7 @@ export const PreviousCouponListContext = createContext<{
 
 export type CouponFields = Pick<
   HotpotCoupon,
-  'title' | 'coupon_date' | 'coupon_time' | 'creation' | 'emoji_reaction' | 'feedback' | 'name'
+  'title' | 'coupon_date' | 'coupon_time' | 'creation' | 'emoji_reaction' | 'feedback' | 'name' | 'status'
 >;
 interface UpcomingCouponListProps extends PropsWithChildren {
   employee_id: string;
@@ -65,7 +65,7 @@ export const PreviousCouponListProvider = ({
             'coupon_date',
             '>=',
             format(
-              new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+              new Date(new Date().getFullYear(), new Date().getMonth(), -30),
               'yyyy/MM/dd',
             ),
           ],
@@ -87,7 +87,7 @@ export const PreviousCouponListProvider = ({
         from_date: window.location.pathname.includes('history')
           ? format(date?.from || new Date(), 'yyyy/MM/dd')
           : format(
-              new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+              new Date(new Date().getFullYear(), new Date().getMonth(), -30),
               'yyyy/MM/dd',
             ),
 
