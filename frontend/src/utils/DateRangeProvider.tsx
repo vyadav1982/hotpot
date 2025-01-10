@@ -57,7 +57,7 @@ export const DateRangeProvider: React.FC<DateRangeProviderProps> = ({
     }
     if (selectval === 'this_month') {
       setDate({
-        from: new Date(2024, new Date().getMonth(), 1),
+        from: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
         to: new Date(),
       });
     }

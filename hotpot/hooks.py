@@ -39,6 +39,19 @@ fixtures = [
 			]
 		},
 	},
+	{
+		"doctype": "Custom DocPerm",
+		"filters": {
+			"role": [
+				"in",
+				[
+					"Hotpot Admin",
+					"Hotpot User",
+					"Hotpot Server",
+				],
+			],
+		},
+	},
 ]
 
 # Includes in <head>
