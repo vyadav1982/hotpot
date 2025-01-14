@@ -58,18 +58,20 @@ export const PreviousCouponListProvider = ({
               'yyyy/MM/dd',
             ),
           ],
-          ['coupon_date', '<', format(date?.to || new Date(), 'yyyy/MM/dd')],
+          ['coupon_date', '<=', format(date?.to || new Date(), 'yyyy/MM/dd')],
+          ['status','!=','Upcoming'],
         ] as Filter[])
       : ([
           [
             'coupon_date',
             '>=',
             format(
-              new Date(new Date().getFullYear(), new Date().getMonth(), -30),
+              new Date(new Date().getFullYear(), new Date().getMonth(), 1),
               'yyyy/MM/dd',
             ),
           ],
-          ['coupon_date', '<', format(new Date(), 'yyyy/MM/dd')],
+          ['coupon_date', '<=', format(new Date(), 'yyyy/MM/dd')],
+          ['status','!=','Upcoming']
         ] as Filter[])),
   ];
 
@@ -87,7 +89,7 @@ export const PreviousCouponListProvider = ({
         from_date: window.location.pathname.includes('history')
           ? format(date?.from || new Date(), 'yyyy/MM/dd')
           : format(
-              new Date(new Date().getFullYear(), new Date().getMonth(), -30),
+              new Date(new Date().getFullYear(), new Date().getMonth(), 1),
               'yyyy/MM/dd',
             ),
 

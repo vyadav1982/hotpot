@@ -68,6 +68,7 @@ export const UpcomingCouponListProvider = ({
         'yyyy-MM-dd',
       ),
     ],
+    ['status','=','Upcoming']
   ]);
 
   const [newUpdatesAvailable, setNewUpdatesAvailable] = useState(false);

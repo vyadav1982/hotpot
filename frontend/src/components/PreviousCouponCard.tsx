@@ -15,7 +15,6 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   const [feedback, setFeedback] = useState('');
   const [feedbackPresent, setFeedbackPresent] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
-  console.log(coupon);
   useEffect(() => {
     if (coupon.emoji_reaction !== null && coupon.emoji_reaction !== '') {
       setSelectedEmoji(coupon.emoji_reaction);
