@@ -1,5 +1,6 @@
-import frappe
 from datetime import datetime
+
+import frappe
 import pytz
 
 
@@ -70,3 +71,19 @@ def reset_coupon_count():
 @frappe.whitelist(methods=["POST"])
 def get_hotpot_user_by_employee_id(employee_id):
 	return frappe.get_doc("Hotpot User", employee_id)
+
+
+@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
+def get_hotpot_user_by_email(email):
+	print("$$" * 10, email)
+	try:
+		user = frappe.db.get_list("Hotpot User", filters=[["email", "=", email]])
+		print("&&" * 10, user)
+		if user:
+			return {"status": "success", "data": user[0]}
+		else:
+			return {"status": "error", "message": "No user found with the given email."}
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Email Error")
+		return {"status": "error", "message": f"An error occurred: {str(e)}"}

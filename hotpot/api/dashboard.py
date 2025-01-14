@@ -38,7 +38,8 @@ def get_coupon_list(params):
 			b.employee_name,
 			a.coupon_date,
 			a.coupon_time,
-			a.served_by
+			a.served_by,
+			a.status
 		FROM `tabHotpot Coupon` AS a
 		INNER JOIN `tabHotpot User` AS b
 		ON a.employee_id = b.employee_id
