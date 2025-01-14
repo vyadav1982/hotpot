@@ -53,6 +53,10 @@ type MealRecord = {
   evening_snacks: string;
   dinner: string;
   date: string;
+  breakfast_time: string;
+  lunch_time: string;
+  snacks_time: string;
+  dinner_time: string;
 };
 
 const columns: ColumnDef<MealRecord>[] = [
@@ -86,10 +90,71 @@ const columns: ColumnDef<MealRecord>[] = [
       );
     },
   },
-  { header: 'Breakfast', accessorKey: 'breakfast' },
-  { header: 'Lunch', accessorKey: 'lunch' },
-  { header: 'Evening Snacks', accessorKey: 'evening_snacks' },
-  { header: 'Dinner', accessorKey: 'dinner' },
+  {
+    header: 'Breakfast',
+    accessorKey: 'breakfast',
+    cell: ({ row }) => {
+      console.log(row);
+      return (
+        <div
+          title={`Breakfast coupon created at ${(([h, m]) =>
+            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+            row.original.breakfast_time.split(':').map(Number),
+          )}`}
+        >
+          {row.original.breakfast}
+        </div>
+      );
+    },
+  },
+  {
+    header: 'Lunch',
+    accessorKey: 'lunch',
+    cell: ({ row }) => {
+      return (
+        <div
+          title={`Lunch coupon created at ${(([h, m]) =>
+            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+            row.original.lunch_time.split(':').map(Number),
+          )}`}
+        >
+          {row.original.lunch}
+        </div>
+      );
+    },
+  },
+  {
+    header: 'Evening Snacks',
+    accessorKey: 'evening_snacks',
+    cell: ({ row }) => {
+      return (
+        <div
+          title={`Evening Snacks coupon created at ${(([h, m]) =>
+            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+            row.original.snacks_time.split(':').map(Number),
+          )}`}
+        >
+          {row.original.evening_snacks}
+        </div>
+      );
+    },
+  },
+  {
+    header: 'Dinner',
+    accessorKey: 'dinner',
+    cell: ({ row }) => {
+      return (
+        <div
+          title={`Dinner coupon created at ${(([h, m]) =>
+            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+            row.original.dinner_time.split(':').map(Number),
+          )}`}
+        >
+          {row.original.dinner}
+        </div>
+      );
+    },
+  },
   {
     header: ({ column }) => {
       return (
@@ -135,6 +200,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
   const [selectedValue, setSelectedValue] = useState('today');
 
   const convertMapToArray = (mapData: any) => {
+    console.log('data', mapData);
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
       breakfast: '-',
@@ -151,8 +217,16 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
         entry = {
           empId,
           empName: employee_name,
-          date,
+          date: new Date(date).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          }),
           ...initializeMeals(),
+          breakfast_time: '',
+          lunch_time: '',
+          snacks_time: '',
+          dinner_time: '',
         };
         entryMap.set(mapKey, entry);
       }
@@ -161,16 +235,20 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
         if (Object.keys(coupon).length > 0) {
           switch (coupon.coupon_title) {
             case 'Dinner':
-              entry.dinner = coupon.coupon_time;
+              entry.dinner = coupon.status;
+              entry.dinner_time = coupon.coupon_time;
               break;
             case 'Lunch':
-              entry.lunch = coupon.coupon_time;
+              entry.lunch = coupon.status;
+              entry.lunch_time = coupon.coupon_time;
               break;
             case 'Evening Snack':
-              entry.evening_snacks = coupon.coupon_time;
+              entry.evening_snacks = coupon.status;
+              entry.snacks_time = coupon.coupon_time;
               break;
             case 'Breakfast':
-              entry.breakfast = coupon.coupon_time;
+              entry.breakfast = coupon.status;
+              entry.breakfast_time = coupon.coupon_time;
               break;
           }
         }
@@ -275,7 +353,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
           </div>
         }
       />
-      <div className="px-24">
+      <div className="mb-4 px-24">
         {/* Header Section */}
         <Card className="my-6 flex flex-wrap items-center justify-between rounded-lg p-4 shadow-md">
           <div className="flex items-center gap-4">
