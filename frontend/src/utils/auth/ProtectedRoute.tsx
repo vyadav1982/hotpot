@@ -9,10 +9,13 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { currentUser, isLoading } = useContext(UserContext);
+  const { currentUser, isLoading, userId } = useContext(UserContext);
   const router = useRouterState();
 
-  if (isLoading) {
+  if (
+    isLoading ||
+    (isHotpotUser() && !isHotpotAdmin() && !isHotpotServer() && userId == '')
+  ) {
     return <FullPageLoader />;
   }
 

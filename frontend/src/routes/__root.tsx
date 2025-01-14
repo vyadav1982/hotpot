@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<{
       }
     } else if (isHotpotUser()) {
       if (location.pathname.includes('/login')) {
-        window.location.href = '/hotpot/users/user/1';
+        window.location.href = '/hotpot/server';
       }
       if (
         !location.pathname.includes('/users/user') &&
