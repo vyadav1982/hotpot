@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ServerImport } from './routes/server'
+import { Route as MenuImport } from './routes/menu'
 import { Route as LoginImport } from './routes/login'
 import { Route as GuestImport } from './routes/guest'
 import { Route as DashboardImport } from './routes/dashboard'
@@ -24,6 +25,12 @@ import { Route as UsersHistoryUserIdImport } from './routes/users/history.$userI
 const ServerRoute = ServerImport.update({
   id: '/server',
   path: '/server',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MenuRoute = MenuImport.update({
+  id: '/menu',
+  path: '/menu',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/menu': {
+      id: '/menu'
+      path: '/menu'
+      fullPath: '/menu'
+      preLoaderRoute: typeof MenuImport
+      parentRoute: typeof rootRoute
+    }
     '/server': {
       id: '/server'
       path: '/server'
@@ -126,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
+  '/menu': typeof MenuRoute
   '/server': typeof ServerRoute
   '/users/history/$userId': typeof UsersHistoryUserIdRoute
   '/users/user/$userId': typeof UsersUserUserIdRoute
@@ -136,6 +151,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
+  '/menu': typeof MenuRoute
   '/server': typeof ServerRoute
   '/users/history/$userId': typeof UsersHistoryUserIdRoute
   '/users/user/$userId': typeof UsersUserUserIdRoute
@@ -147,6 +163,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/guest': typeof GuestRoute
   '/login': typeof LoginRoute
+  '/menu': typeof MenuRoute
   '/server': typeof ServerRoute
   '/users/history/$userId': typeof UsersHistoryUserIdRoute
   '/users/user/$userId': typeof UsersUserUserIdRoute
@@ -159,6 +176,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/guest'
     | '/login'
+    | '/menu'
     | '/server'
     | '/users/history/$userId'
     | '/users/user/$userId'
@@ -168,6 +186,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/guest'
     | '/login'
+    | '/menu'
     | '/server'
     | '/users/history/$userId'
     | '/users/user/$userId'
@@ -177,6 +196,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/guest'
     | '/login'
+    | '/menu'
     | '/server'
     | '/users/history/$userId'
     | '/users/user/$userId'
@@ -188,6 +208,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   GuestRoute: typeof GuestRoute
   LoginRoute: typeof LoginRoute
+  MenuRoute: typeof MenuRoute
   ServerRoute: typeof ServerRoute
   UsersHistoryUserIdRoute: typeof UsersHistoryUserIdRoute
   UsersUserUserIdRoute: typeof UsersUserUserIdRoute
@@ -198,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   GuestRoute: GuestRoute,
   LoginRoute: LoginRoute,
+  MenuRoute: MenuRoute,
   ServerRoute: ServerRoute,
   UsersHistoryUserIdRoute: UsersHistoryUserIdRoute,
   UsersUserUserIdRoute: UsersUserUserIdRoute,
@@ -217,6 +239,7 @@ export const routeTree = rootRoute
         "/dashboard",
         "/guest",
         "/login",
+        "/menu",
         "/server",
         "/users/history/$userId",
         "/users/user/$userId"
@@ -233,6 +256,9 @@ export const routeTree = rootRoute
     },
     "/login": {
       "filePath": "login.tsx"
+    },
+    "/menu": {
+      "filePath": "menu.tsx"
     },
     "/server": {
       "filePath": "server.tsx"

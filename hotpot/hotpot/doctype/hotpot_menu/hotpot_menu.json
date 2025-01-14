@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-01-13 12:59:40.793264",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "day",
+  "special",
+  "active",
+  "breakfast",
+  "breakfast_special",
+  "luch",
+  "lunch_special",
+  "snacks",
+  "snacks_special",
+  "dinner",
+  "dinner_special"
+ ],
+ "fields": [
+  {
+   "fieldname": "day",
+   "fieldtype": "Data",
+   "label": "Day"
+  },
+  {
+   "default": "0",
+   "fieldname": "special",
+   "fieldtype": "Check",
+   "label": "Special"
+  },
+  {
+   "default": "0",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "breakfast",
+   "fieldtype": "Data",
+   "label": "Breakfast"
+  },
+  {
+   "default": "0",
+   "fieldname": "breakfast_special",
+   "fieldtype": "Check",
+   "label": "Breakfast Special"
+  },
+  {
+   "fieldname": "luch",
+   "fieldtype": "Data",
+   "label": "Lunch"
+  },
+  {
+   "default": "0",
+   "fieldname": "lunch_special",
+   "fieldtype": "Check",
+   "label": "Lunch Special"
+  },
+  {
+   "fieldname": "snacks",
+   "fieldtype": "Data",
+   "label": "Snacks"
+  },
+  {
+   "default": "0",
+   "fieldname": "snacks_special",
+   "fieldtype": "Check",
+   "label": "Snacks Special"
+  },
+  {
+   "fieldname": "dinner",
+   "fieldtype": "Data",
+   "label": "Dinner"
+  },
+  {
+   "default": "0",
+   "fieldname": "dinner_special",
+   "fieldtype": "Check",
+   "label": "Dinner Special"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-14 13:23:51.605322",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Menu",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
