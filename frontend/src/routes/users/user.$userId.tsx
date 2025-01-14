@@ -61,6 +61,7 @@ import { PrevuousCouponCard } from '@/components/PreviousCouponCard';
 import { ConfirmMealCancelButtons } from '@/components/ConfirmMealCancelButtons';
 import CardPagination from '@/components/CardPagination';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
+import Menu from '@/components/Menu';
 export const Route = createFileRoute('/users/user/$userId')({
   component: UserWrapperComponent,
 });
@@ -368,7 +369,9 @@ function UserComponent({
                       }`}
                     />
                   </div>
-                  <span className="text-lg font-semibold">{token}</span>
+                  <span className="text-sm font-semibold text-gray-700">
+                    Coupon Count: {token}
+                  </span>
                 </>
               ) : (
                 <Loader2 className="animate-spin" />
@@ -400,6 +403,9 @@ function UserComponent({
           </TabsTrigger>
           <TabsTrigger value="see_transaction_history" className="tabs-trigger">
             Transactions
+          </TabsTrigger>
+          <TabsTrigger value="menu_list" className="tabs-trigger">
+            Menu
           </TabsTrigger>
         </TabsList>
 
@@ -508,7 +514,7 @@ function UserComponent({
                           </div>
                           {coupon.status && (
                             <div
-                              className="mx-4 lg:mx-2 rounded-full bg-yellow-300 px-3 py-1 text-sm font-normal text-black
+                              className="mx-4 rounded-full bg-yellow-300 px-3 py-1 text-sm font-normal text-black lg:mx-2
                               "
                             >
                               {coupon.status.toUpperCase()}
@@ -516,7 +522,14 @@ function UserComponent({
                           )}
                         </CardTitle>
                         <CardDescription className="mt-2 text-center text-sm ">
-                          {coupon.coupon_date}
+                          {new Date(coupon.coupon_date).toLocaleDateString(
+                            'en-GB',
+                            {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                            },
+                          )}
                         </CardDescription>
                       </CardHeader>
                       <CardContent className="flex justify-center p-0 blur-[1.5px]">
@@ -652,7 +665,7 @@ function UserComponent({
                           'yyyy-MM-dd HH:mm:ss',
                           new Date(),
                         ),
-                        'yyyy/MM/dd HH:mm:ss',
+                        'dd MMM yyyy h:mm a',
                       )}
                     </div>
                   </div>
@@ -693,7 +706,7 @@ function UserComponent({
                                     'yyyy-MM-dd HH:mm:ss',
                                     new Date(),
                                   ),
-                                  'yyyy/MM/dd HH:mm:ss',
+                                  'dd MMM yyyy h:mm a',
                                 )}
                               </div>
                             </div>
@@ -726,7 +739,7 @@ function UserComponent({
                                     'yyyy-MM-dd HH:mm:ss',
                                     new Date(),
                                   ),
-                                  'yyyy/MM/dd HH:mm:ss',
+                                  'dd MMM yyyy h:mm a',
                                 )}
                               </div>
                             </div>
@@ -759,7 +772,7 @@ function UserComponent({
                                     'yyyy-MM-dd HH:mm:ss',
                                     new Date(),
                                   ),
-                                  'yyyy/MM/dd HH:mm:ss',
+                                  'dd MMM yyyy h:mm a',
                                 )}
                               </div>
                             </div>
@@ -771,6 +784,12 @@ function UserComponent({
                 ),
               )}
           </div>
+        </TabsContent>
+        <TabsContent
+          value="menu_list"
+          className="tab-content rounded-lg p-4 md:p-8"
+        >
+          <Menu />
         </TabsContent>
       </Tabs>
     </div>
