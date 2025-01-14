@@ -94,13 +94,27 @@ const columns: ColumnDef<MealRecord>[] = [
     header: 'Breakfast',
     accessorKey: 'breakfast',
     cell: ({ row }) => {
-      console.log(row);
       return (
         <div
-          title={`Breakfast coupon created at ${(([h, m]) =>
-            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
-            row.original.breakfast_time.split(':').map(Number),
-          )}`}
+          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+            row.original.breakfast === 'Consumed'
+              ? 'bg-green-500 text-white'
+              : row.original.breakfast === 'Expired'
+                ? 'bg-red-500 text-white'
+                : 'bg-yellow-500 text-black'
+          }`}
+          style={{
+            width: `${row.original.breakfast.length + 4}ch`,
+            minWidth: `${row.original.breakfast.length + 4}ch`,
+          }}
+          title={
+            row.original.breakfast_time.trim()
+              ? `Breakfast coupon created at ${(([h, m]) =>
+                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                  row.original.breakfast_time.split(':').map(Number),
+                )}`
+              : 'No breakfast coupon created'
+          }
         >
           {row.original.breakfast}
         </div>
@@ -113,10 +127,25 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          title={`Lunch coupon created at ${(([h, m]) =>
-            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
-            row.original.lunch_time.split(':').map(Number),
-          )}`}
+          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+            row.original.lunch === 'Consumed'
+              ? 'bg-green-500 text-white'
+              : row.original.lunch === 'Expired'
+                ? 'bg-red-500 text-white'
+                : 'bg-yellow-500 text-black'
+          }`}
+          style={{
+            width: `${row.original.lunch.length + 4}ch`,
+            minWidth: `${row.original.lunch.length + 4}ch`,
+          }}
+          title={
+            row.original.lunch_time.trim()
+              ? `Lunch coupon created at ${(([h, m]) =>
+                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                  row.original.lunch_time.split(':').map(Number),
+                )}`
+              : 'No Lunch coupon created'
+          }
         >
           {row.original.lunch}
         </div>
@@ -129,10 +158,25 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          title={`Evening Snacks coupon created at ${(([h, m]) =>
-            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
-            row.original.snacks_time.split(':').map(Number),
-          )}`}
+          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+            row.original.evening_snacks === 'Consumed'
+              ? 'bg-green-500 text-white'
+              : row.original.evening_snacks === 'Expired'
+                ? 'bg-red-500 text-white'
+                : 'bg-yellow-500 text-black'
+          }`}
+          style={{
+            width: `${row.original.evening_snacks.length + 4}ch`,
+            minWidth: `${row.original.evening_snacks.length + 4}ch`,
+          }}
+          title={
+            row.original.snacks_time.trim()
+              ? `Evening Snacks coupon created at ${(([h, m]) =>
+                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                  row.original.snacks_time.split(':').map(Number),
+                )}`
+              : 'No Snacks coupon created'
+          }
         >
           {row.original.evening_snacks}
         </div>
@@ -145,10 +189,25 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          title={`Dinner coupon created at ${(([h, m]) =>
-            `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
-            row.original.dinner_time.split(':').map(Number),
-          )}`}
+          className={`flex flex-auto justify-center rounded-full align-middle text-sm font-normal text-black ${
+            row.original.dinner === 'Consumed'
+              ? 'bg-green-500 text-white'
+              : row.original.dinner === 'Expired'
+                ? 'bg-red-500 text-white'
+                : 'bg-yellow-500 text-black'
+          }`}
+          style={{
+            width: `${row.original.dinner.length + 4}ch`,
+            minWidth: `${row.original.dinner.length + 4}ch`,
+          }}
+          title={
+            row.original.dinner_time.trim()
+              ? `Dinner coupon created at ${(([h, m]) =>
+                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                  row.original.dinner_time.split(':').map(Number),
+                )}`
+              : 'No Dinner coupon created'
+          }
         >
           {row.original.dinner}
         </div>
@@ -200,7 +259,6 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
   const [selectedValue, setSelectedValue] = useState('today');
 
   const convertMapToArray = (mapData: any) => {
-    console.log('data', mapData);
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
       breakfast: '-',
@@ -394,7 +452,6 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
                     defaultMonth={date?.from}
                     selected={date}
                     onSelect={(selected) => {
-                      console.log(selected);
                       setDate({
                         from: selected?.from,
                         to: selected?.to,

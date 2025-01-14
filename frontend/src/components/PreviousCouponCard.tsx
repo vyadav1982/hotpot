@@ -15,6 +15,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   const [feedback, setFeedback] = useState('');
   const [feedbackPresent, setFeedbackPresent] = useState(false);
   const [isEditable, setIsEditable] = useState(true);
+  console.log(coupon);
   useEffect(() => {
     if (coupon.emoji_reaction !== null && coupon.emoji_reaction !== '') {
       setSelectedEmoji(coupon.emoji_reaction);
@@ -52,7 +53,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   };
 
   return (
-    <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title}>
+    <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title} className={coupon.status==='Expired' ? `bg-slate-200` : ``}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg font-semibold">
           <div className=" flex-1 overflow-x-hidden text-left">
@@ -74,7 +75,11 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
           )}
         </CardTitle>
         <CardDescription className="text-center text-sm">
-          {coupon.coupon_date}
+          {new Date(coupon.coupon_date).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+          })}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4 p-6">
@@ -117,13 +122,15 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             className="w-3/4"
             value={feedback}
             onChange={handleFeedbackChange}
-            disabled={feedbackPresent}
+            disabled={feedbackPresent || coupon.status === 'Expired'}
           />
           <Button
             className="w-1/4"
             onClick={handleSubmit}
             disabled={
-              (feedback === '' && selectedEmoji === '') || feedbackPresent
+              (feedback === '' && selectedEmoji === '') ||
+              feedbackPresent ||
+              coupon.status === 'Expired'
             }
           >
             Submit
