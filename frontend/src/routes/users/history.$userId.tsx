@@ -17,7 +17,7 @@ import {
 } from '@/utils/PreviousCouponListProvider';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, LogOut } from 'lucide-react';
 import { useContext, useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { useFrappeUpdateDoc } from 'frappe-react-sdk';
@@ -55,7 +55,7 @@ function HistoryWrapperComponent() {
 function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
   let { date, setDate } = useContext(DateRangeContext);
   const { showConfirmDialog } = useDialog();
-  const { logout,userName } = useContext(UserContext);
+  const { logout, userName } = useContext(UserContext);
   const { previousCoupons, downcount } = useContext(PreviousCouponListContext);
   const { toast } = useToast();
   const handleLogout = async () => {
@@ -111,9 +111,16 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
         }
         rightContent={
           <div className="flex items-center gap-3">
-            <Button variant="destructive" onClick={handleLogout}>
+            <Button
+              variant="destructive"
+              className="hidden sm:block"
+              onClick={handleLogout}
+            >
               Logout
             </Button>
+            <button className="block sm:hidden" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+            </button>
           </div>
         }
       />

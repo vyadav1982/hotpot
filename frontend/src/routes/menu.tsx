@@ -11,7 +11,7 @@ import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 import { useToast } from '@/hooks/use-toast';
 import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
-import { Menu } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 
 export const Route = createFileRoute('/menu')({
   component: () => (
@@ -176,11 +176,14 @@ function RouteComponent() {
                 </Link>
                 <Button
                   variant="destructive"
+                  className="hidden sm:block"
                   onClick={handleLogout}
-                  className="w-full"
                 >
                   Logout
                 </Button>
+                <button className="block sm:hidden" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5" />
+                </button>
               </div>
             )}
 
@@ -190,9 +193,9 @@ function RouteComponent() {
                   Dashboard
                 </Button>
               </Link>
-              <Link to="/menu" className="w-full">
+              <Link to="/server" className="w-full">
                 <Button type="button" variant="outline">
-                  Menu
+                  Serve
                 </Button>
               </Link>
               <Button variant="destructive" onClick={handleLogout}>

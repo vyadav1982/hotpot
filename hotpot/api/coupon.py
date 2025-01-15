@@ -79,6 +79,7 @@ def get_coupon_for_guest(data):
 		new_user.employee_name = data["name"]
 		new_user.employee_id = data["mobile"]
 		new_user.is_guest = True
+		new_user.mobile_no = data["mobile"]
 		new_user.save(ignore_permissions=True)
 
 	created_coupons = []
@@ -91,9 +92,10 @@ def get_coupon_for_guest(data):
 
 	for meal, is_selected in meal_types.items():
 		if is_selected:
+			print("&&" * 10, data["mobile"])
 			coupon = {
 				"employee_name": data["name"],
-				"mobile": data["mobile"],
+				"mobile_no": data["mobile"],
 				"coupon_date": datetime.now().date(),
 				"coupon_time": datetime.now().replace(microsecond=0).time(),
 				"meal_title": meal,
@@ -182,9 +184,9 @@ def create_coupon(params):
 					coupon.save(ignore_permissions=True)
 					coupon_count = coupon_count - db_meal_value
 					doc = frappe.new_doc("Hotpot Coupons History")
-					doc.employee_id = employee_id
+					doc.employee_id = employee_ids
 					doc.type = "Creation"
-					doc.message = f"You Created a coupon for {meal} ({coupon.coupon_date})"
+					doc.message = f"You Created a coupon for {meal} ({datetime.strptime(coupon.coupon_date, '%Y-%m-%d').strftime('%d %b %Y')}) "
 					doc.insert()
 				else:
 					output.append(

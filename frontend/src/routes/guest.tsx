@@ -20,7 +20,7 @@ import {
 import { useFrappePostCall } from 'frappe-react-sdk';
 import { QRCodeSVG } from 'qrcode.react';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
-import { Loader2 } from 'lucide-react';
+import { Loader2, LogOut } from 'lucide-react';
 import { UserListContext, UserListProvider } from '@/utils/UserListProvider';
 import { InputField } from '@/components/InputField';
 import { Logo } from '@/components/Logo';
@@ -44,8 +44,10 @@ const guestSchema = z.object({
   name: z.string().min(1, 'Guest name is required'),
   mobile: z
     .string()
-    .regex(/^\d{10}$/, 'Mobile number must be 10 digits')
-    .min(1, 'Mobile number is required'),
+    .regex(/^\d{10}$/, { message: 'Mobile number must be 10 digits' }) 
+    .min(1, { message: 'Mobile number is required' }) ,
+    // .transform((value) => '+91- ' + value.trim()), 
+
   breakfast: z
     .boolean()
     .transform((value) => value === true)
@@ -164,9 +166,16 @@ function AdminGuestPage() {
                 serve
               </Button>
             </Link>
-            <Button variant="destructive" onClick={handleLogout}>
+            <Button
+              variant="destructive"
+              className="hidden sm:block"
+              onClick={handleLogout}
+            >
               Logout
             </Button>
+            <button className="block sm:hidden" onClick={handleLogout}>
+              <LogOut className="h-5 w-5" />
+            </button>
           </div>
         }
       />

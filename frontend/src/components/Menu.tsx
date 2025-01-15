@@ -25,7 +25,7 @@ const Menu = () => {
             special,
             breakfast,
             breakfast_special,
-            lunch,
+            luch,
             lunch_special,
             snacks,
             snacks_special,
@@ -34,16 +34,16 @@ const Menu = () => {
           } = dayPlan;
 
           const isDaySpecial = special
-            ? 'ring-2 ring-red-500 shadow-xl animate-bounce'
+            ? 'ring-2 ring-red-500 shadow-xl '
             : '';
 
           return (
             <Card
               key={day}
-              className={`p-4 ${isDaySpecial} transition-transform hover:scale-105 `}
+              className={`p-4 ${isDaySpecial} transition-transform  `}
             >
               <CardHeader>
-                <CardTitle className="text-xl font-semibold text-gray-800">
+                <CardTitle className="text-xl font-semibold ">
                   {day}{' '}
                   {special === 1 ? (
                     <span className="text-red-500">🔥</span>
@@ -58,34 +58,34 @@ const Menu = () => {
                         breakfast_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold text-gray-700">
+                      <h3 className="text-md font-bold ">
                         Breakfast
                       </h3>
-                      <p className="text-gray-600">{breakfast}</p>
+                      <p className="">{breakfast}</p>
                     </div>
                   )}
-                  {lunch && (
+                  {luch && (
                     <div
                       className={`rounded-lg p-2 ${
                         lunch_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold text-gray-700">Lunch</h3>
-                      <p className="text-gray-600">{lunch}</p>
+                      <h3 className="text-md font-bold ">Lunch</h3>
+                      <p className="">{luch}</p>
                     </div>
                   )}
                   {snacks && (
                     <div
                       className={`rounded-lg p-2 ${
                         snacks_special
-                          ? 'animate-bounce ring-2 ring-yellow-500'
+                          ? ' ring-2 ring-yellow-500'
                           : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold text-gray-700">
+                      <h3 className="text-md font-bold ">
                         Snacks
                       </h3>
-                      <p className="text-gray-600">{snacks}</p>
+                      <p className="">{snacks}</p>
                     </div>
                   )}
                   {dinner && (
@@ -94,10 +94,10 @@ const Menu = () => {
                         dinner_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold text-gray-700">
+                      <h3 className="text-md font-bold ">
                         Dinner
                       </h3>
-                      <p className="text-gray-600">{dinner}</p>
+                      <p className="">{dinner}</p>
                     </div>
                   )}
                 </div>

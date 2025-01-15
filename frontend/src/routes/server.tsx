@@ -360,7 +360,18 @@ function ServerPage() {
                               NOTICE: Coupon Not Valid for Today
                             </AlertTitle>
                             <AlertDescription>
-                              <p>The coupon is valid only for {coupon_date}.</p>
+                              <p>
+                                The coupon is valid only for{' '}
+                                {new Date(coupon_date).toLocaleDateString(
+                                  'en-GB',
+                                  {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  },
+                                )}
+                                .
+                              </p>
                             </AlertDescription>
                           </Alert>
                         );
@@ -387,6 +398,7 @@ function ServerPage() {
                       }
 
                       if (currentHour > endHour) {
+                        console.log(currentHour, endHour);
                         return (
                           <Alert className="bg-red-300">
                             <AlertTitle className="flex items-center gap-2">
