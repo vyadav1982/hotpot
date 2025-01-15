@@ -33,7 +33,7 @@ export const Route = createFileRoute('/coupon')({
 });
 
 function CouponPage() {
-  const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout, userName } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const userRole = 'Hotpot User';
   const [employeeId, setEmployeeId] = useState('');
@@ -61,7 +61,6 @@ function CouponPage() {
         });
 
         if (response) {
-          console.log(response);
           if (response.message.__islocal) {
             const couponData = `${response.message.title}_${employeeId}_${response.message.coupon_date}${response.message.coupon_time}`;
             setQrValue(couponData);
@@ -69,7 +68,6 @@ function CouponPage() {
           } else {
             setCouponConsumed(true);
             setConsumptionInfo(response.message);
-            console.log(response.message);
           }
         }
       } catch (error) {
@@ -104,7 +102,7 @@ function CouponPage() {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
           </div>
         }
         rightContent={

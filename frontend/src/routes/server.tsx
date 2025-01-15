@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useFrappePostCall, useFrappeUpdateDoc } from 'frappe-react-sdk';
 import { ErrorBanner } from '@/components/ErrorBanner';
-import { Camera, CookingPot, Loader2, TriangleAlert } from 'lucide-react';
+import { Camera, CookingPot, Loader2, Menu, TriangleAlert } from 'lucide-react';
 import { coupon_from_info, extractCouponInfo } from '@/utils/coupon';
 import { useDialog } from '@/hooks/use-dialog';
 import { HotpotCoupon } from '@/types/Hotpot/HotpotCoupon';
@@ -33,7 +33,7 @@ type MealTiming = {
 };
 
 function ServerPage() {
-  const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout, userName } = useContext(UserContext);
   const [scanning, setScanning] = useState(false);
   const [scannedData, setScannedData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +45,7 @@ function ServerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const [disableServe, setDisableServe] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { call: getCouponType } = useFrappePostCall(
     'hotpot.api.dashboard.get_coupon_type_list',
   );
@@ -130,7 +131,7 @@ function ServerPage() {
       updateDoc('Hotpot Coupon', couponDoc.name, {
         docstatus: 1,
         served_by: currentUser,
-        status : "Redeemed"
+        status: 'Redeemed',
       })
         .then(() => {
           resolve();
@@ -201,19 +202,59 @@ function ServerPage() {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
           </div>
         }
         rightContent={
-          <div className="flex gap-2">
-            <Link to="/dashboard" className="w-full">
-              <Button type="button" variant="outline">
-                Dashboard
+          <div>
+            <div className="flex items-center justify-between lg:hidden">
+              <Button
+                type="button"
+                variant="outline"
+                className="p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Menu className="h-5 w-5" />
               </Button>
-            </Link>
-            <Button variant="destructive" onClick={handleLogout}>
-              Logout
-            </Button>
+            </div>
+
+            {isMenuOpen && (
+              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
+                <Link to="/dashboard" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link to="/menu" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Menu
+                  </Button>
+                </Link>
+                <Button
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="w-full"
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
+
+            <div className="hidden gap-2 lg:flex">
+              <Link to="/dashboard" className="w-full">
+                <Button type="button" variant="outline">
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/menu" className="w-full">
+                <Button type="button" variant="outline">
+                  Menu
+                </Button>
+              </Link>
+              <Button variant="destructive" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
         }
       />

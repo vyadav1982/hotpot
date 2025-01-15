@@ -1,6 +1,5 @@
 import {
   useFrappeAuth,
-  useFrappeGetDoc,
   useFrappePostCall,
   useSWRConfig,
 } from 'frappe-react-sdk';
@@ -14,6 +13,7 @@ interface UserContextProps {
   logout: () => Promise<void>;
   updateCurrentUser: VoidFunction;
   userId: string;
+  userName:string;
 }
 
 export const UserContext = createContext<UserContextProps>({
@@ -21,24 +21,26 @@ export const UserContext = createContext<UserContextProps>({
   isLoading: false,
   logout: () => Promise.resolve(),
   updateCurrentUser: () => {},
-  userId:''
+  userId:'',
+  userName: '',
 });
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { mutate } = useSWRConfig();
   const { logout, currentUser, updateCurrentUser, isLoading } = useFrappeAuth();
   const [userId, setUserId] = useState('')
+  const [userName, setUserName] = useState('');
   const { call: getUser } = useFrappePostCall(
     'hotpot.api.users.get_hotpot_user_by_email',
   );
 
   const fetchUserDetails = async (currentUser: string) => {
     if (currentUser) {
-      console.log(currentUser);
       try {
         const response = await getUser({ email: currentUser });
-        const {name} = response.message.data;
-        setUserId(name)
+        const {employee_id,employee_name} = response.message.data;
+        setUserId(employee_id)
+        setUserName(employee_name)
       } catch (error) {
         console.error('Error fetching user:', error);
       }
@@ -47,8 +49,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
   useEffect(() => {
-    console.log(isHotpotUser())
-    if (isHotpotUser() && !isHotpotAdmin() && !isHotpotServer() && currentUser?.trim()) {
+    if ((isHotpotUser() && !isHotpotAdmin() && !isHotpotServer() && currentUser?.trim()) || (!isHotpotAdmin() && isHotpotServer() && currentUser?.trim())) {
       fetchUserDetails(currentUser);
     }
   }, [currentUser]);
@@ -93,6 +94,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         logout: handleLogout,
         currentUser: currentUser ?? '',
         userId,
+        userName,
       }}
     >
       {children}

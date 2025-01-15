@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/DataTable';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, Menu } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -253,10 +253,11 @@ function DashboardWrapperComponent() {
 }
 
 function DashboardComponent({ setDate, date }: RouteComponentProps) {
-  const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout, userName } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const [cards, setCards] = useState([]);
   const [selectedValue, setSelectedValue] = useState('today');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
@@ -395,19 +396,59 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
           </div>
         }
         rightContent={
-          <div className="flex gap-2">
-            <Link to="/server">
-              <Button type="button" variant="outline">
-                Serve
+          <div>
+            <div className="flex items-center justify-between lg:hidden">
+              <Button
+                type="button"
+                variant="outline"
+                className="p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Menu className="h-5 w-5" />
               </Button>
-            </Link>
-            <Button variant="destructive" onClick={handleLogout}>
-              Logout
-            </Button>
+            </div>
+
+            {isMenuOpen && (
+              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
+                <Link to="/server" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Serve
+                  </Button>
+                </Link>
+                <Link to="/menu" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Menu
+                  </Button>
+                </Link>
+                <Button
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="w-full"
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
+
+            <div className="hidden gap-2 lg:flex">
+              <Link to="/dashboard" className="w-full">
+                <Button type="button" variant="outline">
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/menu" className="w-full">
+                <Button type="button" variant="outline">
+                  Menu
+                </Button>
+              </Link>
+              <Button variant="destructive" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
         }
       />

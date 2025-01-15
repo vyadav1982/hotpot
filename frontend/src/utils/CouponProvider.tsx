@@ -79,7 +79,6 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
    * Instead, throttle this - wait for all events to subside
    */
   useFrappeDocTypeEventListener('Hotpot Coupon', () => {
-    console.log('running....frappe');
     mutate();
     setNewUpdatesAvailable(true);
   });
