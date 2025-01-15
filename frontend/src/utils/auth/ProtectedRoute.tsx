@@ -18,14 +18,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   ) {
     return <FullPageLoader />;
   }
-  if (isHotpotUser() && !isHotpotAdmin() && !isHotpotServer()) {
-    debugger;
-    const id = router.matches[0].params;
-    if (id.userId !== userId) {
-      return <Navigate to="/users/user/$userId" params={{ userId: userId }} />;
-    }
-  }
-
   if (!currentUser || currentUser === 'Guest') {
     return <Navigate to="/login" />;
   }
@@ -37,14 +29,18 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       return <Navigate to="/guest" />;
     }
   } else if (isHotpotUser()) {
-    const userAllowedPaths = ['/hotpot/users/user', '/hotpot/users/history'];
+    const userAllowedPaths = [`/hotpot/users/user/${userId}`, `/hotpot/users/history/${userId}`];
     if (
       !userAllowedPaths.some((path) => router.location.pathname.includes(path))
     ) {
       return <Navigate to="/users/user/$userId" params={{ userId: userId }} />;
     }
   } else if (isHotpotServer()) {
-    const serverAllowedPaths = ['/hotpot/server', '/hotpot/dashboard','/hotpot/menu'];
+    const serverAllowedPaths = [
+      '/hotpot/server',
+      '/hotpot/dashboard',
+      '/hotpot/',
+    ];
     if (
       !serverAllowedPaths.some((path) =>
         router.location.pathname.includes(path),
