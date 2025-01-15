@@ -74,7 +74,6 @@ function LoginPage() {
     setSelectedCard(value);
   };
   const showToast = (status:string,message:string) => {
-    console.log("hellos")
     if(status==='error'){
       toast({
         variant: 'destructive',
@@ -127,7 +126,6 @@ function LoginPage() {
               username: values.email,
               password: values.password,
             });
-            console.log(error);
             const URL = import.meta.env.VITE_BASE_NAME
               ? `/${import.meta.env.VITE_BASE_NAME}`
               : ``;

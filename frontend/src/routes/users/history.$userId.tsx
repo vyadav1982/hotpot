@@ -55,7 +55,7 @@ function HistoryWrapperComponent() {
 function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
   let { date, setDate } = useContext(DateRangeContext);
   const { showConfirmDialog } = useDialog();
-  const { logout } = useContext(UserContext);
+  const { logout,userName } = useContext(UserContext);
   const { previousCoupons, downcount } = useContext(PreviousCouponListContext);
   const { toast } = useToast();
   const handleLogout = async () => {
@@ -106,7 +106,7 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{userId}</div>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
           </div>
         }
         rightContent={
@@ -178,38 +178,6 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
             totalPages={downcount}
             onPageChange={setPage}
           />
-          // <div className="flex items-center  justify-between  py-4 ">
-          //   <div className="flex items-center  gap-4  py-4 ">
-          //     <Button
-          //       variant="outline"
-          //       size="sm"
-          //       onClick={() => {
-          //         if (page - 1 < 1) {
-          //           return;
-          //         } else {
-          //           setPage(page - 1);
-          //         }
-          //       }}
-          //       disabled={page == 1}
-          //     >
-          //       Previous
-          //     </Button>
-          //     <Button
-          //       variant="outline"
-          //       size="sm"
-          //       onClick={() => setPage(page + 1)}
-          //       disabled={
-          //         downcount == 0 ||
-          //         (!!downcount && page === Math.ceil(downcount / 10))
-          //       }
-          //     >
-          //       Next
-          //     </Button>
-          //     <div>
-          //       Page {page} - {downcount && Math.ceil(downcount / 10)}
-          //     </div>
-          //   </div>
-          // </div>
         )}
       </div>
     </div>

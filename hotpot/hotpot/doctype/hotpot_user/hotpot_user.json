@@ -85,13 +85,13 @@
   },
   {
    "fieldname": "password",
-   "fieldtype": "Password",
+   "fieldtype": "Data",
    "label": "Password"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-07 08:53:11.122662",
+ "modified": "2025-01-15 12:53:45.600103",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

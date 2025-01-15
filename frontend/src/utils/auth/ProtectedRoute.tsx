@@ -1,6 +1,6 @@
 import { useContext, ReactNode } from 'react';
 import { UserContext } from './UserProvider';
-import { Navigate, useRouterState } from '@tanstack/react-router';
+import { Navigate, Route, useRouterState } from '@tanstack/react-router';
 import { FullPageLoader } from '@/components/FullPageLoader';
 import { isHotpotAdmin, isHotpotServer, isHotpotUser } from '../roles';
 
@@ -18,6 +18,13 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   ) {
     return <FullPageLoader />;
   }
+  if (isHotpotUser() && !isHotpotAdmin() && !isHotpotServer()) {
+    debugger;
+    const id = router.matches[0].params;
+    if (id.userId !== userId) {
+      return <Navigate to="/users/user/$userId" params={{ userId: userId }} />;
+    }
+  }
 
   if (!currentUser || currentUser === 'Guest') {
     return <Navigate to="/login" />;
@@ -34,10 +41,10 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     if (
       !userAllowedPaths.some((path) => router.location.pathname.includes(path))
     ) {
-      return <Navigate to="/users/user/$userId" params={{ userId: '1' }} />;
+      return <Navigate to="/users/user/$userId" params={{ userId: userId }} />;
     }
   } else if (isHotpotServer()) {
-    const serverAllowedPaths = ['/hotpot/server', '/hotpot/dashboard'];
+    const serverAllowedPaths = ['/hotpot/server', '/hotpot/dashboard','/hotpot/menu'];
     if (
       !serverAllowedPaths.some((path) =>
         router.location.pathname.includes(path),

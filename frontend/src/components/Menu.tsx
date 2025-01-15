@@ -3,12 +3,11 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 const Menu = () => {
-  const [mealPlan, setMealPlan] = useState<{ [key: string]: any }>({}); 
+  const [mealPlan, setMealPlan] = useState<{ [key: string]: any }>({});
   const { data } = useFrappeGetDocList('Hotpot Menu', { fields: ['*'] });
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       const formattedMealPlan = data.reduce((acc: any, dayPlan: any) => {
         acc[dayPlan.day] = dayPlan;
         return acc;
@@ -34,7 +33,9 @@ const Menu = () => {
             dinner_special,
           } = dayPlan;
 
-          const isDaySpecial = special ? 'ring-2 ring-red-500 shadow-xl animate-bounce' : '';
+          const isDaySpecial = special
+            ? 'ring-2 ring-red-500 shadow-xl animate-bounce'
+            : '';
 
           return (
             <Card
@@ -43,7 +44,10 @@ const Menu = () => {
             >
               <CardHeader>
                 <CardTitle className="text-xl font-semibold text-gray-800">
-                  {day} {special && <span className="text-red-500">🔥</span>}
+                  {day}{' '}
+                  {special === 1 ? (
+                    <span className="text-red-500">🔥</span>
+                  ) : null}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -73,7 +77,9 @@ const Menu = () => {
                   {snacks && (
                     <div
                       className={`rounded-lg p-2 ${
-                        snacks_special ? 'ring-2 ring-yellow-500' : ''
+                        snacks_special
+                          ? 'animate-bounce ring-2 ring-yellow-500'
+                          : ''
                       }`}
                     >
                       <h3 className="text-md font-bold text-gray-700">
@@ -85,7 +91,7 @@ const Menu = () => {
                   {dinner && (
                     <div
                       className={`rounded-lg p-2 ${
-                        dinner_special ? 'ring-2 ring-yellow-500 animate-pulse' : ''
+                        dinner_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
                       <h3 className="text-md font-bold text-gray-700">

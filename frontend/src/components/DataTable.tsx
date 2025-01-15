@@ -64,7 +64,6 @@ export function DataTable<TData, TValue>({
   });
 
   const handleExport = (format: string) => {
-    console.log('format', format);
     setSelectedValue(format);
     if (format === 'pdf') {
       exportToPDF(data);

@@ -4,16 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useFrappeGetDocList, useFrappePostCall } from 'frappe-react-sdk';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
+import { useToast } from '@/hooks/use-toast';
+import { UserContext } from '@/utils/auth/UserProvider';
+import { useDialog } from '@/hooks/use-dialog';
+import { Menu } from 'lucide-react';
 
 export const Route = createFileRoute('/menu')({
-  component: RouteComponent,
+  component: () => (
+    <ProtectedRoute>
+      <RouteComponent />
+    </ProtectedRoute>
+  ),
 });
 
 function RouteComponent() {
   const { call: addMeal } = useFrappePostCall('hotpot.api.menu.set_menu');
+  const { toast } = useToast();
+  const { userName, logout } = useContext(UserContext);
+  const { showConfirmDialog } = useDialog();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const [menu, setMenu] = useState({
     Monday: { meals: {}, daySpecial: false },
@@ -27,13 +40,14 @@ function RouteComponent() {
 
   const mealTypes = ['breakfast', 'lunch', 'snacks', 'dinner'];
 
-  const { data } = useFrappeGetDocList('Hotpot Menu', { fields: ['*'] });
+  const { data, error } = useFrappeGetDocList('Hotpot Menu', { fields: ['*'] });
+  if (error) {
+  }
 
   useEffect(() => {
     if (data) {
-      console.log(data)
       const updatedMenu = { ...menu };
-      data.forEach((item:any) => {
+      data.forEach((item: any) => {
         updatedMenu[item.day] = {
           meals: {
             breakfast: {
@@ -61,7 +75,7 @@ function RouteComponent() {
   }, [data]);
 
   const updateMenu = (day: string, meal: string, field: string, value: any) => {
-    setMenu((prev) => ({
+    setMenu((prev: any) => ({
       ...prev,
       [day]: {
         ...prev[day],
@@ -74,7 +88,7 @@ function RouteComponent() {
   };
 
   const updateDaySpecial = (day: string, value: boolean) => {
-    setMenu((prev) => ({
+    setMenu((prev: any) => ({
       ...prev,
       [day]: { ...prev[day], daySpecial: value },
     }));
@@ -82,29 +96,109 @@ function RouteComponent() {
 
   const handleSubmit = async () => {
     const isValid = Object.values(menu).some(({ meals }) =>
-      Object.values(meals).some((meal) => meal.meal.trim() !== ''),
+      Object.values(meals).some((meal: any) => meal.meal.trim() !== ''),
     );
 
     if (!isValid) {
-      alert('Please fill in at least one meal for the week before submitting.');
+      toast({
+        variant: 'destructive',
+        title: 'Warning',
+        description: 'Please select a date range.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+      });
       return;
     }
 
     const { message } = await addMeal({
       data: JSON.stringify(menu, null, 2),
     });
-    console.log(menu,message);
-    alert('Menu saved successfully!');
+    toast({
+      title: 'Success',
+      description: `Menu saved successfully!`,
+      className:
+        'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+    });
+  };
+
+  const handleLogout = async () => {
+    try {
+      await showConfirmDialog({
+        title: 'Confirm Logout',
+        description: 'Are you sure you want to logout?',
+        confirmLabel: 'Logout',
+        variant: 'destructive',
+        onConfirm: async () => {
+          await logout();
+        },
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (
     <div className="min-h-screen">
       <TopBar
-        className="px-4 pt-3 shadow-md sm:px-8"
+        className="px-4 pt-3 sm:px-8"
         leftContent={
           <div className="flex items-center gap-3">
-            <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
-            <div className="text-lg font-bold sm:text-2xl">Hi,</div>
+            <Link to="/login">
+              <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
+            </Link>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
+          </div>
+        }
+        rightContent={
+          <div>
+            <div className="flex items-center justify-between lg:hidden">
+              <Button
+                type="button"
+                variant="outline"
+                className="p-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {isMenuOpen && (
+              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
+                <Link to="/dashboard" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link to="/server" className="block">
+                  <Button type="button" variant="outline" className="w-full">
+                    Serve
+                  </Button>
+                </Link>
+                <Button
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="w-full"
+                >
+                  Logout
+                </Button>
+              </div>
+            )}
+
+            <div className="hidden gap-2 lg:flex">
+              <Link to="/dashboard" className="w-full">
+                <Button type="button" variant="outline">
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/menu" className="w-full">
+                <Button type="button" variant="outline">
+                  Menu
+                </Button>
+              </Link>
+              <Button variant="destructive" onClick={handleLogout}>
+                Logout
+              </Button>
+            </div>
           </div>
         }
       />

@@ -83,14 +83,12 @@ const SignUpForm = ({ handleCardChange, showToast }: any) => {
     if(signUpError){
       setError(signUpError);
     }
-    console.log(message)
     if(message.status==='success'){
       handleCardChange('login');
     }
     setTimeout(() => {
       setError(null)
     }, 5000);
-    console.log(loading);
     
   };
   return (

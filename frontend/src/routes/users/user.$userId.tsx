@@ -110,7 +110,7 @@ function UserComponent({
   downPage,
   setDownPage,
 }: UserComponentProps) {
-  const { logout } = useContext(UserContext);
+  const { logout,userName } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const [cards, setCards] = useState([]);
   const [selectedValue, setSelectedValue]: any = useState([]);
@@ -342,7 +342,7 @@ function UserComponent({
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{userId}</div>
+            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
           </div>
         }
         rightContent={
@@ -369,7 +369,7 @@ function UserComponent({
                       }`}
                     />
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">
+                  <span className="text-sm font-semibold">
                     Coupon Count: {token}
                   </span>
                 </>
