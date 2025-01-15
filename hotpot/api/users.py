@@ -76,10 +76,8 @@ def get_hotpot_user_by_employee_id(employee_id):
 @frappe.whitelist(allow_guest=True)
 @frappe.whitelist()
 def get_hotpot_user_by_email(email):
-	print("$$" * 10, email)
 	try:
-		user = frappe.db.get_list("Hotpot User", filters=[["email", "=", email]])
-		print("&&" * 10, user)
+		user = frappe.db.get_list("Hotpot User", filters=[["email", "=", email]], fields=["*"])
 		if user:
 			return {"status": "success", "data": user[0]}
 		else:
