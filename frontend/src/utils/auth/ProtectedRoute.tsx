@@ -29,7 +29,10 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       return <Navigate to="/guest" />;
     }
   } else if (isHotpotUser()) {
-    const userAllowedPaths = [`/hotpot/users/user/${userId}`, `/hotpot/users/history/${userId}`];
+    const userAllowedPaths = [
+      `/hotpot/users/user/${userId}`,
+      `/hotpot/users/history/${userId}`,
+    ];
     if (
       !userAllowedPaths.some((path) => router.location.pathname.includes(path))
     ) {
@@ -39,6 +42,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const serverAllowedPaths = [
       '/hotpot/server',
       '/hotpot/dashboard',
+      '/hotpot/menu',
       '/hotpot/',
     ];
     if (
