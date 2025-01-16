@@ -163,7 +163,7 @@ function RouteComponent() {
             </div>
 
             {isMenuOpen && (
-              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
+              <div className="absolute right-4 z-50 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
                 <Link to="/dashboard" className="block">
                   <Button type="button" variant="outline" className="w-full">
                     Dashboard
@@ -176,14 +176,11 @@ function RouteComponent() {
                 </Link>
                 <Button
                   variant="destructive"
-                  className="hidden sm:block"
                   onClick={handleLogout}
+                  className="w-full"
                 >
                   Logout
                 </Button>
-                <button className="block sm:hidden" onClick={handleLogout}>
-                  <LogOut className="h-5 w-5" />
-                </button>
               </div>
             )}
 

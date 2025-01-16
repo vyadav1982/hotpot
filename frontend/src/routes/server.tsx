@@ -219,7 +219,7 @@ function ServerPage() {
             </div>
 
             {isMenuOpen && (
-              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
+              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden z-50">
                 <Link to="/dashboard" className="block">
                   <Button type="button" variant="outline" className="w-full">
                     Dashboard
@@ -349,7 +349,6 @@ function ServerPage() {
 
                       const { coupon_date, coupon_time, title } = couponInfo;
                       const { startHour, endHour } = getMealTimeRange(title);
-                      const currentTime = new Date();
                       if (
                         new Date().toISOString().split('T')[0] !== coupon_date
                       ) {
@@ -380,6 +379,7 @@ function ServerPage() {
                       const currentHour = parseInt(
                         `${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '')}`,
                       );
+                      console.log(currentHour,startHour)
                       if (currentHour < startHour) {
                         return (
                           <Alert className="bg-blue-300">
