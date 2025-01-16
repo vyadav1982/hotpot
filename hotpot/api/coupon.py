@@ -184,7 +184,7 @@ def create_coupon(params):
 					coupon.save(ignore_permissions=True)
 					coupon_count = coupon_count - db_meal_value
 					doc = frappe.new_doc("Hotpot Coupons History")
-					doc.employee_id = employee_ids
+					doc.employee_id = employee_id
 					doc.type = "Creation"
 					doc.message = f"You Created a coupon for {meal} ({datetime.strptime(coupon.coupon_date, '%Y-%m-%d').strftime('%d %b %Y')}) "
 					doc.insert()
