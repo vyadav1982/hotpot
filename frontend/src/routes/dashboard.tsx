@@ -1,7 +1,7 @@
 import { DataTable } from '@/components/DataTable';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { ArrowUpDown, Menu } from 'lucide-react';
+import { ArrowUpDown, LogOut, Menu } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -96,13 +96,17 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
-            row.original.breakfast === 'Consumed'
-              ? 'bg-green-500 text-white'
-              : row.original.breakfast === 'Expired'
-                ? 'bg-red-500 text-white'
-                : 'bg-yellow-500 text-black'
-          }`}
+          className={
+            row.original.breakfast !== 'N/A'
+              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+                  row.original.breakfast === 'Consumed'
+                    ? 'bg-green-500 text-white'
+                    : row.original.breakfast === 'Expired'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-yellow-500 text-black'
+                }`
+              : ''
+          }
           style={{
             width: `${row.original.breakfast.length + 4}ch`,
             minWidth: `${row.original.breakfast.length + 4}ch`,
@@ -127,13 +131,17 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
-            row.original.lunch === 'Consumed'
-              ? 'bg-green-500 text-white'
-              : row.original.lunch === 'Expired'
-                ? 'bg-red-500 text-white'
-                : 'bg-yellow-500 text-black'
-          }`}
+          className={
+            row.original.lunch !== 'N/A'
+              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+                  row.original.lunch === 'Consumed'
+                    ? 'bg-green-500 text-white'
+                    : row.original.lunch === 'Expired'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-yellow-500 text-black'
+                }`
+              : ''
+          }
           style={{
             width: `${row.original.lunch.length + 4}ch`,
             minWidth: `${row.original.lunch.length + 4}ch`,
@@ -158,13 +166,17 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          className={`flex justify-center rounded-full align-middle text-sm font-normal text-black ${
-            row.original.evening_snacks === 'Consumed'
-              ? 'bg-green-500 text-white'
-              : row.original.evening_snacks === 'Expired'
-                ? 'bg-red-500 text-white'
-                : 'bg-yellow-500 text-black'
-          }`}
+          className={
+            row.original.evening_snacks !== 'N/A'
+              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
+                  row.original.evening_snacks === 'Consumed'
+                    ? 'bg-green-500 text-white'
+                    : row.original.evening_snacks === 'Expired'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-yellow-500 text-black'
+                }`
+              : ''
+          }
           style={{
             width: `${row.original.evening_snacks.length + 4}ch`,
             minWidth: `${row.original.evening_snacks.length + 4}ch`,
@@ -189,13 +201,17 @@ const columns: ColumnDef<MealRecord>[] = [
     cell: ({ row }) => {
       return (
         <div
-          className={`flex flex-auto justify-center rounded-full align-middle text-sm font-normal text-black ${
-            row.original.dinner === 'Consumed'
-              ? 'bg-green-500 text-white'
-              : row.original.dinner === 'Expired'
-                ? 'bg-red-500 text-white'
-                : 'bg-yellow-500 text-black'
-          }`}
+          className={
+            row.original.dinner !== 'N/A'
+              ? `flex flex-auto justify-center rounded-full align-middle text-sm font-normal text-black ${
+                  row.original.dinner === 'Consumed'
+                    ? 'bg-green-500 text-white'
+                    : row.original.dinner === 'Expired'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-yellow-500 text-black'
+                }`
+              : ''
+          }
           style={{
             width: `${row.original.dinner.length + 4}ch`,
             minWidth: `${row.original.dinner.length + 4}ch`,
@@ -262,10 +278,10 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
     const initializeMeals = () => ({
-      breakfast: '-',
-      lunch: '-',
-      evening_snacks: '-',
-      dinner: '-',
+      breakfast: 'N/A',
+      lunch: 'N/A',
+      evening_snacks: 'N/A',
+      dinner: 'N/A',
     });
 
     mapData.forEach((value: any, key: any) => {
@@ -426,18 +442,21 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
                 </Link>
                 <Button
                   variant="destructive"
+                  className="hidden sm:block"
                   onClick={handleLogout}
-                  className="w-full"
                 >
                   Logout
                 </Button>
+                <button className="block sm:hidden" onClick={handleLogout}>
+                  <LogOut className="h-5 w-5" />
+                </button>
               </div>
             )}
 
             <div className="hidden gap-2 lg:flex">
-              <Link to="/dashboard" className="w-full">
+              <Link to="/server" className="w-full">
                 <Button type="button" variant="outline">
-                  Dashboard
+                  Serve
                 </Button>
               </Link>
               <Link to="/menu" className="w-full">

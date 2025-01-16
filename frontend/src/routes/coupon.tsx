@@ -23,6 +23,7 @@ import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
+import { LogOut } from 'lucide-react';
 
 export const Route = createFileRoute('/coupon')({
   component: () => (
@@ -113,9 +114,16 @@ function CouponPage() {
                   Serve
                 </Button>
               </Link>
-              <Button variant="destructive" onClick={handleLogout}>
+              <Button
+                variant="destructive"
+                className="hidden sm:block"
+                onClick={handleLogout}
+              >
                 Logout
               </Button>
+              <button className="block sm:hidden" onClick={handleLogout}>
+                <LogOut className="h-5 w-5" />
+              </button>
             </div>
           )
         }

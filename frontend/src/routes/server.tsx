@@ -131,7 +131,7 @@ function ServerPage() {
       updateDoc('Hotpot Coupon', couponDoc.name, {
         docstatus: 1,
         served_by: currentUser,
-        status: 'Redeemed',
+        status: 'Consumed',
       })
         .then(() => {
           resolve();
@@ -315,7 +315,7 @@ function ServerPage() {
                   <div className="space-y-4">
                     {(() => {
                       const couponInfo = coupon_from_info(scannedData);
-
+                      console.log(couponInfo, couponDoc);
                       if (!couponInfo) {
                         return (
                           <Alert className="bg-red-300">
@@ -360,14 +360,25 @@ function ServerPage() {
                               NOTICE: Coupon Not Valid for Today
                             </AlertTitle>
                             <AlertDescription>
-                              <p>The coupon is valid only for {coupon_date}.</p>
+                              <p>
+                                The coupon is valid only for{' '}
+                                {new Date(coupon_date).toLocaleDateString(
+                                  'en-GB',
+                                  {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  },
+                                )}
+                                .
+                              </p>
                             </AlertDescription>
                           </Alert>
                         );
                       }
 
                       const currentHour = parseInt(
-                        `${currentTime.getHours()}${currentTime.getMinutes().toString().padStart(2, '0')}`,
+                        `${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '')}`,
                       );
                       if (currentHour < startHour) {
                         return (
@@ -387,6 +398,7 @@ function ServerPage() {
                       }
 
                       if (currentHour > endHour) {
+                        console.log(currentHour, endHour);
                         return (
                           <Alert className="bg-red-300">
                             <AlertTitle className="flex items-center gap-2">

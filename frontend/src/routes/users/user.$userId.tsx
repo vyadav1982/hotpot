@@ -25,6 +25,7 @@ import {
   BadgePlus,
   CalendarIcon,
   Loader2,
+  LogOut,
   Wallet,
 } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
@@ -110,7 +111,7 @@ function UserComponent({
   downPage,
   setDownPage,
 }: UserComponentProps) {
-  const { logout,userName } = useContext(UserContext);
+  const { logout, userName } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const [cards, setCards] = useState([]);
   const [selectedValue, setSelectedValue]: any = useState([]);
@@ -369,17 +370,28 @@ function UserComponent({
                       }`}
                     />
                   </div>
-                  <span className="text-sm font-semibold">
-                    Coupon Count: {token}
+                  <span className="hidden text-sm font-semibold sm:block ">
+                    Coupon Count:
                   </span>
+                  <span className="text-sm font-semibold ">{token}</span>
                 </>
               ) : (
                 <Loader2 className="animate-spin" />
               )}
             </div>
-            <Button variant="destructive" onClick={handleLogout}>
+            <Button
+              variant="destructive"
+              className="hidden sm:block" 
+              onClick={handleLogout}
+            >
               Logout
             </Button>
+            <button
+              className="block sm:hidden"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
           </div>
         }
       />
@@ -388,7 +400,7 @@ function UserComponent({
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="flex items-start justify-center">
+        <TabsList className="hide-scrollbar flex items-start justify-center overflow-x-scroll pl-15">
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
             Generate
           </TabsTrigger>
