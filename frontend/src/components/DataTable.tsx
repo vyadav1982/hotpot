@@ -96,15 +96,15 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between space-x-2 py-4">
+    <div className="">
+      <div className="flex flex-col items-start justify-between gap-4 py-4 md:flex-row md:items-center md:space-x-2">
         <Input
           placeholder="Filter By Employee Id..."
           value={(table.getColumn('empId')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
             table.getColumn('empId')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full md:max-w-sm"
         />
         <Input
           placeholder="Filter By Employee Name..."
@@ -112,21 +112,24 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn('empName')?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="w-full md:max-w-sm"
         />
-        <div onClick={() => handleExport(selectedValue)}>
+        <div
+          className="w-full md:w-auto"
+          onClick={() => handleExport(selectedValue)}
+        >
           <Select
             value={selectedValue}
             onValueChange={(value) => handleExport(value)}
           >
-            <SelectTrigger className="flex w-[180px] items-center gap-2 rounded-md border px-4 py-2 shadow-sm">
+            <SelectTrigger className="flex w-full items-center gap-2 rounded-md border px-4 py-2 shadow-sm md:w-[180px]">
               <Download onClick={() => handleExport} />
               <SelectValue
                 placeholder="Export As"
                 className="font-medium text-gray-700"
               />
             </SelectTrigger>
-            <SelectContent className="w-[180px] rounded-md border border-gray-300  shadow-lg">
+            <SelectContent className="w-full rounded-md border border-gray-300 shadow-lg md:w-[180px]">
               <SelectGroup>
                 <SelectItem value="xlsx" className="px-4 py-2">
                   Excel
@@ -139,23 +142,22 @@ export function DataTable<TData, TValue>({
           </Select>
         </div>
       </div>
-      <div className="rounded-md border">
-        <Table>
+
+      <div className="overflow-x-auto rounded-md border flex hover:display:block w-full">
+        <Table >
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -189,7 +191,8 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+
+      <div className="flex flex-col items-center justify-between gap-4 py-4 md:flex-row md:items-center md:space-x-2">
         <Button
           variant="outline"
           size="sm"

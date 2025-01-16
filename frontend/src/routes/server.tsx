@@ -184,7 +184,6 @@ function ServerPage() {
   useEffect(() => {
     const fetchCouponTypes = async () => {
       const response = await getCouponType({});
-      console.log(response);
       setCouponType(response.message);
     };
     fetchCouponTypes();
@@ -314,7 +313,6 @@ function ServerPage() {
                   <div className="space-y-4">
                     {(() => {
                       const couponInfo = coupon_from_info(scannedData);
-                      console.log(couponInfo, couponDoc);
                       if (!couponInfo) {
                         return (
                           <Alert className="bg-red-300">
@@ -378,7 +376,6 @@ function ServerPage() {
                       const currentHour = parseInt(
                         `${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '')}`,
                       );
-                      console.log(currentHour, startHour);
                       if (currentHour < startHour) {
                         return (
                           <Alert className="bg-blue-300">
@@ -397,7 +394,6 @@ function ServerPage() {
                       }
 
                       if (currentHour > endHour) {
-                        console.log(currentHour, endHour);
                         return (
                           <Alert className="bg-red-300">
                             <AlertTitle className="flex items-center gap-2">

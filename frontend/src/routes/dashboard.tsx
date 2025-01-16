@@ -469,8 +469,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
         }
       />
       <div className="mb-4 px-24">
-        {/* Header Section */}
-        <Card className="my-6 flex flex-wrap items-center justify-between rounded-lg p-4 shadow-md">
+        <Card className="my-6 flex flex-wrap items-center justify-between rounded-lg p-4 shadow-md ">
           <div className="flex items-center gap-4">
             {'Total Consumed Coupons : '}
             {CouponsCount.total_coupons}
@@ -537,7 +536,6 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
           </div>
         </Card>
 
-        {/* Cards Section */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {cards.map((item: any, index: number) => (
             <Card key={index} className="rounded-lg border shadow-lg">
@@ -576,8 +574,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
           ))}
         </div>
 
-        {/* Table Section */}
-        <div className="mt-6 rounded-lg border p-4 shadow-lg">
+        <div className="mt-6 overflow-x-auto rounded-lg border p-4 shadow-lg">
           <DataTable columns={columns} data={data} />
         </div>
       </div>
