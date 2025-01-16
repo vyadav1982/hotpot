@@ -184,13 +184,12 @@ function ServerPage() {
   useEffect(() => {
     const fetchCouponTypes = async () => {
       const response = await getCouponType({});
+      console.log(response);
       setCouponType(response.message);
     };
-    return () => {
-      fetchCouponTypes();
-      setScanning(false);
-      setIsReaderReady(false);
-    };
+    fetchCouponTypes();
+    setScanning(false);
+    setIsReaderReady(false);
   }, []);
 
   return (
@@ -219,7 +218,7 @@ function ServerPage() {
             </div>
 
             {isMenuOpen && (
-              <div className="absolute right-4 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden z-50">
+              <div className="absolute right-4 z-50 mt-2 space-y-2 rounded-md bg-white p-4 shadow-lg lg:hidden">
                 <Link to="/dashboard" className="block">
                   <Button type="button" variant="outline" className="w-full">
                     Dashboard
@@ -379,7 +378,7 @@ function ServerPage() {
                       const currentHour = parseInt(
                         `${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false }).replace(':', '')}`,
                       );
-                      console.log(currentHour,startHour)
+                      console.log(currentHour, startHour);
                       if (currentHour < startHour) {
                         return (
                           <Alert className="bg-blue-300">
