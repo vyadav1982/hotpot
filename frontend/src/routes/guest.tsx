@@ -45,8 +45,8 @@ const guestSchema = z.object({
   mobile: z
     .string()
     .regex(/^\d{10}$/, { message: 'Mobile number must be 10 digits' }) 
-    .min(1, { message: 'Mobile number is required' }) ,
-    // .transform((value) => '+91- ' + value.trim()), 
+    .min(1, { message: 'Mobile number is required' })
+    .transform((value) => '+91- ' + value.trim()), 
 
   breakfast: z
     .boolean()
