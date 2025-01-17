@@ -74,12 +74,14 @@ def create_coupon(data):
 
 @frappe.whitelist(allow_guest=True)
 def get_coupon_for_guest(data):
+	current_time = datetime.now().astimezone(pytz.timezone("Asia/Kolkata"))
 	if not frappe.db.exists("Hotpot User", data.get("mobile")):
 		new_user = frappe.new_doc("Hotpot User")
 		new_user.employee_name = data["name"]
 		new_user.employee_id = data["mobile"]
 		new_user.is_guest = True
 		new_user.mobile_no = data["mobile"]
+		new_user.guest_of = data["empId"]
 		new_user.save(ignore_permissions=True)
 
 	created_coupons = []
@@ -92,16 +94,19 @@ def get_coupon_for_guest(data):
 
 	for meal, is_selected in meal_types.items():
 		if is_selected:
-			print("&&" * 10, data["mobile"])
-			coupon = {
-				"employee_name": data["name"],
-				"mobile_no": data["mobile"],
-				"coupon_date": datetime.now().date(),
-				"coupon_time": datetime.now().replace(microsecond=0).time(),
-				"meal_title": meal,
-			}
+			coupon = frappe.new_doc("Hotpot Coupon")
+			coupon.employee_id = data["mobile"]
+			coupon.coupon_date = datetime.now().date()
+			coupon.coupon_time = f"{current_time.hour}:{current_time.minute}:{current_time.second}"
+			coupon.title = meal
+			coupon.status = "Upcoming"
+			if not frappe.db.exists(
+				"Hotpot Coupon",
+				meal + "_" + data["mobile"] + "_" + (datetime.now().date()).strftime("%Y-%m-%d"),
+				created_coupons.append(coupon)
+			):
+				coupon.save(ignore_permissions=True)
 
-			created_coupons.append(coupon)
 
 	return created_coupons
 

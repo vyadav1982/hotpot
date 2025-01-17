@@ -128,7 +128,7 @@ function AdminGuestPage() {
     }
   };
   function getName(item: any): string {
-    switch (item.meal_title) {
+    switch (item.title) {
       case 'Breakfast':
         return 'Breakfast';
       case 'Lunch':
@@ -356,26 +356,26 @@ function AdminGuestPage() {
         </Form>
       </div>
       {showQr && (
-        <div className="overflow-hidden rounded-xl border-2 border-dashed border-orange-300 bg-gray-50 p-6 shadow-md">
+        <div className="overflow-hidden rounded-xl border-2 border-dashed border-orange-300  p-6 shadow-md">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {qr && qr.length > 0 ? (
               qr.map((item: any, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed bg-white p-4 shadow-md"
+                  className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed  p-4 shadow-md"
                 >
                   <QRCodeSVG
-                    value={`${item.meal_title}_${item.mobile}_${item.coupon_date}${item.coupon_time}`}
+                    value={`${item.title}_${item.employee_id}_${item.coupon_date}${item.coupon_time}`}
                     size={180}
                     className="border-2 border-solid"
                   />
-                  <span className="mt-4 text-sm font-medium text-gray-700 ">
+                  <span className="mt-4 text-sm font-medium  ">
                     QR Code for {getName(item)}
                   </span>
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center text-gray-500 dark:text-gray-400">
+              <div className="col-span-full text-center">
                 No QR codes to display.
               </div>
             )}
