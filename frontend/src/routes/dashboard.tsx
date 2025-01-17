@@ -40,6 +40,8 @@ import { UserContext } from '@/utils/auth/UserProvider';
 import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
+import { useToast } from '@/hooks/use-toast';
+
 
 export const Route = createFileRoute('/dashboard')({
   component: DashboardWrapperComponent,
@@ -274,6 +276,7 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
   const [cards, setCards] = useState([]);
   const [selectedValue, setSelectedValue] = useState('today');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { toast } = useToast();
 
   const convertMapToArray = (mapData: any) => {
     const entryMap = new Map<string, MealRecord>();
@@ -399,7 +402,13 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
         },
       });
     } catch (error) {
-      console.error('Error during logout:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Error during logout',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+      });
     }
   };
 
