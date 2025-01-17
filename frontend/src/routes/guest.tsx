@@ -40,7 +40,7 @@ export const Route = createFileRoute('/guest')({
 const guestSchema = z.object({
   empId: z
     .string()
-    .min(1, 'Emp ID is required')
+    .min(1, 'Emp ID is required'),
   name: z.string().min(1, 'Guest name is required'),
   mobile: z
     .string()
