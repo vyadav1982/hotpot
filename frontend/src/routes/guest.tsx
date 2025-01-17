@@ -24,6 +24,8 @@ import { Loader2, LogOut } from 'lucide-react';
 import { UserListContext, UserListProvider } from '@/utils/UserListProvider';
 import { InputField } from '@/components/InputField';
 import { Logo } from '@/components/Logo';
+import { useToast } from '@/hooks/use-toast';
+
 
 export const Route = createFileRoute('/guest')({
   component: () => (
@@ -39,8 +41,6 @@ const guestSchema = z.object({
   empId: z
     .string()
     .min(1, 'Emp ID is required')
-    .transform((value) => Number(value))
-    .refine((value) => !isNaN(value), 'Emp ID must be a valid number'),
   name: z.string().min(1, 'Guest name is required'),
   mobile: z
     .string()
@@ -85,6 +85,7 @@ function AdminGuestPage() {
     },
   });
   let { reset } = form;
+  const { toast } = useToast();
   const { call: getCoupon, loading } = useFrappePostCall(
     'hotpot.api.coupon.get_coupon_for_guest',
   );
@@ -100,7 +101,13 @@ function AdminGuestPage() {
         },
       });
     } catch (error) {
-      console.error('Error during logout:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Error in logout.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+      });
     }
   };
   const onSubmit = (data: z.infer<typeof guestSchema>) => {
@@ -123,7 +130,13 @@ function AdminGuestPage() {
           }
         }
       } catch (error) {
-        console.log('Error getting coupon:', error);
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Error in getting coupons.',
+          className:
+            'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+        });
       }
     }
   };
@@ -163,7 +176,7 @@ function AdminGuestPage() {
           <div className="flex gap-2">
             <Link to="/server">
               <Button type="button" variant="outline">
-                serve
+                Serve
               </Button>
             </Link>
             <Button

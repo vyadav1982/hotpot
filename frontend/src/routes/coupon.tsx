@@ -24,6 +24,8 @@ import { useDialog } from '@/hooks/use-dialog';
 import { Logo } from '@/components/Logo';
 import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 import { LogOut } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
 
 export const Route = createFileRoute('/coupon')({
   component: () => (
@@ -44,6 +46,7 @@ function CouponPage() {
     HotpotCoupon | undefined
   >();
   const [qrValue, setQrValue] = useState('');
+  const { toast } = useToast();
   const { call: getCoupon, error: couponError } = useFrappePostCall(
     'hotpot.api.coupon.get_coupon_for_employee_id',
   );
@@ -72,8 +75,13 @@ function CouponPage() {
           }
         }
       } catch (error) {
-        console.log('Error getting coupon:', error);
-        // You might want to show an error message to the user here
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Error etting coupon.',
+          className:
+            'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+        });
       }
     }
   };
@@ -90,7 +98,13 @@ function CouponPage() {
         },
       });
     } catch (error) {
-      console.error('Error during logout:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Error during logout.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+      });
     }
   };
 

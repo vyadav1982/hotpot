@@ -70,7 +70,13 @@ function HistoryComponent({ userId, page, setPage }: HistoryComponentProps) {
         },
       });
     } catch (error) {
-      console.error('Error during logout:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Error during logout.',
+        className:
+          'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
+      });
     }
   };
   const { updateDoc } = useFrappeUpdateDoc();
