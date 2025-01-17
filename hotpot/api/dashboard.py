@@ -16,24 +16,33 @@ def get_coupon_type_list():
 	return coupon_type_list
 
 @frappe.whitelist(allow_guest=True)
-def update_coupon_status(employee_id, meal_types, to_date,from_date):
+def update_coupon_status(employee_id, meal_types, to_date, from_date):
     if isinstance(from_date, str):
         from_date = datetime.strptime(from_date, "%Y-%m-%d")
     if isinstance(to_date, str):
         to_date = datetime.strptime(to_date, "%Y-%m-%d")
 
     current_time = int(datetime.now().astimezone(pytz.timezone("Asia/Kolkata")).strftime("%H%M"))
+    today = datetime.now().astimezone(pytz.timezone("Asia/Kolkata")).date()
+
     date = from_date
     while date <= to_date:
         coupons_to_update = frappe.get_all(
             "Hotpot Coupon",
-            filters={"employee_id": employee_id, "status": ["=", "Upcoming"], "coupon_date": ["=", date.date()]},
+            filters={"employee_id": employee_id, "status": ["=", "Upcoming"], "coupon_date": ["=", date]},
             fields=["name", "title", "status"],
         )
 
         for coupon in coupons_to_update:
             meal_end_hour = int(meal_types.get(coupon["title"]))
-            if current_time >= meal_end_hour:
+            
+            if date.date() == today:  # Check only for today's date
+                if current_time >= meal_end_hour:
+                    doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
+                    doc.status = "Expired"
+                    doc.save()
+                    frappe.db.commit()
+            else:  # For future dates, directly update status
                 doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
                 doc.status = "Expired"
                 doc.save()
@@ -52,15 +61,16 @@ def get_coupon_list(params):
 	to_date = year2 + "-" + month2 + "-" + date2
 	users = get_users(from_date, to_date)
 	query = """
-        select title,end_hour
-        from `tabHotpot Coupon Type`
-    """
+		select title,end_hour
+		from `tabHotpot Coupon Type`
+	"""
 	if len(users) == 0:
 		return []
 	user_Id = []
 	for user in users:
 		user_Id.append(user.get("employee_id"))
 	meal_types = {row["title"]: row["end_hour"] for row in frappe.db.sql(query, as_dict=True)}
+	print("(())"*10,user_Id)
 	for user in user_Id:
 		update_coupon_status(user,meal_types,to_date,from_date)
 	placeholders = ", ".join(["%s"] * len(user_Id))
@@ -92,16 +102,16 @@ def get_users(from_date, to_date):
 	params = (from_date, to_date)
 
 	query = """
-	    SELECT u.employee_id
-	    FROM `tabHotpot User` AS u
-	    INNER JOIN (
-	    SELECT employee_id
-	    FROM `tabHotpot Coupon`
-	    WHERE coupon_date >= %s AND coupon_date <= %s
-	    GROUP BY employee_id
-	        ) c ON c.employee_id = u.employee_id
-	        ORDER BY
-	            u.employee_id;
+		SELECT u.employee_id
+		FROM `tabHotpot User` AS u
+		INNER JOIN (
+		SELECT employee_id
+		FROM `tabHotpot Coupon`
+		WHERE coupon_date >= %s AND coupon_date <= %s
+		GROUP BY employee_id
+			) c ON c.employee_id = u.employee_id
+			ORDER BY
+				u.employee_id;
 	"""
 
 	users = frappe.db.sql(query, params, as_dict=True)
