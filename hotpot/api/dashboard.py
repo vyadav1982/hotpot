@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import frappe
 import frappe.utils
 from frappe import _
+import pytz
 
 
 @frappe.whitelist(allow_guest=True)
@@ -14,6 +15,23 @@ def get_coupon_type_list():
 	)
 	return coupon_type_list
 
+@frappe.whitelist(allow_guest=True)
+def update_coupon_status(employee_id, meal_types, to_date):
+	current_time = int(datetime.now().astimezone(pytz.timezone("Asia/Kolkata")).strftime("%H%M"))
+	coupons_to_update = frappe.get_all(
+		"Hotpot Coupon",
+		filters={"employee_id": employee_id, "status": ["=", "Upcoming"], "coupon_date": ["=", to_date]},
+		fields=["name", "title", "status"],
+	)
+
+	for coupon in coupons_to_update:
+		meal_end_hour = int(meal_types.get(coupon["title"]))
+		if current_time >= meal_end_hour:
+			doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
+			doc.status = "Expired"
+			doc.save()
+			frappe.db.commit()
+			# frappe.db.set_value("Hotpot Coupon", coupon["name"], "status", "Expired")
 
 @frappe.whitelist(allow_guest=True)
 def get_coupon_list(params):
@@ -25,11 +43,18 @@ def get_coupon_list(params):
 	from_date = year1 + "-" + month1 + "-" + date1
 	to_date = year2 + "-" + month2 + "-" + date2
 	users = get_users(from_date, to_date)
+	query = """
+        select title,end_hour
+        from `tabHotpot Coupon Type`
+    """
 	if len(users) == 0:
 		return []
 	user_Id = []
 	for user in users:
 		user_Id.append(user.get("employee_id"))
+	meal_types = {row["title"]: row["end_hour"] for row in frappe.db.sql(query, as_dict=True)}
+	for user in user_Id:
+		update_coupon_status(user,meal_types,to_date)
 	placeholders = ", ".join(["%s"] * len(user_Id))
 	query = f"""
 		SELECT
