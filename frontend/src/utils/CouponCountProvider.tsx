@@ -52,6 +52,9 @@ export const CouponCountProvider = ({
     },
   );
 
+  console.log("from", date?.from?.toLocaleDateString())
+  console.log("to", date?.to?.toLocaleDateString())
+  
   const [newUpdatesAvailable, setNewUpdatesAvailable] = useState(false);
 
   useEffect(() => {
