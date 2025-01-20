@@ -64,14 +64,14 @@ export const InputField = ({
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute z-10 my-1 w-full rounded-md border shadow-md "
+          className="absolute my-1 w-full rounded-md border shadow-md "
         >
           {filteredData.length > 0 ? (
             filteredData.map((item: any) => (
               <div
                 key={item[valueField]}
                 onClick={() => handleSelect(item)}
-                className="cursor-pointer px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#1d1b18]"
+                className="cursor-pointer z-50 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#1d1b18] bg-white dark:bg-black"
               >
                   {item[labelField]} ({item[valueField]})
               </div>
