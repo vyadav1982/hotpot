@@ -355,7 +355,14 @@ function UserComponent({
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
+            <div className="text-lg font-bold sm:text-2xl" title={userName}>
+              <span className="block sm:hidden">
+                {userName.length > 10
+                  ? `${userName.slice(0, 10)}...`
+                  : userName}
+              </span>
+              <span className="hidden sm:block">{userName}</span>
+            </div>{' '}
           </div>
         }
         rightContent={
@@ -393,15 +400,12 @@ function UserComponent({
             </div>
             <Button
               variant="destructive"
-              className="hidden sm:block" 
+              className="hidden sm:block"
               onClick={handleLogout}
             >
               Logout
             </Button>
-            <button
-              className="block sm:hidden"
-              onClick={handleLogout}
-            >
+            <button className="block sm:hidden" onClick={handleLogout}>
               <LogOut className="h-5 w-5" />
             </button>
           </div>
@@ -412,7 +416,7 @@ function UserComponent({
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="hide-scrollbar flex items-start justify-center overflow-x-scroll pl-15">
+        <TabsList className="hide-scrollbar pl-15 flex items-start justify-center overflow-x-scroll">
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
             Generate
           </TabsTrigger>

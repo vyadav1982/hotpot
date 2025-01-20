@@ -71,13 +71,13 @@ export const InputField = ({
               <div
                 key={item[valueField]}
                 onClick={() => handleSelect(item)}
-                className="cursor-pointer z-50 px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-[#1d1b18] bg-white dark:bg-black"
+                className="z-50 cursor-pointer bg-white px-3 py-2 text-sm hover:bg-slate-100 dark:bg-black dark:hover:bg-[#1d1b18]"
               >
-                  {item[labelField]} ({item[valueField]})
+                {item[labelField]} ({item[valueField]})
               </div>
             ))
           ) : (
-            <div className="text-white-500 px-3 py-2 text-sm">
+            <div className="text-white-500 bg-white px-3 py-2  text-sm dark:bg-black">
               No results found
             </div>
           )}
