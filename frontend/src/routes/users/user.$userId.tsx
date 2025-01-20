@@ -416,7 +416,7 @@ function UserComponent({
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="hide-scrollbar pl-15 flex items-start justify-center overflow-x-scroll">
+        <TabsList className="hide-scrollbar pl-20 flex items-start justify-center overflow-x-scroll">
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
             Generate
           </TabsTrigger>
