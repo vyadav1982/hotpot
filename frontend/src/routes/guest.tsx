@@ -26,7 +26,6 @@ import { InputField } from '@/components/InputField';
 import { Logo } from '@/components/Logo';
 import { useToast } from '@/hooks/use-toast';
 
-
 export const Route = createFileRoute('/guest')({
   component: () => (
     <ProtectedRoute>
@@ -38,15 +37,13 @@ export const Route = createFileRoute('/guest')({
 });
 
 const guestSchema = z.object({
-  empId: z
-    .string()
-    .min(1, 'Emp ID is required'),
+  empId: z.string().min(1, 'Emp ID is required'),
   name: z.string().min(1, 'Guest name is required'),
   mobile: z
     .string()
-    .regex(/^\d{10}$/, { message: 'Mobile number must be 10 digits' }) 
+    .regex(/^\d{10}$/, { message: 'Mobile number must be 10 digits' })
     .min(1, { message: 'Mobile number is required' })
-    .transform((value) => '+91- ' + value.trim()), 
+    .transform((value) => '+91- ' + value.trim()),
 
   breakfast: z
     .boolean()
@@ -198,8 +195,8 @@ function AdminGuestPage() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="mx-auto max-w-fit space-y-6"
           >
-            <div className="flex flex-col sm:flex-row sm:space-x-4">
-              <div className="flex-1">
+            <div className="sm: flex flex-col space-x-1 sm:flex-row">
+              <div className="mt-4 flex-1">
                 <FormField
                   control={form.control}
                   name="empId"
@@ -225,7 +222,7 @@ function AdminGuestPage() {
                   )}
                 />
               </div>
-              <div className="flex-1">
+              <div className="mt-4 flex-1">
                 <FormField
                   control={form.control}
                   name="name"
@@ -245,7 +242,7 @@ function AdminGuestPage() {
                   )}
                 />
               </div>
-              <div className="flex-1">
+              <div className="mt-4 flex-1">
                 <FormField
                   control={form.control}
                   name="mobile"
@@ -269,46 +266,48 @@ function AdminGuestPage() {
                 />
               </div>
 
-              <div className="flex items-center space-x-4">
+              <div className="mt-4 flex  items-center justify-between">
                 <FormField
                   control={form.control}
                   name="breakfast"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex w-full justify-between">
                       <FormLabel className="mx-3 text-lg">Breakfast</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
+                          className="dark:bg-white"
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="mt-4 flex  items-center justify-between">
                 <FormField
                   control={form.control}
                   name="lunch"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex w-full justify-between">
                       <FormLabel className="mx-3 text-lg">Lunch</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
+                          className="dark:bg-white"
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="mt-4 flex items-center  justify-between">
                 <FormField
                   control={form.control}
                   name="evening_snacks"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex w-full justify-between">
                       <FormLabel className="mx-3 text-lg">
                         Evening Snacks
                       </FormLabel>
@@ -316,23 +315,25 @@ function AdminGuestPage() {
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
+                          className="dark:bg-white"
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="mt-4 flex items-center  justify-between ">
                 <FormField
                   control={form.control}
                   name="dinner"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex w-full justify-between">
                       <FormLabel className="mx-3 text-lg">Dinner</FormLabel>
                       <FormControl>
                         <Switch
                           checked={field.value}
                           onCheckedChange={field.onChange}
+                          className="dark:bg-white"
                         />
                       </FormControl>
                     </FormItem>
