@@ -10,7 +10,7 @@ import pytz
 def get_coupon_type_list():
 	coupon_type_list = frappe.db.get_list(
 		"Hotpot Coupon Type",
-		filters=["isActive", "=","1"],
+		filters=[["is_active", "=","1"]],
 		fields=["name", "start_hour", "end_hour", "buffer_time"],
 		order_by="start_hour",
 	)
