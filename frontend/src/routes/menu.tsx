@@ -152,7 +152,14 @@ function RouteComponent() {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
+            <div className="text-lg font-bold sm:text-2xl" title={userName}>
+              <span className="block sm:hidden">
+                {userName.length > 10
+                  ? `${userName.slice(0, 10)}...`
+                  : userName}
+              </span>
+              <span className="hidden sm:block">{userName}</span>
+            </div>{' '}
           </div>
         }
         rightContent={

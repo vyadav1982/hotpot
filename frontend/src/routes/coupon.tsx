@@ -26,7 +26,6 @@ import { ProtectedRoute } from '@/utils/auth/ProtectedRoute';
 import { LogOut } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-
 export const Route = createFileRoute('/coupon')({
   component: () => (
     <ProtectedRoute>
@@ -117,7 +116,14 @@ function CouponPage() {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{userName}</div>
+            <div className="text-lg font-bold sm:text-2xl" title={userName}>
+              <span className="block sm:hidden">
+                {userName.length > 10
+                  ? `${userName.slice(0, 10)}...`
+                  : userName}
+              </span>
+              <span className="hidden sm:block">{userName}</span>
+            </div>{' '}
           </div>
         }
         rightContent={

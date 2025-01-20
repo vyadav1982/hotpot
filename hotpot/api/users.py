@@ -16,7 +16,7 @@ def get_list():
 		fields=["name", "employee_id", "employee_name"],
 		filters=[
 			["is_active", "=", 1],
-			# ["is_guest", "=", 0],
+			["is_guest", "=", 0],
 		],
 	)
 

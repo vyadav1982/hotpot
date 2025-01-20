@@ -66,7 +66,7 @@ const guestSchema = z.object({
 function AdminGuestPage() {
   const [showQr, setShowQr] = useState(false);
   const [qr, setQr] = useState([]);
-  const { currentUser, logout } = useContext(UserContext);
+  const { currentUser, logout, userName } = useContext(UserContext);
   const { showConfirmDialog } = useDialog();
   const { users } = useContext(UserListContext);
   const form = useForm<z.infer<typeof guestSchema>>({
@@ -166,16 +166,23 @@ function AdminGuestPage() {
             <Link to="/login">
               <Logo className="h-10 w-10 cursor-pointer sm:h-12 sm:w-12" />
             </Link>
-            <div className="text-lg font-bold sm:text-2xl">{currentUser}</div>
+            <div className="text-lg font-bold sm:text-2xl" title={userName}>
+              <span className="block sm:hidden">
+                {userName.length > 10
+                  ? `${userName.slice(0, 10)}...`
+                  : userName}
+              </span>
+              <span className="hidden sm:block">{userName}</span>
+            </div>
           </div>
         }
         rightContent={
           <div className="flex gap-2">
-            <Link to="/server">
+            <a href="http://hotpot.bytepanda.in/app">
               <Button type="button" variant="outline">
-                Serve
+                Admin Panel
               </Button>
-            </Link>
+            </a>
             <Button
               variant="destructive"
               className="hidden sm:block"
