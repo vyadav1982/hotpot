@@ -41,8 +41,8 @@ export const CouponCountProvider = ({
     'hotpot.api.dashboard.get_coupon_type_count',
     {
       params: {
-        from: date?.from?.toLocaleDateString(),
-        to: date?.to?.toLocaleDateString(),
+        from: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+        to: date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
       },
     },
     'hotpot.api.coupons.get_coupon_type_count',
@@ -54,8 +54,8 @@ export const CouponCountProvider = ({
 
   // console.log("from", date?.from?.toLocaleDateString())
   // console.log("to", date?.to?.toLocaleDateString())
-  console.log(date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }));
-  console.log(date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }));
+  // console.log(date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }));
+  // console.log(date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }));
   const [newUpdatesAvailable, setNewUpdatesAvailable] = useState(false);
 
   useEffect(() => {
