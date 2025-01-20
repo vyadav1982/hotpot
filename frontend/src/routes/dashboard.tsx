@@ -258,6 +258,7 @@ function DashboardWrapperComponent() {
     from: new Date(),
     to: new Date(),
   });
+  console.log("getting date from dashboard wrapper:", date)
   return (
     <ProtectedRoute>
       <CouponProvider date={date}>
