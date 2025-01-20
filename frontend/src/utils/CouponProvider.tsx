@@ -49,8 +49,8 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     'hotpot.api.dashboard.get_coupon_list',
     {
       params: {
-        from: date?.from?.toLocaleDateString(),
-        to: date?.to?.toLocaleDateString(),
+        from: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+        to: date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
       },
     },
     'hotpot.api.dashboard.get_coupon_list',

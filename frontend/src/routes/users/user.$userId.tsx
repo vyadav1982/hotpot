@@ -193,8 +193,8 @@ function UserComponent({
       const response = await generateCoupon({
         params: {
           employee_id: userId,
-          from_date: date?.from?.toLocaleDateString(),
-          to_date: date?.to?.toLocaleDateString(),
+          from_date: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+          to_date:date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
           meal_type: selectedValue,
         },
       });
