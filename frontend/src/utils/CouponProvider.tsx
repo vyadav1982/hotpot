@@ -17,8 +17,8 @@ import { DateRange } from 'react-day-picker';
 
 export const CouponContext = createContext<{
   coupons:
-    | Map<string, [{ coupon_title?: string; coupon_time?: string }]>
-    | undefined;
+  | Map<string, [{ coupon_title?: string; coupon_time?: string }]>
+  | undefined;
 }>({
   coupons: undefined,
 });
@@ -28,7 +28,7 @@ interface CouponProviderProps extends PropsWithChildren {
 
 export type CouponFields = Pick<
   HotpotCoupon,
-  'employee_id' | 'title' | 'coupon_date' | 'coupon_time' | 'served_by'  | 'status'
+  'employee_id' | 'title' | 'coupon_date' | 'coupon_time' | 'served_by' | 'status'
 >;
 export type CouponFieldsWithName = CouponFields & {
   employee_name: string;
@@ -49,9 +49,19 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
     'hotpot.api.dashboard.get_coupon_list',
     {
       params: {
-        from: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
-        to: date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
-      },
+        from: date?.from
+          ? date.from.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+          : date?.to
+            ? date.to.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+            : new Date().toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+        to: date?.to
+          ? date.to.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+          : date?.from
+            ? date.from.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+            : new Date().toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+      }
+
+
     },
     'hotpot.api.dashboard.get_coupon_list',
     {
@@ -85,7 +95,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
   const { coupons } = useMemo(() => {
     const myData = new Map<
       string,
-      [{ coupon_title?: string; coupon_time?: string; status?:string; }]
+      [{ coupon_title?: string; coupon_time?: string; status?: string; }]
     >();
     if (data?.message) {
       Array.isArray(data?.message) &&
@@ -96,7 +106,7 @@ export const CouponProvider = ({ children, date }: CouponProviderProps) => {
           }
           const obj = myData.get(key);
           if (obj) {
-            let entry: { coupon_title?: string; coupon_time?: string; status?:string } = {};
+            let entry: { coupon_title?: string; coupon_time?: string; status?: string } = {};
             entry.coupon_title = coupon.title;
             entry.coupon_time = coupon.coupon_time;
             entry.status = coupon.status;

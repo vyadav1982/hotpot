@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/form';
 import {
   AuthResponse,
-  FrappeContext,
   FrappeError,
   useFrappeAuth,
   useFrappeGetCall,
@@ -34,7 +33,6 @@ import { AlertCircle } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import SignUpForm from '@/components/SignUpForm';
 import { useToast } from '@/hooks/use-toast';
-import { isHotpotAdmin, isHotpotServer, isHotpotUser } from '@/utils/roles';
 
 export const Route = createFileRoute('/login')({
   component: LoginPage,
