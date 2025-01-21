@@ -78,11 +78,6 @@
    "label": "Feedback"
   },
   {
-   "fieldname": "emoji_reaction_copy",
-   "fieldtype": "Data",
-   "label": "Emoji Reaction Copy"
-  },
-  {
    "default": "Expired",
    "fieldname": "status",
    "fieldtype": "Select",
@@ -93,7 +88,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-07 09:58:51.018634",
+ "modified": "2025-01-20 15:52:10.680949",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",

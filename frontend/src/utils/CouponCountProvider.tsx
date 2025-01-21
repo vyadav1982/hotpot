@@ -41,9 +41,18 @@ export const CouponCountProvider = ({
     'hotpot.api.dashboard.get_coupon_type_count',
     {
       params: {
-        from: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
-        to: date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
-      },
+        from: date?.from
+          ? date.from.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+          : date?.to
+            ? date.to.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+            : new Date().toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+        to: date?.to
+          ? date.to.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+          : date?.from
+            ? date.from.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" })
+            : new Date().toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+      }
+
     },
     'hotpot.api.coupons.get_coupon_type_count',
     {
