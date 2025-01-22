@@ -16,12 +16,12 @@ class HotpotCoupon(Document):
 
 		amended_from: DF.Link | None
 		coupon_date: DF.Date | None
+		coupon_status: DF.Literal["Upcoming", "Expired", "Consumed"]
 		coupon_time: DF.Time | None
 		emoji_reaction: DF.Data | None
 		employee_id: DF.Link
 		feedback: DF.Data | None
 		served_by: DF.Link | None
-		status: DF.Literal["Upcoming", "Expired", "Consumed"]
 		title: DF.Literal["Breakfast", "Lunch", "Evening Snack", "Dinner"]
 	# end: auto-generated types
 

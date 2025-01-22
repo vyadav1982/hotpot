@@ -101,11 +101,11 @@ const columns: ColumnDef<MealRecord>[] = [
             row.original.breakfast !== 'N/A'
               ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
                   row.original.breakfast === 'Consumed'
-                    ? 'bg-green-500 text-white'
-                    : row.original.breakfast === 'Expired'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-yellow-500 text-black'
-                }`
+                ? 'bg-green-500 text-white'
+                : row.original.breakfast === 'Expired'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-black'
+              }`
               : ''
           }
           style={{
@@ -115,7 +115,7 @@ const columns: ColumnDef<MealRecord>[] = [
           title={
             row.original.breakfast_time.trim()
               ? `Breakfast coupon created at ${(([h, m]) =>
-                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
                   row.original.breakfast_time.split(':').map(Number),
                 )}`
               : 'No breakfast coupon created'
@@ -134,13 +134,12 @@ const columns: ColumnDef<MealRecord>[] = [
         <div
           className={
             row.original.lunch !== 'N/A'
-              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
-                  row.original.lunch === 'Consumed'
-                    ? 'bg-green-500 text-white'
-                    : row.original.lunch === 'Expired'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-yellow-500 text-black'
-                }`
+              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${row.original.lunch === 'Consumed'
+                ? 'bg-green-500 text-white'
+                : row.original.lunch === 'Expired'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-black'
+              }`
               : ''
           }
           style={{
@@ -150,7 +149,7 @@ const columns: ColumnDef<MealRecord>[] = [
           title={
             row.original.lunch_time.trim()
               ? `Lunch coupon created at ${(([h, m]) =>
-                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
                   row.original.lunch_time.split(':').map(Number),
                 )}`
               : 'No Lunch coupon created'
@@ -169,13 +168,12 @@ const columns: ColumnDef<MealRecord>[] = [
         <div
           className={
             row.original.evening_snacks !== 'N/A'
-              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${
-                  row.original.evening_snacks === 'Consumed'
-                    ? 'bg-green-500 text-white'
-                    : row.original.evening_snacks === 'Expired'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-yellow-500 text-black'
-                }`
+              ? `flex justify-center rounded-full align-middle text-sm font-normal text-black ${row.original.evening_snacks === 'Consumed'
+                ? 'bg-green-500 text-white'
+                : row.original.evening_snacks === 'Expired'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-black'
+              }`
               : ''
           }
           style={{
@@ -185,7 +183,7 @@ const columns: ColumnDef<MealRecord>[] = [
           title={
             row.original.snacks_time.trim()
               ? `Evening Snacks coupon created at ${(([h, m]) =>
-                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
                   row.original.snacks_time.split(':').map(Number),
                 )}`
               : 'No Snacks coupon created'
@@ -204,13 +202,12 @@ const columns: ColumnDef<MealRecord>[] = [
         <div
           className={
             row.original.dinner !== 'N/A'
-              ? `flex flex-auto justify-center rounded-full align-middle text-sm font-normal text-black ${
-                  row.original.dinner === 'Consumed'
-                    ? 'bg-green-500 text-white'
-                    : row.original.dinner === 'Expired'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-yellow-500 text-black'
-                }`
+              ? `flex flex-auto justify-center rounded-full align-middle text-sm font-normal text-black ${row.original.dinner === 'Consumed'
+                ? 'bg-green-500 text-white'
+                : row.original.dinner === 'Expired'
+                  ? 'bg-red-500 text-white'
+                  : 'bg-yellow-500 text-black'
+              }`
               : ''
           }
           style={{
@@ -220,7 +217,7 @@ const columns: ColumnDef<MealRecord>[] = [
           title={
             row.original.dinner_time.trim()
               ? `Dinner coupon created at ${(([h, m]) =>
-                  `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
+                `${h % 12 || 12}:${m} ${h >= 12 ? 'pm' : 'am'}`)(
                   row.original.dinner_time.split(':').map(Number),
                 )}`
               : 'No Dinner coupon created'
@@ -313,19 +310,19 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
         if (Object.keys(coupon).length > 0) {
           switch (coupon.coupon_title) {
             case 'Dinner':
-              entry.dinner = coupon.status;
+              entry.dinner = coupon.coupon_status;
               entry.dinner_time = coupon.coupon_time;
               break;
             case 'Lunch':
-              entry.lunch = coupon.status;
+              entry.lunch = coupon.coupon_status;
               entry.lunch_time = coupon.coupon_time;
               break;
             case 'Evening Snack':
-              entry.evening_snacks = coupon.status;
+              entry.evening_snacks = coupon.coupon_status;
               entry.snacks_time = coupon.coupon_time;
               break;
             case 'Breakfast':
-              entry.breakfast = coupon.status;
+              entry.breakfast = coupon.coupon_status;
               entry.breakfast_time = coupon.coupon_time;
               break;
           }
@@ -503,18 +500,18 @@ function DashboardComponent({ setDate, date }: RouteComponentProps) {
                     )}
                   >
                     <CalendarIcon className="h-5 w-5" />
-                    {date?.from ? (
-                      date.to ? (
-                        <>
+                      {date?.from ? (
+                        date.to ? (
+                          <>
                           {format(date.from, 'LLL dd, y')} -{' '}
                           {format(date.to, 'LLL dd, y')}
-                        </>
+                          </>
+                        ) : (
+                          format(date.from, 'LLL dd, y')
+                        )
                       ) : (
-                        format(date.from, 'LLL dd, y')
-                      )
-                    ) : (
-                      'Select Date'
-                    )}
+                        'Select Date'
+                      )}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto rounded-lg border p-0 shadow-lg">

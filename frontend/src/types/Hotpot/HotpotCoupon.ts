@@ -26,6 +26,6 @@ export interface HotpotCoupon{
 	emoji_reaction?: string
 	/**	Feedback : Data	*/
 	feedback?: string
-	/**	Status : Select	*/
-	status?: "Upcoming" | "Expired" | "Consumed"
+	/**	Coupon Status : Select	*/
+	coupon_status: "Upcoming" | "Expired" | "Consumed"
 }

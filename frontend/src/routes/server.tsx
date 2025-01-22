@@ -131,7 +131,7 @@ function ServerPage() {
       updateDoc('Hotpot Coupon', couponDoc.name, {
         docstatus: 1,
         served_by: currentUser,
-        status: 'Consumed',
+        coupon_status: 'Consumed',
       })
         .then(() => {
           resolve();

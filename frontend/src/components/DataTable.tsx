@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
             value={selectedValue}
             onValueChange={(value) => handleExport(value)}
           >
-            <SelectTrigger className="flex w-full items-center gap-2 rounded-md border px-4 py-2 shadow-sm md:w-[180px]">
+            <SelectTrigger className="flex w-full items-center gap-1 rounded-md border px-4 py-2 shadow-sm md:w-[180px]">
               <Download onClick={() => handleExport} />
               <SelectValue
                 placeholder="Export As"
