@@ -30,8 +30,8 @@ def update_coupon_status(employee_id, meal_types, to_date, from_date):
 	while date <= to_date:
 		coupons_to_update = frappe.get_all(
 			"Hotpot Coupon",
-			filters={"employee_id": employee_id, "status": ["=", "Upcoming"], "coupon_date": ["=", date]},
-			fields=["name", "title", "status"],
+			filters={"employee_id": employee_id, "coupon_status": ["=", "Upcoming"], "coupon_date": ["=", date]},
+			fields=["name", "title", "coupon_status"],
 		)
 
 		for coupon in coupons_to_update:
@@ -40,12 +40,12 @@ def update_coupon_status(employee_id, meal_types, to_date, from_date):
 			if date.date() == today:  # Check only for today's date
 				if current_time >= meal_end_hour:
 					doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
-					doc.status = "Expired"
+					doc.coupon_status = "Expired"
 					doc.save()
 					frappe.db.commit()
 			else:  # For future dates, directly update status
 				doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
-				doc.status = "Expired"
+				doc.coupon_status = "Expired"
 				doc.save()
 				frappe.db.commit()
 
@@ -82,7 +82,7 @@ def get_coupon_list(params):
 			a.coupon_date,
 			a.coupon_time,
 			a.served_by,
-			a.status
+			a.coupon_status
 		FROM `tabHotpot Coupon` AS a
 		INNER JOIN `tabHotpot User` AS b
 		ON a.employee_id = b.employee_id

@@ -52,24 +52,24 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   };
 
   return (
-    <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title} className={coupon.status==='Expired' ? `bg-gray-300` : ``}>
+    <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title} className={coupon.coupon_status==='Expired' ? `bg-gray-300` : ``}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg font-semibold">
           <div className=" flex-1 overflow-x-hidden text-left">
             {coupon.title}
           </div>
-          {coupon.status && (
+          {coupon.coupon_status && (
             <div
               className={`rounded-full px-3 py-1 text-sm font-normal text-black
             lg:mx-1 ${
-              coupon.status === 'Consumed'
+              coupon.coupon_status === 'Consumed'
                 ? 'bg-green-500 text-white'
-                : coupon.status === 'Expired'
+                : coupon.coupon_status === 'Expired'
                   ? 'bg-red-500 text-white'
                   : 'bg-yellow-500 text-black'
             }`}
             >
-              {coupon.status.toUpperCase()}
+              {coupon.coupon_status.toUpperCase()}
             </div>
           )}
         </CardTitle>
@@ -121,7 +121,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             className="w-3/4"
             value={feedback}
             onChange={handleFeedbackChange}
-            disabled={feedbackPresent || coupon.status === 'Expired'}
+            disabled={feedbackPresent || coupon.coupon_status === 'Expired'}
           />
           <Button
             className="w-1/4"
@@ -129,7 +129,7 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
             disabled={
               (feedback === '' && selectedEmoji === '') ||
               feedbackPresent ||
-              coupon.status === 'Expired'
+              coupon.coupon_status === 'Expired'
             }
           >
             Submit

@@ -540,12 +540,12 @@ function UserComponent({
                           <div className="mx-4 flex-1 overflow-clip text-left">
                             {coupon.title}
                           </div>
-                          {coupon.status && (
+                          {coupon.coupon_status && (
                             <div
                               className="mx-4 rounded-full bg-yellow-300 px-3 py-1 text-sm font-normal text-black lg:mx-2
                               "
                             >
-                              {coupon.status.toUpperCase()}
+                              {coupon.coupon_status.toUpperCase()}
                             </div>
                           )}
                         </CardTitle>

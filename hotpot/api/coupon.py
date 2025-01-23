@@ -99,7 +99,7 @@ def get_coupon_for_guest(data):
 			coupon.coupon_date = datetime.now().date()
 			coupon.coupon_time = f"{current_time.hour}:{current_time.minute}:{current_time.second}"
 			coupon.title = meal
-			coupon.status = "Upcoming"
+			coupon.coupon_status = "Upcoming"
 			if not frappe.db.exists(
 				"Hotpot Coupon",
 				meal + "_" + data["mobile"] + "_" + (datetime.now().date()).strftime("%Y-%m-%d"),
@@ -181,7 +181,7 @@ def create_coupon(params):
 				coupon.coupon_date = (from_date + timedelta(days=x)).strftime("%Y-%m-%d")
 				coupon.coupon_time = f"{current_time.hour}:{current_time.minute}:{current_time.second}"
 				coupon.title = meal
-				coupon.status = "Upcoming"
+				coupon.coupon_status = "Upcoming"
 				if not frappe.db.exists(
 					"Hotpot Coupon",
 					meal + "_" + employee_id + "_" + (from_date + timedelta(days=x)).strftime("%Y-%m-%d"),
@@ -228,9 +228,9 @@ def get_upcoming_coupon_list(params):
 	# form today onwards
 
 	query = """
-        select name,title,coupon_time,coupon_date,creation,status
+        select name,title,coupon_time,coupon_date,creation,coupon_status
         from `tabHotpot Coupon`
-        where employee_id=%s and coupon_date>=%s and coupon_date<=%s and status ='Upcoming'
+        where employee_id=%s and coupon_date>=%s and coupon_date<=%s and coupon_status ='Upcoming'
         order by coupon_date asc
         limit %s offset %s 
     """
@@ -257,9 +257,9 @@ def get_past_coupon_list(params):
 	meal_types = {row["title"]: row["end_hour"] for row in frappe.db.sql(query, as_dict=True)}
 	update_coupon_status(employee_id, meal_types, to_date,from_date)
 	query = """
-        select title,coupon_time,coupon_date,creation,name,emoji_reaction,feedback,status
+        select title,coupon_time,coupon_date,creation,name,emoji_reaction,feedback,coupon_status
         from `tabHotpot Coupon`
-        where employee_id=%s and coupon_date<=%s and coupon_date>=%s and status!='Upcoming'
+        where employee_id=%s and coupon_date<=%s and coupon_date>=%s and coupon_status!='Upcoming'
         order by coupon_date desc
         limit %s offset %s
     """
@@ -293,8 +293,8 @@ def update_coupon_status(employee_id, meal_types, to_date, from_date):
     while date <= to_date:
         coupons_to_update = frappe.get_all(
             "Hotpot Coupon",
-            filters={"employee_id": employee_id, "status": ["=", "Upcoming"], "coupon_date": ["=", date]},
-            fields=["name", "title", "status"],
+            filters={"employee_id": employee_id, "coupon_status": ["=", "Upcoming"], "coupon_date": ["=", date]},
+            fields=["name", "title", "coupon_status"],
         )
 
         for coupon in coupons_to_update:
@@ -303,12 +303,12 @@ def update_coupon_status(employee_id, meal_types, to_date, from_date):
             if date.date() == today:  # Check only for today's date
                 if current_time >= meal_end_hour:
                     doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
-                    doc.status = "Expired"
+                    doc.coupon_status = "Expired"
                     doc.save()
                     frappe.db.commit()
             else:  # For future dates, directly update status
                 doc = frappe.get_doc("Hotpot Coupon", coupon["name"])
-                doc.status = "Expired"
+                doc.coupon_status = "Expired"
                 doc.save()
                 frappe.db.commit()
 

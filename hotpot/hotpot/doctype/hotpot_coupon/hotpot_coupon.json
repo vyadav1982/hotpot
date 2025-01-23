@@ -15,7 +15,7 @@
   "served_by",
   "emoji_reaction",
   "feedback",
-  "status"
+  "coupon_status"
  ],
  "fields": [
   {
@@ -79,16 +79,17 @@
   },
   {
    "default": "Expired",
-   "fieldname": "status",
+   "fieldname": "coupon_status",
    "fieldtype": "Select",
-   "label": "Status",
-   "options": "Upcoming\nExpired\nConsumed"
+   "label": "Coupon Status",
+   "options": "Upcoming\nExpired\nConsumed",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-01-20 15:52:10.680949",
+ "modified": "2025-01-22 16:42:03.023118",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupon",
