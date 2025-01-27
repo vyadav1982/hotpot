@@ -65,57 +65,63 @@ def get_context():
 	return context
 
 JWT_SECRET = "boostIsMySecret"
-@frappe.whitelist(allow_guest = True)
-def user_login(data):
-	try:
-		data = json.loads(data)
-		method = data.get("method")
-		password = data.get("password")
-		print("{{}}"*10,password)
-		
-		if not method or not password:
-			return {"status": "error", "message": "Method and password are required"}
-		
-		user_doc = None
-		
-		if method == "email":
-			email = data.get("email")
-			if not frappe.db.exists("Hotpot User", {"email": email}):
-				return {"status": "error", "message": f"Email {email} doesn't exist."}
-			user_doc = frappe.get_doc("Hotpot User", {"email": email})
-		
-		elif method == "emp_id":
-			emp_id = data.get("empId")
-			if not frappe.db.exists("Hotpot User", {"employee_id": emp_id}):
-				return {"status": "error", "message": f"Employee ID {emp_id} doesn't exist."}
-			user_doc = frappe.get_doc("Hotpot User", {"employee_id": emp_id})
-		
-		else:
-			return {"status": "error", "message": "Invalid login method"}
-		
-		if not user_doc.password == password:
-			return {"status": "error", "message": "Invalid password"}
-		user_data = user_doc.as_dict()
-		for key, value in user_data.items():
-			if isinstance(value, datetime):
-				user_data[key] = value.isoformat() 
-		payload = {
-			"user": user_data,
-			"exp": (datetime.now() + timedelta(days=30)).isoformat(),
-			"iat": datetime.now().isoformat(), 
-		}
-		
-		token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
-		
-		return {
-			"status": "success",
-			"message": "Login successful",
-			"token": token
-		}
-	
-	except Exception as e:
-		frappe.log_error(message=str(e), title="User Login Error")
-		return {"status": "error", "message": f"Login failed: {str(e)}"}
+@frappe.whitelist(allow_guest=True)
+def user_login():
+    try:
+        if frappe.request.method != "POST":
+            return {"status": "error", "message": "Only POST method is allowed"}
+        
+        data = json.loads(frappe.request.data or "{}")
+        
+        method = data.get("method")
+        password = data.get("password")
+        print("{{}}" * 10, password)
+        
+        if not method or not password:
+            return {"status": "error", "message": "Method and password are required"}
+        
+        user_doc = None
+        
+        if method == "email":
+            email = data.get("email")
+            if not frappe.db.exists("Hotpot User", {"email": email}):
+                return {"status": "error", "message": f"Email {email} doesn't exist."}
+            user_doc = frappe.get_doc("Hotpot User", {"email": email})
+        
+        elif method == "emp_id":
+            emp_id = data.get("empId")
+            if not frappe.db.exists("Hotpot User", {"employee_id": emp_id}):
+                return {"status": "error", "message": f"Employee ID {emp_id} doesn't exist."}
+            user_doc = frappe.get_doc("Hotpot User", {"employee_id": emp_id})
+        
+        else:
+            return {"status": "error", "message": "Invalid login method"}
+        
+        if not user_doc.password == password:
+            return {"status": "error", "message": "Invalid password"}
+        
+        user_data = user_doc.as_dict()
+        for key, value in user_data.items():
+            if isinstance(value, datetime):
+                user_data[key] = value.isoformat()
+        
+        payload = {
+            "user": user_data,
+            "exp": (datetime.now() + timedelta(days=30)).timestamp(),
+            "iat": datetime.now().timestamp(),
+        }
+        
+        token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+        
+        return {
+            "status": "success",
+            "message": "Login successful",
+            "token": token
+        }
+    
+    except Exception as e:
+        frappe.log_error(message=str(e), title="User Login Error")
+        return {"status": "error", "message": f"Login failed: {str(e)}"}
 
 @frappe.whitelist(allow_guest=True)
 def user_signUp(data):
