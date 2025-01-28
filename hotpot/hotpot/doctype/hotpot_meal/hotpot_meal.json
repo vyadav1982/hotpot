@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{meal_title}_{meal_date}",
+ "creation": "2025-01-27 11:16:28.297124",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "meal_title",
+  "day",
+  "meal_items",
+  "start_time",
+  "end_time",
+  "buffer_coupon_count",
+  "coupons",
+  "is_active",
+  "meal_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "meal_title",
+   "fieldtype": "Data",
+   "label": "Meal Title",
+   "unique": 1
+  },
+  {
+   "fieldname": "day",
+   "fieldtype": "Data",
+   "label": "Day"
+  },
+  {
+   "fieldname": "meal_items",
+   "fieldtype": "Data",
+   "label": "Meal Items"
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Data",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Data",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "buffer_coupon_count",
+   "fieldtype": "Int",
+   "label": "Buffer Coupon Count"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "fieldname": "coupons",
+   "fieldtype": "Table",
+   "label": "Coupons",
+   "options": "Hotpot Coupons"
+  },
+  {
+   "fieldname": "meal_date",
+   "fieldtype": "Date",
+   "label": "Meal Date"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-01-27 13:08:01.898576",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Meal",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
