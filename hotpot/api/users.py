@@ -20,6 +20,11 @@ def get_list():
 		],
 	)
 
+def set_response(http_status_code, status, message, data=None):
+    frappe.local.response["http_status_code"] = http_status_code
+    frappe.response["status"] = status
+    frappe.response["message"] = message
+    frappe.response["data"] = data
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_count(params):
@@ -77,11 +82,30 @@ def get_hotpot_user_by_employee_id(employee_id):
 @frappe.whitelist()
 def get_hotpot_user_by_email(email):
 	try:
-		user = frappe.db.get_list("Hotpot User", filters=[["email", "=", email]], fields=["*"])
+		user = frappe.db.get_list(
+			"Hotpot User",
+			filters=[["email", "=", email]],
+			fields=[
+				"employee_name",
+				"email",
+				"mobile_no",
+				"is_active",
+				"role",
+				"is_guest",
+				"guest_of",
+				"coupon_count"
+			]
+		)
+
 		if user:
-			return {"status": "success", "data": user[0]}
-		else:
-			return {"status": "error", "message": "No user found with the given email."}
+			set_response(200,True,"Data fetched successfully",user[0])
+			return
+		
+		set_response(404,False,"No user found with the given email")
+		return
+		
+
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Email Error")
-		return {"status": "error", "message": f"An error occurred: {str(e)}"}
+		set_response(500,False,f"An error occurred: {str(e)}")
+		return 
