@@ -41,7 +41,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     if (currentUser) {
       try {
         const response = await getUser({ email: currentUser });
-        const {employee_id,employee_name} = response.message.data;
+        const {employee_id,employee_name} = response.data;
         setUserId(employee_id)
         setUserName(employee_name)
       } catch (error) {
