@@ -87,6 +87,7 @@ def get_hotpot_user_by_email(email):
 			filters=[["email", "=", email]],
 			fields=[
 				"employee_name",
+				"employee_id",
 				"email",
 				"mobile_no",
 				"is_active",

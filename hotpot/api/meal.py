@@ -27,11 +27,9 @@ def create_meal():
         if not meal_title or not day or not meal_date or not start_time or not end_time or not meal_items:
             set_response(400, False, "Missing required fields")
             return
-
-        existing_meal = frappe.db.exists(
-            "Hotpot Meal",
-            {"title": meal_title, "day": day, "meal_date": meal_date}
-        )
+        document_name = f"{meal_title}_{meal_date}"
+        existing_meal = frappe.db.exists("Hotpot Meal", document_name)
+        print("(())"*10,existing_meal)
         if existing_meal:
             set_response(409, False, f"A meal with the title '{meal_title}' on '{day}' ({meal_date}) already exists")
             return
