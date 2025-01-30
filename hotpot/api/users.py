@@ -149,8 +149,8 @@ def get_hotpot_loggedin_user():
             set_response(200, True, "Data fetched successfully", user[0])
             return
 
-        set_response(404, False, "No user found with the given email")
-        return
+        # set_response(404, False, "No user found with the given email")
+        # return
     except frappe.PermissionError:
         # Handle permission errors
         set_response(403, False, "You do not have permission to access this resource")
