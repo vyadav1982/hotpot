@@ -117,12 +117,17 @@ def get_hotpot_user_by_email(email):
         return
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_hotpot_loggedin_user():
     try:
         email = frappe.session.user
         if not email:
-            set_response(500, False, "No token found")
+            set_response(500, False, "No auth token found")
+            return
+
+        if not frappe.has_permission("Hotpot User", "read"):
+            set_response(500, False, "No auth token found")
+            return
 
         user = frappe.db.get_list(
             "Hotpot User",
@@ -145,6 +150,10 @@ def get_hotpot_loggedin_user():
             return
 
         set_response(404, False, "No user found with the given email")
+        return
+    except frappe.PermissionError:
+        # Handle permission errors
+        set_response(403, False, "You do not have permission to access this resource")
         return
 
     except Exception as e:
