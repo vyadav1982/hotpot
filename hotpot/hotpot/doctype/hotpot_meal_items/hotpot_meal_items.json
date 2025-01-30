@@ -1,17 +1,19 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "hash",
  "creation": "2025-01-27 11:15:09.070314",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "item_name",
-  "is_active"
+  "is_active",
+  "vendor_id"
  ],
  "fields": [
   {
    "fieldname": "item_name",
-   "fieldtype": "Date",
+   "fieldtype": "Data",
    "label": "Item Name"
   },
   {
@@ -19,14 +21,20 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "fieldname": "vendor_id",
+   "fieldtype": "Data",
+   "label": "Vendor Id"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-27 11:23:42.300220",
+ "modified": "2025-01-30 16:36:49.473649",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {

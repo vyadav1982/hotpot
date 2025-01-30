@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{meal_title}_{meal_date}",
+ "autoname": "hash",
  "creation": "2025-01-27 11:16:28.297124",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -12,9 +12,11 @@
   "start_time",
   "end_time",
   "buffer_coupon_count",
+  "vendor_id",
   "coupons",
   "is_active",
-  "meal_date"
+  "meal_date",
+  "ratings"
  ],
  "fields": [
   {
@@ -63,15 +65,26 @@
    "fieldname": "meal_date",
    "fieldtype": "Date",
    "label": "Meal Date"
+  },
+  {
+   "fieldname": "vendor_id",
+   "fieldtype": "Data",
+   "label": "Vendor Id"
+  },
+  {
+   "fieldname": "ratings",
+   "fieldtype": "Table",
+   "label": "Ratings",
+   "options": "Hotpot Meal Rating"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-28 17:11:48.293178",
+ "modified": "2025-01-30 15:47:09.448475",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
- "naming_rule": "Expression",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
