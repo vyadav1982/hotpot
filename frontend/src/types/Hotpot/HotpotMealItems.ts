@@ -10,8 +10,10 @@ export interface HotpotMealItems{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Item Name : Date	*/
+	/**	Item Name : Data	*/
 	item_name?: string
 	/**	Is Active : Check	*/
 	is_active?: 0 | 1
+	/**	Vendor Id : Data	*/
+	vendor_id?: string
 }

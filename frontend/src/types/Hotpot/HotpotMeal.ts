@@ -1,4 +1,5 @@
 import { HotpotCoupons } from './HotpotCoupons'
+import { HotpotMealRating } from './HotpotMealRating'
 
 export interface HotpotMeal{
 	name: string
@@ -23,10 +24,14 @@ export interface HotpotMeal{
 	end_time?: string
 	/**	Buffer Coupon Count : Int	*/
 	buffer_coupon_count?: number
+	/**	Vendor Id : Data	*/
+	vendor_id?: string
 	/**	Coupons : Table - Hotpot Coupons	*/
 	coupons?: HotpotCoupons[]
 	/**	Is Active : Check	*/
 	is_active?: 0 | 1
 	/**	Meal Date : Date	*/
 	meal_date?: string
+	/**	Ratings : Table - Hotpot Meal Rating	*/
+	ratings?: HotpotMealRating[]
 }

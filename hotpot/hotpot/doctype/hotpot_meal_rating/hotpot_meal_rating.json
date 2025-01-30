@@ -1,40 +1,45 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-01-27 11:24:26.111381",
+ "creation": "2025-01-30 15:45:35.293719",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "title",
-  "employee_id",
-  "coupon_status"
+  "rating",
+  "feedback",
+  "meal_id",
+  "employee_id"
  ],
  "fields": [
   {
-   "fieldname": "title",
+   "fieldname": "rating",
    "fieldtype": "Data",
-   "label": "Title"
+   "label": "Rating"
+  },
+  {
+   "fieldname": "feedback",
+   "fieldtype": "Data",
+   "label": "Feedback"
+  },
+  {
+   "fieldname": "meal_id",
+   "fieldtype": "Data",
+   "label": "Meal Id"
   },
   {
    "fieldname": "employee_id",
    "fieldtype": "Data",
    "label": "Employee Id"
-  },
-  {
-   "fieldname": "coupon_status",
-   "fieldtype": "Select",
-   "label": "Coupon Status",
-   "options": "-1\n0\n1"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-30 17:28:31.288654",
+ "modified": "2025-01-30 15:46:23.113072",
  "modified_by": "Administrator",
  "module": "Hotpot",
- "name": "Hotpot Coupons",
+ "name": "Hotpot Meal Rating",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
