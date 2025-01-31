@@ -1,6 +1,9 @@
 import frappe
 import json
 
+from datetime import datetime,timedelta
+from frappe.utils import today
+
 from ..api.users import *
 
 def set_response(http_status_code, status, message, data=None):
@@ -31,9 +34,11 @@ def create_meal():
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
 		buffer_coupon_count = data.get("buffer_coupon_count")
+		meal_weight = data.get("meal_weight")
+		is_special = data.get("is_special")
 
 		required_fields = ["meal_title", "day", "meal_date", "vendor_id", 
-						 "start_time", "end_time", "meal_items"]
+						 "start_time", "end_time", "meal_items","meal_weight"]
 		if missing := [field for field in required_fields if not data.get(field)]:
 			set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 			return
@@ -60,7 +65,9 @@ def create_meal():
 			"start_time": start_time,
 			"end_time": end_time,
 			"buffer_coupon_count": buffer_coupon_count,
-			"is_active": "1"
+			"meal_weight" : meal_weight,
+			"is_active": "1",
+			"is_special" : is_special
 		})
 
 		meal_doc.insert()
@@ -102,7 +109,7 @@ def update_meal():
 			set_response(404, False, "Meal not found")
 			return
 
-		for field in ["meal_title", "day", "meal_date", "meal_items", "start_time", "end_time", "buffer_coupon_count"]:
+		for field in ["meal_title", "day", "meal_date", "meal_items", "start_time", "end_time", "buffer_coupon_count","meal_weight","is_active","is_special"]:
 			if field in data:
 				setattr(meal_doc, field, ",".join(data[field]) if field == "meal_items" else data[field])
 
@@ -134,10 +141,10 @@ def delete_meal():
 			set_response(400, False, "Meal ID is required")
 			return
 
-		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
-		if not meal_doc:
-			set_response(404, False, "Meal not found")
-			return
+		try:
+			meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		except frappe.DoesNotExistError:
+			return set_response(404, False, "Meal not found")
 
 		meal_doc.delete()
 		frappe.db.commit()
@@ -156,12 +163,72 @@ def get_meals():
 			return
 
 		user_data = get_hotpot_user_by_email()
-		if not user_data :
-			set_response(404,False,"User Not found")
+		if not user_data:
+			set_response(404, False, "User Not Found")
 			return
 
-		data = frappe.db.get_list("Hotpot Meal", fields=["*"], filters=[["vendor_id", "=", user_data.get("name")]])
+		user_id = user_data.get("name")
 
+		if user_data.get("role") == "Hotpot Server":
+			data = frappe.db.get_list(
+				"Hotpot Meal",
+				fields=["*"],
+				filters={"vendor_id": user_id}
+			)
+
+		elif user_data.get("role") == "Hotpot User":
+			today_date = today()
+			meal_data = frappe.db.get_list(
+				"Hotpot Meal",
+				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons"],
+				filters={"meal_date": today_date, "is_active": 1}
+			)
+			if not meal_data:
+				set_response(404,False,"No meal found for today")
+				return
+
+			meal_details = []
+			for meal in meal_data:
+				meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
+
+				user_coupons=[]
+				for coupon in meal_doc.coupons:
+					if coupon.employee_id == user_data.name:
+						user_coupons.append({
+							"id":coupon.name,
+							"coupon status": coupon.coupon_status,
+							"coupon_date":coupon.coupon_date
+						})
+
+				user_ratings=[]
+				for coupon in meal_doc.ratings:
+					if coupon.employee_id == user_data.name:
+						user_ratings.append({
+							"id":coupon.name,
+							"rating": coupon.rating,
+							"feedback":coupon.feedback
+						})
+
+
+				print(user_coupons)
+				meal_details.append({
+					"meal_title": meal_doc.meal_title,
+					"day": meal_doc.day,
+					"meal_items": meal_doc.meal_items,
+					"start_time": meal_doc.start_time,
+					"end_time": meal_doc.end_time,
+					"buffer_coupon_count": meal_doc.buffer_coupon_count,
+					"meal_weight": meal_doc.meal_weight,
+					"coupon": user_coupons,
+					"ratings": user_ratings
+				})
+
+			data = {
+				"meal_details": meal_details
+			}
+
+		else:
+			data = frappe.db.get_list("Hotpot Meal", fields=["*"])
 
 		if not data:
 			set_response(404, False, "No meal found")
@@ -169,9 +236,11 @@ def get_meals():
 
 		set_response(200, True, "Fetched successfully", data)
 		return
+
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal: {str(e)}")
 		return
+
 
 @frappe.whitelist(allow_guest=True)
 def add_meal_items():
