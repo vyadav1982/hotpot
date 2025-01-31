@@ -7,7 +7,7 @@ from ..api.users import *
 
 
 @frappe.whitelist(allow_guest=True)
-def get_all_coupons(page,limit):
+def get_all_coupons():
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
@@ -18,13 +18,45 @@ def get_all_coupons(page,limit):
 			set_response(404,False,"User Not found")
 			return
 
-		if not page or not limit:
-			set_response(400,False,"Please provide all fields")
-			return
+		# if not page or not limit or not to_date or not from_date:
+		# 	set_response(400,False,"Please provide all fields")
+		# 	return
 		
-		page = int(page)
-		limit = int(limit)
-		start = (page - 1) * limit
+		# page = int(page)
+		# limit = int(limit)
+		# start = (page - 1) * limit
+		print(user_doc.get("name"))
+		if user_doc.get("role") == "Hotpot Server":
+			meal_data = frappe.db.get_list(
+				"Hotpot Meal",
+				fields=["name"],
+				filters=[
+					["vendor_id", "=", user_doc.get("name")],
+					# ["meal_date", ">=", datetime.today().strftime("%Y-%m-%d")],
+					# ["meal_date", "<=", datetime.today().strftime("%Y-%m-%d")]
+				]
+			)
+			ans=[]
+			for id in meal_data:
+				meal_doc = frappe.get_doc("Hotpot Meal",id)
+				ans.append(meal_doc.coupons)
+			return set_response(200,True,"good",ans)
+		
+		elif user_doc.get("role") == "Hotpot User":
+			meal_data = frappe.db.get_list(
+				"Hotpot Meal",
+				fields = ["name"],
+				filters = [
+					# ["meal_date", ">=", datetime.today().strftime("%Y-%m-%d")],
+					# ["meal_date", "<=", datetime.today().strftime("%Y-%m-%d")]
+				]
+			)
+			ans =[]
+			for 
+
+
+			
+
 		id = user_doc.get("name")
 		coupons = frappe.get_list(
 			"Hotpot Coupons",
