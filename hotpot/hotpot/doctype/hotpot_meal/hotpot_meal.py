@@ -24,6 +24,7 @@ class HotpotMeal(Document):
 		meal_date: DF.Date | None
 		meal_items: DF.Data | None
 		meal_title: DF.Data | None
+		meal_weight: DF.Int
 		ratings: DF.Table[HotpotMealRating]
 		start_time: DF.Data | None
 		vendor_id: DF.Data | None

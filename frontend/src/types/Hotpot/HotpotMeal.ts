@@ -34,4 +34,6 @@ export interface HotpotMeal{
 	meal_date?: string
 	/**	Ratings : Table - Hotpot Meal Rating	*/
 	ratings?: HotpotMealRating[]
+	/**	Meal Weight : Int	*/
+	meal_weight?: number
 }

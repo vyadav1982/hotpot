@@ -16,7 +16,9 @@
   "coupons",
   "is_active",
   "meal_date",
-  "ratings"
+  "ratings",
+  "meal_weight",
+  "is_special"
  ],
  "fields": [
   {
@@ -76,11 +78,23 @@
    "fieldtype": "Table",
    "label": "Ratings",
    "options": "Hotpot Meal Rating"
+  },
+  {
+   "fieldname": "meal_weight",
+   "fieldtype": "Int",
+   "label": "Meal Weight",
+   "non_negative": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_special",
+   "fieldtype": "Check",
+   "label": "Is Special"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-30 15:47:09.448475",
+ "modified": "2025-01-31 17:09:33.950223",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

@@ -90,11 +90,11 @@ def get_hotpot_user_by_email():
 	try:
 		email = frappe.session.user
 		if not email:
-			set_response(500, False, "No auth token found")
+			set_response(404, False, "No auth token found")
 			return
 
 		if not frappe.has_permission("Hotpot User", "read"):
-			set_response(500, False, "No auth token found")
+			set_response(404, False, "No auth token found")
 			return
 		user = frappe.db.get_list(
 			"Hotpot User",
@@ -113,7 +113,6 @@ def get_hotpot_user_by_email():
 				"coupon_count",
 			],
 		)
-
 		if user:
 			return user[0]
 
