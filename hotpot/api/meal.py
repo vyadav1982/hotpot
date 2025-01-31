@@ -13,6 +13,44 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["data"] = data
 
 @frappe.whitelist(allow_guest=True)
+def give_feedback():
+	try:
+		if frappe.request.method != "POST":
+			set_response(500, False, "Only POST method is allowed")
+			return
+
+			
+		user_data = get_hotpot_user_by_email()
+		if user_data.get("role") != "Hotpot User":
+			set_response(403,False,"Not Permitted to acess this resouce")
+			return
+		if not user_data :
+			set_response(404,False,"User Not found")
+			return
+		data = json.loads(frappe.request.data or "{}")
+
+		meal_doc = frappe.get_doc("Hotpot Meal",data["meal_id"])
+		if not meal_doc:
+			set_response(404,False,"Meal Not found")
+			return
+		meal_doc.append("ratings",{
+			"employee_id":user_data.get("name"),
+			"feedback" : data["feedback"],
+			"meal_id": meal_doc.get("name"),
+			"rating": data["rating"]
+		})
+		meal_doc.save()
+		frappe.db.commit()
+		set_response(200,True,"feedback updated successfully.")
+		return
+
+	except Exception as e:
+		frappe.db.rollback()
+		print(frappe.get_traceback())
+		frappe.log_error(frappe.get_traceback(), "Cannot update feedback at this momemt.")
+		return set_response(500, False, f"Server error: {str(e)}")
+
+@frappe.whitelist(allow_guest=True)
 def create_meal():
 	try:
 		if frappe.request.method != "POST":
@@ -187,7 +225,7 @@ def get_meals():
 				set_response(404,False,"No meal found for today")
 				return
 
-			meal_details = []
+			data = []
 			for meal in meal_data:
 				meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 
@@ -211,8 +249,9 @@ def get_meals():
 
 
 				print(user_coupons)
-				meal_details.append({
+				data.append({
 					"meal_title": meal_doc.meal_title,
+					"meal_id": meal_doc.name,
 					"day": meal_doc.day,
 					"meal_items": meal_doc.meal_items,
 					"start_time": meal_doc.start_time,
@@ -222,10 +261,6 @@ def get_meals():
 					"coupon": user_coupons,
 					"ratings": user_ratings
 				})
-
-			data = {
-				"meal_details": meal_details
-			}
 
 		else:
 			data = frappe.db.get_list("Hotpot Meal", fields=["*"])
