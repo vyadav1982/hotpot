@@ -48,21 +48,48 @@ def update_coupon_count(params):
 	return {"message": "Coupon count updated successfully"}
 
 
+def set_response(code, success, message, data=None):
+	frappe.response.update({
+		"http_status_code": code,
+		"success": success,
+		"message": message,
+		"data": data
+	})
+
+
 @frappe.whitelist(allow_guest=True)
 def get_coupons_history(employee_id):
-	result = []
-	# params = frappe.parse_json(params)
-	# employee_id = params.get("userId")
-	query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
-	result = frappe.db.sql(query, (employee_id), as_dict=True)
-	result += frappe.db.get_list(
-		"Hotpot Coupons History",
-		fields=["employee_id", "type", "message", "creation"],
-		filters=[["employee_id", "=", employee_id]],
-		order_by="creation desc",
-		limit=25,
-	)
-	return result
+	try:
+		if frappe.request.method != "GET":
+				set_response(500, False, "Only GET method is allowed")
+				return
+
+		user_doc = get_hotpot_user_by_email()
+		print(user_doc.get("employee_id"))
+		if not user_doc or not user_doc.get("employee_id")!=int(employee_id):
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return 
+
+		result = []
+		query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
+		result = frappe.db.sql(query, (employee_id), as_dict=True)
+		result += frappe.db.get_list(
+			"Hotpot Coupons History",
+			fields=["employee_id", "type", "message", "creation"],
+			filters=[["employee_id", "=", employee_id]],
+			order_by="creation desc",
+			limit=25,
+		)
+		set_response(200,True,"History fetched successfully",result)
+	except Exception as e:
+		frappe.db.rollback()
+		print(frappe.get_traceback())
+		frappe.log_error(frappe.get_traceback(), "History Error")
+		return set_response(500, False, f"Server error: {str(e)}")
 
 
 def reset_coupon_count():
