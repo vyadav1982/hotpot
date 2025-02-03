@@ -79,7 +79,7 @@ def scan_coupon():
 
 
 @frappe.whitelist(allow_guest=True)
-def get_all_coupons(page,limit,start_date,end_date):
+def get_all_coupons(start_date,end_date,page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")

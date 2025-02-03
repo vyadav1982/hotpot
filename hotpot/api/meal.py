@@ -194,10 +194,14 @@ def delete_meal():
 		return
 
 @frappe.whitelist(allow_guest=True)
-def get_meals():
+def get_meals(start_date,end_date,page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
+			return
+		
+		if not start_date or not end_date:
+			set_response(400,False,"Required start date and end state")
 			return
 
 		user_data = get_hotpot_user_by_email()
@@ -206,12 +210,20 @@ def get_meals():
 			return
 
 		user_id = user_data.get("name")
+		start = (page - 1) * limit
 
 		if user_data.get("role") == "Hotpot Server":
 			data = frappe.db.get_list(
 				"Hotpot Meal",
 				fields=["*"],
-				filters={"vendor_id": user_id}
+				filters = [
+					["vendor_id", "=", user_id],
+					["meal_date", ">=", start_date],
+					["meal_date", "<=", end_date]
+            	],
+				order_by="creation desc",
+				start=start,
+                limit=limit
 			)
 
 		elif user_data.get("role") == "Hotpot User":
@@ -221,13 +233,17 @@ def get_meals():
 			current_time_num = current_datetime.hour * 100 + current_datetime.minute
 			meal_data = frappe.db.get_list(
 				"Hotpot Meal",
-				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons"],
-				filters = {
-					"meal_date": today_date,
-					"is_active": 1,
-					"end_time": [">", current_time_num]
-				}
+				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons","meal_date"],
+				filters = [
+					["is_active","=", 1],
+					["end_time",">", current_time_num],
+					["meal_date", ">=", start_date],
+					["meal_date", "<=", end_date],
+				],
+				start=start,
+				limit=limit
 			)
+			print("{{{}}}",start_date,end_date,meal_data)
 			if not meal_data:
 				set_response(404,False,"No meal found for today")
 				return
@@ -255,7 +271,6 @@ def get_meals():
 						})
 
 
-				print(user_coupons)
 				data.append({
 					"meal_title": meal_doc.meal_title,
 					"meal_id": meal_doc.name,
