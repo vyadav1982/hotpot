@@ -48,13 +48,11 @@ def update_coupon_count(params):
 	return {"message": "Coupon count updated successfully"}
 
 
-def set_response(code, success, message, data=None):
-	frappe.response.update({
-		"http_status_code": code,
-		"success": success,
-		"message": message,
-		"data": data
-	})
+def set_response(http_status_code, status, message, data=None):
+	frappe.local.response["http_status_code"] = http_status_code
+	frappe.response["status"] = status
+	frappe.response["message"] = message
+	frappe.response["data"] = data
 
 
 @frappe.whitelist(allow_guest=True)

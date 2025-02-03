@@ -386,10 +386,8 @@ def generate_coupon():
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 
-def set_response(code, success, message, data=None):
-	frappe.response.update({
-		"http_status_code": code,
-		"success": success,
-		"message": message,
-		"data": data
-	})
+def set_response(http_status_code, status, message, data=None):
+	frappe.local.response["http_status_code"] = http_status_code
+	frappe.response["status"] = status
+	frappe.response["message"] = message
+	frappe.response["data"] = data
