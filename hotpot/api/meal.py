@@ -216,10 +216,17 @@ def get_meals():
 
 		elif user_data.get("role") == "Hotpot User":
 			today_date = today()
+			current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
+			today = current_datetime.date()
+			current_time_num = current_datetime.hour * 100 + current_datetime.minute
 			meal_data = frappe.db.get_list(
 				"Hotpot Meal",
 				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons"],
-				filters={"meal_date": today_date, "is_active": 1}
+				filters = {
+					"meal_date": today_date,
+					"is_active": 1,
+					"end_time": [">", current_time_num]
+				}
 			)
 			if not meal_data:
 				set_response(404,False,"No meal found for today")
