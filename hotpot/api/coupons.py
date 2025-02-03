@@ -7,6 +7,78 @@ from ..api.users import *
 
 
 @frappe.whitelist(allow_guest=True)
+def scan_coupon():
+	try:
+		if frappe.request.method != "POST":
+			set_response(500, False, "Only POST method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot Server":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		meal_id = data.get("meal_id")
+		coupon_id = data.get("coupon_id")
+
+		if not meal_id or not coupon_id:
+			set_response(400, False, "Missing required field")
+			return
+		
+		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		coupons = meal_doc.get("coupons")
+		
+		coupon_found = None
+		for coupon in coupons:
+			if coupon.name == coupon_id:
+				coupon_found = coupon
+				break
+
+		if not coupon_found:
+			set_response(400, False, "ERROR: Coupon Not Found")
+			return
+
+		today_str = datetime.today().strftime("%Y-%m-%d")
+		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
+		today = current_datetime.date()
+		current_time_num = current_datetime.hour * 100 + current_datetime.minute
+
+		if coupon_found.get("coupon_date").strftime("%Y-%m-%d") != today_str:
+			set_response(400, False, "NOTICE: Coupon Not Valid for Today")
+			return
+
+		start_time = meal_doc.get("start_time")
+		if start_time:
+			if current_time_num < int(start_time):
+				set_response(400, False, "NOTICE: Too Early to Serve")
+				return
+
+		end_time = meal_doc.get("end_time")
+		if end_time:
+			if current_time_num > int(end_time):
+				set_response(400, False, "ERROR: Meal Serving Time Passed")
+				return
+
+		if int(coupon_found.get("coupon_status")) == 0:
+			set_response(400, False, "ERROR: Coupon Already Consumed")
+			return
+
+		coupon_found.coupon_status = 0
+		meal_doc.save()
+		frappe.db.commit()
+
+		set_response(200, True, "SUCCESS: Meal Ready to Be Served", coupon_found)
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+
+
+@frappe.whitelist(allow_guest=True)
 def get_all_coupons(page,limit,start_date,end_date):
 	try:
 		if frappe.request.method != "GET":
