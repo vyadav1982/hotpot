@@ -215,7 +215,7 @@ def get_meals():
 			)
 
 		elif user_data.get("role") == "Hotpot User":
-			today_date = today()
+			today_date = datetime.today().date()
 			current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
 			today = current_datetime.date()
 			current_time_num = current_datetime.hour * 100 + current_datetime.minute
