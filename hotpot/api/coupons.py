@@ -125,6 +125,33 @@ def scan_coupon():
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
 
+@frappe.whitelist(allow_guest=True)
+def update_coupon_status():
+	try:
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc :
+			set_response(404,False,"User Not found")
+			return
+
+		query="""
+			UPDATE `tabHotpot Coupons` AS hc
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+			SET hc.coupon_status = -1
+			WHERE hc.coupon_status = 1 
+			AND (
+				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+				OR (hm.meal_date = CURDATE() AND CAST(hm.end_time AS UNSIGNED) < DATE_FORMAT(NOW(), '%H%i'))
+			);
+
+			"""
+		data = frappe.db.sql(query)
+		return
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Failed to update status")
+		return set_response(500, False, f"Server error: {str(e)}")
+
+
 
 @frappe.whitelist(allow_guest=True)
 def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d"),page=1,limit=10):
@@ -137,30 +164,17 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 		if not user_doc :
 			set_response(404,False,"User Not found")
 			return
-		print(user_doc.get("name"))
-
 
 		if not page or not limit or not end_date or not start_date:
 			set_response(400,False,"Please provide all fields")
 			return
+
+		update_coupon_status()
 		
 		page = int(page)
 		limit = int(limit)
 		start = (page - 1) * limit
 		if user_doc.get("role") == "Hotpot Server":
-			# meal_data = frappe.db.get_list(
-			# 	"Hotpot Meal",
-			# 	fields=["name"],
-			# 	filters=[
-			# 		["vendor_id", "=", user_doc.get("name")],
-			# 		["meal_date", ">=", datetime.today().strftime("%Y-%m-%d")],
-			# 		["meal_date", "<=", datetime.today().strftime("%Y-%m-%d")]
-			# 	]
-			# )
-			# ans=[]
-			# for id in meal_data:
-			# 	meal_doc = frappe.get_doc("Hotpot Meal",id)
-			# 	ans.append(meal_doc.coupons)
 			query = """
 				SELECT
 					hc.*
@@ -190,35 +204,6 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 			return
 		
 		elif user_doc.get("role") == "Hotpot User":
-			# meal_data = frappe.db.get_list(
-			# 	"Hotpot Meal",
-			# 	fields = ["name"],
-			# 	filters = [
-			# 		["meal_date", ">=", datetime.today().strftime("%Y-%m-%d")],
-			# 		["meal_date", "<=", datetime.today().strftime("%Y-%m-%d")]
-			# 	]
-			# )
-			# ans =[]
-			# for meal in meal_data:
-			# 	meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
-
-			# 	user_coupons=[]
-			# 	for coupon in meal_doc.coupons:
-			# 		if coupon.employee_id == user_doc.get("name"):
-			# 			user_coupons.append({
-			# 				"id":coupon.name,
-			# 				"coupon status": coupon.coupon_status,
-			# 				"coupon_date":coupon.coupon_date
-			# 			})
-
-			# 	user_ratings=[]
-			# 	for coupon in meal_doc.ratings:
-			# 		if coupon.employee_id ==user_doc.get("name"):
-			# 			user_ratings.append({
-			# 				"id":coupon.name,
-			# 				"rating": coupon.rating,
-			# 				"feedback":coupon.feedback
-			# 			})
 			query= """
 				(
 				SELECT 
@@ -272,14 +257,6 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 			return
 
 		elif user_doc.get("role") == "Hotpot Admin":
-			# coupons = frappe.get_list(
-			# 	"Hotpot Coupons",
-			# 	filters = [["employee_id", "=" ,user_doc.get("name")]],
-			# 	fields=["*"],
-			# 	start=start,
-			# 	page_length=limit,
-			# 	order_by="creation desc"
-			# )
 			query = f"""
 				(
 				SELECT *
