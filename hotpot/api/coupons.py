@@ -242,6 +242,8 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 				hc.title AS title,
 				hc.coupon_status AS status,
 				hc.coupon_date AS coupon_date,
+				hm.start_time AS start_time,
+				hm.end_time AS end_time,
 				hm.name AS meal_id
 			FROM
 				`tabHotpot Coupons` AS hc
