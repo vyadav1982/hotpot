@@ -18,4 +18,6 @@ export interface HotpotCoupons{
 	coupon_status?: "-1" | "0" | "1"
 	/**	Coupon Date : Date	*/
 	coupon_date?: string
+	/**	Served By : Data	*/
+	served_by?: string
 }

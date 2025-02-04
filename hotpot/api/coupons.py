@@ -7,6 +7,52 @@ from ..api.users import *
 
 
 @frappe.whitelist(allow_guest=True)
+
+def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d")):
+	try:
+		if frappe.request.method != "GET":
+			set_response(500, False, "Only GET method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot Server":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+		query = """ 
+				SELECT 
+					hm.meal_title, 
+					COUNT(hc.name) AS coupon_count
+				FROM 
+					`tabHotpot Coupons` AS hc
+				INNER JOIN 
+					`tabHotpot Meal` AS hm ON hm.name = hc.parent
+				WHERE 
+					hm.vendor_id = %(vendor_name)s
+					AND hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
+				GROUP BY 
+					hm.meal_title
+			"""
+		params = {
+			"vendor_name": user_doc.get("name"),
+			"start_date": start_date,
+			"end_date": end_date,
+		}
+		data = frappe.db.sql(query,params,as_dict=True)
+
+		if not data :
+			set_response(200,True,"No Coupons Available")
+			return
+		
+		set_response(200,True,"Coupon Count Fetched successfully",data)
+		return
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+
 def scan_coupon():
 	try:
 		if frappe.request.method != "POST":
@@ -69,6 +115,7 @@ def scan_coupon():
 			return
 
 		coupon_found.coupon_status = 0
+		coupon_found.served_by = user_doc.get("name")
 		meal_doc.save()
 		frappe.db.commit()
 
@@ -79,7 +126,7 @@ def scan_coupon():
 
 
 @frappe.whitelist(allow_guest=True)
-def get_all_coupons(start_date,end_date,page=1,limit=10):
+def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d"),page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
@@ -128,15 +175,15 @@ def get_all_coupons(start_date,end_date,page=1,limit=10):
 
 			params = {
 				"vendor_name": user_doc.get("name"),
-				"start_date": start_date or datetime.today().strftime("%Y-%m-%d"),
-				"end_date": end_date or datetime.today().strftime("%Y-%m-%d"),
+				"start_date": start_date,
+				"end_date": end_date,
 				"start": start,
 				"limit": limit
 			}
 
 			ans = frappe.db.sql(query, params, as_dict=True)
 			if not ans :
-				set_response(404,False,"No Coupon found")
+				set_response(200,True,"No Coupon found",[])
 				return
 			set_response(200,True,"Coupons fetched successfully",ans)
 			return
@@ -182,11 +229,10 @@ def get_all_coupons(start_date,end_date,page=1,limit=10):
 				)
 			"""
 			params = {
-				"start_date": start_date or datetime.today().strftime("%Y-%m-%d"),
-				"end_date": end_date or datetime.today().strftime("%Y-%m-%d"),
+				"start_date": start_date,
+				"end_date": end_date,
 			}
 			meals = frappe.db.sql(query,params,as_dict=True)
-			print("{{{{}}}}",meals)
 			query = """
 			(
 			SELECT
@@ -209,15 +255,15 @@ def get_all_coupons(start_date,end_date,page=1,limit=10):
 
 			params = {
 				"user_name": user_doc.get("name"),
-				"start_date": start_date or datetime.today().strftime("%Y-%m-%d"),
-				"end_date": end_date or datetime.today().strftime("%Y-%m-%d"),
+				"start_date": start_date,
+				"end_date": end_date,
 				"start": start,
 				"limit": limit
 			}
 			
 			ans = frappe.db.sql(query, params, as_dict=True)
 			if not ans :
-				set_response(404,False,"No Coupon found")
+				set_response(200,True,"No Coupon found",[])
 				return
 			set_response(200,True,"Coupons fetched successfully",ans)
 			return
@@ -241,8 +287,8 @@ def get_all_coupons(start_date,end_date,page=1,limit=10):
 				)
 			"""
 			params = {
-				"start_date": start_date or  datetime.today().strftime("%Y-%m-%d"),
-				"end_date": end_date or datetime.today().strftime("%Y-%m-%d"),
+				"start_date": start_date,
+				"end_date": end_date,
 				"start": start,
 				"limit": limit
 			}
