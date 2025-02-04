@@ -7,7 +7,6 @@ from ..api.users import *
 
 
 @frappe.whitelist(allow_guest=True)
-
 def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d")):
 	try:
 		if frappe.request.method != "GET":
@@ -54,10 +53,60 @@ def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=d
 		set_response(500, False, "ERROR: " + str(e))
 
 @frappe.whitelist(allow_guest=True)
+def cancel_coupon():
+	try:
+		if frappe.request.method != "PUT":
+			set_response(500, False, "Only PUT method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		meal_id = data.get("meal_id")
+		coupon_id = data.get("coupon_id")
+
+		if not meal_id or not coupon_id:
+			set_response(400,False,"Required neccessary field")
+			return
+
+		today_str = datetime.today().strftime("%Y-%m-%d")
+		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
+		today = current_datetime.date()
+		current_time_num = current_datetime.hour * 100 + current_datetime.minute
+		meal_doc = frappe.get_doc("Hotpot Meal",meal_id)
+		if not meal_doc:
+			set_response(404,False,"Meal not found")
+			return
+
+		if meal_doc.meal_date == datetime.today().strftime("%Y-%m-%d") and int(meal_doc.start_time) <= current_time_num:
+			set_response(400,False,"Cannot Cancel at this moment")
+			return
+
+		query="""
+			UPDATE `tabHotpot Coupons` AS hc
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+			SET hc.coupon_status = 2
+			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
+			"""
+		frappe.db.commit()
+		set_response(200,True,"Cancelled successfully")
+		return
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+		return
+
+@frappe.whitelist(allow_guest=True)
 def scan_coupon():
 	try:
-		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+		if frappe.request.method != "PUT":
+			set_response(500, False, "Only PUT method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -124,6 +173,7 @@ def scan_coupon():
 
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
+		return
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_status():
@@ -145,11 +195,13 @@ def update_coupon_status():
 
 			"""
 		data = frappe.db.sql(query)
+		frappe.db.commit()
 		return
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Failed to update status")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 
 
@@ -281,7 +333,8 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 @frappe.whitelist(allow_guest=True)
 def generate_coupon():
@@ -410,7 +463,8 @@ def generate_coupon():
 		frappe.db.rollback()
 		print(frappe.get_traceback())
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 def set_response(http_status_code, status, message, data=None):
 	frappe.local.response["http_status_code"] = http_status_code
