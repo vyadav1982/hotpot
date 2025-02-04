@@ -53,6 +53,7 @@ def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=d
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
 
+@frappe.whitelist(allow_guest=True)
 def scan_coupon():
 	try:
 		if frappe.request.method != "POST":
