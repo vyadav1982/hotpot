@@ -63,7 +63,6 @@ def get_coupons_history(employee_id):
 				return
 
 		user_doc = get_hotpot_user_by_email()
-		print(user_doc.get("employee_id")==employee_id)
 		if not user_doc or not user_doc.get("employee_id")==(employee_id):
 			set_response(404, False, "User Not found")
 			return
