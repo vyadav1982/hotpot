@@ -5,6 +5,7 @@ from datetime import datetime,timedelta
 from frappe.utils import today
 
 from ..api.users import *
+from ..api.coupons import update_coupon_status
 
 def set_response(http_status_code, status, message, data=None):
 	frappe.local.response["http_status_code"] = http_status_code
@@ -208,6 +209,7 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 		if not user_data:
 			set_response(404, False, "User Not Found")
 			return
+		update_coupon_status()
 
 		user_id = user_data.get("name")
 		start = (page - 1) * limit
@@ -244,7 +246,7 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 				limit=limit
 			)
 			if not meal_data:
-				set_response(404,False,"No meal found for today")
+				set_response(200, True, "No meal found",[])
 				return
 
 			data = []
