@@ -194,7 +194,7 @@ def delete_meal():
 		return
 
 @frappe.whitelist(allow_guest=True)
-def get_meals(start_date,end_date,page=1,limit=10):
+def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d"),page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
@@ -243,7 +243,6 @@ def get_meals(start_date,end_date,page=1,limit=10):
 				start=start,
 				limit=limit
 			)
-			print("{{{}}}",start_date,end_date,meal_data)
 			if not meal_data:
 				set_response(404,False,"No meal found for today")
 				return
@@ -288,7 +287,7 @@ def get_meals(start_date,end_date,page=1,limit=10):
 			data = frappe.db.get_list("Hotpot Meal", fields=["*"])
 
 		if not data:
-			set_response(404, False, "No meal found")
+			set_response(200, True, "No meal found",[])
 			return
 
 		set_response(200, True, "Fetched successfully", data)
@@ -350,7 +349,7 @@ def get_meal_items():
 		data = frappe.db.get_list("Hotpot Meal Items", fields=["*"],filters=[["vendor_id", "=", user_data.get("name")]])
 
 		if not data:
-			set_response(404, False, "No meal item found")
+			set_response(200, True, "No meal item found",[])
 			return
 
 		set_response(200, True, "Fetched successfully", data)
