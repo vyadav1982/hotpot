@@ -217,7 +217,7 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 		if user_data.get("role") == "Hotpot Server":
 			data = frappe.db.get_list(
 				"Hotpot Meal",
-				fields=["*"],
+				fields=["name","meal_title","day","meal_items","start_time","end_time","buffer_coupon_count","meal_weight","meal_date","is_active","is_special"],
 				filters = [
 					["vendor_id", "=", user_id],
 					["meal_date", ">=", start_date],

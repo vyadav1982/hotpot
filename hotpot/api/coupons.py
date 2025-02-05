@@ -256,7 +256,9 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 		if user_doc.get("role") == "Hotpot Server":
 			query = """
 				SELECT
-					hc.*
+					hc.*,
+					hm.start_time,
+					hm.end_time,
 				FROM
 					`tabHotpot Coupons` AS hc
 				INNER JOIN
@@ -302,10 +304,10 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 			(
 			SELECT
 				'coupon' AS record_type,
-				hc.name AS id,
+				hc.name,
 				hc.title AS title,
-				hc.coupon_status AS status,
-				hc.coupon_date AS coupon_date,
+				hc.coupon_status,
+				hc.coupon_date,
 				hm.start_time AS start_time,
 				hm.end_time AS end_time,
 				hm.name AS meal_id
