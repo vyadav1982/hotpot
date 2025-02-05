@@ -83,9 +83,25 @@ def cancel_coupon():
 		if not meal_doc:
 			set_response(404,False,"Meal not found")
 			return
+		coupons = meal_doc.get("coupons")
+		
+		coupon_found = None
+		for coupon in coupons:
+			if coupon.name == coupon_id:
+				coupon_found = coupon
+				break
 
-		if meal_doc.meal_date == datetime.today().strftime("%Y-%m-%d") and int(meal_doc.start_time) <= current_time_num:
+		if not coupon_found:
+			set_response(400, False, "ERROR: Coupon Not Found")
+			return
+		if coupon_found.coupon_status =="-1" or coupon_found.coupon_status=="0":
+			set_response(400,False,"Cannot cancel a redeemed or expired coupon")
+			return
+		if meal_doc.meal_date==datetime.strptime(datetime.today().strftime("%Y-%m-%d"), "%Y-%m-%d").date() and int(meal_doc.start_time) <= current_time_num:
 			set_response(400,False,"Cannot Cancel at this moment")
+			return
+		if coupon_found.coupon_status=="2":
+			set_response(409,False,"Coupon already Cancelled")
 			return
 
 		query="""
@@ -94,6 +110,11 @@ def cancel_coupon():
 			SET hc.coupon_status = 2
 			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
 			"""
+		params = {
+			"meal_id":meal_id,
+			"coupon_id":coupon_id
+		}
+		frappe.db.sql(query,params)
 		frappe.db.commit()
 		set_response(200,True,"Cancelled successfully")
 		return
@@ -139,10 +160,13 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
+
 		today_str = datetime.today().strftime("%Y-%m-%d")
 		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
 		today = current_datetime.date()
 		current_time_num = current_datetime.hour * 100 + current_datetime.minute
+
+		print(coupon_found,meal_id,current_time_num)
 
 		if coupon_found.get("coupon_date").strftime("%Y-%m-%d") != today_str:
 			set_response(400, False, "NOTICE: Coupon Not Valid for Today")
@@ -186,13 +210,16 @@ def update_coupon_status():
 		query="""
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-			SET hc.coupon_status = -1
-			WHERE hc.coupon_status = 1 
+			SET hc.coupon_status = "-1"
+			WHERE hc.coupon_status = "1" 
 			AND (
-				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
-				OR (hm.meal_date = CURDATE() AND CAST(hm.end_time AS UNSIGNED) < DATE_FORMAT(NOW(), '%H%i'))
+				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+				OR (
+					hm.meal_date = CURDATE() 
+					AND CAST(LPAD(hm.end_time, 4, '0') AS UNSIGNED) < 
+						CAST(DATE_FORMAT(CONVERT_TZ(NOW(), 'UTC', 'Asia/Kolkata'), '%H%i') AS UNSIGNED)
+				)
 			);
-
 			"""
 		data = frappe.db.sql(query)
 		frappe.db.commit()
@@ -352,22 +379,24 @@ def generate_coupon():
 			return
 
 		data = json.loads(frappe.request.data or "{}")
-		required_fields = ["meal_id", "from_date", "to_date"]
+		required_fields = ["meal_id"]
 		if missing := [field for field in required_fields if not data.get(field)]:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 
-		date_format = "%m/%d/%Y"
-		try:
-			from_date = datetime.strptime(data["from_date"], date_format).date()
-			to_date = datetime.strptime(data["to_date"], date_format).date()
-		except ValueError:
-			return set_response(400, False, "Invalid date format. Use MM/DD/YYYY")
+		if "from_date" not in data:
+			data["from_date"] = datetime.today().strftime("%Y-%m-%d")
+		if "to_date" not in data:
+			data["to_date"] = datetime.today().strftime("%Y-%m-%d")
+
+		from_date=data["from_date"] = datetime.strptime(data["from_date"], "%Y-%m-%d").date()
+		to_date=data["to_date"] = datetime.strptime(data["to_date"], "%Y-%m-%d").date()
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
 
+		print(type(from_date),type(to_date))
 		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
 		today = current_datetime.date()
 		current_time_num = current_datetime.hour * 100 + current_datetime.minute
