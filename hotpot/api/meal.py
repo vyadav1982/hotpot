@@ -235,7 +235,7 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 			current_time_num = current_datetime.hour * 100 + current_datetime.minute
 			meal_data = frappe.db.get_list(
 				"Hotpot Meal",
-				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons","meal_date"],
+				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons","meal_date","is_special"],
 				filters = [
 					["is_active","=", 1],
 					["end_time",">", current_time_num],
