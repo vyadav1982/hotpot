@@ -7,7 +7,6 @@ from ..api.users import *
 
 
 @frappe.whitelist(allow_guest=True)
-
 def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d")):
 	try:
 		if frappe.request.method != "GET":
@@ -54,10 +53,81 @@ def get_coupon_count(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=d
 		set_response(500, False, "ERROR: " + str(e))
 
 @frappe.whitelist(allow_guest=True)
+def cancel_coupon():
+	try:
+		if frappe.request.method != "PUT":
+			set_response(500, False, "Only PUT method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		meal_id = data.get("meal_id")
+		coupon_id = data.get("coupon_id")
+
+		if not meal_id or not coupon_id:
+			set_response(400,False,"Required neccessary field")
+			return
+
+		today_str = datetime.today().strftime("%Y-%m-%d")
+		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
+		today = current_datetime.date()
+		current_time_num = current_datetime.hour * 100 + current_datetime.minute
+		meal_doc = frappe.get_doc("Hotpot Meal",meal_id)
+		if not meal_doc:
+			set_response(404,False,"Meal not found")
+			return
+		coupons = meal_doc.get("coupons")
+		
+		coupon_found = None
+		for coupon in coupons:
+			if coupon.name == coupon_id:
+				coupon_found = coupon
+				break
+
+		if not coupon_found:
+			set_response(400, False, "ERROR: Coupon Not Found")
+			return
+		if coupon_found.coupon_status =="-1" or coupon_found.coupon_status=="0":
+			set_response(400,False,"Cannot cancel a redeemed or expired coupon")
+			return
+		if meal_doc.meal_date==datetime.strptime(datetime.today().strftime("%Y-%m-%d"), "%Y-%m-%d").date() and int(meal_doc.start_time) <= current_time_num:
+			set_response(400,False,"Cannot Cancel at this moment")
+			return
+		if coupon_found.coupon_status=="2":
+			set_response(409,False,"Coupon already Cancelled")
+			return
+
+		query="""
+			UPDATE `tabHotpot Coupons` AS hc
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+			SET hc.coupon_status = 2
+			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
+			"""
+		params = {
+			"meal_id":meal_id,
+			"coupon_id":coupon_id
+		}
+		frappe.db.sql(query,params)
+		frappe.db.commit()
+		set_response(200,True,"Cancelled successfully")
+		return
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+		return
+
+@frappe.whitelist(allow_guest=True)
 def scan_coupon():
 	try:
-		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+		if frappe.request.method != "PUT":
+			set_response(500, False, "Only PUT method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -90,10 +160,13 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
+
 		today_str = datetime.today().strftime("%Y-%m-%d")
 		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
 		today = current_datetime.date()
 		current_time_num = current_datetime.hour * 100 + current_datetime.minute
+
+		print(coupon_found,meal_id,current_time_num)
 
 		if coupon_found.get("coupon_date").strftime("%Y-%m-%d") != today_str:
 			set_response(400, False, "NOTICE: Coupon Not Valid for Today")
@@ -124,6 +197,7 @@ def scan_coupon():
 
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
+		return
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_status():
@@ -136,20 +210,25 @@ def update_coupon_status():
 		query="""
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-			SET hc.coupon_status = -1
-			WHERE hc.coupon_status = 1 
+			SET hc.coupon_status = "-1"
+			WHERE hc.coupon_status = "1" 
 			AND (
-				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
-				OR (hm.meal_date = CURDATE() AND CAST(hm.end_time AS UNSIGNED) < DATE_FORMAT(NOW(), '%H%i'))
+				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+				OR (
+					hm.meal_date = CURDATE() 
+					AND CAST(LPAD(hm.end_time, 4, '0') AS UNSIGNED) < 
+						CAST(DATE_FORMAT(CONVERT_TZ(NOW(), 'UTC', 'Asia/Kolkata'), '%H%i') AS UNSIGNED)
+				)
 			);
-
 			"""
 		data = frappe.db.sql(query)
+		frappe.db.commit()
 		return
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Failed to update status")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 
 
@@ -281,7 +360,8 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 @frappe.whitelist(allow_guest=True)
 def generate_coupon():
@@ -299,22 +379,24 @@ def generate_coupon():
 			return
 
 		data = json.loads(frappe.request.data or "{}")
-		required_fields = ["meal_id", "from_date", "to_date"]
+		required_fields = ["meal_id"]
 		if missing := [field for field in required_fields if not data.get(field)]:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 
-		date_format = "%m/%d/%Y"
-		try:
-			from_date = datetime.strptime(data["from_date"], date_format).date()
-			to_date = datetime.strptime(data["to_date"], date_format).date()
-		except ValueError:
-			return set_response(400, False, "Invalid date format. Use MM/DD/YYYY")
+		if "from_date" not in data:
+			data["from_date"] = datetime.today().strftime("%Y-%m-%d")
+		if "to_date" not in data:
+			data["to_date"] = datetime.today().strftime("%Y-%m-%d")
+
+		from_date=data["from_date"] = datetime.strptime(data["from_date"], "%Y-%m-%d").date()
+		to_date=data["to_date"] = datetime.strptime(data["to_date"], "%Y-%m-%d").date()
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
 
+		print(type(from_date),type(to_date))
 		current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
 		today = current_datetime.date()
 		current_time_num = current_datetime.hour * 100 + current_datetime.minute
@@ -410,7 +492,8 @@ def generate_coupon():
 		frappe.db.rollback()
 		print(frappe.get_traceback())
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
-		return set_response(500, False, f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 def set_response(http_status_code, status, message, data=None):
 	frappe.local.response["http_status_code"] = http_status_code

@@ -72,8 +72,9 @@ def get_coupons_history(employee_id):
 			return 
 
 		result = []
+		employee_id = user_doc.get("name")
 		query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
-		result = frappe.db.sql(query, (employee_id), as_dict=True)
+		result = frappe.db.sql(query, employee_id, as_dict=True)
 		result += frappe.db.get_list(
 			"Hotpot Coupons History",
 			fields=["employee_id", "type", "message", "creation"],

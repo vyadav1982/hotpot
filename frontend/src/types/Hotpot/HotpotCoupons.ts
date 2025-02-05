@@ -15,7 +15,7 @@ export interface HotpotCoupons{
 	/**	Employee Id : Data	*/
 	employee_id?: string
 	/**	Coupon Status : Select	*/
-	coupon_status?: "-1" | "0" | "1"
+	coupon_status?: "-1" | "0" | "1" | "2"
 	/**	Coupon Date : Date	*/
 	coupon_date?: string
 	/**	Served By : Data	*/
