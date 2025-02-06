@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Hotpot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .contact-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .contact-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .contact-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .contact-info {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .contact-info h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .contact-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .contact-info a {
+            color: #ff6b00;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b00;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: #ff6b00;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #ff8533;
+        }
+
+        .submit-btn:disabled {
+            background-color: #ffab80;
+            cursor: not-allowed;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        .submit-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .contact-container {
+                padding: 20px;
+            }
+
+            .contact-header h1 {
+                font-size: 24px;
+            }
+
+            .contact-header p {
+                font-size: 14px;
+            }
+
+            .contact-info h2 {
+                font-size: 18px;
+            }
+        }
+
+        /* Form validation styles */
+        .form-group input:invalid,
+        .form-group textarea:invalid {
+            border-color: #ff4444;
+        }
+
+        .form-group input:invalid:focus,
+        .form-group textarea:invalid:focus {
+            border-color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+            <p>Have a question? We'd love to hear from you.</p>
+        </div>
+        <div class="contact-info">
+            <h2>Get in Touch</h2>
+            <p>Email: <a href="mailto:info@hotpot.com">info@bytepanda.in</a></p>
+            <p>Phone: <a href="tel:+1234567890">+91 807-641-4325</a></p>
+            <p>Website: <a href="https://hotpot.bytepanda.in" target="_blank">hotpot.bytepanda.in</a></p>
+        </div>
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required placeholder="Your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" required placeholder="How can we help?"></textarea>
+            </div>
+            <button type="submit" class="submit-btn" id="submitButton">
+                <span class="spinner"></span>
+                <span class="button-text">Send Message</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const button = document.getElementById('submitButton');
+            const buttonText = button.querySelector('.button-text');
+            
+            // Disable button and show loading state
+            button.disabled = true;
+            button.classList.add('loading');
+            buttonText.textContent = 'Sending...';
+
+            // Simulate form submission (replace with your actual form submission logic)
+            setTimeout(() => {
+                button.disabled = false;
+                button.classList.remove('loading');
+                buttonText.textContent = 'Send Message';
+                
+                // Clear form
+                document.getElementById('contactForm').reset();
+                alert('Message sent successfully!');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
