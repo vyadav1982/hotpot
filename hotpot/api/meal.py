@@ -403,8 +403,8 @@ def add_meal_items():
 		if not user_data:
 			set_response(404, False, "User Not found")
 			return
-		if not user_data["role"] == "Hotpot Server":
-			set_response(403, False, "Not Permitted to acess this resouce")
+		if not user_data["role"] == "Hotpot Vendor":
+			set_response(403, False, "Not Permitted to access this resouce")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -413,7 +413,7 @@ def add_meal_items():
 		existing_meal_item = frappe.get_list(
 			"Hotpot Meal Items",
 			fields=["name"],
-			filters=[["item_name", "=", item_name], ["vendor_id", "=", user_data.get("name")]],
+			filters=[["item_name", "=", item_name], ["vendor_id", "=", user_data.get("guest_of")]],
 		)
 		if existing_meal_item:
 			set_response(409, False, f"A meal item '{item_name}' already exists")
@@ -425,7 +425,7 @@ def add_meal_items():
 			{
 				"doctype": "Hotpot Meal Items",
 				"item_name": item_name,
-				"vendor_id": user_data.get("name"),
+				"vendor_id": user_data.get("guest_of"),
 				"is_active": "1",
 			}
 		)
