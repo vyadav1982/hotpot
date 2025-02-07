@@ -142,8 +142,9 @@ def scan_coupon():
 		data = json.loads(frappe.request.data or "{}")
 		meal_id = data.get("meal_id")
 		coupon_id = data.get("coupon_id")
+		user_id = data.get("user_id")
 
-		if not meal_id or not coupon_id:
+		if not meal_id or not coupon_id or not user_id:
 			set_response(400, False, "Missing required field")
 			return
 		
@@ -193,11 +194,77 @@ def scan_coupon():
 		meal_doc.save()
 		frappe.db.commit()
 
-		set_response(200, True, "SUCCESS: Meal Ready to Be Served", coupon_found)
+		data=[]
+		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		user_doc = frappe.get_doc("Hotpot User", user_id)
+		data.append({
+			"meal_title": meal_doc.get("meal_title"),
+			"meal_date": meal_doc.get("meal_date"),
+			"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
+			"employee_id": user_doc.get("employee_id"),
+			"employee_name": user_doc.get("employee_name"),
+			"coupon_id": coupon_found.get("name"),
+			"coupon_status": coupon_found.get("coupon_status"),
+			"coupon_date": coupon_found.get("coupon_date"),
+			"coupon_title": coupon_found.get("title"),
+		})
+
+		set_response(200, True, "SUCCESS: Meal Ready to Be Served", data)
 
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
 		return
+
+@frappe.whitelist(allow_guest=True)
+def get_scanned_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime.today().strftime("%Y-%m-%d"),page=1,limit=10):
+	try:
+		if frappe.request.method != "GET":
+			set_response(500, False, "Only GET method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot Server":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		query = """
+			SELECT 
+				hm.meal_title, 
+				hc.coupon_status, 
+				hc.coupon_date, 
+				hm.start_time, 
+				hm.end_time, 
+				hc.name AS coupon_id, 
+				hc.title AS coupon_title, 
+				hc.employee_id, 
+				hc.served_by
+			FROM 
+				`tabHotpot Coupons` AS hc
+			INNER JOIN 
+				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+			WHERE 
+				hc.coupon_status = 0
+			ORDER BY 
+				hc.modified DESC
+			;
+		"""
+
+		data = frappe.db.sql(query, as_dict=True)
+		if not data:
+			set_response(200, False, "No Scanned Coupons Found")
+			return
+
+		set_response(200, True, "Scanned Coupons Fetched successfully", data)
+		return
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+		return
+
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_status():
@@ -276,6 +343,7 @@ def get_all_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=da
 				"start": start,
 				"limit": limit
 			}
+
 
 			ans = frappe.db.sql(query, params, as_dict=True)
 			if not ans :

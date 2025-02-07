@@ -50,7 +50,8 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "label": "E Mail"
+   "label": "E Mail",
+   "unique": 1
   },
   {
    "default": "0",
@@ -91,7 +92,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-30 17:01:50.288359",
+ "modified": "2025-02-07 09:43:31.159256",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
