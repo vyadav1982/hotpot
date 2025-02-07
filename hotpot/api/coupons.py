@@ -144,7 +144,7 @@ def scan_coupon():
 		coupon_id = data.get("coupon_id")
 		user_id = data.get("user_id")
 
-		if not meal_id or not coupon_id or not user_id:
+		if not meal_id or not coupon_id or not user_id not vendor_id:
 			set_response(400, False, "Missing required field")
 			return
 		
@@ -156,7 +156,7 @@ def scan_coupon():
 		if not meal_doc:
 			set_response(404, False, "Meal Not Found")
 			return
-		if not user_doc.get("name") == meal_doc.get("vendor_id"):
+		if not vendor_id == meal_doc.get("vendor_id"):
 			set_response(403, False, "You are not authorised to scan this coupon.")
 			return
 		coupons = meal_doc.get("coupons")
