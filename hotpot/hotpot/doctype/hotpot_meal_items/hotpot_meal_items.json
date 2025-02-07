@@ -24,13 +24,14 @@
   },
   {
    "fieldname": "vendor_id",
-   "fieldtype": "Data",
-   "label": "Vendor Id"
+   "fieldtype": "Link",
+   "label": "Vendor Id",
+   "options": "Hotpot User"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-30 16:36:49.473649",
+ "modified": "2025-02-07 11:48:36.198081",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",

@@ -16,6 +16,7 @@ class HotpotMealItems(Document):
 
 		is_active: DF.Check
 		item_name: DF.Data | None
-		vendor_id: DF.Data | None
+		vendor_id: DF.Link | None
 	# end: auto-generated types
+
 	pass
