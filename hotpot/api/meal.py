@@ -240,7 +240,7 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 			
 			meal_data = frappe.db.get_list(
 				"Hotpot Meal",
-				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons","meal_date","is_special","meal_date",],
+				fields=["name", "meal_title", "day", "meal_items", "start_time", "end_time", "buffer_coupon_count", "meal_weight","coupons","meal_date","is_special","meal_date","vendor_id"],
 				filters = filters,
 				start=start,
 				limit=limit
@@ -252,11 +252,20 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 						filtered_meal_data.append(meal)
 				else :
 					filtered_meal_data.append(meal)
+			meal_data = filtered_meal_data
 
 
 			if not meal_data:
 				set_response(200, True, "No meal found",[])
 				return
+
+			for meal in filtered_meal_data:
+				vendor_name = frappe.db.get_list(
+					"Hotpot User",
+					fields=["employee_name"],
+					filters = [["name", "=", meal["vendor_id"]]]
+				)
+				meal["vendor_name"] = vendor_name[0]["employee_name"]
 
 			data = []
 			for meal in meal_data:
@@ -293,7 +302,9 @@ def get_meals(start_date=datetime.today().strftime("%Y-%m-%d"),end_date=datetime
 					"coupon": user_coupons,
 					"ratings": user_ratings,
 					"is_special": meal_doc.is_special,
-					"meal_date": meal_doc.meal_date
+					"meal_date": meal_doc.meal_date,
+					"vendor_id": meal_doc.vendor_id,
+					"vendor_name": meal["vendor_name"]
 				})
 
 		else:
