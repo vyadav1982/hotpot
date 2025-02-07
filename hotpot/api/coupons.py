@@ -356,7 +356,7 @@ def get_all_coupons(
 				SELECT
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
-					u.employee_name AS vendor_name,
+					U.employee_name AS vendor_name,
 					hc.*
 				FROM
 					`tabHotpot Coupons` AS hc
@@ -399,7 +399,7 @@ def get_all_coupons(
 				hm.start_time AS start_time,
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
-				u.employee_name AS vendor_name
+				U.employee_name AS vendor_name
 			FROM
 				`tabHotpot Coupons` AS hc
 			INNER JOIN
