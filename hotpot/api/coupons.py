@@ -149,6 +149,9 @@ def scan_coupon():
 			return
 		
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		if not user_doc.get("name") == meal_doc.get("vendor_id"):
+			set_response(403, False, "Please go to your assigned meal vendor.")
+			return
 		coupons = meal_doc.get("coupons")
 		
 		coupon_found = None
