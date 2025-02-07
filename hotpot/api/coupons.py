@@ -148,7 +148,17 @@ def scan_coupon():
 			set_response(400, False, "Missing required field")
 			return
 		
+		user_doc = frappe.get_doc("Hotpot User", user_id)
+		if not user_doc:
+			set_response(404, False, "User Not Found")
+			return
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		if not meal_doc:
+			set_response(404, False, "Meal Not Found")
+			return
+		if not user_doc.get("name") == meal_doc.get("vendor_id"):
+			set_response(403, False, "You are not authorised to scan this coupon.")
+			return
 		coupons = meal_doc.get("coupons")
 		
 		coupon_found = None
@@ -195,8 +205,6 @@ def scan_coupon():
 		frappe.db.commit()
 
 		data=[]
-		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
-		user_doc = frappe.get_doc("Hotpot User", user_id)
 		data.append({
 			"meal_title": meal_doc.get("meal_title"),
 			"meal_date": meal_doc.get("meal_date"),
