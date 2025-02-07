@@ -148,6 +148,11 @@ def update_meal():
 			set_response(404, False, "Meal not found")
 			return
 
+		coupons = meal_doc.coupons
+		if coupons:
+			set_response(409, False, "Cannot update meal as some users have created coupons")
+			return
+			
 		for field in ["meal_title", "day", "meal_date", "meal_items", "start_time", "end_time", "buffer_coupon_count","meal_weight","is_active","is_special"]:
 			if field in data:
 				setattr(meal_doc, field, ",".join(data[field]) if field == "meal_items" else data[field])
@@ -184,6 +189,11 @@ def delete_meal():
 			meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
+		
+		coupons = meal_doc.coupons
+		if coupons:
+			set_response(409, False, "Cannot delete meal as some users have created coupons")
+			return
 
 		meal_doc.delete()
 		frappe.db.commit()
