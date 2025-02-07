@@ -260,7 +260,7 @@ def get_meals(
 
 		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
-		if user_data.get("role") == "Hotpot Server":
+		if user_data.get("role") == "Hotpot Server" or user_data.get("role") == "Hotpot Vendor":
 			data = frappe.db.get_list(
 				"Hotpot Meal",
 				fields=[
