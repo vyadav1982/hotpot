@@ -152,7 +152,6 @@ def get_hotpot_user_by_email():
 def get_hotpot_loggedin_user():
 	try:
 		user = get_hotpot_user_by_email()
-		print(user)
 		if user:
 			set_response(200, True, "Data fetched successfully", user)
 			return 
@@ -168,3 +167,33 @@ def get_hotpot_loggedin_user():
 		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Email Error")
 		set_response(500, False, f"An error occurred: {str(e)}")
 		return
+
+
+@frappe.whitelist(allow_guest=True)
+def get_all_vendor():
+	try:
+		if frappe.request.method != "GET":
+				set_response(500, False, "Only GET method is allowed")
+				return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+		user_list = frappe.db.get_list(
+			"Hotpot User",
+			filters=[["role", "=", "Hotpot Server"]],
+			fields=["name", "employee_name"],
+		)
+		if not user_list:
+			set_response(200, False, "No Vendor found")
+			return
+		set_response(200, True, "Data fetched successfully", user_list)
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Vendor Error")
+		return set_response(500, False, f"Server error: {str(e)}")
