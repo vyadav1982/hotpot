@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { useToast } from '@/hooks/use-toast';
 
-
 export const ConfirmMealCancelButtons = ({
   handleCancel,
 }: {

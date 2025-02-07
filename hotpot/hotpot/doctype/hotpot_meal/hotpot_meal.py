@@ -13,6 +13,7 @@ class HotpotMeal(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
 
@@ -21,12 +22,14 @@ class HotpotMeal(Document):
 		day: DF.Data | None
 		end_time: DF.Data | None
 		is_active: DF.Check
+		is_special: DF.Check
 		meal_date: DF.Date | None
 		meal_items: DF.Data | None
 		meal_title: DF.Data | None
 		meal_weight: DF.Int
 		ratings: DF.Table[HotpotMealRating]
 		start_time: DF.Data | None
-		vendor_id: DF.Data | None
+		vendor_id: DF.Link | None
 	# end: auto-generated types
+
 	pass

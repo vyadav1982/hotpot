@@ -70,8 +70,9 @@
   },
   {
    "fieldname": "vendor_id",
-   "fieldtype": "Data",
-   "label": "Vendor Id"
+   "fieldtype": "Link",
+   "label": "Vendor Id",
+   "options": "Hotpot User"
   },
   {
    "fieldname": "ratings",
@@ -94,7 +95,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-31 17:09:33.950223",
+ "modified": "2025-02-07 08:54:44.538038",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

@@ -41,9 +41,7 @@ def update_coupon_count(params):
 	doc = frappe.new_doc("Hotpot Coupons History")
 	doc.employee_id = employee_id
 	doc.type = "Cancellation"
-	doc.message = (
-		f"You Cancelled a coupon for {coupon['title']} ({coupon['coupon_date']})"
-	)
+	doc.message = f"You Cancelled a coupon for {coupon['title']} ({coupon['coupon_date']})"
 	doc.insert()
 	return {"message": "Coupon count updated successfully"}
 
@@ -59,17 +57,17 @@ def set_response(http_status_code, status, message, data=None):
 def get_coupons_history(employee_id):
 	try:
 		if frappe.request.method != "GET":
-				set_response(500, False, "Only GET method is allowed")
-				return
+			set_response(500, False, "Only GET method is allowed")
+			return
 
 		user_doc = get_hotpot_user_by_email()
-		if not user_doc or not user_doc.get("employee_id")==(employee_id):
+		if not user_doc or not user_doc.get("employee_id") == (employee_id):
 			set_response(404, False, "User Not found")
 			return
 
 		if not user_doc.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
-			return 
+			return
 
 		result = []
 		employee_id = user_doc.get("name")
@@ -82,7 +80,7 @@ def get_coupons_history(employee_id):
 			order_by="creation desc",
 			limit=25,
 		)
-		set_response(200,True,"History fetched successfully",result)
+		set_response(200, True, "History fetched successfully", result)
 	except Exception as e:
 		frappe.db.rollback()
 		print(frappe.get_traceback())
@@ -126,7 +124,6 @@ def get_hotpot_user_by_email():
 			filters=[["email", "=", email]],
 			fields=[
 				"name",
-				"Id",
 				"employee_name",
 				"employee_id",
 				"email",
@@ -143,7 +140,7 @@ def get_hotpot_user_by_email():
 
 		return None
 
-	except Exception as e:
+	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Email Error")
 		return None
 
@@ -154,7 +151,7 @@ def get_hotpot_loggedin_user():
 		user = get_hotpot_user_by_email()
 		if user:
 			set_response(200, True, "Data fetched successfully", user)
-			return 
+			return
 
 		set_response(500, False, "No user found with the given email")
 		return
@@ -173,8 +170,8 @@ def get_hotpot_loggedin_user():
 def get_all_vendor():
 	try:
 		if frappe.request.method != "GET":
-				set_response(500, False, "Only GET method is allowed")
-				return
+			set_response(500, False, "Only GET method is allowed")
+			return
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
@@ -186,7 +183,7 @@ def get_all_vendor():
 			return
 		user_list = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["role", "=", "Hotpot Server"]],
+			filters=[["role", "=", "Hotpot Vendor"]],
 			fields=["name", "employee_name"],
 		)
 		if not user_list:

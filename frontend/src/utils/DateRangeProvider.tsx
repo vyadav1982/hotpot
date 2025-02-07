@@ -6,7 +6,7 @@ type DateRangeContextType = {
   selectedValue: string;
   setSelectedValue: (selectedValue: string) => void;
   date: DateRange;
-  setDate: (date: DateRange ) => void;
+  setDate: (date: DateRange) => void;
 };
 
 const defaultDate: DateRange = {

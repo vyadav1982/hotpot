@@ -33,9 +33,7 @@ const Menu = () => {
             dinner_special,
           } = dayPlan;
 
-          const isDaySpecial = special
-            ? 'ring-2 ring-red-500 shadow-xl '
-            : '';
+          const isDaySpecial = special ? 'ring-2 ring-red-500 shadow-xl ' : '';
 
           return (
             <Card
@@ -58,9 +56,7 @@ const Menu = () => {
                         breakfast_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold ">
-                        Breakfast
-                      </h3>
+                      <h3 className="text-md font-bold ">Breakfast</h3>
                       <p className="">{breakfast}</p>
                     </div>
                   )}
@@ -77,14 +73,10 @@ const Menu = () => {
                   {snacks && (
                     <div
                       className={`rounded-lg p-2 ${
-                        snacks_special
-                          ? ' ring-2 ring-yellow-500'
-                          : ''
+                        snacks_special ? ' ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold ">
-                        Snacks
-                      </h3>
+                      <h3 className="text-md font-bold ">Snacks</h3>
                       <p className="">{snacks}</p>
                     </div>
                   )}
@@ -94,9 +86,7 @@ const Menu = () => {
                         dinner_special ? 'ring-2 ring-yellow-500' : ''
                       }`}
                     >
-                      <h3 className="text-md font-bold ">
-                        Dinner
-                      </h3>
+                      <h3 className="text-md font-bold ">Dinner</h3>
                       <p className="">{dinner}</p>
                     </div>
                   )}

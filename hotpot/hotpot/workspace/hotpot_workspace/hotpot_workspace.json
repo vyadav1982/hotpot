@@ -1,6 +1,7 @@
 {
+ "app": "hotpot",
  "charts": [],
- "content": "[{\"id\":\"J-2wr3KSk1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Workspace</span>\",\"col\":12}},{\"id\":\"KGakGL5RBC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Coupon\",\"col\":3}},{\"id\":\"HnK6uZ-04T\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"sTmNNSEZRU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Coupon Type\",\"col\":3}}]",
+ "content": "[{\"id\":\"J-2wr3KSk1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Workspace</span>\",\"col\":12}},{\"id\":\"qNzpQZKFLf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Meal\",\"col\":3}},{\"id\":\"KGakGL5RBC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Coupon\",\"col\":3}},{\"id\":\"HnK6uZ-04T\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"sTmNNSEZRU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Coupon Type\",\"col\":3}}]",
  "creation": "2024-12-09 14:26:52.679433",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot Workspace",
  "links": [],
- "modified": "2025-01-08 17:24:54.785195",
+ "modified": "2025-02-07 08:48:37.827734",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Workspace",
@@ -28,6 +29,14 @@
  ],
  "sequence_id": 1.0,
  "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Hotpot Meal",
+   "link_to": "Hotpot Meal",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
   {
    "color": "Grey",
    "doc_view": "List",
@@ -51,19 +60,8 @@
    "link_to": "Hotpot Coupon Type",
    "stats_filter": "[]",
    "type": "DocType"
-  },
-  {
-   "doc_view": "List",
-   "label": "Hotpot Coupons History",
-   "link_to": "Hotpot Coupons History",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "List",
-   "label": "Hotpot No of Meals",
-   "link_to": "Hotpot No of Meals",
-   "type": "DocType"
   }
  ],
- "title": "Hotpot Workspace"
+ "title": "Hotpot Workspace",
+ "type": "Workspace"
 }

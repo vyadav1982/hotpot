@@ -71,8 +71,8 @@ function LoginPage() {
   const handleCardChange = (value: string) => {
     setSelectedCard(value);
   };
-  const showToast = (status:string,message:string) => {
-    if(status==='error'){
+  const showToast = (status: string, message: string) => {
+    if (status === 'error') {
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -80,8 +80,7 @@ function LoginPage() {
         className:
           'bg-red-100 text-red-600 border border-red-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
       });
-    }
-    else{
+    } else {
       toast({
         title: 'Success',
         description: message,
@@ -89,7 +88,7 @@ function LoginPage() {
           'bg-green-100 text-green-600 border border-green-300 rounded-lg shadow-lg p-4 my-2 flex items-center gap-2',
       });
     }
-  }
+  };
 
   const onLogin = React.useCallback(
     async (values: LoginInputs) => {
@@ -256,7 +255,10 @@ function LoginPage() {
             </CardFooter>
           </Card>
         ) : (
-          <SignUpForm handleCardChange = {handleCardChange} showToast={showToast}/>
+          <SignUpForm
+            handleCardChange={handleCardChange}
+            showToast={showToast}
+          />
         )}
       </div>
     </div>

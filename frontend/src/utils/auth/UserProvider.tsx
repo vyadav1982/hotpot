@@ -8,14 +8,13 @@ import { createContext } from 'react';
 import { isHotpotAdmin, isHotpotServer, isHotpotUser } from '../roles';
 import { useToast } from '@/hooks/use-toast';
 
-
 interface UserContextProps {
   isLoading: boolean;
   currentUser: string;
   logout: () => Promise<void>;
   updateCurrentUser: VoidFunction;
   userId: string;
-  userName:string;
+  userName: string;
 }
 
 export const UserContext = createContext<UserContextProps>({
@@ -23,14 +22,14 @@ export const UserContext = createContext<UserContextProps>({
   isLoading: false,
   logout: () => Promise.resolve(),
   updateCurrentUser: () => {},
-  userId:'',
+  userId: '',
   userName: '',
 });
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { mutate } = useSWRConfig();
   const { logout, currentUser, updateCurrentUser, isLoading } = useFrappeAuth();
-  const [userId, setUserId] = useState('')
+  const [userId, setUserId] = useState('');
   const [userName, setUserName] = useState('');
   const { toast } = useToast();
   const { call: getUser } = useFrappePostCall(
@@ -41,9 +40,9 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     if (currentUser) {
       try {
         const response = await getUser({ email: currentUser });
-        const {employee_id,employee_name} = response.data;
-        setUserId(employee_id)
-        setUserName(employee_name)
+        const { employee_id, employee_name } = response.data;
+        setUserId(employee_id);
+        setUserName(employee_name);
       } catch (error) {
         toast({
           variant: 'destructive',
@@ -64,7 +63,13 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
   useEffect(() => {
-    if ((isHotpotUser() && !isHotpotAdmin() && !isHotpotServer() && currentUser?.trim()) || (!isHotpotAdmin() && isHotpotServer() && currentUser?.trim())) {
+    if (
+      (isHotpotUser() &&
+        !isHotpotAdmin() &&
+        !isHotpotServer() &&
+        currentUser?.trim()) ||
+      (!isHotpotAdmin() && isHotpotServer() && currentUser?.trim())
+    ) {
       fetchUserDetails(currentUser);
     }
   }, [currentUser]);
