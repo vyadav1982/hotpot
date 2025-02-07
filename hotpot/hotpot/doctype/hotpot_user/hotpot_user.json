@@ -51,6 +51,7 @@
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "E Mail",
+   "reqd": 1,
    "unique": 1
   },
   {
@@ -82,7 +83,9 @@
    "default": "+91- ",
    "fieldname": "mobile_no",
    "fieldtype": "Phone",
-   "label": "Mobile no."
+   "label": "Mobile no.",
+   "reqd": 1,
+   "search_index": 1
   },
   {
    "fieldname": "password",
@@ -92,7 +95,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 09:43:31.159256",
+ "modified": "2025-02-07 11:28:57.494416",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
