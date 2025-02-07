@@ -247,13 +247,16 @@ def get_scanned_coupons(start_date=datetime.today().strftime("%Y-%m-%d"),end_dat
 			INNER JOIN 
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			WHERE 
-				hc.coupon_status = 0
+				hc.coupon_status = 0 and hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
 			ORDER BY 
 				hc.modified DESC
 			;
 		"""
-
-		data = frappe.db.sql(query, as_dict=True)
+		params={
+			"start_date": start_date,
+			"end_date": end_date
+		}
+		data = frappe.db.sql(query,params, as_dict=True)
 		if not data:
 			set_response(200, False, "No Scanned Coupons Found")
 			return
