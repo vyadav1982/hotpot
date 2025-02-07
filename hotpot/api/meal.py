@@ -145,10 +145,8 @@ def update_meal():
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		coupons = meal_doc.coupons
 		if coupons:
-			for coupon in coupons:
-				if coupon.coupon_status == "Active":
-					set_response(409, False, "Cannot update meal as there are active coupons")
-					return
+			set_response(409, False, "Cannot update meal as some users have created coupons")
+			return
 
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
@@ -193,10 +191,8 @@ def delete_meal():
 		
 		coupons = meal_doc.coupons
 		if coupons:
-			for coupon in coupons:
-				if coupon.coupon_status == "Active":
-					set_response(409, False, "Cannot delete meal as there are active coupons")
-					return
+			set_response(409, False, "Cannot delete meal as some users have created coupons")
+			return
 
 		meal_doc.delete()
 		frappe.db.commit()
