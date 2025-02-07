@@ -72,7 +72,7 @@ def create_meal():
 		meal_title = data.get("meal_title")
 		day = data.get("day")
 		meal_date = data.get("meal_date")
-		vendor_id = user_data.get("name")
+		vendor_id = user_data.get("guest_of")
 		meal_items = ",".join(data.get("meal_items", []))
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
@@ -258,7 +258,7 @@ def get_meals(
 			return
 		update_coupon_status()
 
-		user_id = user_data.get("name")
+		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
 		if user_data.get("role") == "Hotpot Server":
 			data = frappe.db.get_list(
@@ -449,12 +449,12 @@ def get_meal_items():
 		if not user_data:
 			set_response(404, False, "User Not found")
 			return
-		if not user_data["role"] == "Hotpot Server":
+		if not user_data["role"] == "Hotpot Vendor":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 
 		data = frappe.db.get_list(
-			"Hotpot Meal Items", fields=["*"], filters=[["vendor_id", "=", user_data.get("name")]]
+			"Hotpot Meal Items", fields=["*"], filters=[["vendor_id", "=", user_data.get("guest_of")]]
 		)
 
 		if not data:
