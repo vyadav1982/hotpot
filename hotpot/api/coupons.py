@@ -145,7 +145,7 @@ def scan_coupon():
 		user_id = data.get("user_id")
 		vendor_id=data.get("vendor_id")
 
-		if not meal_id or not coupon_id or not user_id not vendor_id:
+		if not meal_id or not coupon_id or not user_id or not vendor_id:
 			set_response(400, False, "Missing required field")
 			return
 		
