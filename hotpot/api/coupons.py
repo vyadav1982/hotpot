@@ -138,7 +138,7 @@ def scan_coupon():
 			set_response(404, False, "User Not found")
 			return
 
-		if not user_doc.get("role") == "Hotpot Server":
+		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 
@@ -245,7 +245,7 @@ def get_scanned_coupons(
 			set_response(404, False, "User Not found")
 			return
 
-		if not user_doc.get("role") == "Hotpot Server":
+		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 
