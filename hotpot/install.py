@@ -1,8 +1,7 @@
 import click
 import frappe
-from frappe.desk.page.setup_wizard.setup_wizard import add_all_roles_to, make_records
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
-
+from frappe.desk.page.setup_wizard.setup_wizard import add_all_roles_to, make_records
 
 
 def after_install():
@@ -14,20 +13,20 @@ def after_install():
 
 def create_meal_custom_fields():
 	create_custom_fields(
-		 {
-            "Hotpot Meal": [
-                {
-                    "label": ("Coupons"),
-                    "fieldname": "coupons",
-                    "fieldtype": "Data",
-                    "insertafter": "vendor_id",
-                },
-                {
-                    "label": ("Ratings"),
-                    "fieldname": "ratings",
-                    "fieldtype": "Data",
-                    "insertafter": "vendor_id",
-                },
-            ]
-        }
+		{
+			"Hotpot Meal": [
+				{
+					"label": ("Coupons"),
+					"fieldname": "coupons",
+					"fieldtype": "Data",
+					"insertafter": "vendor_id",
+				},
+				{
+					"label": ("Ratings"),
+					"fieldname": "ratings",
+					"fieldtype": "Data",
+					"insertafter": "vendor_id",
+				},
+			]
+		}
 	)

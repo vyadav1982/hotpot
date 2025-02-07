@@ -193,8 +193,16 @@ function UserComponent({
       const response = await generateCoupon({
         params: {
           employee_id: userId,
-          from_date: date?.from?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
-          to_date:date?.to?.toLocaleDateString("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }),
+          from_date: date?.from?.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          }),
+          to_date: date?.to?.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          }),
           meal_type: selectedValue,
         },
       });
@@ -416,7 +424,7 @@ function UserComponent({
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="hide-scrollbar pl-20 flex items-start justify-center overflow-x-scroll">
+        <TabsList className="hide-scrollbar flex items-start justify-center overflow-x-scroll pl-20">
           <TabsTrigger value="generate_coupon" className="tabs-trigger">
             Generate
           </TabsTrigger>

@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
       exportToPDF(data);
     } else if (format === 'xlsx') {
       exportToExcel(data);
-    }else {
+    } else {
       return;
     }
     setSelectedValue('');
@@ -143,8 +143,8 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-md border flex hover:display:block w-full">
-        <Table >
+      <div className="hover:display:block flex w-full overflow-x-auto rounded-md border">
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

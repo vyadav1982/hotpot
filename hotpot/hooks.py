@@ -35,6 +35,7 @@ fixtures = [
 					"Hotpot Admin",
 					"Hotpot User",
 					"Hotpot Server",
+					"Hotpot Vendor",
 				],
 			]
 		},
@@ -48,6 +49,7 @@ fixtures = [
 					"Hotpot Admin",
 					"Hotpot User",
 					"Hotpot Server",
+					"Hotpot Vendor",
 				],
 			],
 		},

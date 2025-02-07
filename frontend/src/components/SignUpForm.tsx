@@ -26,9 +26,7 @@ import { Button } from './ui/button';
 
 const signUpSchema = z
   .object({
-    empId: z
-      .string()
-      .min(1, 'Emp ID is required'),
+    empId: z.string().min(1, 'Emp ID is required'),
     name: z.string().min(1, 'Employee name is required'),
     email: z.string().email('Invalid email format'),
     mobile: z
@@ -74,22 +72,21 @@ const SignUpForm = ({ handleCardChange, showToast }: any) => {
     loading,
   } = useFrappePostCall('hotpot.api.login.user_signUp');
   const onSubmit = async () => {
-    signUpForm.setValue("mobile","+91- "+signUpForm.getValues("mobile"))
-    const {message} = await signUp({
+    signUpForm.setValue('mobile', '+91- ' + signUpForm.getValues('mobile'));
+    const { message } = await signUp({
       data: JSON.stringify(signUpForm.getValues()),
     });
-    signUpForm.setValue("mobile",signUpForm.getValues("mobile").slice(5))
-    showToast(message.status, message.message)
-    if(signUpError){
+    signUpForm.setValue('mobile', signUpForm.getValues('mobile').slice(5));
+    showToast(message.status, message.message);
+    if (signUpError) {
       setError(signUpError);
     }
-    if(message.status==='success'){
+    if (message.status === 'success') {
       handleCardChange('login');
     }
     setTimeout(() => {
-      setError(null)
+      setError(null);
     }, 5000);
-    
   };
   return (
     <Card className="w-[350px] shadow-xl">

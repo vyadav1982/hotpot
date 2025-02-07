@@ -10,10 +10,9 @@ export const Route = createRootRouteWithContext<{
   sessionUser: string | null;
 }>()({
   beforeLoad: async ({ location, context }) => {
-    if(location.pathname === 
-      "/hotpot/"){
-        window.location.href = '/hotpot/server';
-      }
+    if (location.pathname === '/hotpot/') {
+      window.location.href = '/hotpot/server';
+    }
     if (
       (isHotpotAdmin() && isHotpotServer() && isHotpotUser()) ||
       isHotpotAdmin()

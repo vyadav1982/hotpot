@@ -26,7 +26,12 @@ export const UpcomingCouponListContext = createContext<{
 
 export type CouponFields = Pick<
   HotpotCoupon,
-  'name' | 'title' | 'coupon_date' | 'coupon_time' | 'creation' | 'coupon_status'
+  | 'name'
+  | 'title'
+  | 'coupon_date'
+  | 'coupon_time'
+  | 'creation'
+  | 'coupon_status'
 >;
 interface UpcomingCouponListProps extends PropsWithChildren {
   employee_id: string;
@@ -68,7 +73,7 @@ export const UpcomingCouponListProvider = ({
         'yyyy-MM-dd',
       ),
     ],
-    ['coupon_status','=','Upcoming']
+    ['coupon_status', '=', 'Upcoming'],
   ]);
 
   const [newUpdatesAvailable, setNewUpdatesAvailable] = useState(false);

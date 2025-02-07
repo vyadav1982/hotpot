@@ -52,7 +52,10 @@ export const PrevuousCouponCard = ({ coupon, handleFeedbackSubmit }: any) => {
   };
 
   return (
-    <Card key={coupon.coupon_time + coupon.coupon_date + coupon.title} className={coupon.coupon_status==='Expired' ? `bg-gray-300` : ``}>
+    <Card
+      key={coupon.coupon_time + coupon.coupon_date + coupon.title}
+      className={coupon.coupon_status === 'Expired' ? `bg-gray-300` : ``}
+    >
       <CardHeader>
         <CardTitle className="flex items-center justify-between text-lg font-semibold">
           <div className=" flex-1 overflow-x-hidden text-left">
