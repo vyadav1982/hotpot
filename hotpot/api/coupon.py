@@ -14,13 +14,13 @@ from frappe.utils import today
 
 @frappe.whitelist(allow_guest=True)
 def get_current_coupon_type():
-	time = datetime.now()
+	timevar = datetime.now()
 	# Define time ranges
 	coupon_type_list = frappe.get_list(
 		"Hotpot Coupon Type",
 		filters=[
-			["start_hour", "<=", time.hour * 100 + time.minute],
-			["end_hour", ">", time.hour * 100 + time.minute],
+			["start_hour", "<=", timevar.hour * 100 + timevar.minute],
+			["end_hour", ">", timevar.hour * 100 + timevar.minute],
 			["is_active", "=", True],
 		],
 		pluck="name",
@@ -202,7 +202,7 @@ def create_coupon(params):
 				)
 	query = """
         update `tabHotpot User`
-        set coupon_count = %s 
+        set coupon_count = %s
         where employee_id = %s
     """
 	doc = frappe.get_doc("Hotpot User", employee_id)
@@ -231,7 +231,7 @@ def get_upcoming_coupon_list(params):
         from `tabHotpot Coupon`
         where employee_id=%s and coupon_date>=%s and coupon_date<=%s and coupon_status ='Upcoming'
         order by coupon_date asc
-        limit %s offset %s 
+        limit %s offset %s
     """
 	result = frappe.db.sql(query, (employee_id, today, last_date, 10, offset), as_dict=True)
 	return result
