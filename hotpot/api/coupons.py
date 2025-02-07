@@ -39,7 +39,7 @@ def get_coupon_count(
 					hm.meal_title
 			"""
 		params = {
-			"vendor_name": user_doc.get("name"),
+			"vendor_name": user_doc.get("guest_of"),
 			"start_date": start_date,
 			"end_date": end_date,
 		}
@@ -265,12 +265,18 @@ def get_scanned_coupons(
 			INNER JOIN 
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			WHERE 
-				hc.coupon_status = 0 and hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
+				hc.coupon_status = 0 
+				and hm.vendor_id = %(vendor_id)s
+				and hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
 			ORDER BY 
 				hc.modified DESC
 			;
 		"""
-		params = {"start_date": start_date, "end_date": end_date}
+		params = {
+			"start_date": start_date,
+			"end_date": end_date,
+			"vendor_id": user_doc.get("guest_of"),
+		}
 		data = frappe.db.sql(query, params, as_dict=True)
 		if not data:
 			set_response(200, False, "No Scanned Coupons Found")

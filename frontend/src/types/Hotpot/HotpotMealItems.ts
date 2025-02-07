@@ -13,6 +13,6 @@ export interface HotpotMealItems {
   item_name?: string;
   /**	Is Active : Check	*/
   is_active?: 0 | 1;
-  /**	Vendor Id : Data	*/
+  /**	Vendor Id : Link - Hotpot User	*/
   vendor_id?: string;
 }
