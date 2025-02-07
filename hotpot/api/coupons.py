@@ -24,18 +24,18 @@ def get_coupon_count(
 		if not user_doc.get("role") == "Hotpot Server":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		query = """ 
-				SELECT 
-					hm.meal_title, 
+		query = """
+				SELECT
+					hm.meal_title,
 					COUNT(hc.name) AS coupon_count
-				FROM 
+				FROM
 					`tabHotpot Coupons` AS hc
-				INNER JOIN 
+				INNER JOIN
 					`tabHotpot Meal` AS hm ON hm.name = hc.parent
-				WHERE 
+				WHERE
 					hm.vendor_id = %(vendor_name)s
 					AND hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
-				GROUP BY 
+				GROUP BY
 					hm.meal_title
 			"""
 		params = {
@@ -250,25 +250,28 @@ def get_scanned_coupons(
 			return
 
 		query = """
-			SELECT 
-				hm.meal_title, 
-				hc.coupon_status, 
-				hc.coupon_date, 
-				hm.start_time, 
-				hm.end_time, 
-				hc.name AS coupon_id, 
-				hc.title AS coupon_title, 
-				hc.employee_id, 
-				hc.served_by
-			FROM 
+			SELECT
+				hm.meal_title,
+				hc.coupon_status,
+				hc.coupon_date,
+				hm.start_time,
+				hm.end_time,
+				hc.name AS coupon_id,
+				hc.title AS coupon_title,
+				hc.employee_id,
+				hc.served_by,
+				U.employee_name AS vendor_name
+			FROM
 				`tabHotpot Coupons` AS hc
-			INNER JOIN 
+			INNER JOIN
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-			WHERE 
-				hc.coupon_status = 0 
+			INNER JOIN
+				`tabHotpot User` as U on hm.vendor_id = U.name
+			WHERE
+				hc.coupon_status = 0
 				and hm.vendor_id = %(vendor_id)s
 				and hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
-			ORDER BY 
+			ORDER BY
 				hc.modified DESC
 			;
 		"""
@@ -302,12 +305,12 @@ def update_coupon_status():
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
 			SET hc.coupon_status = "-1"
-			WHERE hc.coupon_status = "1" 
+			WHERE hc.coupon_status = "1"
 			AND (
 				hm.meal_date BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND DATE_SUB(CURDATE(), INTERVAL 1 DAY)
 				OR (
-					hm.meal_date = CURDATE() 
-					AND CAST(LPAD(hm.end_time, 4, '0') AS UNSIGNED) < 
+					hm.meal_date = CURDATE()
+					AND CAST(LPAD(hm.end_time, 4, '0') AS UNSIGNED) <
 						CAST(DATE_FORMAT(CONVERT_TZ(NOW(), 'UTC', 'Asia/Kolkata'), '%H%i') AS UNSIGNED)
 				)
 			);
@@ -353,11 +356,14 @@ def get_all_coupons(
 				SELECT
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
+					u.employee_name AS vendor_name,
 					hc.*
 				FROM
 					`tabHotpot Coupons` AS hc
 				INNER JOIN
 					`tabHotpot Meal` AS hm ON hm.name = hc.parent
+				INNER JOIN
+					`tabHotpot User` as U on hm.vendor_id = U.name
 				WHERE
 					hm.vendor_id = %(vendor_name)s
 					AND hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
@@ -381,21 +387,6 @@ def get_all_coupons(
 
 		elif user_doc.get("role") == "Hotpot User":
 			query = """
-				(
-				SELECT 
-					name 
-				FROM 
-					`tabHotpot Meal`
-				WHERE
-					meal_date BETWEEN %(start_date)s AND %(end_date)s
-				)
-			"""
-			params = {
-				"start_date": start_date,
-				"end_date": end_date,
-			}
-			meals = frappe.db.sql(query, params, as_dict=True)
-			query = """
 			(
 			SELECT
 				'coupon' AS record_type,
@@ -403,13 +394,18 @@ def get_all_coupons(
 				hc.title AS title,
 				hc.coupon_status,
 				hc.coupon_date,
+				hc.served_by,
+				hm.vendor_id,
 				hm.start_time AS start_time,
 				hm.end_time AS end_time,
-				hm.name AS meal_id
+				hm.name AS meal_id,
+				u.employee_name AS vendor_name
 			FROM
 				`tabHotpot Coupons` AS hc
 			INNER JOIN
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+			INNER JOIN
+				`tabHotpot User` as U on hm.vendor_id = U.name
 			WHERE
 				hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 				AND hc.employee_id = %(user_name)s
@@ -529,7 +525,11 @@ def generate_coupon():
 			# Check for duplicate coupon
 			exists = frappe.db.exists(
 				"Hotpot Coupons",
-				{"employee_id": user_doc.get("name"), "coupon_date": date_str, "title": meal_title},
+				{
+					"employee_id": user_doc.get("name"),
+					"coupon_date": date_str,
+					"parent": data["meal_id"],
+				},
 			)
 
 			if exists:
@@ -544,6 +544,7 @@ def generate_coupon():
 						"employee_id": user_doc.get("name"),
 						"type": "Creation",
 						"message": f"Created coupon for {meal_title} ({display_date})",
+						"meal_id": data["meal_id"],
 					}
 				)
 				history_doc.insert()

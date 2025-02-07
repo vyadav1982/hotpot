@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "employee_id",
+  "meal_id",
   "type",
   "message"
  ],
@@ -27,11 +28,18 @@
    "fieldname": "message",
    "fieldtype": "Small Text",
    "label": "Message"
+  },
+  {
+   "fieldname": "meal_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Meal Id",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-19 11:28:10.129293",
+ "modified": "2025-02-07 12:01:40.272130",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons History",

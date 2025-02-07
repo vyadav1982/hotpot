@@ -15,7 +15,9 @@ class HotpotCouponsHistory(Document):
 		from frappe.types import DF
 
 		employee_id: DF.Data
+		meal_id: DF.Data | None
 		message: DF.SmallText | None
 		type: DF.Data | None
 	# end: auto-generated types
+
 	pass
