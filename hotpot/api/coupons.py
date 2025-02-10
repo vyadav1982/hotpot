@@ -125,6 +125,58 @@ def cancel_coupon():
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
+@frappe.whitelist(allow_guest=True)
+def get_redeemed_coupon():
+	try:
+		if frappe.request.method!= "GET":
+			set_response(500, False, "Only GET method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+		data = json.loads(frappe.request.data or "{}")
+		user_id = data.get("user_id")
+		coupon_id=data.get("coupon_id")
+		if not user_id or not coupon_id:
+			set_response(400, False, "Missing required field")
+			return
+		query = """
+			Select * from
+				`tabHotpot Coupons` AS hc
+			where hc.name = %(coupon_id)s
+		"""
+		params= {
+			"coupon_id": coupon_id
+		}
+		coupon_data = frappe.db.sql(query,params,as_dict=True)
+
+		if not coupon_data:
+			set_response(404, False, "Coupon Not Found")
+			return
+		query = """
+			Select employee_name,employee_id from `tabHotpot User` AS hu where hu.name = %(user_id)s
+		"""
+		params = {
+			"user_id": user_id
+		}
+		user_data = frappe.db.sql(query,params,as_dict=True)
+		if not user_data:
+			set_response(404, False, "User Not Found")
+			return
+		merged_data = {**coupon_data[0], **user_data[0]}
+
+
+		set_response(200, True, "Redeemed coupons detailed fetched successfully", merged_data)
+		return
+
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+		return
 
 @frappe.whitelist(allow_guest=True)
 def scan_coupon():
