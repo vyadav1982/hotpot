@@ -18,7 +18,8 @@
   "meal_date",
   "ratings",
   "meal_weight",
-  "is_special"
+  "is_special",
+  "lead_time"
  ],
  "fields": [
   {
@@ -38,12 +39,12 @@
   },
   {
    "fieldname": "start_time",
-   "fieldtype": "Data",
+   "fieldtype": "Datetime",
    "label": "Start Time"
   },
   {
    "fieldname": "end_time",
-   "fieldtype": "Data",
+   "fieldtype": "Datetime",
    "label": "End Time"
   },
   {
@@ -65,7 +66,7 @@
   },
   {
    "fieldname": "meal_date",
-   "fieldtype": "Date",
+   "fieldtype": "Datetime",
    "label": "Meal Date"
   },
   {
@@ -91,11 +92,16 @@
    "fieldname": "is_special",
    "fieldtype": "Check",
    "label": "Is Special"
+  },
+  {
+   "fieldname": "lead_time",
+   "fieldtype": "Time",
+   "label": "Lead Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 08:54:44.538038",
+ "modified": "2025-02-10 18:17:11.621579",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
