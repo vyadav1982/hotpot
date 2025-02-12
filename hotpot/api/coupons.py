@@ -9,9 +9,7 @@ from hotpot.utils.utc_time import *
 
 
 @frappe.whitelist(allow_guest=True)
-def get_coupon_count(
-	start_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"), end_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
-):
+def get_coupon_count(start_date, end_date):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
@@ -25,12 +23,12 @@ def get_coupon_count(
 		if not user_doc.get("role") == "Hotpot Server":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		if len(start_date) <= 10:
+		if type(start_date) == str:
 			start_date = f"{start_date} 00:00:00"
-		if len(end_date) <=10:
+			start_date = get_utc_datetime_str(start_date)
+		if type(start_date) == str:
 			end_date = f"{end_date} 23:59:59"
-		start_date = get_utc_datetime_str(start_date)
-		end_date = get_utc_datetime_str(end_date)
+			end_date = get_utc_datetime_str(end_date)
 		query = """
 				SELECT
 					hm.meal_title,
@@ -105,7 +103,7 @@ def cancel_coupon():
 			set_response(400, False, "Cannot cancel a redeemed or expired coupon")
 			return
 		
-		current_datetime = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
+		current_datetime = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -237,7 +235,7 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
-		current_datetime = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
+		current_datetime = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -292,8 +290,8 @@ def scan_coupon():
 
 @frappe.whitelist(allow_guest=True)
 def get_scanned_coupons(
-	start_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
-	end_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+	start_date,
+	end_date,
 	page=1,
 	limit=10,
 ):
@@ -310,11 +308,10 @@ def get_scanned_coupons(
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		if len(start_date) <= 10:
-			start_date = f"{start_date} 00:00:00"
-		if len(end_date) <=10:
-			end_date = f"{end_date} 23:59:59"
+		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		start_date = f"{start_date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
+		end_date = f"{end_date} {local_time_now}"
 		end_date = get_utc_datetime_str(end_date)
 
 		query = """
@@ -363,7 +360,6 @@ def get_scanned_coupons(
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_status():
-	print("hello")
 	try:
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
@@ -376,9 +372,9 @@ def update_coupon_status():
 			SET hc.coupon_status = "-1"
 			WHERE hc.coupon_status = "1"
 			AND (
-				hm.meal_date BETWEEN DATE_SUB(UTC_DATE(), INTERVAL 3 DAY) AND DATE_SUB(UTC_DATE(), INTERVAL 1 DAY)
+				DATE(hm.meal_date) BETWEEN DATE_SUB(UTC_DATE(), INTERVAL 3 DAY) AND DATE_SUB(UTC_DATE(), INTERVAL 1 DAY)
 				OR (
-					hm.meal_date = UTC_DATE()
+					DATE(hm.meal_date) = UTC_DATE()
 					AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP())
 				)
 			);
@@ -395,8 +391,8 @@ def update_coupon_status():
 
 @frappe.whitelist(allow_guest=True)
 def get_all_coupons(
-	start_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
-	end_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+	start_date,
+	end_date,
 	page=1,
 	limit=10,
 ):
@@ -415,17 +411,20 @@ def get_all_coupons(
 			return
 
 		update_coupon_status()
-		if len(start_date) <= 10:
-			start_date = f"{start_date} 00:00:00"
-		if len(end_date) <=10:
-			end_date = f"{end_date} 23:59:59"
+		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		start_date = f"{start_date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
+		end_date = f"{end_date} {local_time_now}"
 		end_date = get_utc_datetime_str(end_date)
 
 		page = int(page)
 		limit = int(limit)
 		start = (page - 1) * limit
+
+
 		if user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor":
+			start_date=get_utc_date(start_date)
+			end_date=get_utc_date(end_date)
 			query = """
 				SELECT
 					hm.start_time AS start_time,
@@ -440,7 +439,7 @@ def get_all_coupons(
 					`tabHotpot User` as U on hm.vendor_id = U.name
 				WHERE
 					hm.vendor_id = %(vendor_name)s
-					AND hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
+					AND DATE(hm.meal_date) BETWEEN %(start_date)s AND %(end_date)s
 				LIMIT %(start)s, %(limit)s;
 				"""
 
@@ -460,6 +459,8 @@ def get_all_coupons(
 			return
 
 		elif user_doc.get("role") == "Hotpot User":
+			start_date=get_utc_date(start_date)
+			end_date=get_utc_date(end_date)
 			query = """
 			(
 			SELECT
@@ -542,36 +543,40 @@ def generate_coupon():
 			return
 
 		data = json.loads(frappe.request.data or "{}")
-		required_fields = ["meal_id"]
+		required_fields = ["meal_id","date"]
 		if missing := [field for field in required_fields if not data.get(field)]:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
+		date = data.get("date")
+		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		start_date = f"{date} {local_time_now}"
+		start_date = get_utc_datetime_str(start_date)
+		end_date = f"{date} {local_time_now}"
+		end_date = get_utc_datetime_str(end_date)
 
-		if "from_date" not in data:
-			data["from_date"] = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
-		if "to_date" not in data:
-			data["to_date"] = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-		from_date = data["from_date"] = get_utc_date(data["from_date"])
-		to_date = data["to_date"] = get_utc_date(data["to_date"])
+		from_date = get_utc_date(start_date)
+		to_date = get_utc_date(end_date)
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
 
-		current_datetime = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
-		current_time = get_utc_time(current_datetime)
-		utc_date = get_utc_date(current_datetime)
-		day_difference = abs(to_date - from_date).days + 1
+		current_datetime_utc = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		current_time = get_utc_time(current_datetime_utc)
+		utc_date = get_utc_date(current_datetime_utc)
+		print("currnte time ",current_time," utc date ",utc_date )
+		day_difference = abs(datetime.strptime(to_date, "%Y-%m-%d") - datetime.strptime(from_date, "%Y-%m-%d")).days + 1
 		meal_title = meal_doc.meal_title
 		user_coupon_count = user_doc.coupon_count
 		meal_weight = meal_doc.get("meal_weight")
 		is_buffer_time = False
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
-		if abs(get_utc_time(meal_doc.start_time) - current_time) <= meal_doc.lead_time:
-			set_response(400,False,"Cannot create coupon in meal preparation time")
-			return
+		# hours,remainder = divmod(abs(datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds,3600)
+		# if  hours <= meal_doc.lead_time(0):
+		# 	set_response(400,False,"Cannot create coupon in meal preparation time")
+		# 	return
 
 		# Check if required amount of coupon are present or not
 		if user_coupon_count < meal_weight * day_difference:
@@ -582,11 +587,11 @@ def generate_coupon():
 		buffer_used = 0
 
 		for day in range(day_difference):
-			current_date = from_date + timedelta(days=day)
+			current_date = datetime.strptime(from_date, "%Y-%m-%d") + timedelta(days=day)
 			display_date = current_date.strftime("%d %b %Y")
 
 			# Cannot create coupon for past
-			if current_date < utc_date:
+			if current_date.strftime("%Y-%m-%d") < utc_date:
 				set_response(500, False, f"Cannot create coupon for past date: {display_date}")
 				return
 
@@ -603,7 +608,7 @@ def generate_coupon():
 				"Hotpot Coupons",
 				{
 					"employee_id": user_doc.get("name"),
-					"coupon_date": datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+					"coupon_date": get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))),
 					"parent": data["meal_id"],
 				},
 			)
@@ -630,7 +635,7 @@ def generate_coupon():
 					"coupons",
 					{
 						"employee_id": user_doc.get("name"),
-						"coupon_date": datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+						"coupon_date": get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))),
 						"title": meal_title,
 						"coupon_status": "1",
 					},
