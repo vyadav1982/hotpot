@@ -14,7 +14,7 @@ class HotpotCoupons(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		coupon_date: DF.Date | None
+		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
 		employee_id: DF.Data | None
 		parent: DF.Data

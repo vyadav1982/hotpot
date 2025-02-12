@@ -271,7 +271,7 @@ def get_meals(
 		if not date:
 			set_response(400, False, "Required date")
 			return
-		utc_time_now = get_utc_time(datetime.now(pytz.utc))
+		utc_time_now = get_utc_time(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 		start_date = f"{date} 00:00:00"
 		start_date = get_utc_datetime_str(start_date)
 		end_date = f"{date} 23:59:59"
@@ -312,8 +312,7 @@ def get_meals(
 			)
 
 		elif user_data.get("role") == "Hotpot User":
-			utc_today = get_utc_date(datetime.now(pytz.utc))
-			utc_time_now = get_utc_time(datetime.now(pytz.utc))
+			utc_today = get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 			filters = [["is_active", "=", 1], ["meal_date", ">=", start_date], ["meal_date", "<=", end_date]]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
@@ -340,18 +339,17 @@ def get_meals(
 				limit=limit,
 			)
 
-			print("{{{{}}}}",meal_data,utc_time_now)
 			if not meal_data:
 				set_response(200, True, "No meal found", [])
 				return
 			
 			filtered_meal_data = []
 			for meal in meal_data:
-				print("***",get_utc_time(meal["end_time"])>utc_time_now)
-				print(get_utc_date(meal["meal_date"]) == utc_today)
 				if get_utc_date(meal["meal_date"]) == utc_today:
 					if get_utc_time(meal["end_time"]) > utc_time_now:
 						filtered_meal_data.append(meal)
+				else:
+					filtered_meal_data.append(meal)
 
 			meal_data = filtered_meal_data
 
