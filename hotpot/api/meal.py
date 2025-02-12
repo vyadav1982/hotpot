@@ -2,10 +2,39 @@ import json
 from datetime import datetime, timedelta
 
 import frappe
-from frappe.utils import today
+import pytz
 
 from ..api.coupons import update_coupon_status
 from ..api.users import *
+
+
+def get_user_timezone():
+	from pytz import timezone
+
+	user_info = frappe._dict()
+	frappe.utils.add_user_info(frappe.session.user, user_info)
+	return timezone(
+		frappe.get_cached_value("User", frappe.session.user, "time_zone")
+		or frappe.utils.get_system_timezone()
+	)
+
+def get_utc_datetime_str(date_str):
+	local_tz = get_user_timezone()
+	local_datetime = datetime.strptime(date_str, "%d-%m-%Y %H:%M:%S")
+	localized_datetime = local_tz.localize(local_datetime)
+	utc_datetime = localized_datetime.astimezone(pytz.utc)
+	utc_datetime_str = utc_datetime.strftime("%Y-%m-%d %H:%M:%S")
+	return utc_datetime_str
+
+def get_utc_date(date_str):
+	utc_datetime_str = get_utc_datetime_str(date_str)
+	utc_date = datetime.strptime(utc_datetime_str, "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
+	return utc_date
+
+def get_utc_time(date_str):
+	utc_datetime_str = get_utc_datetime_str(date_str)
+	utc_time = datetime.strptime(utc_datetime_str, "%Y-%m-%d %H:%M:%S").strftime("%H:%M:%S")
+	return utc_time
 
 
 def set_response(http_status_code, status, message, data=None):
@@ -68,14 +97,13 @@ def create_meal():
 			set_response(404, False, "User Not found")
 			return
 		data = json.loads(frappe.request.data or "{}")
-
 		meal_title = data.get("meal_title")
 		day = data.get("day")
-		meal_date = data.get("meal_date")
 		vendor_id = user_data.get("guest_of")
 		meal_items = ",".join(data.get("meal_items", []))
-		start_time = data.get("start_time")
-		end_time = data.get("end_time")
+		start_time = get_utc_datetime_str( data.get("start_time"))
+		end_time = get_utc_datetime_str( data.get("end_time"))
+		meal_date = get_utc_datetime_str (data.get("meal_date"))
 		buffer_coupon_count = data.get("buffer_coupon_count")
 		meal_weight = data.get("meal_weight")
 		is_special = data.get("is_special")
@@ -84,7 +112,6 @@ def create_meal():
 			"meal_title",
 			"day",
 			"meal_date",
-			"vendor_id",
 			"start_time",
 			"end_time",
 			"meal_items",
@@ -238,8 +265,8 @@ def delete_meal():
 @frappe.whitelist(allow_guest=True)
 def get_meals(
 	vendor_id=None,
-	start_date=datetime.today().strftime("%Y-%m-%d"),
-	end_date=datetime.today().strftime("%Y-%m-%d"),
+	start_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
+	end_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
 	page=1,
 	limit=10,
 ):
@@ -251,6 +278,8 @@ def get_meals(
 		if not start_date or not end_date:
 			set_response(400, False, "Required start date and end state")
 			return
+		start_date = get_utc_datetime_str(start_date)
+		end_date = get_utc_datetime_str(end_date)
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
@@ -287,10 +316,8 @@ def get_meals(
 			)
 
 		elif user_data.get("role") == "Hotpot User":
-			today_date = datetime.today().date()
-			current_datetime = datetime.now(pytz.timezone("Asia/Kolkata"))
-			today = current_datetime.date()
-			current_time_num = current_datetime.hour * 100 + current_datetime.minute
+			utc_today = datetime.now(pytz.utc).strftime("%Y-%m-%d")
+			utc_time_now = datetime.now(pytz.utc).strftime("%H:%M:%S")
 			filters = [["is_active", "=", 1], ["meal_date", ">=", start_date], ["meal_date", "<=", end_date]]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
@@ -318,8 +345,8 @@ def get_meals(
 			)
 			filtered_meal_data = []
 			for meal in meal_data:
-				if meal["meal_date"] == today_date:
-					if int(meal["end_time"]) > current_time_num:
+				if get_utc_date(meal["meal_date"]) == utc_today:
+					if get_utc_time(meal["end_time"]) > utc_time_now:
 						filtered_meal_data.append(meal)
 				else:
 					filtered_meal_data.append(meal)
@@ -383,7 +410,7 @@ def get_meals(
 			set_response(200, True, "No meal found", [])
 			return
 
-		data.sort(key=lambda meal: int(meal["start_time"]))
+		data.sort(key=lambda meal: get_utc_time(meal["start_time"]))
 		set_response(200, True, "Fetched successfully", data)
 		return
 

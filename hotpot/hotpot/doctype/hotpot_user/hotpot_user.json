@@ -16,7 +16,8 @@
   "is_active",
   "is_guest",
   "guest_of",
-  "coupon_count"
+  "coupon_count",
+  "date_of_birth"
  ],
  "fields": [
   {
@@ -91,11 +92,16 @@
    "fieldname": "password",
    "fieldtype": "Data",
    "label": "Password"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date Of Birth"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 09:33:40.427827",
+ "modified": "2025-02-11 11:05:40.989252",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

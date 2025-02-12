@@ -35,6 +35,7 @@ class HotpotUser(Document):
 		from frappe.types import DF
 
 		coupon_count: DF.Int
+		date_of_birth: DF.Date | None
 		email: DF.Data
 		employee_id: DF.Data
 		employee_name: DF.Data | None
