@@ -5,7 +5,7 @@ import frappe
 import pytz
 
 from ..api.users import *
-from ..api.meal import *
+from hotpot.utils.utc_time import *
 
 
 @frappe.whitelist(allow_guest=True)
@@ -363,6 +363,7 @@ def get_scanned_coupons(
 
 @frappe.whitelist(allow_guest=True)
 def update_coupon_status():
+	print("hello")
 	try:
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
@@ -378,8 +379,7 @@ def update_coupon_status():
 				hm.meal_date BETWEEN DATE_SUB(UTC_DATE(), INTERVAL 3 DAY) AND DATE_SUB(UTC_DATE(), INTERVAL 1 DAY)
 				OR (
 					hm.meal_date = UTC_DATE()
-					AND CAST(LPAD(hm.end_time, 4, '0') AS UNSIGNED) < 
-						CAST(DATE_FORMAT(UTC_TIMESTAMP(), '%H%i') AS UNSIGNED)
+					AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP())
 				)
 			);
 			"""
