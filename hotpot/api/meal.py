@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 
 import frappe
 import pytz
@@ -74,9 +74,10 @@ def create_meal():
 		end_time = data.get("end_time")
 		start_time = f"{meal_date} {start_time}"
 		end_time = f"{meal_date} {end_time}"
+		local_time_now = datetime.now().time().strftime("%H:%M:%S")
 
-		if len(meal_date) <=10:
-			meal_date = f"{meal_date} 00:00:00"
+		if type(meal_date) == str:
+			meal_date = f"{meal_date} {local_time_now}"
 
 		meal_title = data.get("meal_title")
 		day = data.get("day")
@@ -182,12 +183,14 @@ def update_meal():
 			set_response(409, False, "Cannot update meal as some users have created coupons")
 			return
 		
+		utc_time_now = get_utc_time(datetime.now(pytz.utc))
+		
 		if data.get("start_time"):
 			data["start_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['start_time']}")
 		if data.get("end_time"):
 			data["end_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['end_time']}")
 		if data.get("meal_date"):
-			data["meal_date"] = get_utc_datetime_str(f"{data["meal_date"]} 00:00:00")
+			data["meal_date"] = get_utc_datetime_str(f"{data["meal_date"]} {utc_time_now}")
 
 		for field in [
 			"meal_title",
@@ -255,9 +258,8 @@ def delete_meal():
 
 @frappe.whitelist(allow_guest=True)
 def get_meals(
+	date,
 	vendor_id=None,
-	start_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
-	end_date=datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"),
 	page=1,
 	limit=10,
 ):
@@ -266,15 +268,15 @@ def get_meals(
 			set_response(500, False, "Only GET method is allowed")
 			return
 
-		if not start_date or not end_date:
-			set_response(400, False, "Required start date and end state")
+		if not date:
+			set_response(400, False, "Required date")
 			return
-		if len(start_date) <= 10:
-			start_date = f"{start_date} 00:00:00"
-		if len(end_date) <=10:
-			end_date = f"{end_date} 23:59:59"
+		utc_time_now = get_utc_time(datetime.now(pytz.utc))
+		start_date = f"{date} 00:00:00"
 		start_date = get_utc_datetime_str(start_date)
+		end_date = f"{date} 23:59:59"
 		end_date = get_utc_datetime_str(end_date)
+		print(start_date, end_date)
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
@@ -310,8 +312,8 @@ def get_meals(
 			)
 
 		elif user_data.get("role") == "Hotpot User":
-			utc_today = datetime.now(pytz.utc).strftime("%Y-%m-%d")
-			utc_time_now = datetime.now(pytz.utc).strftime("%H:%M:%S")
+			utc_today = get_utc_date(datetime.now(pytz.utc))
+			utc_time_now = get_utc_time(datetime.now(pytz.utc))
 			filters = [["is_active", "=", 1], ["meal_date", ">=", start_date], ["meal_date", "<=", end_date]]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
@@ -337,20 +339,24 @@ def get_meals(
 				start=start,
 				limit=limit,
 			)
-			filtered_meal_data = []
-			for meal in meal_data:
-				if get_utc_date(meal["meal_date"]) == utc_today:
-					if get_utc_time(meal["end_time"]) > utc_time_now:
-						filtered_meal_data.append(meal)
-				else:
-					filtered_meal_data.append(meal)
-			meal_data = filtered_meal_data
 
+			print("{{{{}}}}",meal_data,utc_time_now)
 			if not meal_data:
 				set_response(200, True, "No meal found", [])
 				return
+			
+			filtered_meal_data = []
+			for meal in meal_data:
+				print("***",get_utc_time(meal["end_time"])>utc_time_now)
+				print(get_utc_date(meal["meal_date"]) == utc_today)
+				if get_utc_date(meal["meal_date"]) == utc_today:
+					if get_utc_time(meal["end_time"]) > utc_time_now:
+						filtered_meal_data.append(meal)
 
-			for meal in filtered_meal_data:
+			meal_data = filtered_meal_data
+
+
+			for meal in meal_data:
 				vendor_name = frappe.db.get_list(
 					"Hotpot User", fields=["employee_name"], filters=[["name", "=", meal["vendor_id"]]]
 				)
