@@ -20,18 +20,21 @@ def get_user_timezone():
 
 def get_utc_datetime_str(date_str):
 	local_tz = get_user_timezone()
-	local_datetime = datetime.strptime(date_str, "%d-%m-%Y %H:%M:%S")
+	print("{{{{}}}}",type(date_str))
+	local_datetime = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
 	localized_datetime = local_tz.localize(local_datetime)
 	utc_datetime = localized_datetime.astimezone(pytz.utc)
 	utc_datetime_str = utc_datetime.strftime("%Y-%m-%d %H:%M:%S")
 	return utc_datetime_str
 
 def get_utc_date(date_str):
+	date_str=date_str.strftime("%Y-%m-%d %H:%M:%S")
 	utc_datetime_str = get_utc_datetime_str(date_str)
 	utc_date = datetime.strptime(utc_datetime_str, "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
 	return utc_date
 
 def get_utc_time(date_str):
+	date_str=date_str.strftime("%Y-%m-%d %H:%M:%S")
 	utc_datetime_str = get_utc_datetime_str(date_str)
 	utc_time = datetime.strptime(utc_datetime_str, "%Y-%m-%d %H:%M:%S").strftime("%H:%M:%S")
 	return utc_time
@@ -97,13 +100,23 @@ def create_meal():
 			set_response(404, False, "User Not found")
 			return
 		data = json.loads(frappe.request.data or "{}")
+
+		meal_date = data.get("meal_date")
+		start_time = data.get("start_time")
+		end_time = data.get("end_time")
+		start_time = f"{meal_date} {start_time}"
+		end_time = f"{meal_date} {end_time}"
+
+		if len(meal_date) <=10:
+			meal_date = f"{meal_date} 00:00:00"
+
 		meal_title = data.get("meal_title")
 		day = data.get("day")
 		vendor_id = user_data.get("guest_of")
 		meal_items = ",".join(data.get("meal_items", []))
-		start_time = get_utc_datetime_str( data.get("start_time"))
-		end_time = get_utc_datetime_str( data.get("end_time"))
-		meal_date = get_utc_datetime_str (data.get("meal_date"))
+		start_time = get_utc_datetime_str(start_time)
+		end_time = get_utc_datetime_str(end_time)
+		meal_date = get_utc_datetime_str (meal_date)
 		buffer_coupon_count = data.get("buffer_coupon_count")
 		meal_weight = data.get("meal_weight")
 		is_special = data.get("is_special")
@@ -170,6 +183,7 @@ def create_meal():
 
 @frappe.whitelist(allow_guest=True)
 def update_meal():
+
 	try:
 		if frappe.request.method != "PUT":
 			set_response(500, False, "Only PUT method is allowed")
@@ -197,6 +211,13 @@ def update_meal():
 		if coupons:
 			set_response(409, False, "Cannot update meal as some users have created coupons")
 			return
+		
+		if data.get("start_time"):
+			data["start_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['start_time']}")
+		if data.get("end_time"):
+			data["end_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['end_time']}")
+		if data.get("meal_date"):
+			data["meal_date"] = get_utc_datetime_str(f"{data["meal_date"]} 00:00:00")
 
 		for field in [
 			"meal_title",
@@ -278,6 +299,10 @@ def get_meals(
 		if not start_date or not end_date:
 			set_response(400, False, "Required start date and end state")
 			return
+		if len(start_date) <= 10:
+			start_date = f"{start_date} 00:00:00"
+		if len(end_date) <=10:
+			end_date = f"{end_date} 23:59:59"
 		start_date = get_utc_datetime_str(start_date)
 		end_date = get_utc_datetime_str(end_date)
 
