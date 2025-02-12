@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 
 import frappe
 import pytz
@@ -54,7 +54,7 @@ def set_response(http_status_code, status, message, data=None):
 
 
 @frappe.whitelist(allow_guest=True)
-def get_coupons_history(employee_id):
+def get_coupons_history(employee_id,page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(500, False, "Only GET method is allowed")
@@ -68,7 +68,12 @@ def get_coupons_history(employee_id):
 		if not user_doc.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-
+		
+		end_date = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
+		start_date = end_date - timedelta(days=30) 
+		page = int(page)
+		limit = int(limit)
+		start = (page - 1) * limit
 		result = []
 		employee_id = user_doc.get("name")
 		query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
@@ -76,8 +81,8 @@ def get_coupons_history(employee_id):
 		result += frappe.db.get_list(
 			"Hotpot Coupons History",
 			fields=["employee_id", "type", "message", "creation"],
-			filters=[["employee_id", "=", employee_id]],
-			order_by="creation desc",
+			filters=[["employee_id", "=", employee_id],["modified",">=",start_date],["modified","<=",end_date]],
+			order_by="modified desc",
 			limit=25,
 		)
 		set_response(200, True, "History fetched successfully", result)
