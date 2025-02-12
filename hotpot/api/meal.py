@@ -20,7 +20,6 @@ def get_user_timezone():
 
 def get_utc_datetime_str(date_str):
 	local_tz = get_user_timezone()
-	print("{{{{}}}}",type(date_str))
 	local_datetime = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
 	localized_datetime = local_tz.localize(local_datetime)
 	utc_datetime = localized_datetime.astimezone(pytz.utc)
@@ -120,6 +119,7 @@ def create_meal():
 		buffer_coupon_count = data.get("buffer_coupon_count")
 		meal_weight = data.get("meal_weight")
 		is_special = data.get("is_special")
+		lead_time = data.get("lead_time")
 
 		required_fields = [
 			"meal_title",
@@ -161,6 +161,7 @@ def create_meal():
 				"meal_weight": meal_weight,
 				"is_active": "1",
 				"is_special": is_special,
+				"lead_time":lead_time,
 			}
 		)
 
@@ -311,7 +312,6 @@ def get_meals(
 			set_response(404, False, "User Not Found")
 			return
 		update_coupon_status()
-
 		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
 		if user_data.get("role") == "Hotpot Server" or user_data.get("role") == "Hotpot Vendor":
