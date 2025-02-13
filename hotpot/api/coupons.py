@@ -720,7 +720,7 @@ def generate_coupon():
 		# Check if required amount of coupons are available
 		if user_coupon_count < meal_weight:
 			return set_response(400, False, "Insufficient currency to create coupon")
-		is_buffer_time = meal_doc.start_time.time() <= current_time <= meal_doc.end_time.time()
+		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
 		buffer_used = 0
 
 		# If buffer time then check for vendor coupons
@@ -729,6 +729,7 @@ def generate_coupon():
 				set_response(400, False, f"Not Enough Vendor Coupons for {from_date.strftime('%d %b %Y')}")
 				return
 			buffer_used += 1
+
 
 		# Check for duplicate coupon
 		exists = frappe.db.exists(
