@@ -259,7 +259,7 @@ def delete_meal():
 @frappe.whitelist(allow_guest=True)
 def get_meals(
 	date,
-	vendor_id,
+	vendor_id=None,
 	page=1,
 	limit=10,
 ):
