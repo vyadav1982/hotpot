@@ -101,7 +101,7 @@ def cancel_coupon():
 			set_response(400, False, "Cannot cancel a redeemed or expired coupon")
 			return
 		
-		current_datetime = datetime.utcnow().replace(tzinfo=None)
+		current_datetime = datetime.utcnow()
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -233,7 +233,7 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
-		current_datetime = datetime.utcnow().replace(tzinfo=None)
+		current_datetime = datetime.utcnow()
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -698,16 +698,15 @@ def generate_coupon():
 		start_date = f"{date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
 		from_date = start_date.date()
-		print("start date ",date)
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
 
-		current_datetime_utc = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-		utc_date_today = current_datetime_utc.date()
-		current_time = current_datetime_utc.time()
+		current_datetime_utc = datetime.utcnow()
+		utc_date_today = get_utc_date(current_datetime_utc)
+		current_time = get_utc_time(current_datetime_utc)
 
 		meal_title = meal_doc.meal_title
 		user_coupon_count = user_doc.coupon_count
