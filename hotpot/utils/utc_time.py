@@ -57,11 +57,17 @@ def get_user_timezone():
 def get_utc_datetime_str(date_str):
     if not isinstance(date_str, str):
         raise ValueError("Expected date_str as a string in format 'YYYY-MM-DD HH:MM:SS'")
+    
     local_tz = get_user_timezone()
     local_datetime = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+    
+    if local_tz == pytz.utc or getattr(local_tz, 'zone', None) == 'UTC':
+        return local_datetime
+    
     localized_datetime = local_tz.localize(local_datetime)
     utc_datetime = localized_datetime.astimezone(pytz.utc)
     return utc_datetime.replace(tzinfo=None)
+
 
 def get_utc_date(date):
     if isinstance(date, str):
