@@ -74,7 +74,7 @@ def create_meal():
 		end_time = data.get("end_time")
 		start_time = f"{meal_date} {start_time}"
 		end_time = f"{meal_date} {end_time}"
-		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		local_time_now = get_local_time_now()
 
 		if type(meal_date) == str:
 			meal_date = f"{meal_date} {local_time_now}"

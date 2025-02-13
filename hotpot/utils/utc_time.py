@@ -54,6 +54,18 @@ def get_user_timezone():
         or frappe.utils.get_system_timezone()
     )
 
+def get_local_time_now():
+    user_tz = get_user_timezone()
+    
+    if user_tz == pytz.utc or getattr(user_tz, 'zone', None) == 'UTC':
+        return datetime.utcnow().strftime("%H:%M:%S")
+    
+    utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
+    local_time_now = utc_now.astimezone(user_tz).strftime("%H:%M:%S")
+    
+    return local_time_now
+
+
 def get_utc_datetime_str(date_str):
     if not isinstance(date_str, str):
         raise ValueError("Expected date_str as a string in format 'YYYY-MM-DD HH:MM:SS'")

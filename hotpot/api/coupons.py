@@ -308,7 +308,7 @@ def get_scanned_coupons(
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		local_time_now = get_local_time_now()
 		start_date = f"{start_date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
 		end_date = f"{end_date} {local_time_now}"
@@ -411,7 +411,7 @@ def get_all_coupons(
 			return
 
 		update_coupon_status()
-		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		local_time_now = get_local_time_now()
 		start_date = f"{start_date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
 		end_date = f"{end_date} {local_time_now}"
@@ -703,7 +703,7 @@ def generate_coupon():
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 
 		date = data.get("date")  # Expected format: "YYYY-MM-DD"
-		local_time_now = datetime.now().time().strftime("%H:%M:%S")
+		local_time_now = get_local_time_now()
 		start_date = f"{date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)  # Returns datetime object
 		from_date = start_date.date()  # Extract only the date part
