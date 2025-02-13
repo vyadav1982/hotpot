@@ -368,11 +368,8 @@ def update_coupon_status():
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
 			SET hc.coupon_status = "-1"
 			WHERE hc.coupon_status = "1"
-			AND (
-					DATE(hm.meal_date) = UTC_DATE()
-					AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP())
-				)
-			);
+			AND DATE(hm.meal_date) = UTC_DATE()
+			AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP());
 			"""
 		data = frappe.db.sql(query)
 		frappe.db.commit()
