@@ -19,7 +19,7 @@ def set_response(http_status_code, status, message, data=None):
 def give_feedback():
 	try:
 		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+			set_response(405, False, "Only POST method is allowed")
 			return
 
 		user_data = get_hotpot_user_by_email()
@@ -60,7 +60,7 @@ def give_feedback():
 def create_meal():
 	try:
 		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+			set_response(405, False, "Only POST method is allowed")
 			return
 
 		user_data = get_hotpot_user_by_email()
@@ -157,7 +157,7 @@ def update_meal():
 
 	try:
 		if frappe.request.method != "PUT":
-			set_response(500, False, "Only PUT method is allowed")
+			set_response(405, False, "Only PUT method is allowed")
 			return
 
 		user_data = get_hotpot_user_by_email()
@@ -183,14 +183,14 @@ def update_meal():
 			set_response(409, False, "Cannot update meal as some users have created coupons")
 			return
 		
-		utc_time_now = get_utc_time(datetime.now(pytz.utc))
+		local_time = get_local_time_now()
 		
 		if data.get("start_time"):
 			data["start_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['start_time']}")
 		if data.get("end_time"):
 			data["end_time"] = get_utc_datetime_str(f"{data['meal_date']} {data['end_time']}")
 		if data.get("meal_date"):
-			data["meal_date"] = get_utc_datetime_str(f"{data["meal_date"]} {utc_time_now}")
+			data["meal_date"] = get_utc_datetime_str(f"{data["meal_date"]} {local_time}")
 
 		for field in [
 			"meal_title",
@@ -223,7 +223,7 @@ def update_meal():
 def delete_meal():
 	try:
 		if frappe.request.method != "DELETE":
-			set_response(500, False, "Only DELETE method is allowed")
+			set_response(405, False, "Only DELETE method is allowed")
 			return
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
@@ -265,22 +265,34 @@ def get_meals(
 ):
 	try:
 		if frappe.request.method != "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		if not date:
 			set_response(400, False, "Required date")
 			return
-		utc_time_now = get_utc_time(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-		utc_start_date = get_utc_datetime_str(f"{date} 00:00:00")
-		utc_end_date = get_utc_datetime_str(f"{date} 23:59:59")
-		print(utc_start_date, utc_end_date)
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
 			set_response(404, False, "User Not Found")
 			return
 		
+		utc_time_now = get_utc_time(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+		local_time_now = get_local_time_now()
+		utc_start_date = get_utc_datetime_str(f"{date} 00:00:00")
+		utc_end_date = get_utc_datetime_str(f"{date} 23:59:59")
+		query="""
+			select * from `tabHotpot Meal`
+"""		
+		data=[]
+		data.append(frappe.db.sql(query,as_dict=True))
+		data.append("Start date: " + utc_end_date.strftime("%Y-%m-%d"))
+		data.append("End date: " + utc_start_date.strftime("%Y-%m-%d"))
+		data.append("Utc time now "+ utc_time_now)
+		return data
+
+		
+
 		update_coupon_status()
 		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
@@ -342,10 +354,12 @@ def get_meals(
 			if not meal_data:
 				set_response(200, True, "No meal found", [])
 				return
-			
+
+			print(meal_data)
+
 			filtered_meal_data = []
 			for meal in meal_data:
-				if get_utc_date(meal["meal_date"]) == utc_today:
+				if get_utc_date(meal["meal_date"]) <= utc_today:
 					if get_utc_time(meal["end_time"]) > utc_time_now:
 						filtered_meal_data.append(meal)
 				else:
@@ -421,7 +435,7 @@ def get_meals(
 def add_meal_items():
 	try:
 		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+			set_response(405, False, "Only POST method is allowed")
 			return
 
 		user_data = get_hotpot_user_by_email()
