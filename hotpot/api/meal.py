@@ -289,6 +289,10 @@ def get_meals(
 		data.append("Start date: " + utc_end_date.strftime("%Y-%m-%d"))
 		data.append("End date: " + utc_start_date.strftime("%Y-%m-%d"))
 		data.append("Utc time now "+ utc_time_now)
+		data.append("user time zone "+str(get_user_timezone()))
+		data.append("user time zone string "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		data.append("utc date time string after conversion "+str(datetime.strptime(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")))
+		data.append("Extracting utc time "+get_utc_time(datetime.strptime(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")))
 		return data
 
 		
