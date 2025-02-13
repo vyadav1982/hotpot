@@ -708,6 +708,9 @@ def generate_coupon():
 		utc_date_today = get_utc_date(current_datetime_utc)
 		current_time = get_utc_time(current_datetime_utc)
 
+		if (datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds >0 and  (datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds<= (meal_doc.lead_time)*60*60:
+			return set_response(400, False, "Cannot create coupon in meal preparation time")
+
 		meal_title = meal_doc.meal_title
 		user_coupon_count = user_doc.coupon_count
 		meal_weight = meal_doc.get("meal_weight")
@@ -715,6 +718,11 @@ def generate_coupon():
 
 		if from_date < meal_doc.meal_date.date():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}")
+			return
+		
+		hours,remainder = divmod(abs(datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds,3600)
+		if  hours <= meal_doc.lead_time:
+			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
 
 		# Check if required amount of coupons are available
@@ -737,7 +745,7 @@ def generate_coupon():
 			{
 				"employee_id": user_doc.get("name"),
 				"parent": data["meal_id"],
-                "coupon_status": ["!=", "2"],
+				"coupon_status": ["!=", "2"],
 			},
 		)
 
