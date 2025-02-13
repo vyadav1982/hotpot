@@ -3,6 +3,8 @@ from datetime import datetime,timedelta
 import frappe
 import pytz
 
+from hotpot.utils.utc_time import *
+
 
 @frappe.whitelist(methods=["GET"])
 def get_current_user():
@@ -54,22 +56,24 @@ def set_response(http_status_code, status, message, data=None):
 
 
 @frappe.whitelist(allow_guest=True)
-def get_coupons_history(employee_id,page=1,limit=10):
+def get_coupons_history(page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
-		if not user_doc or not user_doc.get("employee_id") == (employee_id):
+
+		if not user_doc:
 			set_response(404, False, "User Not found")
 			return
 
 		if not user_doc.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		employee_id = user_doc.get("employee_id")
 		
-		end_date = datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
+		end_date = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 		start_date = end_date - timedelta(days=30) 
 		page = int(page)
 		limit = int(limit)

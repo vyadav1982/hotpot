@@ -56,13 +56,13 @@ def get_user_timezone():
 
 def get_local_time_now():
     user_tz = get_user_timezone()
+    print(user_tz)
     
     if user_tz == pytz.utc or getattr(user_tz, 'zone', None) == 'UTC':
         return datetime.utcnow().strftime("%H:%M:%S")
     
     utc_now = datetime.utcnow().replace(tzinfo=pytz.utc)
     local_time_now = utc_now.astimezone(user_tz).strftime("%H:%M:%S")
-    
     return local_time_now
 
 
