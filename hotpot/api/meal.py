@@ -272,20 +272,20 @@ def get_meals(
 			set_response(400, False, "Required date")
 			return
 		utc_time_now = get_utc_time(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-		start_date = f"{date} 00:00:00"
-		start_date = get_utc_datetime_str(start_date)
-		end_date = f"{date} 23:59:59"
-		end_date = get_utc_datetime_str(end_date)
-		print(start_date, end_date)
+		utc_start_date = get_utc_datetime_str(f"{date} 00:00:00")
+		utc_end_date = get_utc_datetime_str(f"{date} 23:59:59")
+		print(utc_start_date, utc_end_date)
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
 			set_response(404, False, "User Not Found")
 			return
+		
 		update_coupon_status()
 		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
-		if user_data.get("role") == "Hotpot Server" or user_data.get("role") == "Hotpot Vendor":
+
+		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
 			data = frappe.db.get_list(
 				"Hotpot Meal",
 				fields=[
@@ -303,8 +303,8 @@ def get_meals(
 				],
 				filters=[
 					["vendor_id", "=", user_id],
-					["meal_date", ">=", start_date],
-					["meal_date", "<=", end_date],
+					["meal_date", ">=", utc_start_date],
+					["meal_date", "<=", utc_end_date],
 				],
 				order_by="creation desc",
 				start=start,
@@ -313,7 +313,7 @@ def get_meals(
 
 		elif user_data.get("role") == "Hotpot User":
 			utc_today = get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-			filters = [["is_active", "=", 1], ["meal_date", ">=", start_date], ["meal_date", "<=", end_date]]
+			filters = [["is_active", "=", 1], ["meal_date", ">=", utc_start_date], ["meal_date", "<=", utc_end_date]]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
 
