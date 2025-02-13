@@ -268,8 +268,8 @@ def get_meals(
 			set_response(405, False, "Only GET method is allowed")
 			return
 
-		if not date or not vendor_id:
-			set_response(400, False, "Required date or vendor id")
+		if not date:
+			set_response(400, False, "Required date")
 			return
 
 		user_data = get_hotpot_user_by_email()
