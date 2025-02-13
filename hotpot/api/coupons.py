@@ -12,7 +12,7 @@ from hotpot.utils.utc_time import *
 def get_coupon_count(start_date, end_date):
 	try:
 		if frappe.request.method != "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -23,12 +23,10 @@ def get_coupon_count(start_date, end_date):
 		if not user_doc.get("role") == "Hotpot Server":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		if type(start_date) == str:
-			start_date = f"{start_date} 00:00:00"
-			start_date = get_utc_datetime_str(start_date)
-		if type(start_date) == str:
-			end_date = f"{end_date} 23:59:59"
-			end_date = get_utc_datetime_str(end_date)
+		start_date = f"{start_date} 00:00:00"
+		start_date = get_utc_datetime_str(start_date)
+		end_date = f"{end_date} 23:59:59"
+		end_date = get_utc_datetime_str(end_date)
 		query = """
 				SELECT
 					hm.meal_title,
@@ -65,7 +63,7 @@ def get_coupon_count(start_date, end_date):
 def cancel_coupon():
 	try:
 		if frappe.request.method != "PUT":
-			set_response(500, False, "Only PUT method is allowed")
+			set_response(405, False, "Only PUT method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -103,7 +101,7 @@ def cancel_coupon():
 			set_response(400, False, "Cannot cancel a redeemed or expired coupon")
 			return
 		
-		current_datetime = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		current_datetime = datetime.utcnow().replace(tzinfo=None)
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -137,7 +135,7 @@ def cancel_coupon():
 def get_redeemed_coupon():
 	try:
 		if frappe.request.method!= "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -190,7 +188,7 @@ def get_redeemed_coupon():
 def scan_coupon():
 	try:
 		if frappe.request.method != "PUT":
-			set_response(500, False, "Only PUT method is allowed")
+			set_response(405, False, "Only PUT method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -235,7 +233,7 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
-		current_datetime = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		current_datetime = datetime.utcnow().replace(tzinfo=None)
 		current_time = get_utc_time(current_datetime)
 		utc_date = get_utc_date(current_datetime)
 
@@ -297,7 +295,7 @@ def get_scanned_coupons(
 ):
 	try:
 		if frappe.request.method != "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -308,10 +306,9 @@ def get_scanned_coupons(
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		local_time_now = get_local_time_now()
-		start_date = f"{start_date} {local_time_now}"
+		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_str(start_date)
-		end_date = f"{end_date} {local_time_now}"
+		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_str(end_date)
 
 		query = """
@@ -372,8 +369,6 @@ def update_coupon_status():
 			SET hc.coupon_status = "-1"
 			WHERE hc.coupon_status = "1"
 			AND (
-				DATE(hm.meal_date) BETWEEN DATE_SUB(UTC_DATE(), INTERVAL 3 DAY) AND DATE_SUB(UTC_DATE(), INTERVAL 1 DAY)
-				OR (
 					DATE(hm.meal_date) = UTC_DATE()
 					AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP())
 				)
@@ -398,7 +393,7 @@ def get_all_coupons(
 ):
 	try:
 		if frappe.request.method != "GET":
-			set_response(500, False, "Only GET method is allowed")
+			set_response(405, False, "Only GET method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -411,10 +406,9 @@ def get_all_coupons(
 			return
 
 		update_coupon_status()
-		local_time_now = get_local_time_now()
-		start_date = f"{start_date} {local_time_now}"
+		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_str(start_date)
-		end_date = f"{end_date} {local_time_now}"
+		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_str(end_date)
 
 		page = int(page)
@@ -685,7 +679,7 @@ def get_all_coupons(
 def generate_coupon():
 	try:
 		if frappe.request.method != "POST":
-			set_response(500, False, "Only POST method is allowed")
+			set_response(405, False, "Only POST method is allowed")
 			return
 
 		user_doc = get_hotpot_user_by_email()
@@ -702,11 +696,11 @@ def generate_coupon():
 		if missing:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 
-		date = data.get("date")  # Expected format: "YYYY-MM-DD"
+		date = data.get("date")
 		local_time_now = get_local_time_now()
 		start_date = f"{date} {local_time_now}"
-		start_date = get_utc_datetime_str(start_date)  # Returns datetime object
-		from_date = start_date.date()  # Extract only the date part
+		start_date = get_utc_datetime_str(start_date)
+		from_date = start_date.date()
 		print("start date ",date)
 
 		try:
@@ -714,9 +708,7 @@ def generate_coupon():
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
 
-		# Get current UTC datetime
-		current_datetime_utc = datetime.strptime(datetime.now(pytz.utc).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")
-		print(type(current_datetime_utc))
+		current_datetime_utc = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 		utc_date_today = current_datetime_utc.date()
 		current_time = current_datetime_utc.time()
 
@@ -725,7 +717,6 @@ def generate_coupon():
 		meal_weight = meal_doc.get("meal_weight")
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
-		# Cannot create coupon for past
 		if from_date < meal_doc.meal_date.date():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}")
 			return
