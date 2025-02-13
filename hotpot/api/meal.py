@@ -341,8 +341,6 @@ def get_meals(
 				set_response(200, True, "No meal found", [])
 				return
 
-			print(meal_data)
-
 			filtered_meal_data = []
 			for meal in meal_data:
 				if get_utc_date(meal["meal_date"]) <= utc_today:
