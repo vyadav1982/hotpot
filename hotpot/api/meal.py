@@ -276,27 +276,9 @@ def get_meals(
 		if not user_data:
 			set_response(404, False, "User Not Found")
 			return
-		
-		utc_time_now = get_utc_time(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-		local_time_now = get_local_time_now()
+		utc_time_now = datetime.utcnow().time().strftime("%H:%M:%S")
 		utc_start_date = get_utc_datetime_str(f"{date} 00:00:00")
 		utc_end_date = get_utc_datetime_str(f"{date} 23:59:59")
-		query="""
-			select * from `tabHotpot Meal`
-"""		
-		data=[]
-		data.append(frappe.db.sql(query,as_dict=True))
-		data.append("Start date: " + utc_end_date.strftime("%Y-%m-%d"))
-		data.append("End date: " + utc_start_date.strftime("%Y-%m-%d"))
-		data.append("Utc time now "+ utc_time_now)
-		data.append("user time zone "+str(get_user_timezone()))
-		data.append("user time zone string "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-		data.append("utc date time string after conversion "+str(datetime.strptime(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")))
-		data.append("Extracting utc time "+get_utc_time(datetime.strptime(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")).strftime("%Y-%m-%d %H:%M:%S"), "%Y-%m-%d %H:%M:%S")))
-		return data
-
-		
-
 		update_coupon_status()
 		user_id = user_data.get("guest_of")
 		start = (page - 1) * limit
@@ -328,7 +310,7 @@ def get_meals(
 			)
 
 		elif user_data.get("role") == "Hotpot User":
-			utc_today = get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+			utc_today =datetime.utcnow().date().strftime("%Y-%m-%d")
 			filters = [["is_active", "=", 1], ["meal_date", ">=", utc_start_date], ["meal_date", "<=", utc_end_date]]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
