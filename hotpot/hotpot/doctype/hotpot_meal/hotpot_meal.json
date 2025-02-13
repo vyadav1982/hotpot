@@ -94,14 +94,16 @@
    "label": "Is Special"
   },
   {
+   "default": "0",
    "fieldname": "lead_time",
-   "fieldtype": "Time",
-   "label": "Lead Time"
+   "fieldtype": "Int",
+   "label": "Lead Time",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-10 18:17:11.621579",
+ "modified": "2025-02-13 19:09:21.328018",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

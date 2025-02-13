@@ -22,7 +22,7 @@ class HotpotMeal(Document):
 		end_time: DF.Datetime | None
 		is_active: DF.Check
 		is_special: DF.Check
-		lead_time: DF.Time | None
+		lead_time: DF.Int
 		meal_date: DF.Datetime | None
 		meal_items: DF.Data | None
 		meal_title: DF.Data | None
