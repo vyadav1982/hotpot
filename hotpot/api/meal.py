@@ -77,7 +77,8 @@ def create_meal():
 		local_time_now = get_local_time_now()
 
 		if type(meal_date) == str:
-			meal_date = f"{meal_date} {local_time_now}"
+			# meal_date = f"{meal_date} {local_time_now}"
+			meal_date = f"{meal_date} 00:00:00"
 
 		meal_title = data.get("meal_title")
 		day = data.get("day")
