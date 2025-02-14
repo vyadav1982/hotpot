@@ -738,6 +738,9 @@ def generate_coupon():
 				return
 			buffer_used += 1
 
+		if get_utc_time(start_date) >= datetime.utcnow().strftime("%H:%M:%S"):
+			set_response(400, False, "Meal time already passed.")
+			return
 
 		# Check for duplicate coupon
 		exists = frappe.db.exists(
@@ -752,7 +755,7 @@ def generate_coupon():
 		if exists:
 			set_response(409, False, f"Already present {meal_title} on {from_date.strftime('%d %b %Y')}")
 			return
-
+		print(f"Created coupon for {meal_title} {start_date}")
 		try:
 			# History for user transactions
 			history_doc = frappe.new_doc("Hotpot Coupons History")
@@ -760,7 +763,7 @@ def generate_coupon():
 				{
 					"employee_id": user_doc.get("name"),
 					"type": "Creation",
-					"message": f"Created coupon for {meal_title} ({from_date.strftime('%d %b %Y')})",
+					"message": f"Created coupon for {meal_title} {start_date}",
 					"meal_id": data["meal_id"],
 				}
 			)
