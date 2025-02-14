@@ -718,11 +718,11 @@ def generate_coupon():
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
 		if from_date < meal_doc.meal_date.date():
-			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}")
+			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
 			return
-
-		if (first and second):
-			set_response(400,False,"Cannot create coupon in meal preparation time")
+		
+		if meal_doc.get("end_time").time() <= datetime.utcnow().time():
+			set_response(400, False, "Meal time already passed.")
 			return
 		
 		# Check if required amount of coupons are available
@@ -731,17 +731,11 @@ def generate_coupon():
 		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
 		buffer_used = 0
 
-		# If buffer time then check for vendor coupons
-		if from_date.strftime("%Y-%m-%d") == utc_date_today and is_buffer_time:
-			if meal_buffer_count == 0:
-				set_response(400, False, f"Not Enough Vendor Coupons for {from_date.strftime('%d %b %Y')}")
-				return
-			buffer_used += 1
 
-		if meal_doc.get("end_time").time() <= datetime.utcnow().time():
-			set_response(400, False, "Meal time already passed.")
+		if (first and second):
+			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
-
+		
 		# Check for duplicate coupon
 		exists = frappe.db.exists(
 			"Hotpot Coupons",
@@ -753,9 +747,17 @@ def generate_coupon():
 		)
 
 		if exists:
-			set_response(409, False, f"Already present {meal_title} on {from_date.strftime('%d %b %Y')}")
+			set_response(409, False, f"Already present {meal_title} on {from_date.strftime('%d %b %Y')}",start_date)
 			return
-		print(f"Created coupon for {meal_title} {start_date}")
+
+		# If buffer time then check for vendor coupons
+		if from_date.strftime("%Y-%m-%d") == utc_date_today and is_buffer_time:
+			if meal_buffer_count == 0:
+				set_response(400, False, f"Not Enough Vendor Coupons for {from_date.strftime('%d %b %Y')}",start_date)
+				return
+			buffer_used += 1
+
+
 		try:
 			# History for user transactions
 			history_doc = frappe.new_doc("Hotpot Coupons History")
