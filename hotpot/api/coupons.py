@@ -722,9 +722,9 @@ def generate_coupon():
 			return
 
 		if (first and second):
-			print(first, second, first and second)
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
+		
 		# Check if required amount of coupons are available
 		if user_coupon_count < meal_weight:
 			return set_response(400, False, "Insufficient currency to create coupon")
@@ -732,7 +732,7 @@ def generate_coupon():
 		buffer_used = 0
 
 		# If buffer time then check for vendor coupons
-		if from_date == utc_date_today and is_buffer_time:
+		if from_date.strftime("%Y-%m-%d") == utc_date_today and is_buffer_time:
 			if meal_buffer_count == 0:
 				set_response(400, False, f"Not Enough Vendor Coupons for {from_date.strftime('%d %b %Y')}")
 				return
