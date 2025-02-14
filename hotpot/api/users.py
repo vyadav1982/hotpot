@@ -73,22 +73,63 @@ def get_coupons_history(page=1,limit=10):
 			return
 		employee_id = user_doc.get("employee_id")
 		
-		end_date = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-		start_date = end_date - timedelta(days=30) 
+		# end_date = get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+		# start_date = end_date - timedelta(days=30) 
+		# page = int(page)
+		# limit = int(limit)
+		# start = (page - 1) * limit
+		# result = []
+		# employee_id = user_doc.get("name")
+		# print("start date ",start_date,"end date ",end_date)
+		# query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
+		# result = frappe.db.sql(query, employee_id, as_dict=True)
+		# result += frappe.db.get_list(
+		# 	"Hotpot Coupons History",
+		# 	fields=["employee_id", "type", "message", "creation"],
+		# 	filters=[["employee_id", "=", employee_id],["modified",">=",start_date],["modified","<=",end_date]],
+		# 	order_by="modified desc",
+		# 	start=start,
+		# )
+		end_date = datetime.utcnow()
+		start_date = end_date - timedelta(days=30)
+
 		page = int(page)
 		limit = int(limit)
 		start = (page - 1) * limit
-		result = []
+
 		employee_id = user_doc.get("name")
-		query = """ SELECT modified_by, data, docname, creation FROM tabVersion WHERE docname = %s AND ref_doctype LIKE '%%Hotpot%%' ORDER BY creation DESC LIMIT 10; """
-		result = frappe.db.sql(query, employee_id, as_dict=True)
-		result += frappe.db.get_list(
-			"Hotpot Coupons History",
-			fields=["employee_id", "type", "message", "creation"],
-			filters=[["employee_id", "=", employee_id],["modified",">=",start_date],["modified","<=",end_date]],
-			order_by="modified desc",
-			limit=25,
-		)
+
+		print("Start Date:", start_date, "End Date:", end_date)
+
+		query = """
+			SELECT modified_by, data, docname, creation 
+			FROM tabVersion 
+			WHERE docname = %s 
+			AND ref_doctype LIKE '%%Hotpot%%' 
+			ORDER BY creation DESC ;
+		"""
+
+		result = frappe.db.sql(query, (employee_id), as_dict=True)
+		query = """
+			SELECT employee_id,type,message,creation 
+			FROM `tabHotpot Coupons History`
+			WHERE employee_id=%s
+			and modified between %s and %s
+			ORDER BY modified DESC;
+		"""
+		result += frappe.db.sql(query,(employee_id,start_date,end_date),as_dict=True)
+		# result += frappe.db.get_list(
+		# 	"Hotpot Coupons History",
+		# 	fields=["employee_id", "type", "message", "creation"],
+		# 	filters=[
+		# 		["employee_id", "=", employee_id],
+		# 		["modified", ">=", start_date],
+		# 		["modified", "<=", end_date]
+		# 	],
+		# 	order_by="modified desc",
+		# 	start=start,
+		# 	limit=limit
+		# )
 		set_response(200, True, "History fetched successfully", result)
 	except Exception as e:
 		frappe.db.rollback()
