@@ -738,8 +738,7 @@ def generate_coupon():
 				return
 			buffer_used += 1
 
-			
-		if meal_doc.get("end_time").time() <= datetime.utcnow().strftime("%H:%M:%S"):
+		if meal_doc.get("end_time").time() <= datetime.utcnow().time():
 			set_response(400, False, "Meal time already passed.")
 			return
 
