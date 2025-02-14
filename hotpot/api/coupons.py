@@ -403,7 +403,8 @@ def get_all_coupons(
 			return
 
 		update_coupon_status()
-		start_date = f"{start_date} 00:00:00"
+		local_time_now = get_local_time_now()
+		start_date = f"{start_date} {local_time_now}"
 		start_date = get_utc_datetime_str(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_str(end_date)
