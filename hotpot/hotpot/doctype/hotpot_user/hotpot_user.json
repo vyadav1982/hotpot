@@ -17,7 +17,10 @@
   "is_guest",
   "guest_of",
   "coupon_count",
-  "date_of_birth"
+  "date_of_birth",
+  "date_of_joining",
+  "department",
+  "location"
  ],
  "fields": [
   {
@@ -97,11 +100,26 @@
    "fieldname": "date_of_birth",
    "fieldtype": "Date",
    "label": "Date Of Birth"
+  },
+  {
+   "fieldname": "date_of_joining",
+   "fieldtype": "Date",
+   "label": "Date of Joining"
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Data",
+   "label": "Department"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-11 11:05:40.989252",
+ "modified": "2025-02-17 15:01:28.700969",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

@@ -66,7 +66,7 @@ def get_local_time_now():
     return local_time_now
 
 
-def get_utc_datetime_str(date_str):
+def get_utc_datetime_obj(date_str):
     if not isinstance(date_str, str):
         raise ValueError("Expected date_str as a string in format 'YYYY-MM-DD HH:MM:SS'")
     
