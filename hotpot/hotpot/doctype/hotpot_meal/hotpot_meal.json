@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "meal_title",
-  "day",
   "meal_items",
   "start_time",
   "end_time",
@@ -19,18 +18,16 @@
   "ratings",
   "meal_weight",
   "is_special",
-  "lead_time"
+  "lead_time",
+  "cancellation_time",
+  "repeat_type",
+  "repeat_days"
  ],
  "fields": [
   {
    "fieldname": "meal_title",
    "fieldtype": "Data",
    "label": "Meal Title"
-  },
-  {
-   "fieldname": "day",
-   "fieldtype": "Data",
-   "label": "Day"
   },
   {
    "fieldname": "meal_items",
@@ -99,11 +96,29 @@
    "fieldtype": "Int",
    "label": "Lead Time",
    "non_negative": 1
+  },
+  {
+   "default": "once",
+   "fieldname": "repeat_type",
+   "fieldtype": "Select",
+   "label": "Repeat Type",
+   "options": "once\ndaily\nspecific_days"
+  },
+  {
+   "fieldname": "repeat_days",
+   "fieldtype": "Data",
+   "label": "Repeat Days"
+  },
+  {
+   "fieldname": "cancellation_time",
+   "fieldtype": "Int",
+   "label": "Cancellation Time",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-13 19:09:21.328018",
+ "modified": "2025-02-17 11:42:17.544886",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

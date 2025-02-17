@@ -17,8 +17,8 @@ class HotpotMeal(Document):
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
 
 		buffer_coupon_count: DF.Int
+		cancellation_time: DF.Int
 		coupons: DF.Table[HotpotCoupons]
-		day: DF.Data | None
 		end_time: DF.Datetime | None
 		is_active: DF.Check
 		is_special: DF.Check
@@ -28,6 +28,8 @@ class HotpotMeal(Document):
 		meal_title: DF.Data | None
 		meal_weight: DF.Int
 		ratings: DF.Table[HotpotMealRating]
+		repeat_days: DF.Data | None
+		repeat_type: DF.Literal["once", "daily", "specific_days"]
 		start_time: DF.Datetime | None
 		vendor_id: DF.Link | None
 	# end: auto-generated types

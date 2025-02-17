@@ -36,12 +36,15 @@ class HotpotUser(Document):
 
 		coupon_count: DF.Int
 		date_of_birth: DF.Date | None
+		date_of_joining: DF.Date | None
+		department: DF.Data | None
 		email: DF.Data
 		employee_id: DF.Data
 		employee_name: DF.Data | None
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_guest: DF.Check
+		location: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
 		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor"]

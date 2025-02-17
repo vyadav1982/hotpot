@@ -110,14 +110,18 @@ def get_coupons_history(page=1,limit=10):
 		"""
 
 		result = frappe.db.sql(query, (employee_id), as_dict=True)
+		user_timezone = get_user_timezone()
+		print(user_timezone)
 		query = """
-			SELECT employee_id,type,message,creation 
+			SELECT employee_id, type, message, creation 
 			FROM `tabHotpot Coupons History`
-			WHERE employee_id=%s
-			and modified between %s and %s
-			ORDER BY modified DESC;
+			WHERE employee_id = %s
+			AND CONVERT_TZ(modified, %s, '+00:00') BETWEEN %s AND %s
+			ORDER BY CONVERT_TZ(modified, %s, '+00:00') DESC;
 		"""
-		result += frappe.db.sql(query,(employee_id,start_date,end_date),as_dict=True)
+		params = (employee_id, user_timezone, start_date, end_date, user_timezone)
+		print(query%params)
+		result += frappe.db.sql(query,params,as_dict=True)
 		# result += frappe.db.get_list(
 		# 	"Hotpot Coupons History",
 		# 	fields=["employee_id", "type", "message", "creation"],

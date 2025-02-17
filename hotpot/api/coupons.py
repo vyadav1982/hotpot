@@ -24,9 +24,9 @@ def get_coupon_count(start_date, end_date):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
-		start_date = get_utc_datetime_str(start_date)
+		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
-		end_date = get_utc_datetime_str(end_date)
+		end_date = get_utc_datetime_obj(end_date)
 		query = """
 				SELECT
 					hm.meal_title,
@@ -307,9 +307,9 @@ def get_scanned_coupons(
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
-		start_date = get_utc_datetime_str(start_date)
+		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
-		end_date = get_utc_datetime_str(end_date)
+		end_date = get_utc_datetime_obj(end_date)
 
 		query = """
 			SELECT
@@ -405,9 +405,9 @@ def get_all_coupons(
 		update_coupon_status()
 		local_time_now = get_local_time_now()
 		start_date = f"{start_date} {local_time_now}"
-		start_date = get_utc_datetime_str(start_date)
+		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
-		end_date = get_utc_datetime_str(end_date)
+		end_date = get_utc_datetime_obj(end_date)
 
 		page = int(page)
 		limit = int(limit)
@@ -697,7 +697,7 @@ def generate_coupon():
 		date = data.get("date")
 		local_time_now = get_local_time_now()
 		start_date = f"{date} {local_time_now}"
-		start_date = get_utc_datetime_str(start_date)
+		start_date = get_utc_datetime_obj(start_date)
 		from_date = start_date.date()
 
 		try:
@@ -721,7 +721,7 @@ def generate_coupon():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
 			return
 		
-		if meal_doc.get("end_time").time() <= datetime.utcnow().time():
+		if from_date==datetime.utcnow().date() and meal_doc.get("end_time").time() <= datetime.utcnow().time():
 			set_response(400, False, "Meal time already passed.")
 			return
 		
