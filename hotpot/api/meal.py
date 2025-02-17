@@ -515,12 +515,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 
 		processed_meals.sort(key=lambda x: x["start_time"].time())
 
-		set_response(200, True, "Fetched successfully", {
-			"data": processed_meals,
-			"page": page,
-			"page_length": limit,
-			"total": len(processed_meals)
-		})
+		set_response(200, True, "Fetched successfully",processed_meals)
 
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal: {str(e)}")
