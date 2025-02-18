@@ -743,13 +743,26 @@ def generate_coupon():
 			return
 		
 		# Check for duplicate coupon
-		exists = frappe.db.exists(
-			"Hotpot Coupons",
-			{
-				"employee_id": user_doc.get("name"),
-				"parent": data["meal_id"],
-				"coupon_status": ["!=", "2"],
-			},
+		# exists = frappe.db.exists(
+		# 	"Hotpot Coupons",
+		# 	{
+		# 		"employee_id": user_doc.get("name"),
+		# 		"parent": data["meal_id"],
+		# 		"coupon_status": ["!=", "2"],
+		# 		"coupon_date":start_date.date(),
+		# 	},
+		# )
+		exists = frappe.db.sql(
+			"""
+			SELECT 1 
+			FROM `tabHotpot Coupons`
+			WHERE `employee_id` = %s
+			AND `parent` = %s
+			AND `coupon_status` != '2'
+			AND DATE(`coupon_date`) = %s
+			LIMIT 1;
+			""",
+			(user_doc.get("name"), data["meal_id"], start_date.strftime("%Y-%m-%d")),
 		)
 
 		if exists:
