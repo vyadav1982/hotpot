@@ -508,8 +508,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 				{"id": r.name, "rating": r.rating, "feedback": r.feedback}
 				for r in meal_doc.ratings if r.employee_id == user_data.name
 			]
-			
-			print(meal_doc)
+			meal["meal_id"] = meal_doc.name
 
 			processed_meals.append(meal)
 
