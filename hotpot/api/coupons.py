@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import frappe
 import pytz
+import re
 
 from ..api.users import *
 from hotpot.utils.utc_time import *
@@ -830,6 +831,57 @@ def generate_coupon():
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
 		set_response(500, False, f"Server error: {str(e)}")
 		return
+
+is_valid_email = lambda email: bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
+@frappe.whitelist(allow_guest=True)
+def search_coupon(date, identifier):
+    try:
+        if frappe.request.method != "GET":
+            return set_response(405, False, "Only GET method is allowed")
+
+        if not date:
+            return set_response(400, False, "Missing required field")
+
+        vendor_doc = get_hotpot_user_by_email()
+        if not vendor_doc:
+            return set_response(404, False, "User Not found")
+
+        if not vendor_doc.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
+            return set_response(403, False, "Not Permitted to access this resource")
+
+        date = get_utc_datetime_obj(date)
+
+        identifier_field = "email" if is_valid_email(identifier) else "employee_id"
+
+        user_doc = frappe.db.sql(
+            f"SELECT name FROM `tabHotpot User` WHERE {identifier_field} = %s AND role = 'Hotpot User' LIMIT 1;",
+            (identifier,), as_dict=True
+        )
+
+        if not user_doc:
+            return set_response(404, False, "User Not found")
+
+        coupon_data = frappe.db.sql(
+            """
+            SELECT hc.*, hm.*
+            FROM `tabHotpot Coupons` hc
+            JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
+            WHERE employee_id = %s AND DATE(coupon_date) = %s
+            ORDER BY coupon_date DESC;
+            """,
+            (user_doc[0]["name"], date.date()), as_dict=True
+        )
+
+        if not coupon_data:
+            return set_response(404, False, "No coupon found for this user on this date")
+
+        return set_response(200, True, "Coupon Data fetched successfully", coupon_data)
+
+    except Exception as e:
+        frappe.db.rollback()
+        frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
+        return set_response(500, False, f"Server error: {str(e)}")
+
 
 
 
