@@ -392,6 +392,7 @@ def update_coupon_status():
 def get_all_coupons(
 	start_date,
 	end_date,
+	identifier=None,
 	page=1,
 	limit=10,
 ):
@@ -410,8 +411,15 @@ def get_all_coupons(
 			return
 
 		update_coupon_status()
+
+
 		local_time_now = get_local_time_now()
 		start_date = f"{start_date} {local_time_now}"
+
+		if identifier:
+			search_coupon(start_date,identifier)
+			return
+		
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_obj(end_date)
@@ -835,52 +843,48 @@ def generate_coupon():
 is_valid_email = lambda email: bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
 @frappe.whitelist(allow_guest=True)
 def search_coupon(date, identifier):
-    try:
-        if frappe.request.method != "GET":
-            return set_response(405, False, "Only GET method is allowed")
+	try:
+		if not date:
+			return set_response(400, False, "Missing required field")
 
-        if not date:
-            return set_response(400, False, "Missing required field")
+		vendor_doc = get_hotpot_user_by_email()
+		if not vendor_doc:
+			return set_response(404, False, "User Not found")
 
-        vendor_doc = get_hotpot_user_by_email()
-        if not vendor_doc:
-            return set_response(404, False, "User Not found")
+		if not vendor_doc.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
+			return set_response(403, False, "Not Permitted to access this resource")
+		date = get_utc_datetime_obj(date)
 
-        if not vendor_doc.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
-            return set_response(403, False, "Not Permitted to access this resource")
+		identifier_field = "email" if is_valid_email(identifier) else "employee_id"
 
-        date = get_utc_datetime_obj(date)
+		user_doc = frappe.db.sql(
+			f"SELECT name FROM `tabHotpot User` WHERE {identifier_field} = %s AND role = 'Hotpot User' LIMIT 1;",
+			(identifier,), as_dict=True
+		)
 
-        identifier_field = "email" if is_valid_email(identifier) else "employee_id"
+		if not user_doc:
+			return set_response(404, False, "User Not found")
 
-        user_doc = frappe.db.sql(
-            f"SELECT name FROM `tabHotpot User` WHERE {identifier_field} = %s AND role = 'Hotpot User' LIMIT 1;",
-            (identifier,), as_dict=True
-        )
+		coupon_data = frappe.db.sql(
+			"""
+			SELECT hc.*, hm.*
+			FROM `tabHotpot Coupons` hc
+			JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
+			WHERE employee_id = %s AND DATE(coupon_date) = %s
+			ORDER BY coupon_date DESC;
+			""",
+			(user_doc[0]["name"], date.date()), as_dict=True
+		)
 
-        if not user_doc:
-            return set_response(404, False, "User Not found")
+		if not coupon_data:
+			return set_response(404, False, "No coupon found for this user on this date")
 
-        coupon_data = frappe.db.sql(
-            """
-            SELECT hc.*, hm.*
-            FROM `tabHotpot Coupons` hc
-            JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
-            WHERE employee_id = %s AND DATE(coupon_date) = %s
-            ORDER BY coupon_date DESC;
-            """,
-            (user_doc[0]["name"], date.date()), as_dict=True
-        )
+		return set_response(200, True, "Coupon Data fetched successfully", coupon_data)
 
-        if not coupon_data:
-            return set_response(404, False, "No coupon found for this user on this date")
-
-        return set_response(200, True, "Coupon Data fetched successfully", coupon_data)
-
-    except Exception as e:
-        frappe.db.rollback()
-        frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
-        return set_response(500, False, f"Server error: {str(e)}")
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
+		return set_response(500, False, f"Server error: {str(e)}")
 
 
 
