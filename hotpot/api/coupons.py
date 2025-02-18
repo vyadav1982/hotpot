@@ -411,7 +411,7 @@ def get_all_coupons(
 
 		update_coupon_status()
 		local_time_now = get_local_time_now()
-		start_date = f"{start_date} {local_time_now}"
+		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_obj(end_date)
@@ -438,7 +438,7 @@ def get_all_coupons(
 					`tabHotpot User` as U on hm.vendor_id = U.name
 				WHERE
 					hm.vendor_id = %(vendor_name)s
-					AND DATE(hm.meal_date) BETWEEN %(start_date)s AND %(end_date)s
+					AND DATE(hc.coupon_date) BETWEEN %(start_date)s AND %(end_date)s
 				LIMIT %(start)s, %(limit)s;
 				"""
 
@@ -449,7 +449,7 @@ def get_all_coupons(
 				"start": start,
 				"limit": limit,
 			}
-
+			print(query%params)
 			ans = frappe.db.sql(query, params, as_dict=True)
 			if not ans:
 				set_response(200, True, "No Coupon found", [])
