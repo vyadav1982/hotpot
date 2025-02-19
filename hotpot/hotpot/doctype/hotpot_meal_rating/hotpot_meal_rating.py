@@ -20,6 +20,6 @@ class HotpotMealRating(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		rating: DF.Data | None
+		rating: DF.Int
 	# end: auto-generated types
 	pass
