@@ -471,21 +471,15 @@ def get_all_coupons(
 			query = """
 			(
 			SELECT
-				'coupon' AS record_type,
-				hc.name,
-				hc.title AS title,
-				hc.coupon_status,
-				hc.coupon_date,
-				hc.served_by,
-				hm.vendor_id,
-				hm.start_time AS start_time,
-				hm.end_time AS end_time,
-				hm.name AS meal_id,
-				U.employee_name AS vendor_name
+				hc.*,
+				hm.*,
+				hr.*
 			FROM
 				`tabHotpot Coupons` AS hc
 			INNER JOIN
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+			INNER JOIN
+				`tabHotpot Meal Rating` AS hr ON hm.name = hr.parent
 			INNER JOIN
 				`tabHotpot User` as U on hm.vendor_id = U.name
 			WHERE
