@@ -20,7 +20,9 @@
   "date_of_birth",
   "date_of_joining",
   "department",
-  "location"
+  "location",
+  "latitude",
+  "longitude"
  ],
  "fields": [
   {
@@ -115,11 +117,21 @@
    "fieldname": "location",
    "fieldtype": "Data",
    "label": "Location"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "label": "Longitude"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-17 15:01:28.700969",
+ "modified": "2025-02-19 12:20:21.516746",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

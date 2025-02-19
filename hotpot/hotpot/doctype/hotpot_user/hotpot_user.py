@@ -44,7 +44,9 @@ class HotpotUser(Document):
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_guest: DF.Check
+		latitude: DF.Data | None
 		location: DF.Data | None
+		longitude: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
 		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor"]
@@ -92,18 +94,13 @@ class HotpotUser(Document):
 			frappe_user = frappe.get_doc("User", {"email": self.email})
 			if frappe_user:
 				names = self.employee_name.split(" ", 1)
-				frappe_user.update(
-					{
-						"first_name": names[0],
-						"last_name": names[1] if len(names) > 1 else "",
-						"username": self.employee_id,
-					}
-				)
-
-				if self.role not in frappe_user.get_roles():
-					frappe_user.set("roles", [{"role": self.role}])
-
-				frappe_user.save(ignore_permissions=True)
+				frappe_user.enabled = self.is_active
+				frappe_user.first_name = names[0]
+				frappe_user.last_name = names[1] if len(names) > 1 else ""
+				frappe_user.username = self.employee_id
+				frappe_user.new_password = self.password
+				frappe_user.flags.ignore_permissions = True
+				frappe_user.save()
 				frappe.db.commit()
 		except frappe.DoesNotExistError:
 			frappe.log_error(f"User with email {self.email} does not exist.")
