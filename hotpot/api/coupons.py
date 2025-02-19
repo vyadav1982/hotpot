@@ -111,7 +111,8 @@ def cancel_coupon():
 		# ):
 		# 	set_response(400, False, "Cannot Cancel at this moment")
 		# 	return
-		cancel = (((datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)<= (meal_doc.cancellation_time)*60*60)
+		diff = ((datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)
+		cancel = (diff<0 or diff<= (meal_doc.cancellation_time)*60*60)
 
 		if cancel :
 			set_response(400,False,"Cannot Cancel at this moment")
@@ -128,8 +129,11 @@ def cancel_coupon():
 			SET hc.coupon_status = 2
 			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
 			"""
+		user_doc = frappe.get_doc("Hotpot User",coupon_found.employee_id)
+		user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
+		user_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Cancelled successfully")
 		return
@@ -339,7 +343,7 @@ def get_scanned_coupons(
 			WHERE
 				hc.coupon_status = 0
 				and hm.vendor_id = %(vendor_id)s
-				and hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
+				and hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 			ORDER BY
 				hc.modified DESC
 			;
@@ -413,14 +417,14 @@ def get_all_coupons(
 		update_coupon_status()
 
 		start_date = f"{start_date} 00:00:00"
+		end_date = f"{end_date} 23:59:59"
+		start_date = get_utc_datetime_obj(start_date)
+		end_date = get_utc_datetime_obj(end_date)
 
 		if identifier:
-			search_coupon(start_date,identifier)
+			search_coupon(start_date,end_date,identifier)
 			return
 		
-		start_date = get_utc_datetime_obj(start_date)
-		end_date = f"{end_date} 23:59:59"
-		end_date = get_utc_datetime_obj(end_date)
 
 		page = int(page)
 		limit = int(limit)
@@ -535,161 +539,6 @@ def get_all_coupons(
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
 		set_response(500, False, f"Server error: {str(e)}")
 		return
-
-
-# @frappe.whitelist(allow_guest=True)
-# def generate_coupon():
-# 	try:
-# 		if frappe.request.method != "POST":
-# 			set_response(500, False, "Only POST method is allowed")
-# 			return
-
-# 		user_doc = get_hotpot_user_by_email()
-# 		if not user_doc:
-# 			set_response(404, False, "User Not found")
-# 			return
-# 		if not user_doc.get("role") == "Hotpot User":
-# 			set_response(403, False, "Not Permitted to acess this resouce")
-# 			return
-
-# 		data = json.loads(frappe.request.data or "{}")
-# 		required_fields = ["meal_id","date"]
-# 		if missing := [field for field in required_fields if not data.get(field)]:
-# 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
-		
-# 		date = data.get("date")
-# 		local_time_now = datetime.now().time().strftime("%H:%M:%S")
-# 		start_date = f"{date} {local_time_now}"
-# 		start_date = get_utc_datetime_str(start_date)
-# 		# end_date = f"{date} {local_time_now}"
-# 		# end_date = get_utc_datetime_str(end_date)
-
-
-# 		from_date = get_utc_date(start_date)
-# 		# to_date = get_utc_date(end_date)
-
-# 		try:
-# 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
-# 		except frappe.DoesNotExistError:
-# 			return set_response(404, False, "Meal not found")
-
-# 		current_datetime_utc = datetime.utcnow()
-# 		utc_date_today = current_datetime_utc.date()
-# 		current_time = current_datetime_utc.time()
-# 		print("currnte time ",current_time," utc date ",utc_date_today,"utc time formua", datetime.utcnow().time() )
-# 		# day_difference = abs(datetime.strptime(to_date, "%Y-%m-%d") - datetime.strptime(from_date, "%Y-%m-%d")).days + 1
-# 		meal_title = meal_doc.meal_title
-# 		# print("days difference",day_difference)
-# 		user_coupon_count = user_doc.coupon_count
-# 		meal_weight = meal_doc.get("meal_weight")
-# 		is_buffer_time = False
-# 		meal_buffer_count = meal_doc.buffer_coupon_count
-
-# 		# hours,remainder = divmod(abs(datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds,3600)
-# 		# if  hours <= meal_doc.lead_time(0):
-# 		# 	set_response(400,False,"Cannot create coupon in meal preparation time")
-# 		# 	return
-
-# 		# Check if required amount of coupon are present or not
-# 		if user_coupon_count < meal_weight :
-# 			return set_response(400, False, "Insufficient currency to create coupon")
-
-# 		if get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time):
-# 			is_buffer_time = True
-# 		buffer_used = 0
-# 		# utc_today = get_utc_date(get_utc_datetime_str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-
-	
-# 		current_date = datetime.strptime(from_date, "%Y-%m-%d")
-# 		# print(type(current_date))
-# 		# print("current date", current_date)
-# 		# print("database date ",get_utc_date(get_utc_datetime_str(current_date.strftime("%Y-%m-%d %H:%M:%S"))))
-# 		display_date = current_date.strftime("%d %b %Y")
-
-# 		# Cannot create coupon for past
-# 		if current_date.strftime("%Y-%m-%d") < get_utc_date(meal_doc.get("meal_date")):
-# 			set_response(500, False, f"Cannot create coupon for past date: {display_date}")
-# 			return
-
-# 		# If buffer time then check for vendor coupons
-# 		is_today = current_date == utc_date_today
-# 		if is_today and is_buffer_time:
-# 			if meal_buffer_count == 0:
-# 				set_response(500, False, f"Not Enough Vendor Coupon for {display_date}")
-# 				return
-# 			buffer_used += 1
-
-# 		# Check for duplicate coupon
-# 		exists = frappe.db.exists(
-# 			"Hotpot Coupons",
-# 			{
-# 				"employee_id": user_doc.get("name"),
-# 				"parent": data["meal_id"],
-# 			},
-# 		)
-
-# 		if exists:
-# 			set_response(409, False, f"Already present {meal_title} on {display_date}")
-# 			return
-
-# 		try:
-# 			# History used for user transactions
-# 			history_doc = frappe.new_doc("Hotpot Coupons History")
-# 			history_doc.update(
-# 				{
-# 					"employee_id": user_doc.get("name"),
-# 					"type": "Creation",
-# 					"message": f"Created coupon for {meal_title} ({display_date})",
-# 					"meal_id": data["meal_id"],
-# 				}
-# 			)
-# 			history_doc.insert()
-
-# 			# Append created coupon in meal
-
-# 			meal_doc.append(
-# 				"coupons",
-# 				{
-# 					"employee_id": user_doc.get("name"),
-# 					"coupon_date": start_date,
-# 					"title": meal_title,
-# 					"coupon_status": "1",
-# 				},
-# 			)
-
-# 			user_coupon_count -= meal_weight
-# 			# output.append(f"Created coupon for {meal_title} on {display_date}")
-
-# 		except Exception as e:
-# 			frappe.db.rollback()
-# 			# output.append(f"Failed to create coupon for {display_date}: {str(e)}")
-# 			set_response(500, False, f"Failed to create coupon for {display_date}: {str(e)}")
-# 			return
-
-# 		# Decide whether we need to chnange coupon count or not
-# 		if is_buffer_time and buffer_used > 0:
-# 			meal_doc.buffer_coupon_count = meal_buffer_count - buffer_used
-# 			if meal_doc.buffer_coupon_count < 0:
-# 				meal_doc.buffer_coupon_count = 0
-
-# 		meal_doc.save()
-# 		frappe.db.set_value(
-# 			"Hotpot User",
-# 			user_doc.get("name"),
-# 			{
-# 				"coupon_count": user_coupon_count,
-# 			},
-# 		)
-# 		frappe.db.commit()
-
-# 		return set_response(200, True, "Processing completed", {"remaining_coupons": user_coupon_count})
-
-# 	except Exception as e:
-# 		frappe.db.rollback()
-# 		print(frappe.get_traceback())
-# 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
-# 		set_response(500, False, f"Server error: {str(e)}")
-# 		return
 
 @frappe.whitelist(allow_guest=True)
 def generate_coupon():
@@ -845,9 +694,9 @@ def generate_coupon():
 
 is_valid_email = lambda email: bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
 @frappe.whitelist(allow_guest=True)
-def search_coupon(date, identifier):
+def search_coupon(start_date,end_date,identifier):
 	try:
-		if not date:
+		if not start_date or not end_date:
 			return set_response(400, False, "Missing required field")
 
 		vendor_doc = get_hotpot_user_by_email()
@@ -873,10 +722,10 @@ def search_coupon(date, identifier):
 			SELECT hc.*, hm.*
 			FROM `tabHotpot Coupons` hc
 			JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
-			WHERE employee_id = %s AND DATE(coupon_date) = %s
+			WHERE employee_id = %s AND coupon_date BETWEEN %s AND %s
 			ORDER BY coupon_date DESC;
 			""",
-			(user_doc[0]["name"], date.date()), as_dict=True
+			(user_doc[0]["name"], start_date,end_date), as_dict=True
 		)
 
 		if not coupon_data:

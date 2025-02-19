@@ -432,6 +432,8 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
 		utc_now = datetime.utcnow().replace(tzinfo=None)
 		current_utc_date = utc_now.date()
+		start_date = get_utc_datetime_obj(f"{date} 00:00:00")
+		end_date = get_utc_datetime_obj(f"{date} 23:59:59")
 
 		base_fields = [
 			"name", "meal_title", "day", "meal_items", "start_time", "end_time",
@@ -469,30 +471,29 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 				limit=limit,
 			)
 		meals = [
-			meal for meal in meals if (meal["meal_date"]).date() <= date_param_utc
+			meal for meal in meals if meal["meal_date"] <= end_date
 		]
 		processed_meals = []
 		for meal in meals:
-			meal_date = (meal["meal_date"]).date()
+			meal_date = meal["meal_date"]
 			repeat_type = meal.get("repeat_type", "once")
 			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
 
 			valid = False
 			if repeat_type == "once":
-				valid = meal_date == date_param_utc
+				valid = (meal_date >= start_date and meal_date <= end_date)
 			elif repeat_type == "daily":
-				valid = meal_date <= date_param_utc
+				valid = meal_date <= end_date
 			elif repeat_type == "specific_days":
 				weekday = date_param_utc.strftime("%A").upper()
-				valid = meal_date <= date_param_utc and weekday in repeat_days
+				valid = meal_date <= end_date and weekday in repeat_days
 
 			if not valid:
 				continue
-
-			if date_param_utc == current_utc_date and user_data.get("role") == "Hotpot User":
+			print(start_date,end_date)
+			if meal_date>=start_date and meal_date<=end_date and user_data.get("role") == "Hotpot User":
 				end_time = meal["end_time"].time()
 				effective_end = datetime.combine(date_param_utc, end_time)
-				print(effective_end,utc_now)
 				if effective_end <= utc_now:
 					continue
 
