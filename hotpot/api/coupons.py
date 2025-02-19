@@ -471,9 +471,20 @@ def get_all_coupons(
 			query = """
 			(
 			SELECT
-				hc.*,
-				hm.*,
-				hr.*
+				'coupon' AS record_type,
+				hc.name,
+				hc.title AS title,
+				hc.coupon_status,
+				hc.coupon_date,
+				hc.served_by,
+				hm.vendor_id,
+				hm.start_time AS start_time,
+				hm.end_time AS end_time,
+				hm.name AS meal_id,
+				U.employee_name AS vendor_name,
+				hr.rating AS rating,
+				hr.feedback AS feedback,
+				hr.name AS rating_id
 			FROM
 				`tabHotpot Coupons` AS hc
 			INNER JOIN
