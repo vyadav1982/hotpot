@@ -412,9 +412,7 @@ def get_all_coupons(
 
 		update_coupon_status()
 
-
-		local_time_now = get_local_time_now()
-		start_date = f"{start_date} {local_time_now}"
+		start_date = f"{start_date} 00:00:00"
 
 		if identifier:
 			search_coupon(start_date,identifier)
@@ -430,8 +428,6 @@ def get_all_coupons(
 
 
 		if user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor":
-			start_date=get_utc_date(start_date)
-			end_date=get_utc_date(end_date)
 			query = """
 				SELECT
 					hm.start_time AS start_time,
@@ -446,7 +442,7 @@ def get_all_coupons(
 					`tabHotpot User` as U on hm.vendor_id = U.name
 				WHERE
 					hm.vendor_id = %(vendor_name)s
-					AND DATE(hc.coupon_date) BETWEEN %(start_date)s AND %(end_date)s
+					AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 				LIMIT %(start)s, %(limit)s;
 				"""
 
@@ -466,8 +462,6 @@ def get_all_coupons(
 			return
 
 		elif user_doc.get("role") == "Hotpot User":
-			start_date=get_utc_date(start_date)
-			end_date=get_utc_date(end_date)
 			query = """
 			(
 			SELECT
@@ -494,7 +488,7 @@ def get_all_coupons(
 			INNER JOIN
 				`tabHotpot User` as U on hm.vendor_id = U.name
 			WHERE
-				DATE(hc.coupon_date) BETWEEN %(start_date)s AND %(end_date)s
+				hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 				AND hc.employee_id = %(user_name)s
 			)
 			LIMIT %(start)s, %(limit)s;
@@ -520,7 +514,7 @@ def get_all_coupons(
 				(
 				SELECT *
 				FROM `tabHotpot Coupons`
-				WHERE DATE(coupon_date) BETWEEN %(start_date)s AND %(end_date)s
+				WHERE coupon_date BETWEEN %(start_date)s AND %(end_date)s
 				ORDER BY creation DESC
 				LIMIT  %(start)s, %(limit)s;
 				)
