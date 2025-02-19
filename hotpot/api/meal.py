@@ -511,7 +511,10 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc
 				]
 
-			ratings = [r.rating for r in meal_doc.ratings if r.rating is not None]
+			ratings = [
+				float(r.rating) if isinstance(r.rating, str) else r.rating
+				for r in meal_doc.ratings if r.rating is not None
+			]
 			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
 
 			if user_data.get("role") == "Hotpot User":
