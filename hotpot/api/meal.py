@@ -175,7 +175,7 @@ def update_meal():
 
 		coupons = meal_doc.coupons
 		if coupons:
-			set_response(409, False, "Cannot update meal as some users have created coupons")
+			set_response(400, False, "Need Admin Approval for this operation.")
 			return
 		
 		local_time = get_local_time_now()
@@ -200,7 +200,7 @@ def update_meal():
 			"is_special",
 			"cancellation_time",
 			"repeat_type",
-            "repeat_days",
+			"repeat_days",
 			"lead_time"
 		]:
 			if field in data:
@@ -500,14 +500,30 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
-			meal["coupon"] = [
-				{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
-				for c in meal_doc.coupons if c.employee_id == user_data.name
-			]
-			meal["rating"] =[
-				{"id": r.name, "rating": r.rating, "feedback": r.feedback}
-				for r in meal_doc.ratings if r.employee_id == user_data.name
-			]
+			if user_data.get("role") == "Hotpot User":
+				meal["coupon"] = [
+					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+					for c in meal_doc.coupons if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+				]
+			else:
+				meal["coupon"] = [
+					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc
+				]
+
+			ratings = [r.rating for r in meal_doc.ratings if r.rating is not None]
+			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
+
+			if user_data.get("role") == "Hotpot User":
+				meal["rating"] = [
+					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
+					for r in meal_doc.ratings if r.employee_id == user_data.name
+				]
+			else:
+				meal["rating"] = [
+					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
+					for r in meal_doc.ratings
+				]
 			meal["meal_id"] = meal_doc.name
 
 			processed_meals.append(meal)
