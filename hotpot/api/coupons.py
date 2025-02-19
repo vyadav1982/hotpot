@@ -462,51 +462,55 @@ def get_all_coupons(
 			return
 
 		elif user_doc.get("role") == "Hotpot User":
-			query = """
-			(
-			SELECT
-				'coupon' AS record_type,
-				hc.name,
-				hc.title AS title,
-				hc.coupon_status,
-				hc.coupon_date,
-				hc.served_by,
-				hm.vendor_id,
-				hm.start_time AS start_time,
-				hm.end_time AS end_time,
-				hm.name AS meal_id,
-				U.employee_name AS vendor_name,
-				hr.rating AS rating,
-				hr.feedback AS feedback,
-				hr.name AS rating_id
-			FROM
-				`tabHotpot Coupons` AS hc
-			INNER JOIN
-				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-			INNER JOIN
-				`tabHotpot Meal Rating` AS hr ON hm.name = hr.parent
-			INNER JOIN
-				`tabHotpot User` as U on hm.vendor_id = U.name
-			WHERE
-				hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-				AND hc.employee_id = %(user_name)s
-			)
-			LIMIT %(start)s, %(limit)s;
-			"""
-
 			params = {
-				"user_name": user_doc.get("name"),
 				"start_date": start_date,
 				"end_date": end_date,
+				"user_name": user_doc.get("name"),
 				"start": start,
 				"limit": limit,
 			}
+			coupons = frappe.db.sql(
+				"""
+				SELECT 
+					'coupon' AS record_type,
+					hc.name,
+					hc.title AS title,
+					hc.coupon_status,
+					hc.coupon_date,
+					hc.served_by,
+					hm.vendor_id,
+					hm.start_time AS start_time,
+					hm.end_time AS end_time,
+					hm.name AS meal_id,
+					U.employee_name AS vendor_name
+				FROM 
+					`tabHotpot Coupons` AS hc
+				INNER JOIN 
+					`tabHotpot Meal` AS hm ON hm.name = hc.parent
+				INNER JOIN 
+					`tabHotpot User` AS U ON hm.vendor_id = U.name
+				WHERE
+					hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
+					AND hc.employee_id = %(user_name)s
+				LIMIT %(start)s, %(limit)s;
+			""", params, as_dict=True)
 
-			ans = frappe.db.sql(query, params, as_dict=True)
-			if not ans:
+
+			for coupon in coupons:
+				rating = frappe.db.sql("""
+					SELECT 
+						rating, feedback
+					FROM `tabHotpot Meal Rating`
+					WHERE parent = %(meal_id)s
+				""", {"meal_id": coupon["meal_id"]}, as_dict=True)
+				
+				coupon["rating"] = rating[0]["rating"] if rating else None
+				coupon["feedback"] = rating[0]["feedback"] if rating else None
+				
+			if not coupons:
 				set_response(200, True, "No Coupon found", [])
 				return
-			set_response(200, True, "Coupons fetched successfully", ans)
+			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
 		elif user_doc.get("role") == "Hotpot Admin":
