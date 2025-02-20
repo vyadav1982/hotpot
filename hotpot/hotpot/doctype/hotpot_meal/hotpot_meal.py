@@ -16,6 +16,7 @@ class HotpotMeal(Document):
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
 
+		approval_id: DF.Data | None
 		buffer_coupon_count: DF.Int
 		cancellation_time: DF.Int
 		coupons: DF.Table[HotpotCoupons]

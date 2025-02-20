@@ -34,6 +34,7 @@ class HotpotUser(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		approval_id: DF.Data | None
 		coupon_count: DF.Int
 		date_of_birth: DF.Date | None
 		date_of_joining: DF.Date | None
