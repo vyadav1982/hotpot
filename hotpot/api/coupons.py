@@ -696,7 +696,7 @@ def generate_coupon():
 		)
 		frappe.db.commit()
 
-		return set_response(200, True, "Processing completed", {"remaining_coupons": user_coupon_count})
+		return set_response(200, True, f"Generated coupon for {from_date.strftime('%d %b %Y')}", {"remaining_coupons": user_coupon_count,"start_date":start_date})
 
 	except Exception as e:
 		frappe.db.rollback()
