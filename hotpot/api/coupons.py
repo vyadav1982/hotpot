@@ -133,6 +133,16 @@ def cancel_coupon():
 		user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
+		history_doc = frappe.new_doc("Hotpot Coupons History")
+		history_doc.update(
+			{
+				"employee_id": user_doc.get("name"),
+				"type": "Cancellation",
+				"message": f"Cancelled a coupon for {meal_doc.meal_title}",
+				"meal_id": data["meal_id"],
+			}
+		)
+		history_doc.insert()
 		user_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Cancelled successfully")
