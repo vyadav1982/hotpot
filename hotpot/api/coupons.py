@@ -563,8 +563,13 @@ def generate_coupon():
 
 		date = data.get("date")
 		local_time_now = get_local_time_now()
-		start_date = f"{date} {local_time_now}"
-		start_date = get_utc_datetime_obj(start_date)
+		if(date != datetime.utcnow().date()):
+			start_date = f"{date} 00:00:00"
+			start_date = get_utc_datetime_obj(start_date)
+		else:
+			start_date = f"{date} {local_time_now}"
+			start_date = get_utc_datetime_obj(start_date)
+
 		from_date = start_date.date()
 
 		try:
