@@ -379,8 +379,8 @@ def update_coupon_status():
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
 			SET hc.coupon_status = "-1"
 			WHERE hc.coupon_status = "1"
-			AND hc.coupon_date <= GETUTCDATE()
-			AND hm.end_time <= GETUTCDATE();
+			AND DATE(hc.coupon_date) = UTC_DATE()
+			AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP());
 			"""
 		data = frappe.db.sql(query)
 		frappe.db.commit()
@@ -563,12 +563,7 @@ def generate_coupon():
 
 		date = data.get("date")
 		local_time_now = get_local_time_now()
-
-		if(date != datetime.utcnow().date().strftime("%Y-%m-%d")):
-			start_date = f"{date} 00:00:00"
-		else:
-			start_date = f"{date} {local_time_now}"
-
+		start_date = f"{date} {local_time_now}"
 		start_date = get_utc_datetime_obj(start_date)
 		from_date = start_date.date()
 
@@ -589,9 +584,9 @@ def generate_coupon():
 		meal_weight = meal_doc.get("meal_weight")
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
-		# if from_date < meal_doc.meal_date.date():
-		# 	set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
-		# 	return
+		if from_date < meal_doc.meal_date.date():
+			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
+			return
 		
 		if from_date==datetime.utcnow().date() and meal_doc.get("end_time").time() <= datetime.utcnow().time():
 			set_response(400, False, "Meal time already passed.")
