@@ -21,7 +21,8 @@
   "lead_time",
   "cancellation_time",
   "repeat_type",
-  "repeat_days"
+  "repeat_days",
+  "approval_id"
  ],
  "fields": [
   {
@@ -110,15 +111,21 @@
    "label": "Repeat Days"
   },
   {
+   "default": "0",
    "fieldname": "cancellation_time",
    "fieldtype": "Int",
    "label": "Cancellation Time",
    "non_negative": 1
+  },
+  {
+   "fieldname": "approval_id",
+   "fieldtype": "Data",
+   "label": "Approval Id"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-17 11:42:17.544886",
+ "modified": "2025-02-20 12:47:55.700180",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
