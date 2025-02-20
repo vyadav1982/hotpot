@@ -30,7 +30,7 @@ def create_banner():
         data = json.loads(frappe.request.data or "{}")
 
         if not data.get("intent") or not data.get("start_date") or not data.get("end_date") or not data.get("title") or not data.get("text"):
-            set_response(400,False,"Intent is required")
+            set_response(400,False,"Missing required fields")
             return
 
         if data["intent"] not in ["LinkClickable", "OpenModal", "NotClickable"]:
@@ -41,18 +41,11 @@ def create_banner():
         if data["intent"] == "OpenModal" and not data.get("description"):
             set_response(400,False,"Description is required for OpenModal intent")
 
-        if data.get("start_date") and not data.get("end_date"):
-            set_response(400,False,"Either pass both or none")
-            return
-        if data.get("end_date") and not data.get("start_date"):
-            set_response(400,False,"Either pass both date or none")
-            return
-        if data.get("start_date") and data.get("end_date"):
-            start_date = data.get("start_date")
-            end_date = data.get("end_date")
-            local_time = get_local_time_now()
-            start_date = get_utc_datetime_obj(f"{start_date} {local_time}")
-            end_date = get_utc_datetime_obj(f"{end_date} {local_time}")
+        start_date = data.get("start_date")
+        end_date = data.get("end_date")
+        local_time = get_local_time_now()
+        start_date = get_utc_datetime_obj(f"{start_date} {local_time}")
+        end_date = get_utc_datetime_obj(f"{end_date} {local_time}")
 
         banner = frappe.get_doc({
             "doctype": "Hotpot Banner",
@@ -89,9 +82,6 @@ def get_active_banners():
         if not user_data:
             set_response(404, False, "User Not found")
             return
-        if user_data.get("role") == "Hotpot User":
-            set_response(403, False, "Not Permitted to acess this resouce")
-            return
         
         today = datetime.utcnow().replace(tzinfo=None)
         banners = frappe.get_all(
@@ -99,8 +89,8 @@ def get_active_banners():
             filters={
                 "is_active": 1,
                 "created_by": user_data.get("name"),
-                # "start_date": ["<=", today, "OR start_date IS NULL"],
-                # "end_date": [">=", today, "OR end_date IS NULL"],
+                "start_date": ["<=", today],
+                "end_date": [">=", today],
             },
             fields=[
                 "name", "title", "text", "intent", "link", "description", "image", "priority"

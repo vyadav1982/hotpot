@@ -609,9 +609,8 @@ def generate_coupon():
 			return set_response(400, False, "Insufficient currency to create coupon")
 		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
 		buffer_used = 0
-
-
-		if (first and second):
+		third = from_date==datetime.utcnow().date()
+		if (first and second and third):
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
 		
