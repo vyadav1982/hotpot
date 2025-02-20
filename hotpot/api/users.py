@@ -90,7 +90,7 @@ def get_coupons_history(page=1,limit=10):
 		# 	order_by="modified desc",
 		# 	start=start,
 		# )
-		end_date = datetime.utcnow().replace(tzinfo=None)
+		end_date = datetime.utcnow()+timedelta(days=2)
 		start_date = end_date - timedelta(days=30)
 
 		page = int(page)
