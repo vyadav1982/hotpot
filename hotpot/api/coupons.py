@@ -457,7 +457,7 @@ def get_all_coupons(
 				WHERE
 					hm.vendor_id = %(vendor_name)s
 					AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-				ORDER BY hm.start_time asc
+				ORDER BY hm.start_time desc
 				LIMIT %(start)s, %(limit)s;
 				"""
 
@@ -507,7 +507,7 @@ def get_all_coupons(
 				WHERE
 					hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 					AND hc.employee_id = %(user_name)s
-				ORDER BY hm.start_time asc
+				ORDER BY hm.start_time desc
 				LIMIT %(start)s, %(limit)s;
 			""", params, as_dict=True)
 
