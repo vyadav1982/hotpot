@@ -90,7 +90,7 @@ def get_coupons_history(page=1,limit=10):
 		# 	order_by="modified desc",
 		# 	start=start,
 		# )
-		end_date = datetime.utcnow()
+		end_date = datetime.utcnow().replace(tzinfo=None)
 		start_date = end_date - timedelta(days=30)
 
 		page = int(page)
@@ -98,8 +98,6 @@ def get_coupons_history(page=1,limit=10):
 		start = (page - 1) * limit
 
 		employee_id = user_doc.get("name")
-
-		print("Start Date:", start_date, "End Date:", end_date)
 
 		query = """
 			SELECT modified_by, data, docname, creation 
@@ -111,15 +109,14 @@ def get_coupons_history(page=1,limit=10):
 
 		result = frappe.db.sql(query, (employee_id), as_dict=True)
 		user_timezone = get_user_timezone()
-		print(user_timezone)
 		query = """
 			SELECT employee_id, type, message, creation 
 			FROM `tabHotpot Coupons History`
 			WHERE employee_id = %s
-			AND CONVERT_TZ(modified, %s, '+00:00') BETWEEN %s AND %s
-			ORDER BY CONVERT_TZ(modified, %s, '+00:00') DESC;
+			AND modified BETWEEN %s AND %s
+			ORDER BY modified DESC;
 		"""
-		params = (employee_id, user_timezone, start_date, end_date, user_timezone)
+		params = (employee_id,start_date, end_date)
 		print(query%params)
 		result += frappe.db.sql(query,params,as_dict=True)
 		# result += frappe.db.get_list(
