@@ -589,9 +589,9 @@ def generate_coupon():
 		meal_weight = meal_doc.get("meal_weight")
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
-		if from_date < meal_doc.meal_date.date():
-			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
-			return
+		# if from_date < meal_doc.meal_date.date():
+		# 	set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
+		# 	return
 		
 		if from_date==datetime.utcnow().date() and meal_doc.get("end_time").time() <= datetime.utcnow().time():
 			set_response(400, False, "Meal time already passed.")
