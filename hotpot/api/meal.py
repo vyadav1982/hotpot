@@ -490,11 +490,9 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 
 			if not valid:
 				continue
-			print(start_date,end_date)
+			
 			if meal_date>=start_date and meal_date<=end_date and user_data.get("role") == "Hotpot User":
-				end_time = meal["end_time"].time()
-				effective_end = datetime.combine(date_param_utc, end_time)
-				if effective_end <= utc_now:
+				if meal["end_time"]<=start_date or meal["end_time"]<=datetime.utcnow().replace(tzinfo=None):
 					continue
 
 			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "employee_name")
