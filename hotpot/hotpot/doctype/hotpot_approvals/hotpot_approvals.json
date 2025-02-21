@@ -77,10 +77,11 @@
    "label": "Date"
   },
   {
-   "default": "+91- ",
+   "depends_on": "eval:doc.request_type == \"Guest Coupon Generation\";",
    "fieldname": "guest_mobile_no",
    "fieldtype": "Phone",
-   "label": "Guest Mobile No."
+   "label": "Guest Mobile No.",
+   "search_index": 1
   },
   {
    "default": "0",
@@ -91,7 +92,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-21 16:04:34.074379",
+ "modified": "2025-02-21 21:45:06.961178",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
