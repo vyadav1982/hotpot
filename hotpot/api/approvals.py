@@ -2,6 +2,7 @@ import frappe
 from hotpot.utils.utc_time import *
 from ..api.users import *
 import json
+from frappe.utils.file_manager import save_file
 
 
 
@@ -98,3 +99,34 @@ def create_approval():
 	except Exception as e:
 		frappe.log_error(f"Error creating approval: {str(e)}")
 		set_response(500, False, f"Server error: {str(e)}")
+
+@frappe.whitelist(allow_guest=False)
+def upload_attachment():
+    try:
+        if frappe.request.method != "POST":
+            return {"success": False, "message": "Only POST method is allowed"}
+
+        user_data = get_hotpot_user_by_email()
+        if not user_data:
+            return {"success": False, "message": "User not found"}
+
+        uploaded_file = frappe.request.files.get("file")
+        if not uploaded_file:
+            return {"success": False, "message": "No file uploaded"}
+
+        doctype = "Hotpot User"
+        docname = user_data.get("name")
+
+        file_doc = save_file(uploaded_file.filename, uploaded_file.read(), doctype, docname, is_private=0)
+
+        return {
+            "success": True,
+            "message": "File uploaded successfully",
+            "file_url": file_doc.file_url,
+            "file_name": file_doc.file_name,
+            "file_id": file_doc.name,
+        }
+
+    except Exception as e:
+        frappe.log_error(f"Error in file upload: {str(e)}")
+        return {"success": False, "message": f"Error: {str(e)}"}
