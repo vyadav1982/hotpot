@@ -17,8 +17,11 @@ class HotpotApprovals(Document):
 		approval_remarks: DF.SmallText | None
 		approval_status: DF.Literal["Pending", "Approved", "Rejected"]
 		attachments: DF.Attach | None
+		date: DF.Datetime | None
 		descrption: DF.SmallText | None
+		guest_name: DF.Data | None
 		meal_id: DF.Link | None
+		purpose_of_visiting: DF.Data | None
 		request_type: DF.Literal["Guest Coupon Generation", "Meal Edit", "Meal Delete"]
 		requested_by: DF.Link | None
 	# end: auto-generated types

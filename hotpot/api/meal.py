@@ -174,7 +174,13 @@ def update_meal():
 			return
 
 		coupons = meal_doc.coupons
-		if coupons:
+		approval_id = meal_doc.approval_id
+		status = False
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+			if approval_doc.approval_status == "Approved":
+				status = True
+		if coupons and not status:
 			set_response(400, False, "Need Admin Approval for this operation.")
 			return
 		
@@ -205,7 +211,7 @@ def update_meal():
 		]:
 			if field in data:
 				setattr(meal_doc, field, ",".join(data[field]) if field == "meal_items" else data[field])
-
+		meal_doc.approval_id = ""
 		meal_doc.save()
 		frappe.db.commit()
 
@@ -241,10 +247,16 @@ def delete_meal():
 			return set_response(404, False, "Meal not found")
 
 		coupons = meal_doc.coupons
-		if coupons:
-			set_response(409, False, "Cannot delete meal as some users have created coupons")
+		approval_id = meal_doc.approval_id
+		status = False
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+			if approval_doc.approval_status == "Approved":
+				status = True
+		if coupons and not status:
+			set_response(409, False, "Need Admin Approval for this operation.")
 			return
-
+		meal_doc.approval_id = ""
 		meal_doc.delete()
 		frappe.db.commit()
 
