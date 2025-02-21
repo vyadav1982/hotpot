@@ -103,7 +103,7 @@ def cancel_coupon():
 			return
 		
 		current_datetime = datetime.utcnow().replace(tzinfo=None)
-		current_time = get_utc_time(current_datetime)
+		current_time = current_datetime.time()
 
 		# if (
 		# 	get_utc_date(meal_doc.meal_date) == utc_date
@@ -111,8 +111,9 @@ def cancel_coupon():
 		# ):
 		# 	set_response(400, False, "Cannot Cancel at this moment")
 		# 	return
-		diff = ((datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)
-		cancel = (diff<0 or diff<= (meal_doc.cancellation_time)*60*60)
+		diff = (datetime.strptime(meal_doc.start_time, "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).total_seconds()
+		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
+
 
 		if cancel :
 			set_response(400,False,"Cannot Cancel at this moment")
