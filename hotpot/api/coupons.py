@@ -112,10 +112,10 @@ def cancel_coupon():
 		current_datetime = datetime.utcnow().replace(tzinfo=None)
 		current_time = current_datetime.time()
 
-		meal_start_time = datetime.strptime(meal_doc.start_time, "%H:%M:%S").time()
+		meal_start_time = (meal_doc.start_time).time()
 
 		diff = (datetime.combine(datetime.min, meal_start_time) - datetime.combine(datetime.min, current_time)).total_seconds()
-
+		diff = int(diff)
 		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
 
 		if cancel :
