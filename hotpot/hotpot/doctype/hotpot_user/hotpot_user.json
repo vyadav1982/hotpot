@@ -131,13 +131,14 @@
   },
   {
    "fieldname": "approval_id",
-   "fieldtype": "Data",
-   "label": "Approval Id"
+   "fieldtype": "JSON",
+   "label": "Approval Id",
+   "options": "Hotpot Approvals"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 12:31:11.587772",
+ "modified": "2025-02-20 14:55:56.822861",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

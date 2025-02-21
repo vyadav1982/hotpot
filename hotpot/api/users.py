@@ -172,7 +172,7 @@ def get_hotpot_user_by_email():
 			return
 		user = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["email", "=", email]],
+			filters=[["email", "=", email],["is_active", "=", 1]],
 			fields=[
 				"name",
 				"employee_name",
@@ -184,6 +184,13 @@ def get_hotpot_user_by_email():
 				"is_guest",
 				"guest_of",
 				"coupon_count",
+				"approval_id",
+				"date_of_birth",
+				"date_of_joining",
+				"department",
+				"location",
+				"latitude",
+				"longitude"
 			],
 		)
 		if user:
@@ -204,7 +211,7 @@ def get_hotpot_loggedin_user():
 			set_response(200, True, "Data fetched successfully", user)
 			return
 
-		set_response(500, False, "No user found with the given email")
+		set_response(404, False, "No user found with the given email")
 		return
 	except frappe.PermissionError:
 		set_response(403, False, "You do not have permission to access this resource")

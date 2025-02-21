@@ -7,6 +7,7 @@
  "field_order": [
   "request_type",
   "requested_by",
+  "meal_id",
   "descrption",
   "attachments",
   "approval_status",
@@ -45,11 +46,18 @@
    "fieldname": "approval_remarks",
    "fieldtype": "Small Text",
    "label": "Approval Remarks"
+  },
+  {
+   "depends_on": "eval:doc.request_type != \"Guest Coupon Generation\";",
+   "fieldname": "meal_id",
+   "fieldtype": "Link",
+   "label": "Meal Id",
+   "options": "Hotpot Meal"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-18 13:09:14.649550",
+ "modified": "2025-02-20 17:19:42.307091",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",

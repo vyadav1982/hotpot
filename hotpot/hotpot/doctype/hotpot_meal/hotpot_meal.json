@@ -119,13 +119,14 @@
   },
   {
    "fieldname": "approval_id",
-   "fieldtype": "Data",
-   "label": "Approval Id"
+   "fieldtype": "Link",
+   "label": "Approval Id",
+   "options": "Hotpot Approvals"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 12:47:55.700180",
+ "modified": "2025-02-20 17:05:03.596390",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
