@@ -8,13 +8,15 @@
   "request_type",
   "requested_by",
   "guest_name",
+  "guest_mobile_no",
   "purpose_of_visiting",
   "date",
   "meal_id",
   "descrption",
   "attachments",
   "approval_status",
-  "approval_remarks"
+  "approval_remarks",
+  "is_active"
  ],
  "fields": [
   {
@@ -73,11 +75,23 @@
    "fieldname": "date",
    "fieldtype": "Datetime",
    "label": "Date"
+  },
+  {
+   "default": "+91- ",
+   "fieldname": "guest_mobile_no",
+   "fieldtype": "Phone",
+   "label": "Guest Mobile No."
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "is Active"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-21 12:22:05.911365",
+ "modified": "2025-02-21 16:04:34.074379",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",

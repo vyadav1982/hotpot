@@ -17,6 +17,7 @@ class HotpotCoupons(Document):
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
 		employee_id: DF.Data | None
+		guest_of: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
