@@ -25,11 +25,17 @@ def get_approvals():
 			set_response(404, False, "User not found")
 			return
 
+		fields = ["name", "request_type", "descrption", "approval_status", "attachments", "approval_remarks"]
+
+		if user_data.get("role") == "Hotpot User":
+			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date"]
+
 		approvals = frappe.db.get_list(
 			"Hotpot Approvals",
-			fields=["name", "request_type","descrption", "approval_status", "attachments","approval_remarks"],
+			fields=fields,
 			filters=[["requested_by", "=", user_data.get("name")]],
 		)
+
 		if not approvals:
 			set_response(200, False, "No approvals found")
 			return
