@@ -53,7 +53,7 @@ def create_approval():
 			return
 		
 		data = json.loads(frappe.request.data or "{}")
-		required_fields = ["request_type", "requested_by", "description"]
+		required_fields = ["request_type","description"]
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		
 		if missing_fields:
