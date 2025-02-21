@@ -787,7 +787,51 @@ def search_coupon(start_date,end_date,identifier):
 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 	
+@frappe.whitelist(allow_guest=True)
+def get_guest_coupon(date):
+	try:
+		if frappe.request.method != "GET":
+			set_response(405, False, "Only GET method is allowed")
+			return
 
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		if not date:
+			set_response(400, False, "Please provide date")
+			return
+
+		start_date = f"{date} 00:00:00"
+		end_date = f"{date} 23:59:59"
+		start_date = get_utc_datetime_obj(start_date)
+		end_date = get_utc_datetime_obj(end_date)
+
+
+		query = """
+			Select * from
+				`tabHotpot Coupons` AS hc
+			where hc.guest_of = %s and hc.coupon_date between %s and %s
+		"""
+		params = [user_doc.get("name"),start_date,end_date]
+		coupons_data = frappe.db.sql(query, params, as_dict=True)
+
+		if not coupons_data:
+			set_response(404, False, "No guest coupon")
+			return
+
+		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
+		return
+
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
+		return set_response(500, False, f"Server error: {str(e)}")
 
 
 
