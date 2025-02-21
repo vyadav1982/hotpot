@@ -548,7 +548,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 
 			processed_meals.append(meal)
 
-		processed_meals.sort(key=lambda x: x["start_time"].time())
+		processed_meals.sort(key=lambda x: x["start_time"])
 
 		set_response(200, True, "Fetched successfully",processed_meals)
 
