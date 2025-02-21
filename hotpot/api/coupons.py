@@ -576,12 +576,32 @@ def generate_coupon():
 		missing = [field for field in required_fields if not data.get(field)]
 		if missing:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
-
+		
 		date = data.get("date")
 		local_time_now = get_local_time_now()
 		start_date = f"{date} {local_time_now}"
 		start_date = get_utc_datetime_obj(start_date)
 		from_date = start_date.date()
+		for_guest = data.get('guest', False)
+		approval_id = data.get('approval_id', None)
+
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+			if approval_doc.approval_status != "Approved":
+				set_response(400, False, "Approval is not approved")
+				return
+			if approval_doc.is_active == 0:
+				set_response(400, False, "Approval is already used")
+				return
+			if approval_doc.meal_id != data["meal_id"]:
+				set_response(400, False, "Approval is not for this meal")
+				return
+			if approval_doc.requested_by != user_doc.get("name"):
+				set_response(400, False, "Approval is not for this user")
+				return
+			if approval_doc.date <= start_date:
+				set_response(400, False, "Approval is not for this date")
+				return
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
@@ -609,7 +629,7 @@ def generate_coupon():
 			return
 		
 		# Check if required amount of coupons are available
-		if user_coupon_count < meal_weight:
+		if not for_guest and user_coupon_count < meal_weight:
 			return set_response(400, False, "Insufficient currency to create coupon")
 		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
 		buffer_used = 0
@@ -641,8 +661,8 @@ def generate_coupon():
 			(user_doc.get("name"), data["meal_id"], start_date.strftime("%Y-%m-%d")),
 		)
 
-		if exists:
-			set_response(409, False, f"Already present {meal_title} on {from_date.strftime('%d %b %Y')}",start_date)
+		if not for_guest and exists:
+			set_response(409,False,f"Coupon for {meal_title} on {from_date.strftime('%d %b %Y')} is already generated !",start_date)
 			return
 
 		# If buffer time then check for vendor coupons
@@ -656,14 +676,25 @@ def generate_coupon():
 		try:
 			# History for user transactions
 			history_doc = frappe.new_doc("Hotpot Coupons History")
-			history_doc.update(
-				{
-					"employee_id": user_doc.get("name"),
-					"type": "Creation",
-					"message": f"Created coupon for {meal_title} {start_date}",
-					"meal_id": data["meal_id"],
-				}
-			)
+			if for_guest:
+				history_doc.update(
+                    {
+                        "employee_id": user_doc.get("name"),
+                        "type": "Guest Creation",
+                        "message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
+                        "meal_id": data["meal_id"],
+                    }
+                )
+			else:
+				history_doc.update(
+					{
+						"employee_id": user_doc.get("name"),
+						"type": "Creation",
+						"message": f"Created coupon for {meal_title} {start_date}",
+						"meal_id": data["meal_id"],
+					}
+				)
+			
 			history_doc.insert()
 
 			# Append created coupon in meal
@@ -674,10 +705,11 @@ def generate_coupon():
 					"coupon_date": start_date,
 					"title": meal_title,
 					"coupon_status": "1",
+					**({"guest_of": user_doc.get("name")} if for_guest else {})
 				},
 			)
-
-			user_coupon_count -= meal_weight
+			if not for_guest:
+				user_coupon_count -= meal_weight
 
 		except Exception as e:
 			frappe.db.rollback()
@@ -688,7 +720,9 @@ def generate_coupon():
 		# Update meal buffer count if buffer time
 		if is_buffer_time and buffer_used > 0:
 			meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
-
+		if for_guest:
+			approval_doc.is_active = 0
+			approval_doc.save()
 		meal_doc.save()
 		frappe.db.set_value(
 			"Hotpot User",
@@ -752,8 +786,52 @@ def search_coupon(start_date,end_date,identifier):
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
 		return set_response(500, False, f"Server error: {str(e)}")
+	
+@frappe.whitelist(allow_guest=True)
+def get_guest_coupon(date):
+	try:
+		if frappe.request.method != "GET":
+			set_response(405, False, "Only GET method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		if not date:
+			set_response(400, False, "Please provide date")
+			return
+
+		start_date = f"{date} 00:00:00"
+		end_date = f"{date} 23:59:59"
+		start_date = get_utc_datetime_obj(start_date)
+		end_date = get_utc_datetime_obj(end_date)
 
 
+		query = """
+			Select * from
+				`tabHotpot Coupons` AS hc
+			where hc.guest_of = %s and hc.coupon_date between %s and %s
+		"""
+		params = [user_doc.get("name"),start_date,end_date]
+		coupons_data = frappe.db.sql(query, params, as_dict=True)
+
+		if not coupons_data:
+			set_response(404, False, "No guest coupon")
+			return
+
+		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
+		return
+
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
+		return set_response(500, False, f"Server error: {str(e)}")
 
 
 
