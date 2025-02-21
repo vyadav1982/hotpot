@@ -19,7 +19,9 @@ class HotpotApprovals(Document):
 		attachments: DF.Attach | None
 		date: DF.Datetime | None
 		descrption: DF.SmallText | None
+		guest_mobile_no: DF.Phone | None
 		guest_name: DF.Data | None
+		is_active: DF.Check
 		meal_id: DF.Link | None
 		purpose_of_visiting: DF.Data | None
 		request_type: DF.Literal["Guest Coupon Generation", "Meal Edit", "Meal Delete"]
