@@ -102,8 +102,6 @@ def cancel_coupon():
 			set_response(400, False, "Cannot cancel a redeemed or expired coupon")
 			return
 		
-		current_datetime = datetime.utcnow().replace(tzinfo=None)
-		current_time = current_datetime.time()
 
 		# if (
 		# 	get_utc_date(meal_doc.meal_date) == utc_date
@@ -111,9 +109,14 @@ def cancel_coupon():
 		# ):
 		# 	set_response(400, False, "Cannot Cancel at this moment")
 		# 	return
-		diff = (datetime.strptime(meal_doc.start_time, "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).total_seconds()
-		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
+		current_datetime = datetime.utcnow().replace(tzinfo=None)
+		current_time = current_datetime.time()
 
+		meal_start_time = datetime.strptime(meal_doc.start_time, "%H:%M:%S").time()
+
+		diff = (datetime.combine(datetime.min, meal_start_time) - datetime.combine(datetime.min, current_time)).total_seconds()
+
+		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
 
 		if cancel :
 			set_response(400,False,"Cannot Cancel at this moment")
