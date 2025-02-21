@@ -491,7 +491,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 			if not valid:
 				continue
 			
-			if meal_date>=start_date and meal_date<=end_date and user_data.get("role") == "Hotpot User":
+			if utc_now>=start_date and utc_now<=end_date and user_data.get("role") == "Hotpot User":
 				if meal["end_time"]<=start_date or meal["end_time"]<=datetime.utcnow().replace(tzinfo=None):
 					continue
 
