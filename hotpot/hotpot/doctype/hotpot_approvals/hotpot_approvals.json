@@ -7,6 +7,9 @@
  "field_order": [
   "request_type",
   "requested_by",
+  "guest_name",
+  "purpose_of_visiting",
+  "date",
   "meal_id",
   "descrption",
   "attachments",
@@ -48,16 +51,33 @@
    "label": "Approval Remarks"
   },
   {
-   "depends_on": "eval:doc.request_type != \"Guest Coupon Generation\";",
    "fieldname": "meal_id",
    "fieldtype": "Link",
    "label": "Meal Id",
    "options": "Hotpot Meal"
+  },
+  {
+   "depends_on": "eval:doc.request_type == \"Guest Coupon Generation\";",
+   "fieldname": "guest_name",
+   "fieldtype": "Data",
+   "label": "Guest Name"
+  },
+  {
+   "depends_on": "eval:doc.request_type == \"Guest Coupon Generation\";",
+   "fieldname": "purpose_of_visiting",
+   "fieldtype": "Data",
+   "label": "Purpose of Visiting"
+  },
+  {
+   "depends_on": "eval:doc.request_type == \"Guest Coupon Generation\";",
+   "fieldname": "date",
+   "fieldtype": "Datetime",
+   "label": "Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 17:19:42.307091",
+ "modified": "2025-02-21 12:22:05.911365",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
