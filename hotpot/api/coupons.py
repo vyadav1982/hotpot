@@ -485,10 +485,13 @@ def get_all_coupons(
 				set_response(200, True, "No Coupon found", [])
 				return
 			ans.sort(
-			key=lambda x: (
-				get_local_datetime_obj(x["start_time"]).time(),
-				get_local_datetime_obj(x["end_time"]).time()
-			))
+				key=lambda x: (
+					get_local_datetime_obj(x["start_time"]).time(),
+					get_local_datetime_obj(x["end_time"]).time(),
+					x["coupon_status"] != 1
+				)
+			)
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -560,10 +563,12 @@ def get_all_coupons(
 				set_response(404, False, "No Coupon found")
 				return
 			ans.sort(
-			key=lambda x: (
-				get_local_datetime_obj(x["start_time"]).time(),
-				get_local_datetime_obj(x["end_time"]).time()
-			))
+				key=lambda x: (
+					get_local_datetime_obj(x["start_time"]).time(),
+					get_local_datetime_obj(x["end_time"]).time(),
+					x["coupon_status"] != 1
+				)
+			)
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 	except Exception as e:
