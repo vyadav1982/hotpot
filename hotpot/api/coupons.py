@@ -38,7 +38,7 @@ def get_coupon_count(start_date, end_date):
 					`tabHotpot Meal` AS hm ON hm.name = hc.parent
 				WHERE
 					hm.vendor_id = %(vendor_name)s
-					AND hm.meal_date BETWEEN %(start_date)s AND %(end_date)s
+					AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 				GROUP BY
 					hm.meal_title
 			"""
@@ -387,16 +387,25 @@ def update_coupon_status():
 		if not user_doc:
 			set_response(404, False, "User Not found")
 			return
+		user_tz = get_user_timezone()
+		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
+
 
 		query = """
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
 			SET hc.coupon_status = "-1"
 			WHERE hc.coupon_status = "1"
-			AND hc.coupon_date <= UTC_TIMESTAMP()
-			AND TIME(hm.end_time) < TIME(UTC_TIMESTAMP());
-			"""
-		data = frappe.db.sql(query)
+			AND (
+				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
+				OR (
+					DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
+					AND TIME(CONVERT_TZ(hm.end_time, '+00:00', %s)) <= TIME(%s)
+				)
+			);
+		"""
+		params = (user_tz, now_local, user_tz, now_local,user_tz,now_local)
+		frappe.db.sql(query,params)
 		frappe.db.commit()
 		return
 	except Exception as e:
@@ -461,7 +470,6 @@ def get_all_coupons(
 				WHERE
 					hm.vendor_id = %(vendor_name)s
 					AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-				ORDER BY hm.start_time desc
 				LIMIT %(start)s, %(limit)s;
 				"""
 
@@ -472,11 +480,15 @@ def get_all_coupons(
 				"start": start,
 				"limit": limit,
 			}
-			print(query%params)
 			ans = frappe.db.sql(query, params, as_dict=True)
 			if not ans:
 				set_response(200, True, "No Coupon found", [])
 				return
+			ans.sort(
+			key=lambda x: (
+				get_local_datetime_obj(x["start_time"]).time(),
+				get_local_datetime_obj(x["end_time"]).time()
+			))
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -511,7 +523,6 @@ def get_all_coupons(
 				WHERE
 					hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 					AND hc.employee_id = %(user_name)s
-				ORDER BY hm.start_time desc
 				LIMIT %(start)s, %(limit)s;
 			""", params, as_dict=True)
 
@@ -548,6 +559,11 @@ def get_all_coupons(
 			if not ans:
 				set_response(404, False, "No Coupon found")
 				return
+			ans.sort(
+			key=lambda x: (
+				get_local_datetime_obj(x["start_time"]).time(),
+				get_local_datetime_obj(x["end_time"]).time()
+			))
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 	except Exception as e:
