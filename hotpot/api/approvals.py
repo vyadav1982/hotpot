@@ -25,7 +25,7 @@ def get_approvals():
 			set_response(404, False, "User not found")
 			return
 
-		fields = ["name", "request_type", "descrption", "approval_status", "attachments", "approval_remarks"]
+		fields = ["name", "request_type","meal_id", "descrption", "approval_status", "attachments", "approval_remarks"]
 
 		if user_data.get("role") == "Hotpot User":
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date"]
