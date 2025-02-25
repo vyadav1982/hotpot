@@ -591,6 +591,7 @@ def generate_coupon():
 		if user_doc.get("role") != "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		hotpot_config = frappe.get_single("Hotpot Configurations")
 
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["meal_id", "date"]
@@ -603,11 +604,25 @@ def generate_coupon():
 		start_date = f"{date} {local_time_now}"
 		start_date = get_utc_datetime_obj(start_date)
 		from_date = start_date.date()
-		for_guest = data.get('guest', False)
+
+		for_guest = data.get('guest', False) 
+		if for_guest and hotpot_config.get("can_generate_for_guest") == 0:
+			return set_response(400, False, "Not allowed to generate coupon for guest")
+		
 		approval_id = data.get('approval_id', None)
 		approval_doc = None
+
+		is_birthday = hotpot_config.get("free_birthday_meal") == 1 and user_doc.get("date_of_birth") == get_local_datetime_obj(datetime.utcnow()).date()
+		is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(datetime.utcnow()).date()
+
+		try:
+			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
+		except frappe.DoesNotExistError:
+			return set_response(404, False, "Meal not found")
+		
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+			print(approval_doc.date.date(),from_date)
 			if approval_doc.approval_status != "Approved":
 				set_response(400, False, "Approval is not approved")
 				return
@@ -620,14 +635,10 @@ def generate_coupon():
 			if approval_doc.requested_by != user_doc.get("name"):
 				set_response(400, False, "Approval is not for this user")
 				return
-			if approval_doc.date <= start_date:
+			if approval_doc.date.date() != from_date:
 				set_response(400, False, "Approval is not for this date")
 				return
 
-		try:
-			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
-		except frappe.DoesNotExistError:
-			return set_response(404, False, "Meal not found")
 
 		current_datetime_utc = datetime.utcnow()
 		utc_date_today = get_utc_date(current_datetime_utc)
@@ -658,17 +669,6 @@ def generate_coupon():
 		if (first and second and third):
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
-		
-		# Check for duplicate coupon
-		# exists = frappe.db.exists(
-		# 	"Hotpot Coupons",
-		# 	{
-		# 		"employee_id": user_doc.get("name"),
-		# 		"parent": data["meal_id"],
-		# 		"coupon_status": ["!=", "2"],
-		# 		"coupon_date":start_date.date(),
-		# 	},
-		# )
 		exists = frappe.db.sql(
 			"""
 			SELECT 1 
@@ -726,10 +726,13 @@ def generate_coupon():
 					"coupon_date": start_date,
 					"title": meal_title,
 					"coupon_status": "1",
-					**({"guest_of": user_doc.get("name")} if for_guest else {})
+					**({"guest_of": user_doc.get("name")} if for_guest else {}),
+					**({"birthday_coupon": 1} if is_birthday else {}),
+					**({"joining_day": 1} if is_joining_day else {}),
 				},
 			)
-			if not for_guest:
+
+			if not for_guest and not is_birthday and not is_joining_day:
 				user_coupon_count -= meal_weight
 
 		except Exception as e:
@@ -753,8 +756,15 @@ def generate_coupon():
 			},
 		)
 		frappe.db.commit()
-
-		return set_response(200, True, f"Generated coupon for {from_date.strftime('%d %b %Y')}", {"remaining_coupons": user_coupon_count,"start_date":start_date})
+		message = f"Generated coupon for {from_date.strftime('%d %b %Y')}."
+		if for_guest:
+			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
+		elif is_birthday:
+			message = f"🎉 Happy Birthday! 🎂 Enjoy your special day—your meal is on us!"
+		elif is_joining_day:
+			message = f"🎊 Welcome aboard! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
+			
+		return set_response(200, True,message, {"remaining_coupons": user_coupon_count,"start_date":start_date})
 
 	except Exception as e:
 		frappe.db.rollback()
