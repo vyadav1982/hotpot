@@ -16,6 +16,7 @@
   "column_break_eopt",
   "is_active",
   "is_guest",
+  "is_vendor",
   "guest_of",
   "coupon_count",
   "date_of_birth",
@@ -23,7 +24,8 @@
   "department",
   "location",
   "latitude",
-  "longitude"
+  "longitude",
+  "timezone"
  ],
  "fields": [
   {
@@ -134,11 +136,22 @@
    "fieldtype": "JSON",
    "label": "Approval Id",
    "options": "Hotpot Approvals"
+  },
+  {
+   "fieldname": "timezone",
+   "fieldtype": "Data",
+   "label": "Timezone"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_vendor",
+   "fieldtype": "Check",
+   "label": "Is Vendor"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 14:55:56.822861",
+ "modified": "2025-02-25 12:07:20.798952",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

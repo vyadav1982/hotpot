@@ -45,12 +45,14 @@ class HotpotUser(Document):
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_guest: DF.Check
+		is_vendor: DF.Check
 		latitude: DF.Data | None
 		location: DF.Data | None
 		longitude: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
 		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor"]
+		timezone: DF.Data | None
 	# end: auto-generated types
 
 	def after_insert(self):

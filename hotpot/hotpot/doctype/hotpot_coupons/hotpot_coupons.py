@@ -14,10 +14,12 @@ class HotpotCoupons(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		birthday_coupon: DF.Check
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
 		employee_id: DF.Data | None
 		guest_of: DF.Link | None
+		joining_day: DF.Check
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

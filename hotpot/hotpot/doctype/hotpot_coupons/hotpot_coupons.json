@@ -11,7 +11,9 @@
   "coupon_status",
   "coupon_date",
   "served_by",
-  "guest_of"
+  "guest_of",
+  "birthday_coupon",
+  "joining_day"
  ],
  "fields": [
   {
@@ -45,12 +47,24 @@
    "fieldtype": "Link",
    "label": "Guest Of",
    "options": "Hotpot User"
+  },
+  {
+   "default": "0",
+   "fieldname": "birthday_coupon",
+   "fieldtype": "Check",
+   "label": "Birthday Coupon"
+  },
+  {
+   "default": "0",
+   "fieldname": "joining_day",
+   "fieldtype": "Check",
+   "label": "Joining Day"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-21 15:48:13.681614",
+ "modified": "2025-02-25 09:07:29.565340",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",

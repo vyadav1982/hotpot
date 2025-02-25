@@ -605,7 +605,7 @@ def generate_coupon():
 		from_date = start_date.date()
 		for_guest = data.get('guest', False)
 		approval_id = data.get('approval_id', None)
-
+		approval_doc = None
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 			if approval_doc.approval_status != "Approved":
