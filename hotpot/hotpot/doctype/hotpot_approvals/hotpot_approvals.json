@@ -80,7 +80,9 @@
    "depends_on": "eval:doc.request_type == \"Guest Coupon Generation\";",
    "fieldname": "guest_mobile_no",
    "fieldtype": "Phone",
+   "in_list_view": 1,
    "label": "Guest Mobile No.",
+   "reqd": 1,
    "search_index": 1
   },
   {
@@ -92,7 +94,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-21 21:45:06.961178",
+ "modified": "2025-02-25 17:07:27.164017",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",

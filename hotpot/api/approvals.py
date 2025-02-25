@@ -63,6 +63,14 @@ def create_approval():
 		if user_data.get("role") == "Hotpot User":
 			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date"]
 
+		mobile_no = data.get("guest_mobile_no", "")
+		print(mobile_no)
+		print(len(mobile_no))
+		if not mobile_no or len(mobile_no) != 15:
+			set_response(400,False,"Please enter a valid 10-digit mobile number.")
+			return
+
+
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing_fields)}")
