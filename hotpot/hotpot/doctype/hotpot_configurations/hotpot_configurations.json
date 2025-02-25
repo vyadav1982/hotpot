@@ -1,0 +1,55 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-25 12:52:24.457672",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "free_birthday_meal",
+  "free_joining_day_meal",
+  "can_generate_for_guest"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "free_birthday_meal",
+   "fieldtype": "Check",
+   "label": "Free Birthday Meal"
+  },
+  {
+   "default": "0",
+   "fieldname": "free_joining_day_meal",
+   "fieldtype": "Check",
+   "label": "Free Joining Day Meal"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_generate_for_guest",
+   "fieldtype": "Check",
+   "label": "Can Generate for Guest"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-02-25 13:24:50.177382",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Configurations",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
