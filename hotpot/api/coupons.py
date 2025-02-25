@@ -526,6 +526,7 @@ def get_all_coupons(
 				WHERE
 					hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
 					AND hc.employee_id = %(user_name)s
+					AND hc.guest_of IS NULL
 				LIMIT %(start)s, %(limit)s;
 			""", params, as_dict=True)
 
