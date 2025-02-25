@@ -670,23 +670,25 @@ def generate_coupon():
 		buffer_used = 0
 		third = from_date==datetime.utcnow().date()
 		user_tz = get_user_timezone()
-		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 		if (first and second and third):
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
-		exists = frappe.db.sql(
-			"""
+		print(get_local_datetime_obj(start_date).date())
+		query = """
 			SELECT 1 
 			FROM `tabHotpot Coupons`
 			WHERE `employee_id` = %s
 			AND `parent` = %s
 			AND `coupon_status` != '2'
-			AND DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s) = %s
+			AND DATE(CONVERT_TZ(coupon_date, '+00:00', %s)) = %s
 			LIMIT 1;
-			""",
-			(user_doc.get("name"), data["meal_id"],user_tz, get_local_datetime_obj(start_date).date()),
-		)
+		"""
 
+		params = (user_doc.get("name"), data["meal_id"], str(user_tz), get_local_datetime_obj(start_date).date())
+		exists = frappe.db.sql(query, params)
+
+
+		print(exists)
 		if not for_guest and exists:
 			set_response(409,False,f"Coupon for {meal_title} on {from_date.strftime('%d %b %Y')} is already generated !",start_date)
 			return
