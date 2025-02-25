@@ -45,6 +45,7 @@ class HotpotUser(Document):
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_guest: DF.Check
+		is_server: DF.Check
 		is_vendor: DF.Check
 		latitude: DF.Data | None
 		location: DF.Data | None
@@ -55,9 +56,24 @@ class HotpotUser(Document):
 		timezone: DF.Data | None
 	# end: auto-generated types
 
+	def before_save(self):
+		if self.role=="Hotpot Server" and self.guest_of=="":
+			frappe.throw("The field 'guest_of' is mandatory for Hotpot Server.")
+
 	def after_insert(self):
 		try:
 			if not frappe.db.exists("User", {"email": self.email}):
+				user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
+
+				if user_name:
+					user_doc = frappe.get_doc("Hotpot User", user_name)
+
+					if user_doc.get("role") == "Hotpot Vendor":
+						user_doc.guest_of = user_name
+						user_doc.save(ignore_permissions=True)
+				else:
+					frappe.throw("User not found!")
+
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				new_user.update(
