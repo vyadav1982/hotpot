@@ -615,8 +615,8 @@ def generate_coupon():
 		approval_id = data.get('approval_id', None)
 		approval_doc = None
 
-		is_birthday = hotpot_config.get("free_birthday_meal") == 1 and user_doc.get("date_of_birth") == get_local_datetime_obj(datetime.utcnow()).date()
-		is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(datetime.utcnow()).date()
+		is_birthday = hotpot_config.get("free_birthday_meal") == 1 and user_doc.get("date_of_birth") == get_local_datetime_obj(start_date).date()
+		is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
 
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
@@ -669,6 +669,8 @@ def generate_coupon():
 		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
 		buffer_used = 0
 		third = from_date==datetime.utcnow().date()
+		user_tz = get_user_timezone()
+		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 		if (first and second and third):
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
@@ -679,10 +681,10 @@ def generate_coupon():
 			WHERE `employee_id` = %s
 			AND `parent` = %s
 			AND `coupon_status` != '2'
-			AND DATE(`coupon_date`) = %s
+			AND DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s) = %s
 			LIMIT 1;
 			""",
-			(user_doc.get("name"), data["meal_id"], start_date.strftime("%Y-%m-%d")),
+			(user_doc.get("name"), data["meal_id"],user_tz, get_local_datetime_obj(start_date).date()),
 		)
 
 		if not for_guest and exists:
