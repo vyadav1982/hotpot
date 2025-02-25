@@ -595,6 +595,9 @@ def generate_coupon():
 
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["meal_id", "date"]
+		for_guest = data.get('guest', False) 
+		if for_guest:
+			required_fields.append("approval_id")
 		missing = [field for field in required_fields if not data.get(field)]
 		if missing:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
@@ -605,7 +608,6 @@ def generate_coupon():
 		start_date = get_utc_datetime_obj(start_date)
 		from_date = start_date.date()
 
-		for_guest = data.get('guest', False) 
 		if for_guest and hotpot_config.get("can_generate_for_guest") == 0:
 			return set_response(400, False, "Not allowed to generate coupon for guest")
 		

@@ -19,7 +19,7 @@ class HotpotApprovals(Document):
 		attachments: DF.Attach | None
 		date: DF.Datetime | None
 		descrption: DF.SmallText | None
-		guest_mobile_no: DF.Phone | None
+		guest_mobile_no: DF.Phone
 		guest_name: DF.Data | None
 		is_active: DF.Check
 		meal_id: DF.Link | None
