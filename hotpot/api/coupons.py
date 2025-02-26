@@ -668,7 +668,6 @@ def generate_coupon():
 		if from_date < meal_doc.meal_date.date():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
 			return
-		print("Hello........................")
 		
 		if from_date==get_local_datetime_obj(datetime.utcnow()).date() and get_local_datetime_obj(meal_doc.get("end_time")).time() <= get_local_datetime_obj(datetime.utcnow()).time():
 			set_response(400, False, "Meal time already passed.")
@@ -744,8 +743,9 @@ def generate_coupon():
 					"title": meal_title,
 					"coupon_status": "1",
 					**({"guest_of": user_doc.get("name")} if for_guest else {}),
-					**({"birthday_coupon": 1} if is_birthday else {}),
-					**({"joining_day": 1} if is_joining_day else {}),
+					**({"birthday_coupon": 1} if is_birthday and not for_guest else {}),
+					**({"joining_day": 1} if is_joining_day and not for_guest else {}),
+					**({"approval_id": approval_id} if for_guest else {}),
 				},
 			)
 
@@ -864,11 +864,14 @@ def get_guest_coupon(date):
 		query = """
 			SELECT 
 				hc.*,
-				hm.*
+				hm.*,
+				ap.*
 			FROM 
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN 
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+			INNER JOIN
+			    `tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
 			WHERE 
 				hc.guest_of = %s 
 				AND hc.coupon_date BETWEEN %s AND %s
