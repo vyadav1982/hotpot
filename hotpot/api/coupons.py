@@ -862,10 +862,18 @@ def get_guest_coupon(date):
 
 
 		query = """
-			Select * from
+			SELECT 
+				hc.*,
+				hm.*
+			FROM 
 				`tabHotpot Coupons` AS hc
-			where hc.guest_of = %s and hc.coupon_date between %s and %s
+			LEFT JOIN 
+				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+			WHERE 
+				hc.guest_of = %s 
+				AND hc.coupon_date BETWEEN %s AND %s
 		"""
+
 		params = [user_doc.get("name"),start_date,end_date]
 		coupons_data = frappe.db.sql(query, params, as_dict=True)
 
