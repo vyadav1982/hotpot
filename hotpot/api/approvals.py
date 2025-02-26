@@ -61,19 +61,18 @@ def create_approval():
 		required_fields = ["request_type", "description", "meal_id"]
 		
 		if user_data.get("role") == "Hotpot User":
-			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date"]
-
-		mobile_no = data.get("guest_mobile_no", "")
-		print(mobile_no)
-		print(len(mobile_no))
-		if not mobile_no or len(mobile_no) != 15:
-			set_response(400,False,"Please enter a valid 10-digit mobile number.")
-			return
-
+			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date","country_code"]
 
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing_fields)}")
+
+		if data.get("guest_mobile_no") and not data.get("guest_mobile_no").strip().isdigit():
+			return set_response(400, False, "Mobile number should contain only digits")
+		if data.get("guest_mobile_no") and len(data.get("guest_mobile_no").strip()) != 10:
+			return set_response(400, False, "Mobile number should contain 10 digits")
+		
+		mobile_no = data.get("country_code")+"- "+data.get("guest_mobile_no")
 
 		if user_data.get("role") == "Hotpot User":
 			existing_approval = frappe.get_all(
@@ -101,7 +100,7 @@ def create_approval():
 			approval_data.update({
 				"purpose_of_visiting": data.get("purpose_of_visiting"),
 				"guest_name": data.get("guest_name"),
-				"guest_mobile_no" : data.get("guest_mobile_no", "").strip(),
+				"guest_mobile_no" : mobile_no,
 				"date": date,
 			})
 
@@ -138,31 +137,47 @@ def create_approval():
 
 @frappe.whitelist(allow_guest=False)
 def upload_attachment():
-	try:
-		if frappe.request.method != "POST":
-			return {"success": False, "message": "Only POST method is allowed"}
+    try:
+        if frappe.request.method != "POST":
+            return {"success": False, "message": "Only POST method is allowed"}
 
-		user_data = get_hotpot_user_by_email()
-		if not user_data:
-			return {"success": False, "message": "User not found"}
+        user_data = get_hotpot_user_by_email()
+        if not user_data:
+            return {"success": False, "message": "User not found"}
 
-		uploaded_file = frappe.request.files.get("file")
-		if not uploaded_file:
-			return {"success": False, "message": "No file uploaded"}
+        uploaded_file = frappe.request.files.get("file")
+        if not uploaded_file:
+            return {"success": False, "message": "No file uploaded"}
 
-		doctype = "Hotpot User"
-		docname = user_data.get("name")
+        # Allowed image formats
+        allowed_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"}
+        allowed_mime_types = {
+            "image/jpeg", "image/png", "image/gif", "image/bmp",
+            "image/webp", "image/svg+xml", "image/tiff"
+        }
 
-		file_doc = save_file(uploaded_file.filename, uploaded_file.read(), doctype, docname, is_private=0)
+        # Get file extension and MIME type
+        filename = uploaded_file.filename.lower()
+        file_ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
+        file_mime_type = uploaded_file.content_type
 
-		return {
-			"success": True,
-			"message": "File uploaded successfully",
-			"file_url": file_doc.file_url,
-			"file_name": file_doc.file_name,
-			"file_id": file_doc.name,
-		}
+        # Validate file format
+        if file_ext not in allowed_extensions or file_mime_type not in allowed_mime_types:
+            return {"success": False, "message": "Only image files are allowed"}
 
-	except Exception as e:
-		frappe.log_error(f"Error in file upload: {str(e)}")
-		return {"success": False, "message": f"Error: {str(e)}"}
+        doctype = "Hotpot User"
+        docname = user_data.get("name")
+
+        file_doc = save_file(filename, uploaded_file.read(), doctype, docname, is_private=0)
+
+        return {
+            "success": True,
+            "message": "File uploaded successfully",
+            "file_url": file_doc.file_url,
+            "file_name": file_doc.file_name,
+            "file_id": file_doc.name,
+        }
+
+    except Exception as e:
+        frappe.log_error(f"Error in file upload: {str(e)}")
+        return {"success": False, "message": f"Error: {str(e)}"}
