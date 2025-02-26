@@ -149,19 +149,16 @@ def upload_attachment():
         if not uploaded_file:
             return {"success": False, "message": "No file uploaded"}
 
-        # Allowed image formats
         allowed_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"}
         allowed_mime_types = {
             "image/jpeg", "image/png", "image/gif", "image/bmp",
             "image/webp", "image/svg+xml", "image/tiff"
         }
 
-        # Get file extension and MIME type
         filename = uploaded_file.filename.lower()
         file_ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
         file_mime_type = uploaded_file.content_type
 
-        # Validate file format
         if file_ext not in allowed_extensions or file_mime_type not in allowed_mime_types:
             return {"success": False, "message": "Only image files are allowed"}
 
