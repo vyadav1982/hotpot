@@ -21,39 +21,46 @@ def get_coupon_count(start_date, end_date):
 			set_response(404, False, "User Not found")
 			return
 
-		if not user_doc.get("role") == "Hotpot Server":
+		if user_doc.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_obj(end_date)
-		query = """
-				SELECT
-					hm.meal_title,
-					COUNT(hc.name) AS coupon_count
-				FROM
-					`tabHotpot Coupons` AS hc
-				INNER JOIN
-					`tabHotpot Meal` AS hm ON hm.name = hc.parent
-				WHERE
-					hm.vendor_id = %(vendor_name)s
-					AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-				GROUP BY
-					hm.meal_title
-			"""
-		params = {
-			"vendor_name": user_doc.get("guest_of"),
-			"start_date": start_date,
-			"end_date": end_date,
-		}
-		data = frappe.db.sql(query, params, as_dict=True)
+		start_date = f"{start_date} 00:00:00"
 
-		if not data:
-			set_response(200, True, "No Coupons Available")
+		coupon_query = """
+			SELECT DATE(hc.coupon_date) AS coupon_date, COUNT(hc.name) AS coupon_count
+			FROM `tabHotpot Coupons` AS hc
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+			WHERE hm.vendor_id = %(vendor_name)s AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
+			GROUP BY DATE(hc.coupon_date)
+			ORDER BY DATE(hc.coupon_date) ASC;
+		"""
+    
+		feedback_query = """
+			SELECT COUNT(hr.name) AS total_feedback
+			FROM `tabHotpot Meal Rating` AS hr
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hr.parent
+			WHERE hm.vendor_id = %(vendor_name)s AND hr.creation BETWEEN %(start_date)s AND %(end_date)s;
+		"""
+		
+		params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
+
+		day_wise_data = frappe.db.sql(coupon_query, params, as_dict=True)
+		total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
+
+		response = {
+			"total_feedback": total_feedback,
+			"day_wise_consumption": day_wise_data
+		}
+
+		if not response:
+			set_response(200, True, "No Data Available")
 			return
 
-		set_response(200, True, "Coupon Count Fetched successfully", data)
+		set_response(200, True, "Data Fetched successfully", response)
 		return
 
 	except Exception as e:
