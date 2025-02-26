@@ -863,15 +863,28 @@ def get_guest_coupon(date):
 
 		query = """
 			SELECT 
-				hc.*,
-				hm.*,
-				ap.*
+				hc.name AS coupon_id,
+				hc.parent AS meal_id,
+				hc.title AS title,
+				hc.coupon_status,
+				hc.coupon_date,
+				hc.served_by,
+				hm.vendor_id,
+				hm.start_time AS start_time,
+				hm.end_time AS end_time,
+				hm.name AS meal_id,
+				U.employee_name AS vendor_name,
+				ap.guest_name AS guest_name,
+				ap.is_active AS approval_active
+
 			FROM 
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN 
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			INNER JOIN
 			    `tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
+			INNER JOIN
+				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			WHERE 
 				hc.guest_of = %s 
 				AND hc.coupon_date BETWEEN %s AND %s
