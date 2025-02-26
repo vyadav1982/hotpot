@@ -109,10 +109,10 @@ def cancel_coupon():
 		# ):
 		# 	set_response(400, False, "Cannot Cancel at this moment")
 		# 	return
-		current_datetime = datetime.utcnow().replace(tzinfo=None)
+		current_datetime =get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 		current_time = current_datetime.time()
 
-		meal_start_time = (meal_doc.start_time).time()
+		meal_start_time = get_local_datetime_obj(meal_doc.start_time).time()
 
 		diff = (datetime.combine(datetime.min, meal_start_time) - datetime.combine(datetime.min, current_time)).total_seconds()
 		diff = int(diff)
@@ -259,25 +259,25 @@ def scan_coupon():
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
-		current_datetime = datetime.utcnow()
-		current_time = get_utc_time(current_datetime)
-		utc_date = get_utc_date(current_datetime)
+		current_datetime = get_local_datetime_obj(datetime.utcnow())
+		current_time = current_datetime.time()
+		local_date = current_datetime.date()
 
 		# print(coupon_found, meal_id, current_time_num)
 
-		if get_utc_date(coupon_found.get("coupon_date")) != utc_date:
+		if get_local_datetime_obj(coupon_found.get("coupon_date")).date() != local_date:
 			set_response(400, False, "NOTICE: Coupon Not Valid for Today")
 			return
 
-		start_time = meal_doc.get("start_time")
+		start_time = get_local_datetime_obj(meal_doc.get("start_time")).time()
 		if start_time:
-			if current_time < get_utc_time(start_time):
+			if current_time < start_time:
 				set_response(400, False, "NOTICE: Too Early to Serve")
 				return
 
-		end_time = meal_doc.get("end_time")
+		end_time = get_local_datetime_obj(meal_doc.get("end_time")).time()
 		if end_time:
-			if current_time > get_utc_time(end_time):
+			if current_time >end_time:
 				set_response(400, False, "ERROR: Meal Serving Time Passed")
 				return
 
@@ -594,7 +594,6 @@ def generate_coupon():
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
-
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["meal_id", "date"]
 		for_guest = data.get('guest', False) 
@@ -644,12 +643,22 @@ def generate_coupon():
 				return
 
 
-		current_datetime_utc = datetime.utcnow()
-		utc_date_today = get_utc_date(current_datetime_utc)
-		current_time = get_utc_time(current_datetime_utc)
+		current_datetime_local = get_local_datetime_obj(datetime.utcnow())
+		local_date_today = current_datetime_local.date()
+		current_time = current_datetime_local.time()
 
-		first =((datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)>0
-		second = ((datetime.strptime(get_utc_time(meal_doc.start_time), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)<= (meal_doc.lead_time)*60*60
+		# first =((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)>0
+		# second = ((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)<= (meal_doc.lead_time)*60*60
+
+		start_time_str = get_local_datetime_obj(meal_doc.start_time).time().strftime("%H:%M:%S")
+		current_time_str = current_time.strftime("%H:%M:%S")
+		start_time = datetime.strptime(start_time_str, "%H:%M:%S")
+		current_time_dt = datetime.strptime(current_time_str, "%H:%M:%S")
+
+		time_difference = (start_time - current_time_dt).seconds
+
+		first = time_difference > 0
+		second = time_difference <= (meal_doc.lead_time) * 60 * 60
 
 		meal_title = meal_doc.meal_title
 		user_coupon_count = user_doc.coupon_count
@@ -659,22 +668,22 @@ def generate_coupon():
 		if from_date < meal_doc.meal_date.date():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
 			return
+		print("Hello........................")
 		
-		if from_date==datetime.utcnow().date() and meal_doc.get("end_time").time() <= datetime.utcnow().time():
+		if from_date==get_local_datetime_obj(datetime.utcnow()).date() and get_local_datetime_obj(meal_doc.get("end_time")).time() <= get_local_datetime_obj(datetime.utcnow()).time():
 			set_response(400, False, "Meal time already passed.")
 			return
 		
 		# Check if required amount of coupons are available
 		if not for_guest and user_coupon_count < meal_weight:
 			return set_response(400, False, "Insufficient currency to create coupon")
-		is_buffer_time = get_utc_time(meal_doc.start_time) <= current_time <= get_utc_time(meal_doc.end_time)
+		is_buffer_time = get_local_datetime_obj(meal_doc.start_time).time() <= current_time <= get_local_datetime_obj(meal_doc.end_time).time()
 		buffer_used = 0
 		third = from_date==datetime.utcnow().date()
 		user_tz = get_user_timezone()
 		if (first and second and third):
 			set_response(400,False,"Cannot create coupon in meal preparation time")
 			return
-		print(get_local_datetime_obj(start_date).date())
 		query = """
 			SELECT 1 
 			FROM `tabHotpot Coupons`
@@ -695,7 +704,7 @@ def generate_coupon():
 			return
 
 		# If buffer time then check for vendor coupons
-		if from_date.strftime("%Y-%m-%d") == utc_date_today and is_buffer_time:
+		if get_local_datetime_obj(start_date).date() == local_date_today and is_buffer_time:
 			if meal_buffer_count == 0:
 				set_response(400, False, f"Not Enough Vendor Coupons for {from_date.strftime('%d %b %Y')}",start_date)
 				return
@@ -768,9 +777,9 @@ def generate_coupon():
 		if for_guest:
 			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
 		elif is_birthday:
-			message = f"🎉 Happy Birthday! 🎂 Enjoy your special day—your meal is on us!"
+			message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
 		elif is_joining_day:
-			message = f"🎊 Welcome aboard! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
+			message = f"🎊 Welcome aboard {user_doc.employee_name}! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
 			
 		return set_response(200, True,message, {"remaining_coupons": user_coupon_count,"start_date":start_date})
 
