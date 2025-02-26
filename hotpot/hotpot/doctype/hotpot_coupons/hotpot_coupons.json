@@ -12,6 +12,7 @@
   "coupon_date",
   "served_by",
   "guest_of",
+  "approval_id",
   "birthday_coupon",
   "joining_day"
  ],
@@ -59,12 +60,19 @@
    "fieldname": "joining_day",
    "fieldtype": "Check",
    "label": "Joining Day"
+  },
+  {
+   "fieldname": "approval_id",
+   "fieldtype": "Link",
+   "label": "Approval Id",
+   "options": "Hotpot Approvals",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-25 09:07:29.565340",
+ "modified": "2025-02-26 12:07:51.527657",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",

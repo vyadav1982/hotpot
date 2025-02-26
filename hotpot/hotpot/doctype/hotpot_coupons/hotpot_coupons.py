@@ -14,6 +14,7 @@ class HotpotCoupons(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		approval_id: DF.Link | None
 		birthday_coupon: DF.Check
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
