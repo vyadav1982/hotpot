@@ -1,10 +1,11 @@
 from datetime import datetime,timedelta
 
 import frappe
-import pytz
+import json
 
 from hotpot.utils.utc_time import *
 
+from frappe.model.document import Document
 
 @frappe.whitelist(methods=["GET"])
 def get_current_user():
@@ -250,4 +251,35 @@ def get_all_vendor():
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Vendor Error")
+		return set_response(500, False, f"Server error: {str(e)}")
+	
+
+@frappe.whitelist(allow_guest=True)
+def update_user_timezone():
+	try:
+		if frappe.request.method != "PUT":
+			set_response(405, False, "Only PUT method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		if not user_doc.get("role") == "Hotpot User":
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+		data = json.loads(frappe.request.data or "{}")
+		timezone = data.get("timezone")
+		if not timezone:
+			set_response(400, False, "Timezone is required")
+			return
+		doc = frappe.get_doc("Hotpot User", user_doc.name)
+		doc.time_zone = timezone
+		doc.save(ignore_permissions=True)
+		
+		set_response(200, True, "Timezone updated successfully")
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Timezone Error")
 		return set_response(500, False, f"Server error: {str(e)}")
