@@ -118,6 +118,7 @@ class HotpotUser(Document):
 				frappe_user.last_name = names[1] if len(names) > 1 else ""
 				frappe_user.username = self.employee_id
 				frappe_user.new_password = self.password
+				frappe_user.time_zone = self.time_zone
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
 				frappe.db.commit()
