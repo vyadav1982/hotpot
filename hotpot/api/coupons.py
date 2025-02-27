@@ -544,8 +544,8 @@ def get_all_coupons(
 					SELECT 
 						rating, feedback
 					FROM `tabHotpot Meal Rating`
-					WHERE parent = %(meal_id)s
-				""", {"meal_id": coupon["meal_id"]}, as_dict=True)
+					WHERE parent = %(meal_id)s AND employee_id = %(employee_id)s
+				""", {"meal_id": coupon["meal_id"],"employee_id":user_doc.get("name")}, as_dict=True)
 				
 				coupon["rating"] = rating[0]["rating"] if rating else None
 				coupon["feedback"] = rating[0]["feedback"] if rating else None
