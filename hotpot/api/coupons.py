@@ -672,7 +672,7 @@ def generate_coupon():
 		meal_weight = meal_doc.get("meal_weight")
 		meal_buffer_count = meal_doc.buffer_coupon_count
 
-		if from_date < meal_doc.meal_date.date():
+		if get_local_datetime_obj(start_date).date()< get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date():
 			set_response(400, False, f"Cannot create coupon for past date: {from_date.strftime('%d %b %Y')}",start_date)
 			return
 		
