@@ -21,7 +21,7 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["data"] = data
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_context():
 	redirect_to = frappe.local.request.args.get("redirect-to")
 	context = {"provider_logins": []}
@@ -76,7 +76,7 @@ def get_context():
 JWT_SECRET = "boostIsMySecret"
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def user_login():
 	try:
 		if frappe.request.method != "POST":
@@ -131,7 +131,7 @@ def user_login():
 		return {"status": "error", "message": f"Login failed: {str(e)}"}
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def user_signUp(data):
 	try:
 		data = json.loads(data)
@@ -170,7 +170,7 @@ def user_signUp(data):
 OTP_PREFIX = "otp:"
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def generate_otp(phone):
 	if not phone.startswith("+"):
 		phone = "+91- " + phone
@@ -189,7 +189,7 @@ def generate_otp(phone):
 	return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def verify_otp(phone, submitted_otp):
 	if not phone.startswith("+"):
 		phone = "+91- " + phone

@@ -15,9 +15,12 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["data"] = data
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist(methods=["POST"])
 def give_feedback():
 	try:
+		'''
+        	Gets the Project Branch document with the organization and app name
+    	'''
 		if frappe.request.method != "POST":
 			set_response(405, False, "Only POST method is allowed")
 			return
@@ -56,7 +59,7 @@ def give_feedback():
 		return set_response(500, False, f"Server error: {str(e)}")
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_meal():
 	try:
 		if frappe.request.method != "POST":
@@ -147,7 +150,7 @@ def create_meal():
 
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_meal():
 
 	try:
@@ -227,7 +230,7 @@ def update_meal():
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def delete_meal():
 	try:
 		if frappe.request.method != "DELETE":
@@ -272,7 +275,7 @@ def delete_meal():
 		set_response(500, False, f"Failed to delete meal: {str(e)}")
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_meals(date, vendor_id=None, page=1, limit=10):
 	try:
 		if frappe.request.method != "GET":
@@ -401,7 +404,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 		set_response(500, False, f"Failed to get meal: {str(e)}")
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def add_meal_items():
 	try:
 		if frappe.request.method != "POST":
@@ -447,7 +450,7 @@ def add_meal_items():
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_meal_items():
 	try:
 		if frappe.request.method != "GET":

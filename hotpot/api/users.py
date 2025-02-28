@@ -24,14 +24,7 @@ def get_list():
 	)
 
 
-def set_response(http_status_code, status, message, data=None):
-	frappe.local.response["http_status_code"] = http_status_code
-	frappe.response["status"] = status
-	frappe.response["message"] = message
-	frappe.response["data"] = data
-
-
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_coupon_count(params):
 	params = frappe.parse_json(params)
 	employee_id = params.get("userId")
@@ -56,7 +49,7 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["data"] = data
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupons_history(page=1,limit=10):
 	try:
 		if frappe.request.method != "GET":
@@ -159,7 +152,7 @@ def get_hotpot_user_by_employee_id(employee_id):
 	return frappe.get_doc("Hotpot User", employee_id)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 @frappe.whitelist()
 def get_hotpot_user_by_email():
 	try:
@@ -204,7 +197,7 @@ def get_hotpot_user_by_email():
 		return None
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_hotpot_loggedin_user():
 	try:
 		user = get_hotpot_user_by_email()
@@ -224,7 +217,7 @@ def get_hotpot_loggedin_user():
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_vendor():
 	try:
 		if frappe.request.method != "GET":
@@ -254,7 +247,7 @@ def get_all_vendor():
 		return set_response(500, False, f"Server error: {str(e)}")
 	
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_user_timezone():
 	try:
 		if frappe.request.method != "PUT":
