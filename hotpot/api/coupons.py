@@ -9,7 +9,7 @@ from ..api.users import *
 from hotpot.utils.utc_time import *
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_count(start_date, end_date):
 	try:
 		if frappe.request.method != "GET":
@@ -67,7 +67,7 @@ def get_coupon_count(start_date, end_date):
 		set_response(500, False, "ERROR: " + str(e))
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def cancel_coupon():
 	try:
 		if frappe.request.method != "PUT":
@@ -164,7 +164,7 @@ def cancel_coupon():
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_redeemed_coupon():
 	try:
 		if frappe.request.method!= "GET":
@@ -217,7 +217,7 @@ def get_redeemed_coupon():
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def scan_coupon():
 	try:
 		if frappe.request.method != "PUT":
@@ -319,7 +319,7 @@ def scan_coupon():
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_scanned_coupons(
 	start_date,
 	end_date,
@@ -388,7 +388,7 @@ def get_scanned_coupons(
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_coupon_status():
 	try:
 		user_doc = get_hotpot_user_by_email()
@@ -423,7 +423,7 @@ def update_coupon_status():
 		return
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_all_coupons(
 	start_date,
 	end_date,
@@ -586,7 +586,7 @@ def get_all_coupons(
 		set_response(500, False, f"Server error: {str(e)}")
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def generate_coupon():
 	try:
 		if frappe.request.method != "POST":
@@ -797,7 +797,7 @@ def generate_coupon():
 		return
 
 is_valid_email = lambda email: bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def search_coupon(start_date,end_date,identifier):
 	try:
 		if not start_date or not end_date:
@@ -842,7 +842,7 @@ def search_coupon(start_date,end_date,identifier):
 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 	
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_guest_coupon(date):
 	try:
 		if frappe.request.method != "GET":

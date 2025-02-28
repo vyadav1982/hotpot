@@ -6,7 +6,7 @@ import pytz
 from frappe import _
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_type_list():
 	coupon_type_list = frappe.db.get_list(
 		"Hotpot Coupon Type",
@@ -17,7 +17,7 @@ def get_coupon_type_list():
 	return coupon_type_list
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_coupon_status(employee_id, meal_types, to_date, from_date):
 	if isinstance(from_date, str):
 		from_date = datetime.strptime(from_date, "%Y-%m-%d")
@@ -57,7 +57,7 @@ def update_coupon_status(employee_id, meal_types, to_date, from_date):
 		date += timedelta(days=1)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_list(params):
 	params = frappe.parse_json(params)
 	from_date = params.get("from")
@@ -103,7 +103,7 @@ def get_coupon_list(params):
 	return coupon_list
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_users(from_date, to_date):
 	params = (from_date, to_date)
 
@@ -124,7 +124,7 @@ def get_users(from_date, to_date):
 	return users
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_type_count(params):
 	params = frappe.parse_json(params)
 	from_date = (datetime.strptime(params.get("from"), "%m/%d/%Y"),)

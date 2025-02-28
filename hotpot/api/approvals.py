@@ -14,7 +14,7 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["message"] = message
 	frappe.response["data"] = data
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_approvals():
 	try:
 		if frappe.request.method != "GET":
@@ -47,7 +47,7 @@ def get_approvals():
 		frappe.log_error(f"Error fetching approvals: {str(e)}")
 		set_response(500, False, f"Server error: {str(e)}")
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_approval():
 	try:
 		if frappe.request.method != "POST":

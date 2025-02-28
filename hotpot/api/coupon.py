@@ -12,7 +12,7 @@ from frappe.utils import today
 # from apscheduler.schedulers.blocking import BlockingScheduler
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_current_coupon_type():
 	timevar = datetime.now()
 	# Define time ranges
@@ -35,7 +35,7 @@ def get_current_coupon_type():
 		return frappe.throw("No coupon available at this time")
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_for_employee_id(employee_id):
 	if not frappe.db.exists("Hotpot User", employee_id):
 		return frappe.throw(f"Employee ID: {employee_id} does not exist")
@@ -53,7 +53,7 @@ def get_coupon_for_employee_id(employee_id):
 		return frappe.get_doc("Hotpot Coupon", f"{title}_{employee_id}_{coupon_date}")
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def coupon_exists(name):
 	if not frappe.db.exists("Hotpot Coupon", name):
 		return None
@@ -61,7 +61,7 @@ def coupon_exists(name):
 		return frappe.get_doc("Hotpot Coupon", name)
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_coupon(data):
 	if not frappe.db.exists("Hotpot Coupon", extract_coupon_info(data)):
 		coupon = frappe.get_doc(coupon_from_info(data))
@@ -72,7 +72,7 @@ def create_coupon(data):
 		return {"created": False, "coupon": frappe.get_doc("Hotpot Coupon", extract_coupon_info(data))}
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_coupon_for_guest(data):
 	current_time = datetime.now().astimezone(pytz.timezone("Asia/Kolkata"))
 	if not frappe.db.exists("Hotpot User", data.get("mobile")):
@@ -110,7 +110,7 @@ def get_coupon_for_guest(data):
 	return created_coupons
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_coupon(params):
 	params = frappe.parse_json(params)
 	employee_id = params.get("employee_id")
@@ -214,7 +214,7 @@ def create_coupon(params):
 	return output
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_upcoming_coupon_list(params):
 	params = frappe.parse_json(params)
 	employee_id = params.get("employee_id")
@@ -237,7 +237,7 @@ def get_upcoming_coupon_list(params):
 	return result
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_past_coupon_list(params):
 	params = frappe.parse_json(params)
 	employee_id = params.get("employee_id")
@@ -266,7 +266,7 @@ def get_past_coupon_list(params):
 	return result
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def cancel_meal(coupon_id):
 	# params = frappe.parse_json(params)
 	# coupon_id = params.get('coupon_id')
@@ -278,7 +278,7 @@ def cancel_meal(coupon_id):
 	return {"message": "Coupon Cancelled Successfully"}
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def update_coupon_status(employee_id, meal_types, to_date, from_date):
 	if isinstance(from_date, str):
 		from_date = datetime.strptime(from_date, "%Y-%m-%d")

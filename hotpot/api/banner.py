@@ -12,7 +12,7 @@ def set_response(http_status_code, status, message, data=None):
 	frappe.response["data"] = data
 
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def create_banner():
 	try:
 		if frappe.request.method != "POST":
@@ -80,7 +80,7 @@ def create_banner():
 		set_response(500,False,f"Server error: {str(e)}")
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_active_banners():
 	try:
 		if frappe.request.method != "GET":
