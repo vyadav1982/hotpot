@@ -56,6 +56,7 @@ class HotpotUser(Document):
 		timezone: DF.Data | None
 	# end: auto-generated types
 
+
 	def before_save(self):
 		if self.role=="Hotpot Server" and self.guest_of=="":
 			frappe.throw("The field 'guest_of' is mandatory for Hotpot Server.")
