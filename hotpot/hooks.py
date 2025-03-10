@@ -54,6 +54,25 @@ fixtures = [
 			],
 		},
 	},
+    {
+        "doctype": "Report",
+        "filters": {
+            "module": [
+                "=",
+                "Hotpot"
+            ]
+        }
+    },
+    {
+        "doctype": "Role Permission for Page and Report",
+        "filters": {
+            "report": [
+                "!=",
+                ""
+            ]
+        }
+    }
+
 ]
 
 # Includes in <head>

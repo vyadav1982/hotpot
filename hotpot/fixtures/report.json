@@ -1,0 +1,88 @@
+[
+ {
+  "add_total_row": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2025-03-10 13:29:29.668733",
+  "module": "Hotpot",
+  "name": "Birthday Coupons Report",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "Hotpot Meal",
+  "reference_report": null,
+  "report_name": "Birthday Coupons Report",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "parent": "Birthday Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot User"
+   },
+   {
+    "parent": "Birthday Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot Vendor"
+   },
+   {
+    "parent": "Birthday Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot Server"
+   }
+  ],
+  "timeout": 0
+ },
+ {
+  "add_total_row": 0,
+  "columns": [],
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Report",
+  "filters": [],
+  "is_standard": "Yes",
+  "javascript": null,
+  "json": null,
+  "letter_head": null,
+  "modified": "2025-03-10 16:09:39.687988",
+  "module": "Hotpot",
+  "name": "Joining Day Coupons Report",
+  "prepared_report": 0,
+  "query": null,
+  "ref_doctype": "Hotpot Meal",
+  "reference_report": null,
+  "report_name": "Joining Day Coupons Report",
+  "report_script": null,
+  "report_type": "Script Report",
+  "roles": [
+   {
+    "parent": "Joining Day Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot User"
+   },
+   {
+    "parent": "Joining Day Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot Vendor"
+   },
+   {
+    "parent": "Joining Day Coupons Report",
+    "parentfield": "roles",
+    "parenttype": "Report",
+    "role": "Hotpot Server"
+   }
+  ],
+  "timeout": 0
+ }
+]
