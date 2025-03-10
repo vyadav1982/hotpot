@@ -2,6 +2,7 @@
 // For license information, please see license.txt
 const get_all_vendor = import('.hotpot.hotpot.doctype.hotpot_user.get_all_vendor');
 
+
 frappe.query_reports["Joining Day Coupons Report"] = {
 	filters: [
     {
@@ -33,5 +34,4 @@ frappe.query_reports["Joining Day Coupons Report"] = {
       default: frappe.datetime.get_today(),
     },
   ],
-
 };
