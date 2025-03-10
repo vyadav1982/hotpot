@@ -66,9 +66,18 @@ fixtures = [
     {
         "doctype": "Role Permission for Page and Report",
         "filters": {
-            "report": [
-                "!=",
-                ""
+            "set_role_for": [
+                "=",
+                "Report"
+            ],
+            "role": [
+                "in",
+                [
+                    "Hotpot Admin",
+                    "Hotpot User",
+                    "Hotpot Server",
+                    "Hotpot Vendor"
+                ]
             ]
         }
     }
