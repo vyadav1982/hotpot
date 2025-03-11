@@ -1,5 +1,7 @@
 // Copyright (c) 2025, Bytepanda Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
+const get_all_vendor = import('.hotpot.hotpot.doctype.hotpot_user.get_all_vendor');
+
 
 frappe.query_reports["Guest Meal Consumption Report"] = {
 	filters: [
