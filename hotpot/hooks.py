@@ -66,10 +66,7 @@ fixtures = [
     {
         "doctype": "Role Permission for Page and Report",
         "filters": {
-            "set_role_for": [
-                "=",
-                "Report"
-            ],
+            "set_role_for": "Report",
             "role": [
                 "in",
                 [
