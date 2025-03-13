@@ -153,6 +153,44 @@ def get_hotpot_user_by_employee_id(employee_id):
 
 
 @frappe.whitelist()
+def get_hotpot_user_by_tag_id(tag_id):
+	try:
+		print(tag_id)
+		if not tag_id:
+			set_response(400, False, "Tag ID is required")
+			return
+
+		user = frappe.db.get_list(
+			"Hotpot User",
+			filters=[["tag_id", "=", tag_id], ["is_active", "=", 1]],
+			fields=[
+				"name",
+				"employee_name",
+				"employee_id",
+				"email",
+				"mobile_no",
+				"is_active",
+				"role",
+				"is_guest",
+				"guest_of",
+				"coupon_count",
+				"approval_id",
+				"date_of_birth",
+				"date_of_joining",
+				"department",
+				"location",
+				"latitude",
+				"longitude"
+			],
+		)
+		print(user)
+		if user:
+			return user[0]
+		return None
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Tag Id Error")
+		return None
+
 @frappe.whitelist()
 def get_hotpot_user_by_email():
 	try:
