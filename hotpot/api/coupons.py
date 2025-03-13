@@ -38,7 +38,7 @@ def get_coupon_count(start_date, end_date):
 			GROUP BY DATE(hc.coupon_date)
 			ORDER BY DATE(hc.coupon_date) ASC;
 		"""
-    
+	
 		feedback_query = """
 			SELECT COUNT(hr.name) AS total_feedback
 			FROM `tabHotpot Meal Rating` AS hr
@@ -586,22 +586,30 @@ def get_all_coupons(
 		set_response(500, False, f"Server error: {str(e)}")
 		return
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def generate_coupon():
 	try:
 		if frappe.request.method != "POST":
 			set_response(405, False, "Only POST method is allowed")
 			return
 
-		user_doc = get_hotpot_user_by_email()
+		data = json.loads(frappe.request.data or "{}")
+		tagId = data.get("tag_id")
+		user_doc = None
+		if tagId:
+			print("********************************")
+			print(tagId)
+			print("********************************")
+			user_doc = get_hotpot_user_by_tag_id(tagId)
+		else:
+			user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(404, False, "User Not Found")
 			return
 		if user_doc.get("role") != "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
-		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["meal_id", "date"]
 		for_guest = data.get('guest', False) 
 		if for_guest:
@@ -610,6 +618,7 @@ def generate_coupon():
 		if missing:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 		
+
 		date = data.get("date")
 		local_time_now = get_local_time_now()
 		start_date = f"{date} {local_time_now}"
@@ -722,13 +731,13 @@ def generate_coupon():
 			history_doc = frappe.new_doc("Hotpot Coupons History")
 			if for_guest:
 				history_doc.update(
-                    {
-                        "employee_id": user_doc.get("name"),
-                        "type": "Guest Creation",
-                        "message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
-                        "meal_id": data["meal_id"],
-                    }
-                )
+					{
+						"employee_id": user_doc.get("name"),
+						"type": "Guest Creation",
+						"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
+						"meal_id": data["meal_id"],
+					}
+				)
 			else:
 				history_doc.update(
 					{
@@ -889,7 +898,7 @@ def get_guest_coupon(date):
 			LEFT JOIN 
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			INNER JOIN
-			    `tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
+				`tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			WHERE 
