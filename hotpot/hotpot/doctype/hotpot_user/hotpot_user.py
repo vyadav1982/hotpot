@@ -53,6 +53,7 @@ class HotpotUser(Document):
 		mobile_no: DF.Phone
 		password: DF.Data | None
 		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor"]
+		tag_id: DF.Data | None
 		timezone: DF.Data | None
 	# end: auto-generated types
 
