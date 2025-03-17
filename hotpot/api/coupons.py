@@ -217,14 +217,16 @@ def get_redeemed_coupon():
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def scan_coupon():
 	try:
 		if frappe.request.method != "PUT":
 			set_response(405, False, "Only PUT method is allowed")
 			return
 
-		user_doc = get_hotpot_user_by_email()
+		data = json.loads(frappe.request.data or "{}")
+		tagId = data.get("tag_id")
+		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(404, False, "User Not found")
 			return
@@ -595,7 +597,6 @@ def generate_coupon():
 
 		data = json.loads(frappe.request.data or "{}")
 		tagId = data.get("tag_id")
-		user_doc = None
 		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(404, False, "User Not Found")

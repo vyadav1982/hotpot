@@ -152,7 +152,7 @@ def get_hotpot_user_by_employee_id(employee_id):
 	return frappe.get_doc("Hotpot User", employee_id)
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_hotpot_user_by_tag_id(tag_id):
 	try:
 		print(tag_id)
