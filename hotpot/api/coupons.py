@@ -141,7 +141,7 @@ def cancel_coupon():
 			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
 			"""
 		user_doc = frappe.get_doc("Hotpot User",coupon_found.employee_id)
-		if not coupon_found.birthday_coupon and not coupon_found.joining_day and coupon_found.is_guest == "":
+		if not coupon_found.birthday_coupon and not coupon_found.joining_day and coupon_found.guest_of == "":
 			user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
