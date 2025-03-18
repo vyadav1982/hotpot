@@ -235,7 +235,12 @@ def scan_coupon():
 			set_response(400, False, "Missing required field")
 			return
 
-		user_doc = frappe.get_doc("Hotpot User", user_id)
+		user_doc = None
+		try:
+			user_doc = frappe.get_doc("Hotpot User", user_id)
+		except frappe.DoesNotExistError:
+			user_doc = get_hotpot_user_by_tag_id(user_id)
+
 		if not user_doc:
 			set_response(404, False, "User Not Found")
 			return
