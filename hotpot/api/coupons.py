@@ -225,16 +225,6 @@ def scan_coupon():
 			return
 
 		data = json.loads(frappe.request.data or "{}")
-		tagId = data.get("tag_id")
-		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
-		if not user_doc:
-			set_response(404, False, "User Not found")
-			return
-
-		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
-			set_response(403, False, "Not Permitted to access this resource")
-			return
-
 		data = json.loads(frappe.request.data or "{}")
 		meal_id = data.get("meal_id")
 		coupon_id = data.get("coupon_id")
@@ -248,6 +238,9 @@ def scan_coupon():
 		user_doc = frappe.get_doc("Hotpot User", user_id)
 		if not user_doc:
 			set_response(404, False, "User Not Found")
+			return
+		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
+			set_response(403, False, "Not Permitted to access this resource")
 			return
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		if not meal_doc:
