@@ -217,7 +217,7 @@ def get_redeemed_coupon():
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def scan_coupon():
 	try:
 		if frappe.request.method != "PUT":
@@ -235,11 +235,17 @@ def scan_coupon():
 			set_response(400, False, "Missing required field")
 			return
 
-		user_doc = None
-		try:
-			user_doc = frappe.get_doc("Hotpot User", user_id)
-		except frappe.DoesNotExistError:
-			user_doc = get_hotpot_user_by_tag_id(user_id)
+		user_doc = get_hotpot_user_by_email()
+		emp_doc=None
+		# try:
+		# 	emp_doc = frappe.get_doc("Hotpot User", user_id)
+		# except frappe.DoesNotExistError:
+		# 	emp_doc = get_hotpot_user_by_tag_id(user_id)
+		if frappe.db.exists("Hotpot User", user_id):
+			emp_doc = frappe.get_doc("Hotpot User", user_id)
+		else:
+			emp_doc = get_hotpot_user_by_tag_id(user_id)
+
 
 		if not user_doc:
 			set_response(404, False, "User Not Found")
@@ -303,8 +309,8 @@ def scan_coupon():
 				"meal_title": meal_doc.get("meal_title"),
 				"meal_date": meal_doc.get("meal_date"),
 				"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
-				"employee_id": user_doc.get("employee_id"),
-				"employee_name": user_doc.get("employee_name"),
+				"employee_id": emp_doc.get("employee_id"),
+				"employee_name": emp_doc.get("employee_name"),
 				"coupon_id": coupon_found.get("name"),
 				"coupon_status": coupon_found.get("coupon_status"),
 				"coupon_date": coupon_found.get("coupon_date"),
@@ -620,7 +626,9 @@ def generate_coupon():
 		
 		if len(meal_ids) != len(dates):
 			return set_response(400, False, "Mismatch between meal IDs and dates")
-		
+		meal_docs = {}
+		temp_docs = []
+		total_coupons_consumed=0
 		for i in range(len(meal_ids)):
 			meal_id = meal_ids[i]
 			date = dates[i]
@@ -750,7 +758,7 @@ def generate_coupon():
 						}
 					)
 				
-				history_doc.insert()
+				temp_docs.append(history_doc)
 
 				# Append created coupon in meal
 				meal_doc.append(
@@ -769,6 +777,8 @@ def generate_coupon():
 
 				if not for_guest and not is_birthday and not is_joining_day:
 					user_coupon_count -= meal_weight
+					total_coupons_consumed+=meal_weight
+				
 
 			except Exception as e:
 				frappe.db.rollback()
@@ -781,17 +791,21 @@ def generate_coupon():
 				meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
 			if for_guest:
 				approval_doc.is_active = 0
-				
-			frappe.db.set_value(
+			meal_docs[meal_id] = meal_doc
+
+		if approval_doc :
+			approval_doc.save()
+		for meal_doc in meal_docs.values():
+			meal_doc.save()
+		frappe.db.set_value(
 				"Hotpot User",
 				user_doc.get("name"),
 				{
-					"coupon_count": user_coupon_count,
+					"coupon_count": user_doc.coupon_count-total_coupons_consumed,
 				},
 			)
-		if approval_doc :
-			approval_doc.save()
-		meal_doc.save()
+		for doc in temp_docs:
+			doc.insert()
 		frappe.db.commit()
 		message = f"Generated coupon for {from_date.strftime('%d %b %Y')}."
 		if for_guest:
@@ -801,7 +815,7 @@ def generate_coupon():
 		elif is_joining_day:
 			message = f"🎊 Welcome aboard {user_doc.employee_name}! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
 			
-		return set_response(200, True,message, {"remaining_coupons": user_coupon_count,"start_date":start_date})
+		return set_response(200, True,message, {"remaining_coupons": user_doc.coupon_count-total_coupons_consumed,"start_date":start_date})
 
 	except Exception as e:
 		frappe.db.rollback()
