@@ -231,7 +231,7 @@ def scan_coupon():
 		user_id = data.get("user_id")
 		vendor_id = data.get("vendor_id")
 
-		if not meal_id or not coupon_id or not user_id or not vendor_id:
+		if not meal_id or not user_id or not vendor_id:
 			set_response(400, False, "Missing required field")
 			return
 
@@ -261,12 +261,19 @@ def scan_coupon():
 			set_response(403, False, "You are not authorised to scan this coupon.")
 			return
 		coupons = meal_doc.get("coupons")
-
 		coupon_found = None
-		for coupon in coupons:
-			if coupon.name == coupon_id:
-				coupon_found = coupon
-				break
+
+		if coupon_id=="":
+			for coupon in coupons:
+				if get_local_datetime_obj(coupon.coupon_date).date() == get_local_datetime_obj(datetime.utcnow()).date():
+					coupon_found=coupon
+					break
+		else:
+			for coupon in coupons:
+				if coupon.name == coupon_id:
+					coupon_found = coupon
+					break
+
 
 		if not coupon_found:
 			set_response(400, False, "ERROR: Coupon Not Found")
