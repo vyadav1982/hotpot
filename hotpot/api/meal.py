@@ -429,10 +429,21 @@ def get_meals_for_kiosk(date, vendor_id):
 			return
 		filtered_meals = []
 		for meal in daily_meals:
-			start_time = get_local_datetime_obj(meal["start_time"])
+			start_time = get_local_datetime_obj(meal["start_time"]).time()
+			end_time = get_local_datetime_obj(meal["end_time"]).time()
 			lead_time = timedelta(hours=meal["lead_time"])
-			if (start_time - lead_time).time() >= get_local_datetime_obj(datetime.utcnow()).time():
+
+			current_time = get_local_datetime_obj(datetime.utcnow()).time()
+			# print("--------------------------------")
+			# print(meal.get("meal_title"))
+			# print((datetime.combine(datetime.min, start_time)))
+			# print((datetime.combine(datetime.min, start_time) - lead_time).time() )
+			# print((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time)
+			# print(current_time)
+			# print("--------------------------------")
+			if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
 				filtered_meals.append(meal)
+
 		if filtered_meals:
 			meals.extend(filtered_meals) 
 
