@@ -420,32 +420,30 @@ def get_meals_for_kiosk(date, vendor_id):
 	try:
 		meals = []
 		date_obj = datetime.strptime(date, "%Y-%m-%d")
-
-		# for x in range(1):
 		new_date_str = (date_obj).strftime("%Y-%m-%d")
-		daily_meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
-		if not daily_meals:
+		meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
+		if not meals:
 			set_response(200, True, "No meal found", [])
 			return
-		filtered_meals = []
-		for meal in daily_meals:
-			start_time = get_local_datetime_obj(meal["start_time"]).time()
-			end_time = get_local_datetime_obj(meal["end_time"]).time()
-			lead_time = timedelta(hours=meal["lead_time"])
+		# filtered_meals = []
+		# for meal in meals:
+		# 	start_time = get_local_datetime_obj(meal["start_time"]).time()
+		# 	end_time = get_local_datetime_obj(meal["end_time"]).time()
+		# 	lead_time = timedelta(hours=meal["lead_time"])
 
-			current_time = get_local_datetime_obj(datetime.utcnow()).time()
-			# print("--------------------------------")
-			# print(meal.get("meal_title"))
-			# print((datetime.combine(datetime.min, start_time)))
-			# print((datetime.combine(datetime.min, start_time) - lead_time).time() )
-			# print((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time)
-			# print(current_time)
-			# print("--------------------------------")
-			if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
-				filtered_meals.append(meal)
+		# 	current_time = get_local_datetime_obj(datetime.utcnow()).time()
+		# 	# print("--------------------------------")
+		# 	# print(meal.get("meal_title"))
+		# 	# print((datetime.combine(datetime.min, start_time)))
+		# 	# print((datetime.combine(datetime.min, start_time) - lead_time).time() )
+		# 	# print((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time)
+		# 	# print(current_time)
+		# 	# print("--------------------------------")
+		# 	if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
+		# 		filtered_meals.append(meal)
 
-		if filtered_meals:
-			meals.extend(filtered_meals) 
+		# if filtered_meals:
+		# 	meals.extend(filtered_meals) 
 
 		# meals = {meal["name"]: meal for meal in meals}.values()
 		set_response(200, True, "Fetched successfully",meals)
