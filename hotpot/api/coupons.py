@@ -268,7 +268,7 @@ def scan_coupon():
 
 		if coupon_id=="":
 			for coupon in coupons:
-				if get_local_datetime_obj(coupon.coupon_date).date() == get_local_datetime_obj(datetime.utcnow()).date():
+				if get_local_datetime_obj(coupon.coupon_date).date() == get_local_datetime_obj(datetime.utcnow()).date() and emp_doc.tag_id == user_id:
 					coupon_found=coupon
 					break
 		else:
