@@ -409,6 +409,7 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 		if for_kiosk:
 			return processed_meals
 		set_response(200, True, "Fetched successfully",processed_meals)
+		return
 
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal: {str(e)}")
@@ -434,7 +435,7 @@ def get_meals_for_kiosk(date, vendor_id):
 			if filtered_meals:
 				meals.extend(filtered_meals) 
 
-		meals = {meal["name"]: meal for meal in meals}.values()
+		# meals = {meal["name"]: meal for meal in meals}.values()
 		set_response(200, True, "Fetched successfully",meals)
 		return
 	except Exception as e:
