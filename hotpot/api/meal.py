@@ -421,19 +421,20 @@ def get_meals_for_kiosk(date, vendor_id):
 		meals = []
 		date_obj = datetime.strptime(date, "%Y-%m-%d")
 
-		for x in range(2):
-			new_date_str = (date_obj + timedelta(days=x)).strftime("%Y-%m-%d")
-			daily_meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
-			if not daily_meals:
-				continue
-			filtered_meals = []
-			for meal in daily_meals:
-				start_time = get_local_datetime_obj(meal["start_time"])
-				lead_time = timedelta(hours=meal["lead_time"])
-				if (start_time - lead_time).time() >= get_local_datetime_obj(datetime.utcnow()).time():
-					filtered_meals.append(meal)
-			if filtered_meals:
-				meals.extend(filtered_meals) 
+		# for x in range(1):
+		new_date_str = (date_obj).strftime("%Y-%m-%d")
+		daily_meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
+		if not daily_meals:
+			set_response(200, True, "No meal found", [])
+			return
+		filtered_meals = []
+		for meal in daily_meals:
+			start_time = get_local_datetime_obj(meal["start_time"])
+			lead_time = timedelta(hours=meal["lead_time"])
+			if (start_time - lead_time).time() >= get_local_datetime_obj(datetime.utcnow()).time():
+				filtered_meals.append(meal)
+		if filtered_meals:
+			meals.extend(filtered_meals) 
 
 		# meals = {meal["name"]: meal for meal in meals}.values()
 		set_response(200, True, "Fetched successfully",meals)
