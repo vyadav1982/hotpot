@@ -262,6 +262,9 @@ def scan_coupon():
 			return
 		coupons = meal_doc.get("coupons")
 		coupon_found = None
+		if not coupons:
+			set_response(400, False, "ERROR: No Coupons found for this meal.")
+			return
 
 		if coupon_id=="":
 			for coupon in coupons:
