@@ -266,9 +266,9 @@ def scan_coupon():
 			set_response(400, False, "ERROR: No Coupons found for this meal.")
 			return
 
-		if coupon_id=="":
+		if not coupon_id:
 			for coupon in coupons:
-				if get_local_datetime_obj(coupon.coupon_date).date() == get_local_datetime_obj(datetime.utcnow()).date() and emp_doc.tag_id == user_id:
+				if get_local_datetime_obj(coupon.coupon_date).date() == get_local_datetime_obj(datetime.utcnow()).date() and coupon.employee_id == emp_doc.employee_id:
 					coupon_found=coupon
 					break
 		else:
