@@ -435,11 +435,8 @@ def get_meals_for_kiosk(date):
 			if ((datetime.combine(datetime.today().date(), start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
 				filtered_meals.append(meal)
 
-		if filtered_meals:
-			meals.extend(filtered_meals) 
-
 		# meals = {meal["name"]: meal for meal in meals}.values()
-		set_response(200, True, "Fetched successfully",meals)
+		set_response(200, True, "Fetched successfully",filtered_meals)
 		return
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal: {str(e)}")
