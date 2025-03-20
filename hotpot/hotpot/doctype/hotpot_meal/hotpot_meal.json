@@ -106,6 +106,7 @@
    "options": "once\ndaily\nspecific_days"
   },
   {
+   "default": "\"\"",
    "fieldname": "repeat_days",
    "fieldtype": "Data",
    "label": "Repeat Days"
@@ -126,7 +127,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-20 17:05:03.596390",
+ "modified": "2025-03-20 10:09:07.842924",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
