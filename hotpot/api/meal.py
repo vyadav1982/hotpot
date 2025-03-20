@@ -433,8 +433,7 @@ def get_meals_for_kiosk(date):
 
 			current_time = get_local_datetime_obj(datetime.utcnow()).time()
 			if ((start_time>=current_time and (datetime.combine(datetime.today().date(), start_time) - lead_time).time() >= current_time)) or (start_time<=current_time and end_time>=current_time):
-				if meal["buffer_coupon_count"]>0:
-					filtered_meals.append(meal)
+				filtered_meals.append(meal)
 
 		
 		set_response(200, True, "Fetched successfully",filtered_meals)
