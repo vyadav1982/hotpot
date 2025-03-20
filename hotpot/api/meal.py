@@ -277,7 +277,7 @@ def delete_meal():
 		return
 
 @frappe.whitelist()
-def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
+def get_meals(date, vendor_id=None, page=1, limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
@@ -303,8 +303,8 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 			"buffer_coupon_count", "meal_weight", "meal_date", "is_special",
 			"vendor_id", "repeat_type", "repeat_days"
 		]
-		if for_kiosk:
-			base_fields.append("lead_time")
+		# if for_kiosk:
+		# 	base_fields.append("lead_time")
 
 		start = (page - 1) * limit
 		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
@@ -406,8 +406,8 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 				get_local_datetime_obj(x["start_time"]).time(),
 				get_local_datetime_obj(x["end_time"]).time()
 		))
-		if for_kiosk:
-			return processed_meals
+		# if for_kiosk:
+		# 	return processed_meals
 		set_response(200, True, "Fetched successfully",processed_meals)
 		return
 
