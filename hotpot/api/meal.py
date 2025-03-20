@@ -342,12 +342,14 @@ def get_meals(date, vendor_id=None, page=1, limit=10):
 		for meal in meals:
 			meal_date = meal["meal_date"]
 			repeat_type = meal.get("repeat_type", "once")
-			repeat_days = meal.get("repeat_days", "")
+			# repeat_days = meal.get("repeat_days", "")
 
-			if not isinstance(repeat_days, str):
-				repeat_days = ""
+			# if not isinstance(repeat_days, str):
+			# 	repeat_days = ""
 
-			repeat_days = [d.strip() for d in repeat_days.split(",") if d]
+			# repeat_days = [d.strip() for d in repeat_days.split(",") if d]
+			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
+
 
 
 			valid = False
