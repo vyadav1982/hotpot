@@ -431,12 +431,13 @@ def get_meals_for_kiosk(date):
 			end_time = get_local_datetime_obj(meal["end_time"]).time()
 			lead_time = timedelta(hours=meal["lead_time"])
 
-			current_time = get_local_datetime_obj(datetime.utcnow()).time()
-			if ((start_time>=current_time and (datetime.combine(datetime.today().date(), start_time) - lead_time).time() >= current_time)) or (start_time<=current_time and end_time>=current_time):
-				filtered_meals.append(meal)
+			# current_time = get_local_datetime_obj(datetime.utcnow()).time()
+			# if ( (datetime.combine(datetime.today().date(), start_time) - lead_time).time() >= current_time)) or (start_time<=current_time and end_time>=current_time):
+			# 	filtered_meals.append(meal)
+
 
 		
-		set_response(200, True, "Fetched successfully",filtered_meals)
+		set_response(200, True, "Fetched successfully",meals)
 		return
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal: {str(e)}")
