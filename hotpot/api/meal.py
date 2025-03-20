@@ -279,6 +279,9 @@ def delete_meal():
 @frappe.whitelist()
 def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 	try:
+		print("----------------------------------------------------------------")
+		print(for_kiosk)
+		print("----------------------------------------------------------------")
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
@@ -429,7 +432,7 @@ def get_meals_for_kiosk(date):
 			lead_time = timedelta(hours=meal["lead_time"])
 
 			current_time = get_local_datetime_obj(datetime.utcnow()).time()
-			if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
+			if ((datetime.combine(datetime.today().date(), start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
 				filtered_meals.append(meal)
 
 		if filtered_meals:
