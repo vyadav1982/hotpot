@@ -277,7 +277,7 @@ def delete_meal():
 		return
 
 @frappe.whitelist()
-def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
+def get_meals(date, vendor_id=None, page=1, limit=10):
 	try:
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
@@ -303,8 +303,8 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 			"buffer_coupon_count", "meal_weight", "meal_date", "is_special",
 			"vendor_id", "repeat_type", "repeat_days"
 		]
-		if for_kiosk:
-			base_fields.append("lead_time")
+		# if for_kiosk:
+		# 	base_fields.append("lead_time")
 
 		start = (page - 1) * limit
 		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
@@ -342,12 +342,14 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 		for meal in meals:
 			meal_date = meal["meal_date"]
 			repeat_type = meal.get("repeat_type", "once")
-			repeat_days = meal.get("repeat_days", "")
+			# repeat_days = meal.get("repeat_days", "")
 
-			if not isinstance(repeat_days, str):
-				repeat_days = ""
+			# if not isinstance(repeat_days, str):
+			# 	repeat_days = ""
 
-			repeat_days = [d.strip() for d in repeat_days.split(",") if d]
+			# repeat_days = [d.strip() for d in repeat_days.split(",") if d]
+			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
+
 
 
 			valid = False
@@ -406,8 +408,8 @@ def get_meals(date, vendor_id=None,for_kiosk=False, page=1, limit=10):
 				get_local_datetime_obj(x["start_time"]).time(),
 				get_local_datetime_obj(x["end_time"]).time()
 		))
-		if for_kiosk:
-			return processed_meals
+		# if for_kiosk:
+		# 	return processed_meals
 		set_response(200, True, "Fetched successfully",processed_meals)
 		return
 
@@ -420,32 +422,30 @@ def get_meals_for_kiosk(date, vendor_id):
 	try:
 		meals = []
 		date_obj = datetime.strptime(date, "%Y-%m-%d")
-
-		# for x in range(1):
 		new_date_str = (date_obj).strftime("%Y-%m-%d")
-		daily_meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
-		if not daily_meals:
+		meals = get_meals(new_date_str, vendor_id,for_kiosk=True) 
+		if not meals:
 			set_response(200, True, "No meal found", [])
 			return
-		filtered_meals = []
-		for meal in daily_meals:
-			start_time = get_local_datetime_obj(meal["start_time"]).time()
-			end_time = get_local_datetime_obj(meal["end_time"]).time()
-			lead_time = timedelta(hours=meal["lead_time"])
+		# filtered_meals = []
+		# for meal in meals:
+		# 	start_time = get_local_datetime_obj(meal["start_time"]).time()
+		# 	end_time = get_local_datetime_obj(meal["end_time"]).time()
+		# 	lead_time = timedelta(hours=meal["lead_time"])
 
-			current_time = get_local_datetime_obj(datetime.utcnow()).time()
-			# print("--------------------------------")
-			# print(meal.get("meal_title"))
-			# print((datetime.combine(datetime.min, start_time)))
-			# print((datetime.combine(datetime.min, start_time) - lead_time).time() )
-			# print((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time)
-			# print(current_time)
-			# print("--------------------------------")
-			if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
-				filtered_meals.append(meal)
+		# 	current_time = get_local_datetime_obj(datetime.utcnow()).time()
+		# 	# print("--------------------------------")
+		# 	# print(meal.get("meal_title"))
+		# 	# print((datetime.combine(datetime.min, start_time)))
+		# 	# print((datetime.combine(datetime.min, start_time) - lead_time).time() )
+		# 	# print((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time)
+		# 	# print(current_time)
+		# 	# print("--------------------------------")
+		# 	if ((datetime.combine(datetime.min, start_time) - lead_time).time() >= current_time) or (start_time<=current_time and end_time>=current_time):
+		# 		filtered_meals.append(meal)
 
-		if filtered_meals:
-			meals.extend(filtered_meals) 
+		# if filtered_meals:
+		# 	meals.extend(filtered_meals) 
 
 		# meals = {meal["name"]: meal for meal in meals}.values()
 		set_response(200, True, "Fetched successfully",meals)
