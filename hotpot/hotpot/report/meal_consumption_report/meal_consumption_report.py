@@ -5,6 +5,12 @@ import frappe
 from ....utils.utc_time import *
 
 
+def get_star_rating(rating):
+	"""Convert a float rating to a star string."""
+	if not rating:
+		return "-"
+	return "⭐" * round(rating)
+
 def execute(filters=None):
 	if not filters:
 		filters = {}
@@ -20,16 +26,16 @@ def execute(filters=None):
 	end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
 
 	columns = [
-		{"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
+		# {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
 		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
-		{"label": "Meal Date", "fieldname": "meal_date", "fieldtype": "Date", "width": 120},
+		# {"label": "Meal Date", "fieldname": "meal_date", "fieldtype": "Date", "width": 120},
 		{"label": "Meal Weight", "fieldname": "meal_weight", "fieldtype": "float", "width": 120},
-		{"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
+		# {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
 		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
 		{"label": "Coupon Count", "fieldname": "coupon_count", "fieldtype": "Data", "width": 120},
 		{"label": "Total Weight", "fieldname": "total_weight", "fieldtype": "Data", "width": 120},
 		{"label": "Average Rating", "fieldname": "avg_rating", "fieldtype": "float", "width": 120},
-		{"label": "Feedback's", "fieldname": "feedback_list", "fieldtype": "Data", "width": 150},
+		# {"label": "Feedback's", "fieldname": "feedback_list", "fieldtype": "Data", "width": 150},
 	]
 
 	query = """
@@ -70,6 +76,8 @@ def execute(filters=None):
 	"""
 
 	data = frappe.db.sql(query, params, as_dict=True)
+	for row in data:
+		row["avg_rating"] = get_star_rating(row["avg_rating"]) 
 
 	return columns, data
 
