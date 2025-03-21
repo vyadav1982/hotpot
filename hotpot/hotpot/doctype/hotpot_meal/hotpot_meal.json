@@ -127,7 +127,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-20 10:09:07.842924",
+ "modified": "2025-03-21 13:29:41.615893",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
@@ -147,7 +147,10 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "meal_title",
+ "track_changes": 1
 }

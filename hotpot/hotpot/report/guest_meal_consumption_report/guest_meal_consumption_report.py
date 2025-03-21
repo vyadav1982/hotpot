@@ -24,16 +24,16 @@ def execute(filters=None):
     end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
 
     columns = [
-        {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
-        {"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
-        {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
-        {"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
-        {"label": "Coupon Id", "fieldname": "coupon_id", "fieldtype": "Data", "width": 120},
-        {"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
+        # {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
         {"label": "Employee Id", "fieldname": "employee_id", "fieldtype": "Data", "width": 120},
         {"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Data", "width": 150},
+        {"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
         {"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
         {"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 150},
+        # {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
+        {"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
+        {"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
+        # {"label": "Coupon Id", "fieldname": "coupon_id", "fieldtype": "Data", "width": 120},
     ]
 
     query = """
