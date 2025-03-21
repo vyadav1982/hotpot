@@ -652,8 +652,15 @@ def generate_coupon():
 			
 			approval_id = data.get('approval_id', None)
 			approval_doc = None
+			
+			dob = user_doc.get("date_of_birth")
+			start = get_local_datetime_obj(start_date).date()
 
-			is_birthday = hotpot_config.get("free_birthday_meal") == 1 and user_doc.get("date_of_birth") == get_local_datetime_obj(start_date).date()
+			is_birthday = (
+				hotpot_config.get("free_birthday_meal") == 1
+				and dob.month == start.month
+				and dob.day == start.day
+			)
 			is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
 
 			try:
@@ -821,7 +828,11 @@ def generate_coupon():
 		if for_guest:
 			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
 		elif is_birthday:
-			message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
+			if start.month == get_local_datetime_obj(datetime.utcnow()).month and start.day == get_local_datetime_obj(datetime.utcnow()).day:
+				message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
+			else:
+				message = f"🎉 Early Birthday Treat! 🎂 {user_doc.employee_name}, we’re celebrating you in advance! Your birthday meal coupon is ready for {start.strftime('%d %b %Y')}!"
+			# message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
 		elif is_joining_day:
 			message = f"🎊 Welcome aboard {user_doc.employee_name}! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
 			
