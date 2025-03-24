@@ -136,7 +136,6 @@ class HotpotUser(Document):
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
 				frappe.db.commit()
-				return
 		except frappe.DoesNotExistError:
 			frappe.log_error(f"User with email {self.email} does not exist.")
 			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
