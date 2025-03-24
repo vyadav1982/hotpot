@@ -124,9 +124,12 @@ def cancel_coupon():
 		diff = (datetime.combine(datetime.min, meal_start_time) - datetime.combine(datetime.min, current_time)).total_seconds()
 		diff = int(diff)
 		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
+		if(diff<0):
+			set_response(400, False, "Nice try! But instead of canceling, why not enjoy the meal? Sorry, your coupon is staying right where it is! 😜🍽️")
 
 		if cancel :
-			set_response(400,False,"Cannot Cancel at this moment")
+			set_response(400, False, f"Oops! You’re too late! Coupons turn into pumpkins {meal_doc.cancellation_time} hours before the meal starts. No take-backs now! 🎃⏳🍽️")
+
 			return
 
 
