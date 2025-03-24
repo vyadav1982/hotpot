@@ -17,7 +17,7 @@ def set_user_password(site, user, password, logout_all_sessions=False):
 		frappe.connect()
 
 		if not frappe.db.exists("User", user):
-			print(f"User {user} does not exist")
+			frappe.throw(f"User {user} does not exist")
 			return
 
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
@@ -68,19 +68,17 @@ class HotpotUser(Document):
 			if not frappe.db.exists("User", {"email": self.email}):
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
-				new_user.update(
-					{
-						"email": self.email,
-						"first_name": names[0],
-						"username": self.employee_id,
-						"last_name": names[1] if len(names) > 1 else "",
-						"enabled": 1,
-						"document_follow_notify": 1,
-						"follow_liked_documents": 1,
-						"search_bar": 0,
-						"default_app": "hotpot",
-					}
-				)
+				new_user.update({
+					"email": self.email,
+					"first_name": names[0],
+					"username": self.employee_id,
+					"last_name": names[1] if len(names) > 1 else "",
+					"enabled": 1,
+					"document_follow_notify": 1,
+					"follow_liked_documents": 1,
+					"search_bar": 0,
+					"default_app": "hotpot",
+				})
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
 
@@ -90,37 +88,47 @@ class HotpotUser(Document):
 				new_user.insert(ignore_permissions=True)
 				new_user.reload()
 				frappe.db.commit()
-			user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
-			if user_name:
-				user_doc = frappe.get_doc("Hotpot User", user_name)
-				if user_doc.get("role") == "Hotpot Vendor":
 
-					meals = [
-						"Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
-						"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs", 
-						"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"
-					]
-					meal_items = random.sample(meals, 5) 
-					for meal in meal_items:
-						meal_doc = frappe.get_doc({
-							"doctype": "Hotpot Meal Items",
-							"item_name": meal,
-							"vendor_id": user_doc.get("name")
-						})
-						meal_doc.insert(ignore_permissions=True)
+				user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
 
-					user_doc.save(ignore_permissions=True)
+				if user_name:
+					user_doc = frappe.get_doc("Hotpot User", user_name)
+					user_doc.reload()
 
-				else:
-					frappe.throw("User not found!")
+					if user_doc.get("role") == "Hotpot Vendor":
+
+						meals = ["Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
+								"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs",
+								"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"]
+						meal_items = random.sample(meals, 5)
+
+						for meal in meal_items:
+							meal_doc = frappe.get_doc({
+								"doctype": "Hotpot Meal Items",
+								"item_name": meal,
+								"vendor_id": user_doc.get("name")
+							})
+							meal_doc.insert(ignore_permissions=True)
+
+						frappe.db.commit()
+
 				set_user_password(frappe.local.site, self.email, self.password)
 				frappe.db.commit()
+			else:
+				frappe.throw(f"A user with {self.email} is already present. Check User Doctype for more details. This user is created but you can'nt login for this user either delete the previous one and create another or enable the previous one.")
+				return {
+				    "status": "error",
+                    "message": "Duplicate user"
+				}
+
 		except frappe.ValidationError as e:
 			frappe.log_error(f"User creation error: {e}")
 			return {"status": "error", "message": "Failed to create user in Frappe"}
+
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user creation")
 			return {"status": "error", "message": "An unexpected error occurred."}
+
 
 	def on_update(self):
 		try:
