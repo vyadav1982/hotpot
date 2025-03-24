@@ -628,21 +628,17 @@ def generate_coupon():
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 		
 		meal_ids = data.get("meal_id")
-		dates = data.get("date")
+		date = data.get("date")
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
-		if not isinstance(dates, list):
-			dates = [dates]
 		
-		if len(meal_ids) != len(dates):
-			return set_response(400, False, "Mismatch between meal IDs and dates")
+		# if len(meal_ids) != len(dates):
+		# 	return set_response(400, False, "Mismatch between meal IDs and dates")
 		meal_docs = {}
 		temp_docs = []
 		total_coupons_consumed=0
 		for i in range(len(meal_ids)):
 			meal_id = meal_ids[i]
-			date = dates[i]
-
 			local_time_now = get_local_time_now()
 			start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
 			from_date = start_date.date()
