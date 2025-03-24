@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+import random
 
 
 def set_user_password(site, user, password, logout_all_sessions=False):
@@ -65,17 +66,6 @@ class HotpotUser(Document):
 	def after_insert(self):
 		try:
 			if not frappe.db.exists("User", {"email": self.email}):
-				user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
-
-				if user_name:
-					user_doc = frappe.get_doc("Hotpot User", user_name)
-
-					if user_doc.get("role") == "Hotpot Vendor":
-						user_doc.guest_of = user_name
-						user_doc.save(ignore_permissions=True)
-				else:
-					frappe.throw("User not found!")
-
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				new_user.update(
@@ -91,7 +81,6 @@ class HotpotUser(Document):
 						"default_app": "hotpot",
 					}
 				)
-
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
 
@@ -100,9 +89,32 @@ class HotpotUser(Document):
 				new_user.flags.ignore_if_duplicate = True
 				new_user.insert(ignore_permissions=True)
 				new_user.reload()
-
 				frappe.db.commit()
+			user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
+			if user_name:
+				user_doc = frappe.get_doc("Hotpot User", user_name)
+				if user_doc.get("role") == "Hotpot Vendor":
+
+					meals = [
+						"Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
+						"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs", 
+						"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"
+					]
+					meal_items = random.sample(meals, 5) 
+					for meal in meal_items:
+						meal_doc = frappe.get_doc({
+							"doctype": "Hotpot Meal Items",
+							"item_name": meal,
+							"vendor_id": user_doc.get("name")
+						})
+						meal_doc.insert(ignore_permissions=True)
+
+					user_doc.save(ignore_permissions=True)
+
+				else:
+					frappe.throw("User not found!")
 				set_user_password(frappe.local.site, self.email, self.password)
+				frappe.db.commit()
 		except frappe.ValidationError as e:
 			frappe.log_error(f"User creation error: {e}")
 			return {"status": "error", "message": "Failed to create user in Frappe"}
@@ -124,6 +136,7 @@ class HotpotUser(Document):
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
 				frappe.db.commit()
+				return
 		except frappe.DoesNotExistError:
 			frappe.log_error(f"User with email {self.email} does not exist.")
 			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
