@@ -96,6 +96,7 @@ class HotpotUser(Document):
 
 					if user_doc.get("role") == "Hotpot Vendor":
 						user_doc.guest_of = user_doc.name
+						user_doc.save(ignore_permissions=True)
 
 						meals = ["Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
 								"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs",
