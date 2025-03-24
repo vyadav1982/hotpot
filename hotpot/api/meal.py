@@ -215,10 +215,11 @@ def update_meal():
 		]:
 			if field in data:
 				setattr(meal_doc, field, ",".join(data[field]) if field == "meal_items" else data[field])
-		approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
-		approval_doc.is_active =0
-		meal_doc.approval_id = ""
-		approval_doc.save()
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
+			approval_doc.is_active =0
+			meal_doc.approval_id = ""
+			approval_doc.save()
 		meal_doc.save()
 		frappe.db.commit()
 
