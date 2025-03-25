@@ -10,6 +10,9 @@ from frappe.twofactor import two_factor_is_enabled
 from frappe.utils.html_utils import get_icon_html
 from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys
 from frappe.utils.password import get_decrypted_password
+from hotpot.utils.email import *
+from frappe.utils.password import update_password
+import hashlib
 
 # no_cache = True
 
@@ -190,23 +193,38 @@ def generate_otp(phone):
 
 
 @frappe.whitelist()
-def verify_otp(phone, submitted_otp):
-	if not phone.startswith("+"):
-		phone = "+91- " + phone
+def verify_otp(identifier, submitted_otp):
+	"""
+	Verifies the OTP for both phone numbers and email addresses.
+	Deletes the OTP if verification is successful.
+	"""
+	
+	# Determine whether the identifier is a phone number or an email
+	if "@" in identifier:
+		key = f"{OTP_PREFIX}{identifier}"  # Email OTP key
+		user_field = "email"
+	else:
+		# Ensure phone number format consistency
+		if not identifier.startswith("+"):
+			identifier = "+91- " + identifier  # Assuming default country code
+		key = f"{OTP_PREFIX}{identifier}"  # Phone OTP key
+		user_field = "mobile_no"
 
-	key = f"{OTP_PREFIX}{phone}"
-
+	# Retrieve stored OTP from cache
 	stored_otp = frappe.cache().get_value(key)
+	submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
 
 	if not stored_otp:
 		set_response(404, False, "OTP expired or not found.")
 		return
 
+	# Validate OTP
 	if stored_otp == submitted_otp:
-		frappe.cache().delete_key(key)
 
+		# Fetch user data based on email or phone
 		data = frappe.db.get_value(
-			"Hotpot User", {"mobile_no": phone}, ["name", "email", "password"], as_dict=True
+			"Hotpot User", {user_field: identifier},
+			["name", "email", "password"], as_dict=True
 		)
 
 		set_response(200, True, "OTP verified successfully.", data)
@@ -214,3 +232,75 @@ def verify_otp(phone, submitted_otp):
 	else:
 		set_response(400, False, "Invalid OTP.")
 		return
+
+	
+@frappe.whitelist(allow_guest=True)
+def get_password_otp(email):
+	if not frappe.db.exists("Hotpot User", {"email": email}):
+		set_response(404, False, f"User with email {email} not found.")
+		return
+	user_doc = frappe.get_doc("Hotpot User", {"email": email})
+
+	otp = str(random.randint(100000, 999999))
+	hash_otp= hashlib.sha256(otp.encode()).hexdigest()
+
+	key = f"{OTP_PREFIX}{email}"
+
+	frappe.cache().set_value(key, hash_otp, expires_in_sec=300)
+	context = {
+		"user_data": user_doc,
+		"otp": otp,
+		"otp_expiry": 5
+	}
+
+	set_response(200, True, f"OTP generated and sent to {email}, valid for 5 minutes.")
+	send_email("password_reset", email, context, "Password Reset OTP")
+	
+	return
+
+
+
+@frappe.whitelist(allow_guest=True)
+def set_password():
+    try:
+        data = json.loads(frappe.request.data)
+        email = data.get("email")
+        submitted_otp = data.get("otp")
+        new_password = data.get("password")
+
+        if not (email and submitted_otp and new_password):
+            set_response(400, False, "Email, OTP, and password are required.")
+            return
+
+        if not frappe.db.exists("Hotpot User", {"email": email}):
+            set_response(404, False, f"User with email {email} not found.")
+            return
+
+        # Get stored OTP from cache
+        key = f"{OTP_PREFIX}{email}"
+        stored_hashed_otp = frappe.cache().get_value(key)
+
+        if not stored_hashed_otp:
+            set_response(400, False, "Session Expired.")
+            return
+
+        # Hash the submitted OTP and compare
+        hashed_submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
+
+        if hashed_submitted_otp != stored_hashed_otp:
+            set_response(400, False, "Invalid OTP.")
+            return
+
+        # OTP is valid, proceed with password reset
+        update_password(email, new_password, logout_all_sessions=True)
+
+        # Remove OTP from cache to prevent reuse
+        frappe.cache().delete_value(key)
+
+        set_response(200, True, "Password reset successfully.")
+        return
+
+    except Exception as e:
+        frappe.log_error(f"Password reset error: {str(e)}", "Set Password Error")
+        set_response(500, False, f"An error occurred: {str(e)}")
+        return

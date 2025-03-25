@@ -104,6 +104,7 @@
   {
    "fieldname": "password",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Password"
   },
   {
@@ -174,7 +175,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-13 15:16:06.787986",
+ "modified": "2025-03-25 11:46:18.534723",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

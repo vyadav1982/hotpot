@@ -267,10 +267,11 @@ def delete_meal():
 		if coupons and not status:
 			set_response(409, False, "Need Admin Approval for this operation.")
 			return
-		approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
-		approval_doc.is_active =0
-		meal_doc.approval_id = ""
-		approval_doc.save()
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
+			approval_doc.is_active =0
+			meal_doc.approval_id = ""
+			approval_doc.save()
 		meal_doc.delete()
 		frappe.db.commit()
 
