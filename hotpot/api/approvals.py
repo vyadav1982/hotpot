@@ -4,8 +4,24 @@ from ..api.users import *
 import json
 from frappe.utils.file_manager import save_file
 from hotpot.utils.utc_time import *
+from hotpot.utils.email import *
 
 
+
+
+def send_approval_request_email(to_email, user_data, request_data, doc,meal_name):
+    email_subject = f"Approval Request from {user_data.employee_name} ({user_data.employee_id}) for {request_data['request_type']}"
+    context = {
+        "user_data": user_data,
+        "request_data": request_data,
+        "meal_name": meal_name,
+        "get_approval_link": get_approval_link(doc)
+    }
+    send_email("approval_email", to_email, context, email_subject)
+
+def get_approval_link(doc):
+	return f"http://shashi.localhost:8000/app/hotpot-approvals/{doc}"
+    # return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
 
 
 def set_response(http_status_code, status, message, data=None):
@@ -73,11 +89,11 @@ def create_approval():
 			return set_response(400, False, "Mobile number should contain 10 digits")
 		
 		mobile_no = data.get("country_code")+"- "+data.get("guest_mobile_no")
-
+		existing_approval = None
 		if user_data.get("role") == "Hotpot User":
 			existing_approval = frappe.get_all(
 				"Hotpot Approvals",
-				filters={"guest_mobile_no": data.get("guest_mobile_no"), "approval_status": "Pending"},
+				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
 				limit=1
 			)
 		if existing_approval:
@@ -105,9 +121,8 @@ def create_approval():
 			})
 
 		approval = frappe.get_doc(approval_data)
-
+		meal_doc = frappe.get_doc("Hotpot Meal", data.get("meal_id"))
 		if user_data.get("role") in ["Hotpot Vendor", "Hotpot Server"]:
-			meal_doc = frappe.get_doc("Hotpot Meal", data.get("meal_id"))
 			if not meal_doc:
 				return set_response(404, False, "Meal not found")
 
@@ -116,15 +131,16 @@ def create_approval():
 
 			meal_doc.approval_id = approval.name
 			meal_doc.save()
-
-		approval.insert()
+		# approval.insert()
 		existing_approvals = frappe.db.get_value("Hotpot User", user_data.get("name"), "approval_id")
-		print(existing_approvals)
 		approval_list = json.loads(existing_approvals) if existing_approvals and isinstance(existing_approvals, str) else []
 		if not isinstance(approval_list, list):
 			approval_list = []
 
 		approval_list.append(approval.name)
+		
+		send_approval_request_email("sashikant12rao@gmail.com",user_data,data,approval.name,meal_doc.meal_title)
+
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()
