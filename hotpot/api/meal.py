@@ -39,6 +39,9 @@ def give_feedback():
 		if not meal_doc:
 			set_response(404, False, "Meal Not found")
 			return
+		if any(entry.get("employee_id") == user_data.get("name") for entry in meal_doc.get("ratings", [])):
+			set_response(400, False, "You've already rated this meal! No double-dipping! 🍽️❌")
+			return
 		meal_doc.append(
 			"ratings",
 			{
@@ -280,9 +283,6 @@ def delete_meal():
 @frappe.whitelist()
 def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 	try:
-		print("----------------------------------------------------------------")
-		print(for_kiosk)
-		print("----------------------------------------------------------------")
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
@@ -305,7 +305,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		base_fields = [
 			"name", "meal_title", "day", "meal_items", "start_time", "end_time",
 			"buffer_coupon_count", "meal_weight", "meal_date", "is_special",
-			"vendor_id", "repeat_type", "repeat_days"
+			"vendor_id", "repeat_type", "repeat_days","leading_time","cancellation_time"
 		]
 		if for_kiosk:
 			base_fields.append("lead_time")
