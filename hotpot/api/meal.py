@@ -306,7 +306,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		base_fields = [
 			"name", "meal_title", "day", "meal_items", "start_time", "end_time",
 			"buffer_coupon_count", "meal_weight", "meal_date", "is_special",
-			"vendor_id", "repeat_type", "repeat_days","leading_time","cancellation_time"
+			"vendor_id", "repeat_type", "repeat_days","lead_time","cancellation_time"
 		]
 		if for_kiosk:
 			base_fields.append("lead_time")

@@ -20,8 +20,8 @@ def send_approval_request_email(to_email, user_data, request_data, doc,meal_name
     send_email("approval_email", to_email, context, email_subject)
 
 def get_approval_link(doc):
-	return f"http://shashi.localhost:8000/app/hotpot-approvals/{doc}"
-    # return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
+	# return f"http://shashi.localhost:8000/app/hotpot-approvals/{doc}"
+    return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
 
 
 def set_response(http_status_code, status, message, data=None):
@@ -131,7 +131,7 @@ def create_approval():
 
 			meal_doc.approval_id = approval.name
 			meal_doc.save()
-		# approval.insert()
+		approval.insert()
 		existing_approvals = frappe.db.get_value("Hotpot User", user_data.get("name"), "approval_id")
 		approval_list = json.loads(existing_approvals) if existing_approvals and isinstance(existing_approvals, str) else []
 		if not isinstance(approval_list, list):
