@@ -55,14 +55,23 @@ def get_approvals():
 		if not approvals:
 			set_response(200, False, "No approvals found")
 			return
+		meal_fields = [
+			"name", "owner", "creation", "modified", "modified_by", "docstatus", "idx",
+			"meal_title", "meal_items", "start_time", "end_time", "buffer_coupon_count",
+			"vendor_id", "is_active", "meal_date", "meal_weight", "is_special",
+			"lead_time", "cancellation_time", "repeat_type", "repeat_days", "approval_id"
+		]
+
+		# Append filtered meal details for each approval
 		for approval in approvals:
 			meal_id = approval.get("meal_id")
 			if meal_id:
 				try:
-					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
-					approval["meal_details"] = meal_doc.as_dict()
+					meal_data = frappe.db.get_value("Hotpot Meal", meal_id, meal_fields, as_dict=True)
+					approval["meal_details"] = meal_data  # Attach only selected fields
 				except frappe.DoesNotExistError:
-					approval["meal_details"] = None
+					approval["meal_details"] = None  # Handle missing meal data gracefully
+
 
 		set_response(200, True, "Approvals fetched successfully", approvals)
 		return
