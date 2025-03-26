@@ -28,28 +28,63 @@ def get_coupon_count(start_date, end_date):
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_obj(end_date)
+		start_date = get_local_datetime_obj(start_date).date()
+		end_date = get_local_datetime_obj(end_date).date()
 		# start_date = f"{start_date} 00:00:00"
+		# print(start_date,end_date)
 
+		# coupon_query = """
+		# 	SELECT DATE(hc.coupon_date) AS coupon_date, COUNT(hc.name) AS coupon_count
+		# 	FROM `tabHotpot Coupons` AS hc
+		# 	INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+		# 	WHERE hm.vendor_id = %(vendor_name)s AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
+		# 	GROUP BY DATE(hc.coupon_date)
+		# 	ORDER BY DATE(hc.coupon_date) ASC;
+		# """
+		user_timezone = get_user_timezone() or "Asia/Kolkata"
 		coupon_query = """
-			SELECT DATE(hc.coupon_date) AS coupon_date, COUNT(hc.name) AS coupon_count
+			SELECT DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) AS coupon_date, 
+				COUNT(hc.name) AS coupon_count
 			FROM `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-			WHERE hm.vendor_id = %(vendor_name)s AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-			GROUP BY DATE(hc.coupon_date)
-			ORDER BY DATE(hc.coupon_date) ASC;
+			WHERE hm.vendor_id = %(vendor_name)s 
+			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
+			GROUP BY DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s))
+			ORDER BY DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) ASC;
 		"""
+
 	
+		# feedback_query = """
+		# 	SELECT COUNT(hr.name) AS total_feedback
+		# 	FROM `tabHotpot Meal Rating` AS hr
+		# 	INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hr.parent
+		# 	WHERE hm.vendor_id = %(vendor_name)s AND hr.creation BETWEEN %(start_date)s AND %(end_date)s;
+		# """
 		feedback_query = """
 			SELECT COUNT(hr.name) AS total_feedback
 			FROM `tabHotpot Meal Rating` AS hr
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hr.parent
-			WHERE hm.vendor_id = %(vendor_name)s AND hr.creation BETWEEN %(start_date)s AND %(end_date)s;
+			WHERE hm.vendor_id = %(vendor_name)s 
+			AND DATE(CONVERT_TZ(hr.creation, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s;
 		"""
-		
-		params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
 
-		day_wise_data = frappe.db.sql(coupon_query, params, as_dict=True)
-		total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
+		
+		# params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
+
+		# day_wise_data = frappe.db.sql(coupon_query, params, as_dict=True)
+		day_wise_data=frappe.db.sql(coupon_query, {
+			"vendor_name": user_doc.get("guest_of"),
+			"start_date": start_date,
+			"end_date": end_date,
+			"user_timezone": user_timezone
+		},as_dict=True)
+		# total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
+		total_feedback=frappe.db.sql(feedback_query, {
+			"vendor_name": user_doc.get("guest_of"),
+			"start_date": start_date,
+			"end_date": end_date,
+			"user_timezone": user_timezone
+		}, as_dict=True)[0].get("total_feedback", 0)
 
 		response = {
 			"total_feedback": total_feedback,
