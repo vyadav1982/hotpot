@@ -15,9 +15,8 @@
             <li><strong>Guest Name:</strong> {{ request_data['guest_name']|capitalize }}</li>
             <li><strong>Guest Mobile No.:</strong> {{ request_data['guest_mobile_no'] }}</li>
             <li><strong>Purpose of Visiting:</strong> {{ request_data['purpose_of_visiting']|capitalize }}</li>
-        {% else %}
-            <li><strong>Description:</strong> {{ request_data['description']|capitalize }}</li>
         {% endif %}
+        <li><strong>Description:</strong> {{ request_data['description']|capitalize }}</li>
         <li><strong>Date Submitted:</strong> {{ frappe.utils.now_datetime().strftime('%d %b %Y %I:%M %p') }}</li>
     </ul>
 

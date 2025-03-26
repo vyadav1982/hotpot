@@ -4,9 +4,17 @@
 import frappe
 from frappe.model.document import Document
 import random
+from hotpot.utils.email import * 
 
-
-def set_user_password(site, user, password, logout_all_sessions=False):
+def send_password_email(to_email, user_doc, password):
+    email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
+    context = {
+        "user_data": user_doc,
+        "password": password,
+        "login_url": frappe.utils.get_url('app/login')
+    }
+    send_email("initial_password", to_email, context, email_subject)
+def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 	from frappe.utils.password import update_password
 
 	if not password:
@@ -22,6 +30,7 @@ def set_user_password(site, user, password, logout_all_sessions=False):
 
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
 		frappe.db.commit()
+		# send_password_email(user,user_doc,password)
 	finally:
 		frappe.destroy()
 
@@ -53,7 +62,7 @@ class HotpotUser(Document):
 		longitude: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
-		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor"]
+		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor", "Hotpot Admin"]
 		tag_id: DF.Data | None
 		timezone: DF.Data | None
 	# end: auto-generated types
@@ -90,7 +99,7 @@ class HotpotUser(Document):
 				frappe.db.commit()
 
 				user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
-
+				user_doc=None
 				if user_name:
 					user_doc = frappe.get_doc("Hotpot User", user_name)
 
@@ -112,9 +121,10 @@ class HotpotUser(Document):
 							meal_doc.insert(ignore_permissions=True)
 
 						frappe.db.commit()
-
-				set_user_password(frappe.local.site, self.email, self.password)
+				password = frappe.generate_hash(length=8)
+				set_user_password(frappe.local.site, self.email,password,user_doc)
 				frappe.db.commit()
+				
 			else:
 				frappe.throw(f"A user with {self.email} is already present. Check User Doctype for more details. This user is created but you can'nt login for this user either delete the previous one and create another or enable the previous one.")
 				return {

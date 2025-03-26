@@ -76,13 +76,16 @@ def send_email(template_name, to_email, context, subject):
         # print(email_body)
     except Exception as e:
         frappe.throw(f"Error rendering email template: {str(e)}")
-
-    frappe.sendmail(
-        recipients=to_email,
-        subject=subject,
-        content=email_body,
-        now=True
-    )
+    try:
+        frappe.sendmail(
+            recipients=to_email,
+            subject=subject,
+            content=email_body,
+            now=True
+        )
+    except Exception as e:
+        frappe.throw(f"Failed to send email: {str(e)}")
+        frappe.msgprint(f"Failed to send email to {to_email}. ��")
 
     # send_zoho_mail(
     #     to_email=to_email,
