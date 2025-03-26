@@ -82,13 +82,14 @@ def create_approval():
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing_fields)}")
-
-		if data.get("guest_mobile_no") and not data.get("guest_mobile_no").strip().isdigit():
-			return set_response(400, False, "Mobile number should contain only digits")
-		if data.get("guest_mobile_no") and len(data.get("guest_mobile_no").strip()) != 10:
-			return set_response(400, False, "Mobile number should contain 10 digits")
+		if user_data.get("role")=="Hotpot User":
+			if data.get("guest_mobile_no") and not data.get("guest_mobile_no").strip().isdigit():
+				return set_response(400, False, "Mobile number should contain only digits")
+			if data.get("guest_mobile_no") and len(data.get("guest_mobile_no").strip()) != 10:
+				return set_response(400, False, "Mobile number should contain 10 digits")
 		
-		mobile_no = data.get("country_code")+"- "+data.get("guest_mobile_no")
+		if user_data.get("role")=="Hotpot User":
+			mobile_no = data.get("country_code")+"- "+data.get("guest_mobile_no")
 		existing_approval = None
 		if user_data.get("role") == "Hotpot User":
 			existing_approval = frappe.get_all(
@@ -138,7 +139,6 @@ def create_approval():
 			approval_list = []
 
 		approval_list.append(approval.name)
-		
 		send_approval_request_email("sashikant12rao@gmail.com",user_data,data,approval.name,meal_doc.meal_title)
 
 
