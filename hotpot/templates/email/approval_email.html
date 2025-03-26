@@ -4,19 +4,19 @@
 
 {% block content %}
     <h2>Hello Admin,</h2>
-    <p>{{ user_data.employee_name }} has submitted a <strong>{{ request_data['request_type'] }}</strong> request that requires your approval.</p>
+    <p>{{ user_data.employee_name|capitalize }} has submitted a <strong>{{ request_data['request_type']|capitalize }}</strong> request that requires your approval.</p>
 
     <h3>Request Details:</h3>
     <ul>
-        <li><strong>Employee:</strong> {{ user_data.employee_name }} ({{ user_data.employee_id }})</li>
-        <li><strong>Request Type:</strong> {{ request_data['request_type'] }}</li>
-        <li><strong>Meal Name:</strong> {{ meal_name }}</li>
+        <li><strong>Employee:</strong> {{ user_data.employee_name|capitalize }} ({{ user_data.employee_id }})</li>
+        <li><strong>Request Type:</strong> {{ request_data['request_type']|capitalize }}</li>
+        <li><strong>Meal Name:</strong> {{ meal_name|capitalize }}</li>
         {% if request_data['request_type'] == 'Guest Coupon Generation' %}
-            <li><strong>Guest Name:</strong> {{ request_data['guest_name'] }}</li>
+            <li><strong>Guest Name:</strong> {{ request_data['guest_name']|capitalize }}</li>
             <li><strong>Guest Mobile No.:</strong> {{ request_data['guest_mobile_no'] }}</li>
-            <li><strong>Purpose of Visiting:</strong> {{ request_data['purpose_of_visiting'] }}</li>
+            <li><strong>Purpose of Visiting:</strong> {{ request_data['purpose_of_visiting']|capitalize }}</li>
         {% else %}
-            <li><strong>Description:</strong> {{ request_data['description'] }}</li>
+            <li><strong>Description:</strong> {{ request_data['description']|capitalize }}</li>
         {% endif %}
         <li><strong>Date Submitted:</strong> {{ frappe.utils.now_datetime().strftime('%d %b %Y %I:%M %p') }}</li>
     </ul>
