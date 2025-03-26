@@ -28,7 +28,7 @@ def get_coupon_count(start_date, end_date):
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
 		end_date = get_utc_datetime_obj(end_date)
-		start_date = f"{start_date} 00:00:00"
+		# start_date = f"{start_date} 00:00:00"
 
 		coupon_query = """
 			SELECT DATE(hc.coupon_date) AS coupon_date, COUNT(hc.name) AS coupon_count
@@ -646,6 +646,7 @@ def generate_coupon():
 		for i in range(len(meal_ids)):
 			meal_id = meal_ids[i]
 			local_time_now = get_local_time_now()
+			print(local_time_now)
 			start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
 			from_date = start_date.date()
 
