@@ -82,7 +82,6 @@
    "fieldtype": "Phone",
    "in_list_view": 1,
    "label": "Guest Mobile No.",
-   "reqd": 1,
    "search_index": 1
   },
   {
@@ -94,7 +93,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-25 17:07:27.164017",
+ "modified": "2025-03-26 15:37:59.732940",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
