@@ -14,6 +14,7 @@
   "vendor_id",
   "coupons",
   "is_active",
+  "is_deleted",
   "meal_date",
   "ratings",
   "meal_weight",
@@ -123,11 +124,17 @@
    "fieldtype": "Link",
    "label": "Approval Id",
    "options": "Hotpot Approvals"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_deleted",
+   "fieldtype": "Check",
+   "label": "Is Deleted"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-21 13:29:41.615893",
+ "modified": "2025-03-26 17:42:59.936988",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

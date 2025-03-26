@@ -22,6 +22,7 @@ class HotpotMeal(Document):
 		coupons: DF.Table[HotpotCoupons]
 		end_time: DF.Datetime | None
 		is_active: DF.Check
+		is_deleted: DF.Check
 		is_special: DF.Check
 		lead_time: DF.Int
 		meal_date: DF.Datetime | None
