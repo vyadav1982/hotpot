@@ -55,6 +55,14 @@ def get_approvals():
 		if not approvals:
 			set_response(200, False, "No approvals found")
 			return
+		for approval in approvals:
+			meal_id = approval.get("meal_id")
+			if meal_id:
+				try:
+					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+					approval["meal_details"] = meal_doc.as_dict()
+				except frappe.DoesNotExistError:
+					approval["meal_details"] = None
 
 		set_response(200, True, "Approvals fetched successfully", approvals)
 		return
