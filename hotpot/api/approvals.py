@@ -130,13 +130,14 @@ def create_approval():
 			if meal_doc.get("approval_id"):
 				return set_response(400, False, "Pending approval already exists for this meal.")
 
-			meal_doc.approval_id = approval.name
-			meal_doc.save()
 		approval.insert()
 		existing_approvals = frappe.db.get_value("Hotpot User", user_data.get("name"), "approval_id")
 		approval_list = json.loads(existing_approvals) if existing_approvals and isinstance(existing_approvals, str) else []
 		if not isinstance(approval_list, list):
 			approval_list = []
+		if user_data.get("role") in ["Hotpot Vendor", "Hotpot Server"]:
+			meal_doc.approval_id = approval.name
+			meal_doc.save()
 
 		approval_list.append(approval.name)
 		send_approval_request_email("sashikant12rao@gmail.com",user_data,data,approval.name,meal_doc.meal_title)
