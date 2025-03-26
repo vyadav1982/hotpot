@@ -30,7 +30,7 @@ def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
 		frappe.db.commit()
-		# send_password_email(user,user_doc,password)
+		send_password_email(user,user_doc,password)
 	finally:
 		frappe.destroy()
 
