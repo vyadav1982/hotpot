@@ -287,7 +287,9 @@ def scan_coupon():
 		else:
 			emp_doc = get_hotpot_user_by_tag_id(user_id)
 
-
+		if not emp_doc:
+			set_response(404, False, "Employee not found")
+			return
 		if not user_doc:
 			set_response(404, False, "User Not Found")
 			return
