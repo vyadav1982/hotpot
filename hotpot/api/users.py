@@ -155,7 +155,6 @@ def get_hotpot_user_by_employee_id(employee_id):
 @frappe.whitelist(allow_guest=True)
 def get_hotpot_user_by_tag_id(tag_id):
 	try:
-		print(tag_id)
 		if not tag_id:
 			set_response(400, False, "Tag ID is required")
 			return
@@ -183,7 +182,6 @@ def get_hotpot_user_by_tag_id(tag_id):
 				"longitude"
 			],
 		)
-		print(user)
 		if user:
 			return user[0]
 		return None
