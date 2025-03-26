@@ -272,7 +272,9 @@ def delete_meal():
 			approval_doc.is_active =0
 			meal_doc.approval_id = ""
 			approval_doc.save()
-		meal_doc.delete()
+		meal_doc.is_deleted = 1
+		meal_doc.is_active=0
+		meal_doc.save()
 		frappe.db.commit()
 
 		set_response(200, True, "Meal deleted successfully")
@@ -316,6 +318,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			print("Hello Vendor")
 			filters = [
 				["vendor_id", "=", user_data.get("guest_of")],
+				["is_deleted", "=", 0]
 			]
 
 			meals = frappe.db.get_list(
