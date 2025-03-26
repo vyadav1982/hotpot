@@ -217,7 +217,11 @@ def update_meal():
 			"lead_time"
 		]:
 			if field in data:
-				setattr(meal_doc, field, ",".join(data[field]) if field == "meal_items" else data[field])
+				if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
+					setattr(meal_doc, field, str(",".join(data[field])))  # Explicitly convert to string
+				else:
+					setattr(meal_doc, field, data[field])
+
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
 			approval_doc.is_active =0

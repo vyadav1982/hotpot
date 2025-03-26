@@ -693,13 +693,16 @@ def generate_coupon():
 			
 			dob = user_doc.get("date_of_birth")
 			start = get_local_datetime_obj(start_date).date()
-
-			is_birthday = (
-				hotpot_config.get("free_birthday_meal") == 1
-				and dob.month == start.month
-				and dob.day == start.day
-			)
-			is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
+			is_birthday = False
+			if user_doc.get("date_of_birth"):
+				is_birthday = (
+					hotpot_config.get("free_birthday_meal") == 1
+					and dob.month == start.month
+					and dob.day == start.day
+				)
+			is_joining_day = False
+			if user_doc.get("joining_date"):
+				is_joining_day = hotpot_config.get("free_joining_day_meal") == 1 and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
 
 			try:
 				meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
