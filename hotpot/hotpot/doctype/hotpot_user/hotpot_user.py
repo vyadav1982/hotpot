@@ -77,6 +77,8 @@ class HotpotUser(Document):
 			if not frappe.db.exists("User", {"email": self.email}):
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
+				role = self.role
+				user_type = "System User" if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin"] else "Website User"
 				new_user.update({
 					"email": self.email,
 					"first_name": names[0],
@@ -87,6 +89,7 @@ class HotpotUser(Document):
 					"follow_liked_documents": 1,
 					"send_welcome_email": 0,
 					"search_bar": 0,
+					"user_type":user_type,
 					"default_app": "hotpot",
 				})
 				if not frappe.db.exists("Role", self.role):
