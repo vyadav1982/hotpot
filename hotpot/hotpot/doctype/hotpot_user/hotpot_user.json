@@ -105,6 +105,7 @@
   {
    "fieldname": "password",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Password"
   },
   {
