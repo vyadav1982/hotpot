@@ -10,7 +10,7 @@ from hotpot.utils.utc_time import *
 
 
 @frappe.whitelist()
-def get_coupon_count(start_date, end_date):
+def get_coupon_count(start_date, end_date,user=False):
 	try:
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
@@ -21,7 +21,7 @@ def get_coupon_count(start_date, end_date):
 			set_response(404, False, "User Not found")
 			return
 
-		if user_doc.get("role") == "Hotpot User":
+		if not user and  user_doc.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
@@ -30,18 +30,33 @@ def get_coupon_count(start_date, end_date):
 		end_date = get_utc_datetime_obj(end_date)
 		start_date = get_local_datetime_obj(start_date).date()
 		end_date = get_local_datetime_obj(end_date).date()
-		# start_date = f"{start_date} 00:00:00"
-		# print(start_date,end_date)
-
-		# coupon_query = """
-		# 	SELECT DATE(hc.coupon_date) AS coupon_date, COUNT(hc.name) AS coupon_count
-		# 	FROM `tabHotpot Coupons` AS hc
-		# 	INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-		# 	WHERE hm.vendor_id = %(vendor_name)s AND hc.coupon_date BETWEEN %(start_date)s AND %(end_date)s
-		# 	GROUP BY DATE(hc.coupon_date)
-		# 	ORDER BY DATE(hc.coupon_date) ASC;
-		# """
+		
+		
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
+
+		if user_doc.get("role") =="Hotpot User":
+			print("(((((((((((())))))))))))")
+			coupon_query = """
+				SELECT hc.coupon_status, 
+					COUNT(hc.name) AS coupon_count
+				FROM `tabHotpot Coupons` AS hc
+				WHERE hc.employee_id = %(user_name)s
+					AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) 
+					BETWEEN %(start_date)s AND %(end_date)s
+				GROUP BY hc.coupon_status
+				ORDER BY hc.coupon_status ASC;
+			"""
+
+			coupon_data = frappe.db.sql(coupon_query,{
+				"user_name": user_doc.get("name"),
+                "user_timezone": user_timezone,
+                "start_date": start_date,
+                "end_date": end_date
+			},as_dict=True)
+			set_response(200,True,"Coupon data fetched successfully",coupon_data)
+			return
+
+
 		coupon_query = """
 			SELECT DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) AS coupon_date, 
 				COUNT(hc.name) AS coupon_count
@@ -54,12 +69,6 @@ def get_coupon_count(start_date, end_date):
 		"""
 
 	
-		# feedback_query = """
-		# 	SELECT COUNT(hr.name) AS total_feedback
-		# 	FROM `tabHotpot Meal Rating` AS hr
-		# 	INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hr.parent
-		# 	WHERE hm.vendor_id = %(vendor_name)s AND hr.creation BETWEEN %(start_date)s AND %(end_date)s;
-		# """
 		feedback_query = """
 			SELECT COUNT(hr.name) AS total_feedback
 			FROM `tabHotpot Meal Rating` AS hr
@@ -129,6 +138,9 @@ def cancel_coupon():
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
 			return
+		if meal_doc.is_deleted:
+			set_response(400, False, "Oops! The vendor deleted the meal!😢")  
+			return
 		coupons = meal_doc.get("coupons")
 
 		coupon_found = None
@@ -183,6 +195,7 @@ def cancel_coupon():
 		user_doc = frappe.get_doc("Hotpot User",coupon_found.employee_id)
 		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of:
 			user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
+		
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
 		history_doc = frappe.new_doc("Hotpot Coupons History")
