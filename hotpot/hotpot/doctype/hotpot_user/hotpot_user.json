@@ -56,7 +56,7 @@
    "fieldname": "role",
    "fieldtype": "Select",
    "label": "Role",
-   "options": "Hotpot User\nHotpot Server\nHotpot Vendor",
+   "options": "Hotpot User\nHotpot Server\nHotpot Vendor\nHotpot Admin\nHotpot HR\nHotpot Finance",
    "search_index": 1
   },
   {
@@ -176,7 +176,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-25 11:46:18.534723",
+ "modified": "2025-03-27 17:13:30.889529",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
