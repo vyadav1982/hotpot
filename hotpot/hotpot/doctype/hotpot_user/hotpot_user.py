@@ -7,13 +7,13 @@ import random
 from hotpot.utils.email import * 
 
 def send_password_email(to_email, user_doc, password):
-    email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
-    context = {
-        "user_data": user_doc,
-        "password": password,
-        "login_url": frappe.utils.get_url('app/login')
-    }
-    send_email("initial_password", to_email, context, email_subject)
+	email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
+	context = {
+		"user_data": user_doc,
+		"password": password,
+		"login_url": frappe.utils.get_url('app/login')
+	}
+	send_email("initial_password", to_email, context, email_subject)
 def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 	from frappe.utils.password import update_password
 
@@ -62,7 +62,7 @@ class HotpotUser(Document):
 		longitude: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
-		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor", "Hotpot Admin"]
+		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor", "Hotpot Admin", "Hotpot HR", "Hotpot Finance"]
 		tag_id: DF.Data | None
 		timezone: DF.Data | None
 	# end: auto-generated types
@@ -77,6 +77,8 @@ class HotpotUser(Document):
 			if not frappe.db.exists("User", {"email": self.email}):
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
+				role = self.role
+				user_type = "System User" if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin"] else "Website User"
 				new_user.update({
 					"email": self.email,
 					"first_name": names[0],
@@ -85,7 +87,9 @@ class HotpotUser(Document):
 					"enabled": 1,
 					"document_follow_notify": 1,
 					"follow_liked_documents": 1,
+					"send_welcome_email": 0,
 					"search_bar": 0,
+					"user_type":user_type,
 					"default_app": "hotpot",
 				})
 				if not frappe.db.exists("Role", self.role):
@@ -126,10 +130,9 @@ class HotpotUser(Document):
 				frappe.db.commit()
 				
 			else:
-				frappe.throw(f"A user with {self.email} is already present. Check User Doctype for more details. This user is created but you can'nt login for this user either delete the previous one and create another or enable the previous one.")
 				return {
-				    "status": "error",
-                    "message": "Duplicate user"
+					"status": "error",
+					"message": "Duplicate user"
 				}
 
 		except frappe.ValidationError as e:
@@ -174,4 +177,6 @@ class HotpotUser(Document):
 			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user deletion")
-			return {"status": "error", "message": "An unexpected error occurred during user deletion."}
+			return {"status": "error", "message": "An unexpected error occurred during user deletion."}	
+
+
