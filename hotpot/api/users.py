@@ -340,4 +340,32 @@ def update_latlong():
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Latitude and Longitude Error")
 		return set_response(500, False, f"Server error: {str(e)}")
+	
+@frappe.whitelist()
+def get_config():
+	try:
+		if frappe.request.method!= "GET":
+			set_response(405, False, "Only GET method is allowed")
+			return
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		config_doc = frappe.get_doc("Hotpot Configurations")
+		meta = frappe.get_meta("Hotpot Configurations")
+		system_fields = {"name", "owner", "modified", "modified_by", "docstatus","idx","doctype"}
+
+		user_created_fields = {
+			field.fieldname: getattr(config_doc, field.fieldname)
+			for field in meta.fields
+			if field.fieldname not in system_fields
+		}
+		if not config_doc:
+			set_response(404, False, "Configuration not found")
+			return
+		set_response(200, True, "Data fetched successfully", user_created_fields)
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Configuration Error")
+		return set_response(500, False, f"Server error: {str(e)}")
 
