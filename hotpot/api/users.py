@@ -312,3 +312,32 @@ def update_user_timezone():
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Timezone Error")
 		return set_response(500, False, f"Server error: {str(e)}")
+	
+@frappe.whitelist()
+def update_latlong():
+	try:
+		if frappe.request.method != "PUT":
+			set_response(405, False, "Only PUT method is allowed")
+			return
+
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		latitude = data.get("latitude")
+		longitude = data.get("longitude")
+		if not latitude or not longitude:
+			set_response(400, False, "Latitude and Longitude are required")
+			return
+		doc = frappe.get_doc("Hotpot User", user_doc.name)
+		doc.latitude = latitude
+		doc.longitude = longitude
+		doc.save(ignore_permissions=True)
+		set_response(200, True, "Latitude and Longitude updated successfully")
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Latitude and Longitude Error")
+		return set_response(500, False, f"Server error: {str(e)}")
+
