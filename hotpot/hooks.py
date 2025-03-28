@@ -26,6 +26,9 @@ add_to_apps_screen = [
 extend_bootinfo = "hotpot.boot.boot_session"
 
 fixtures = [
+    
+	"Module Profile",  
+	"Block Module",
 	{
 		"doctype": "Role",
 		"filters": {
