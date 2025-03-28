@@ -36,6 +36,8 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
+                    "Hotpot HR",
+                    "Hotpot Finance",
 				],
 			]
 		},
@@ -50,6 +52,8 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
+                    "Hotpot HR",
+                    "Hotpot Finance",
 				],
 			],
 		},
@@ -73,7 +77,9 @@ fixtures = [
                     "Hotpot Admin",
                     "Hotpot User",
                     "Hotpot Server",
-                    "Hotpot Vendor"
+                    "Hotpot Vendor",
+                    "Hotpot HR",
+                    "Hotpot Finance",
                 ]
             ]
         }
@@ -305,7 +311,7 @@ export_python_type_annotations = True
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-website_route_rules = [
-	{"from_route": "/hotpot/<path:app_path>", "to_route": "hotpot"},
-	{"from_route": "/hotpot_mobile/<path:app_path>", "to_route": "hotpot"},
-]
+# website_route_rules = [
+# 	{"from_route": "/hotpot/<path:app_path>", "to_route": "app"},
+# 	{"from_route": "/hotpot_mobile/<path:app_path>", "to_route": "app"},
+# ]

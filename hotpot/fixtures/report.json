@@ -10,7 +10,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-03-11 10:18:53.152129",
+  "modified": "2025-03-28 11:46:46.610657",
   "module": "Hotpot",
   "name": "Meal Consumption Report",
   "prepared_report": 0,
@@ -25,19 +25,19 @@
     "parent": "Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot User"
+    "role": "Hotpot Admin"
    },
    {
     "parent": "Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Vendor"
+    "role": "Hotpot Finance"
    },
    {
     "parent": "Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Server"
+    "role": "Hotpot HR"
    }
   ],
   "timeout": 0
@@ -53,7 +53,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-03-10 13:29:29.668733",
+  "modified": "2025-03-28 11:46:24.362611",
   "module": "Hotpot",
   "name": "Birthday Coupons Report",
   "prepared_report": 0,
@@ -68,19 +68,19 @@
     "parent": "Birthday Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot User"
+    "role": "Hotpot Admin"
    },
    {
     "parent": "Birthday Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Vendor"
+    "role": "Hotpot Finance"
    },
    {
     "parent": "Birthday Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Server"
+    "role": "Hotpot HR"
    }
   ],
   "timeout": 0
@@ -96,7 +96,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-03-10 16:09:39.687988",
+  "modified": "2025-03-28 11:46:35.343491",
   "module": "Hotpot",
   "name": "Joining Day Coupons Report",
   "prepared_report": 0,
@@ -111,19 +111,19 @@
     "parent": "Joining Day Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot User"
+    "role": "Hotpot Admin"
    },
    {
     "parent": "Joining Day Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Vendor"
+    "role": "Hotpot Finance"
    },
    {
     "parent": "Joining Day Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Server"
+    "role": "Hotpot HR"
    }
   ],
   "timeout": 0
@@ -139,7 +139,7 @@
   "javascript": null,
   "json": null,
   "letter_head": null,
-  "modified": "2025-03-11 11:32:41.653999",
+  "modified": "2025-03-28 11:46:55.845154",
   "module": "Hotpot",
   "name": "Guest Meal Consumption Report",
   "prepared_report": 0,
@@ -154,19 +154,19 @@
     "parent": "Guest Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot User"
+    "role": "Hotpot Finance"
    },
    {
     "parent": "Guest Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Vendor"
+    "role": "Hotpot Admin"
    },
    {
     "parent": "Guest Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Server"
+    "role": "Hotpot HR"
    }
   ],
   "timeout": 0

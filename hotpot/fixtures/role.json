@@ -30,9 +30,9 @@
   "disabled": 0,
   "docstatus": 0,
   "doctype": "Role",
-  "home_page": null,
+  "home_page": "/app",
   "is_custom": 0,
-  "modified": "2024-12-09 14:41:58.622173",
+  "modified": "2025-03-28 10:25:10.788229",
   "name": "Hotpot Admin",
   "restrict_to_domain": null,
   "role_name": "Hotpot Admin",
@@ -49,6 +49,32 @@
   "name": "Hotpot Vendor",
   "restrict_to_domain": null,
   "role_name": "Hotpot Vendor",
+  "two_factor_auth": 0
+ },
+ {
+  "desk_access": 1,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Role",
+  "home_page": "/app",
+  "is_custom": 0,
+  "modified": "2025-03-27 17:11:53.191500",
+  "name": "Hotpot HR",
+  "restrict_to_domain": null,
+  "role_name": "Hotpot HR",
+  "two_factor_auth": 0
+ },
+ {
+  "desk_access": 1,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Role",
+  "home_page": "/app",
+  "is_custom": 0,
+  "modified": "2025-03-27 17:12:21.626636",
+  "name": "Hotpot Finance",
+  "restrict_to_domain": null,
+  "role_name": "Hotpot Finance",
   "two_factor_auth": 0
  }
 ]
