@@ -98,7 +98,8 @@ class HotpotUser(Document):
 					"form_sidebar":0,
 					"timeline":0,
 					"dashboard":0,
-					"module_profile": "Hotpot Admin" if role == "Hotpot Admin" else "Hotpot",
+					# "module_profile": "Hotpot Admin" if role == "Hotpot Admin" else "Hotpot",
+					"module_profile": "Hotpot",
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
@@ -172,7 +173,8 @@ class HotpotUser(Document):
 				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
 				frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
 
-				frappe_user.module_profile = "Hotpot Admin" if self.role == "Hotpot Admin" else "Hotpot"
+				# frappe_user.module_profile = "Hotpot Admin" if self.role == "Hotpot Admin" else "Hotpot"
+				frappe_user.module_profile = "Hotpot"
 				frappe_user.roles = []  
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
