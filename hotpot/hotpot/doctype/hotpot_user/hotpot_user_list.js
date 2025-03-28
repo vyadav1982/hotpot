@@ -2,7 +2,7 @@ frappe.listview_settings["Hotpot User"] = {
     hide_name_column: true,
     onload(listview) {
         let buttonText = __("Disable User");
-        console.log()
+        console.log("Hellooo........")
 
         let disableBtn = listview.page.add_inner_button(buttonText, function () {
             let selectedUsers = listview.get_checked_items().map(doc => doc.name);
