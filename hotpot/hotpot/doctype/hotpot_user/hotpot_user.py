@@ -74,7 +74,9 @@ class HotpotUser(Document):
 
 	def after_insert(self):
 		try:
-			if not frappe.db.exists("User", {"email": self.email}):
+			print("hellllllllllllllllllllllllllllllllllllllllloooooooooooooooooo")
+			user = frappe.get_doc("User", {"email": self.email})
+			if not user or user.enabled==0:
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				role = self.role
@@ -88,10 +90,29 @@ class HotpotUser(Document):
 					"document_follow_notify": 1,
 					"follow_liked_documents": 1,
 					"send_welcome_email": 0,
-					"search_bar": 0,
 					"user_type":user_type,
+					"search_bar":0,
+					"notifications":0,
+					"list_sidebar":0,
+					"bulk_action":0,
+					"view_switcher":0,
+					"form_sidebar":0,
+					"timeline":0,
+					"dashboard":0,
+					"module_profile": "Hotpot Admin" if role == "Hotpot Admin" else "Hotpot",
+					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
+				if role == "Hotpot Admin":
+					new_user.update({
+						"notifications": 1,
+						"list_sidebar": 1,
+						"bulk_action": 1,
+						"view_switcher": 1,
+						"form_sidebar": 1,
+						"timeline": 1,
+						"dashboard": 1,
+					})
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
 
@@ -127,8 +148,7 @@ class HotpotUser(Document):
 						frappe.db.commit()
 				password = frappe.generate_hash(length=8)
 				set_user_password(frappe.local.site, self.email,password,user_doc)
-				frappe.db.commit()
-				
+				frappe.db.commit()	
 			else:
 				return {
 					"status": "error",
@@ -143,27 +163,41 @@ class HotpotUser(Document):
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user creation")
 			return {"status": "error", "message": "An unexpected error occurred."}
 
-
 	def on_update(self):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
 			if frappe_user:
-				names = self.employee_name.split(" ", 1)
-				frappe_user.enabled = self.is_active
-				frappe_user.first_name = names[0]
-				frappe_user.last_name = names[1] if len(names) > 1 else ""
-				frappe_user.username = self.employee_id
-				frappe_user.new_password = self.password
-				frappe_user.time_zone = self.time_zone
+				names = self.employee_name.split(" ", 1) if self.employee_name else ["", ""]
+				frappe_user.enabled = self.is_active if self.is_active is not None else frappe_user.enabled
+				frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
+				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
+				frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
+
+				frappe_user.module_profile = "Hotpot Admin" if self.role == "Hotpot Admin" else "Hotpot"
+				frappe_user.roles = []  
+				frappe_user.save()
+				frappe_user.append_roles(self.role)
+
+				if self.role == "Hotpot Admin":
+					frappe_user.notifications = 1,
+					frappe_user.list_sidebar = 1,
+					frappe_user.bulk_action = 1,
+					frappe_user.view_switcher = 1,
+					frappe_user.form_sidebar = 1,
+					frappe_user.timeline = 1,
+					frappe_user.dashboard = 1,
+
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
 				frappe.db.commit()
+
 		except frappe.DoesNotExistError:
 			frappe.log_error(f"User with email {self.email} does not exist.")
 			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user update")
 			return {"status": "error", "message": "An unexpected error occurred during user update."}
+
 
 	def on_trash(self):
 		try:
