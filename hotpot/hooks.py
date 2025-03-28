@@ -26,7 +26,6 @@ add_to_apps_screen = [
 extend_bootinfo = "hotpot.boot.boot_session"
 
 fixtures = [
-     {"doctype": "Workspace", "filters": [["name", "=", "Hotpot Workspace"]]},
 	{
 		"doctype": "Role",
 		"filters": {
