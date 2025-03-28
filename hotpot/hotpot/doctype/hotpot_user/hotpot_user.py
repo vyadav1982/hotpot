@@ -74,8 +74,7 @@ class HotpotUser(Document):
 
 	def after_insert(self):
 		try:
-			print("hellllllllllllllllllllllllllllllllllllllllloooooooooooooooooo")
-			user = frappe.get_doc("User", {"email": self.email})
+			user = frappe.db.exists("User", {"email": self.email})
 			if not user or user.enabled==0:
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
