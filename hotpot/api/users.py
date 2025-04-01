@@ -265,7 +265,7 @@ def get_all_vendor():
 			set_response(404, False, "User Not found")
 			return
 
-		if not user_doc.get("role") == "Hotpot User":
+		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		user_list = frappe.db.get_list(
@@ -276,7 +276,7 @@ def get_all_vendor():
 		if not user_list:
 			set_response(200, False, "No Vendor found")
 			return
-		set_response(200, True, "Data fetched successfully", user_list)
+		set_response(200, True, "Vendors fetched successfully", user_list)
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Vendor Error")

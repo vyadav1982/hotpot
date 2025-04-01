@@ -285,7 +285,7 @@
   "select": 1,
   "share": 0,
   "submit": 0,
-  "write": 0
+  "write": 1
  },
  {
   "amend": 1,
@@ -910,5 +910,53 @@
   "share": 0,
   "submit": 0,
   "write": 0
+ },
+ {
+  "amend": 0,
+  "cancel": 0,
+  "create": 1,
+  "delete": 0,
+  "docstatus": 0,
+  "doctype": "Custom DocPerm",
+  "email": 0,
+  "export": 0,
+  "if_owner": 0,
+  "import": 0,
+  "modified": "2025-04-01 12:54:34.897669",
+  "name": "t4eckl89jf",
+  "parent": "User",
+  "permlevel": 0,
+  "print": 0,
+  "read": 1,
+  "report": 0,
+  "role": "Hotpot Admin",
+  "select": 1,
+  "share": 0,
+  "submit": 0,
+  "write": 1
+ },
+ {
+  "amend": 0,
+  "cancel": 0,
+  "create": 1,
+  "delete": 1,
+  "docstatus": 0,
+  "doctype": "Custom DocPerm",
+  "email": 0,
+  "export": 0,
+  "if_owner": 0,
+  "import": 0,
+  "modified": "2025-04-01 13:38:26.852763",
+  "name": "qj7l5fch8q",
+  "parent": "ToDo",
+  "permlevel": 0,
+  "print": 0,
+  "read": 1,
+  "report": 0,
+  "role": "Hotpot Admin",
+  "select": 1,
+  "share": 0,
+  "submit": 0,
+  "write": 1
  }
 ]
