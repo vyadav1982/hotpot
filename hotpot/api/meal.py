@@ -417,7 +417,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		))
 		if for_kiosk:
 			return processed_meals
-		set_response(200, True, "Fetched successfully",processed_meals)
+		set_response(200, True, "Meals Fetched successfully",processed_meals)
 		return
 
 	except Exception as e:
