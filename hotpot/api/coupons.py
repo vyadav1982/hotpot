@@ -228,17 +228,17 @@ def cancel_coupon():
 		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
 		if(diff<0):
 			# set_response(400, False, "Nice try! But instead of canceling, why not enjoy the meal? Sorry, your coupon is staying right where it is! 😜🍽️")
-			set_response(400, False, "Nope! Meal’s waiting, coupon’s staying. Nice try though! 😜🍽️")
+			set_response(400, False, "Cannot cancel a coupon during meal time.")
 
 		if cancel :
 			# set_response(400, False, f"Oops! You’re too late! Coupons turn into pumpkins {meal_doc.cancellation_time} hours before the meal starts. No take-backs now! 🎃⏳🍽️")
-			set_response(400, False, f"Too late! Your coupon’s in lockdown {meal_doc.cancellation_time} hours before the meal. No take-backs! 🎃⏳🍽️")
+			set_response(400, False, f"Cannot cancel a coupon in cancellation time.")
 			return
 
 
 		if coupon_found.coupon_status == "2":
-			# set_response(409, False, "Coupon already Cancelled")
-			set_response(409, False, "Too late! Coupon’s already gone! ❌")
+			set_response(409, False, "Coupon already Cancelled")
+			# set_response(409, False, "Too late! Coupon’s already gone! ❌")
 			return
 
 		query = """
@@ -265,8 +265,8 @@ def cancel_coupon():
 		history_doc.insert()
 		user_doc.save()
 		frappe.db.commit()
-		# set_response(200, True, "Cancelled successfully")
-		set_response(200, True, "Poof! Gone. 🎩🐇")  
+		set_response(200, True, "Coupon cancelled successfully")
+		# set_response(200, True, "Poof! Gone. 🎩🐇")  
 		return
 
 	except Exception as e:
