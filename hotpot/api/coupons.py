@@ -222,7 +222,7 @@ def cancel_coupon():
 		current_time = current_datetime.time()
 
 		meal_start_time = get_local_datetime_obj(meal_doc.start_time).time()
-		sec = (get_local_datetime_obj(coupon_found.coupon_date) -current_datetime ).to_seconds()
+		sec = (get_local_datetime_obj(coupon_found.coupon_date) -current_datetime ).total_seconds()
 		diff = (datetime.combine(datetime.min, meal_start_time) - datetime.combine(datetime.min, current_time)).total_seconds()
 		diff = int(diff) + int(sec)
 		cancel = (diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60)
