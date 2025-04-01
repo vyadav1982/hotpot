@@ -229,6 +229,7 @@ def cancel_coupon():
 		if(diff<0):
 			# set_response(400, False, "Nice try! But instead of canceling, why not enjoy the meal? Sorry, your coupon is staying right where it is! 😜🍽️")
 			set_response(400, False, "Cannot cancel a coupon during meal time.")
+			return
 
 		if cancel :
 			# set_response(400, False, f"Oops! You’re too late! Coupons turn into pumpkins {meal_doc.cancellation_time} hours before the meal starts. No take-backs now! 🎃⏳🍽️")
