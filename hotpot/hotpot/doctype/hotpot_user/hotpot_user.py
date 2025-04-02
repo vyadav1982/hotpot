@@ -105,6 +105,7 @@ class HotpotUser(Document):
 				})
 				if role == "Hotpot Admin":
 					new_user.update({
+						"roles": [{"role": "System Manager"}],
 						"notifications": 1,
 						"list_sidebar": 1,
 						"bulk_action": 1,
@@ -180,6 +181,7 @@ class HotpotUser(Document):
 				frappe_user.append_roles(self.role)
 
 				if self.role == "Hotpot Admin":
+					frappe_user.append_roles("System Manager")
 					frappe_user.notifications = 1,
 					frappe_user.list_sidebar = 1,
 					frappe_user.bulk_action = 1,
