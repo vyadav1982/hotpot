@@ -1,0 +1,26 @@
+{% extends "templates/email/base_email.html" %}
+
+{% block header_title %}Your Meal QR Codes are Ready!{% endblock %}
+
+{% block content %}
+    <h2>Hello Guest,</h2>
+
+    <p>Your meal QR codes have been successfully generated. 🎉</p>
+
+    <p>Please find your QR codes attached below. You can use these to claim your meals at the designated vendor.</p>
+
+    <h3>QR Code Details:</h3>
+    <ul>
+        <li>
+            <strong>Meal:</strong> {{ meal_title }}<br />
+            <Strong>QR: </Strong> Download from attachement<br/>👇👇
+        </li>
+    </ul>
+
+    <p>Simply show the QR code at the vendor to redeem your meal.</p>
+
+    <p>If you have any questions, feel free to reach out.</p>
+
+    <p>Enjoy your meal! 🍽️</p>
+    <p><strong>- Hotpot Team</strong></p>
+{% endblock %}

@@ -111,7 +111,6 @@ def get_coupons_history(page=1,limit=10):
 			ORDER BY modified DESC;
 		"""
 		params = (employee_id,start_date, end_date)
-		print(query%params)
 		result += frappe.db.sql(query,params,as_dict=True)
 		# result += frappe.db.get_list(
 		# 	"Hotpot Coupons History",
@@ -264,7 +263,6 @@ def get_all_vendor():
 		if not user_doc:
 			set_response(404, False, "User Not found")
 			return
-
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
 			return

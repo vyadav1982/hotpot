@@ -319,7 +319,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 
 		# start = (page - 1) * limit
 		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
-			print("Hello Vendor")
 			filters = [
 				["vendor_id", "=", user_data.get("guest_of")],
 				["is_deleted", "=", 0]
@@ -371,7 +370,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			if not valid:
 				continue
 
-			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") == "Hotpot User":
+			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin"]:
 				if get_local_datetime_obj(meal["end_time"]).time()<=get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time():
 					continue
 
