@@ -1059,7 +1059,8 @@ def get_admin_guest_coupon(date, qty=None):
 				hc.modified,
 				hm.meal_title,
 				U.employee_name,
-				hc.coupon_date
+				hc.coupon_date,
+				hc.coupon_status
 			FROM 
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN 
@@ -1067,7 +1068,7 @@ def get_admin_guest_coupon(date, qty=None):
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
-			ORDER BY hc.modified DESC  -- Get latest coupons
+			ORDER BY hc.modified DESC
 			{limit_clause}
 		"""
 
