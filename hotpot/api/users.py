@@ -4,6 +4,7 @@ import frappe
 import json
 
 from hotpot.utils.utc_time import *
+from hotpot.utils.email import *
 
 from frappe.model.document import Document
 
@@ -366,4 +367,38 @@ def get_config():
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Configuration Error")
 		return set_response(500, False, f"Server error: {str(e)}")
+	
+@frappe.whitelist()
+def email_wrapper():
+	try:
+		if frappe.request.method!= "POST":
+			set_response(405, False, "Only POST method is allowed")
+			return
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		data = json.loads(frappe.request.data or "{}")
+		template_name = data.get("template_name")
+		to_email = data.get("to_email")
+		context = data.get("context")
+		subject = data.get("subject")
+		qr_code_base64 = data.get("qr_code_base64", None)
+
+		if not all([template_name, to_email, context, subject]):
+			return set_response(404, False, "Missing mandatory fields")
+		
+		try:
+			send_email(template_name, to_email, context, subject,qr_code_base64=None)
+			return set_response(200, True, "Email sent successfully")
+		
+		except Exception as e:
+			frappe.log_error(frappe.get_traceback(), f"Email Error: {str(e)}")
+			return set_response(500, False, f"Failed to send email: {str(e)}")
+		
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Configuration Error")
+		return set_response(500, False, f"Server error: {str(e)}")
+	
 
