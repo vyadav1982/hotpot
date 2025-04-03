@@ -1041,7 +1041,7 @@ def get_admin_guest_coupon(date, qty=None):
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 
 		limit_clause = ""
-		params = [user_doc.get("name"),user_timezone, start_date, end_date]
+		params = [user_timezone, start_date, end_date]
 		
 		if qty:
 			try:
@@ -1066,9 +1066,7 @@ def get_admin_guest_coupon(date, qty=None):
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
-			WHERE 
-				hc.guest_of = %s 
-				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 			ORDER BY hc.modified DESC  -- Get latest coupons
 			{limit_clause}
 		"""
@@ -1076,7 +1074,7 @@ def get_admin_guest_coupon(date, qty=None):
 		coupons_data = frappe.db.sql(query, tuple(params), as_dict=True)
 
 		if not coupons_data:
-			return set_response(200, False, "No guest coupon found.")
+			return set_response(200, False, "No guest coupon found.",[])
 
 		return set_response(200, True, "Guest coupons fetched successfully", coupons_data)
 
@@ -1147,7 +1145,7 @@ def get_guest_coupon(date):
 		coupons_data = frappe.db.sql(query, params, as_dict=True)
 
 		if not coupons_data:
-			set_response(404, False, "No guest coupon")
+			set_response(200, True, "No guest coupon",[])
 			return
 
 		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
