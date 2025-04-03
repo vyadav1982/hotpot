@@ -7,12 +7,12 @@ import random
 from hotpot.utils.email import * 
 
 def send_password_email(to_email, user_doc, password):
-	print("(((((((((((((((((((())))))))))))))))))))")
 	email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
 	context = {
 		"user_data": user_doc,
 		"password": password,
-		"login_url": frappe.utils.get_url('app/login')
+		# "login_url": frappe.utils.get_url('app/login')
+		"login_url": "https://hotpot-admin.vercel.app/authentication/login"
 	}
 	send_email("initial_password", to_email, context, email_subject)
 def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
