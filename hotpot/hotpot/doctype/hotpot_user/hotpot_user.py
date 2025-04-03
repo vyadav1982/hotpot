@@ -7,6 +7,7 @@ import random
 from hotpot.utils.email import * 
 
 def send_password_email(to_email, user_doc, password):
+	print("(((((((((((((((((((())))))))))))))))))))")
 	email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
 	context = {
 		"user_data": user_doc,
@@ -19,11 +20,7 @@ def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 
 	if not password:
 		raise ValueError("Password cannot be empty.")
-
 	try:
-		frappe.init(site)
-		frappe.connect()
-
 		if not frappe.db.exists("User", user):
 			frappe.throw(f"User {user} does not exist")
 			return
@@ -31,8 +28,10 @@ def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
 		frappe.db.commit()
 		send_password_email(user,user_doc,password)
-	finally:
-		frappe.destroy()
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error setting password")
+		frappe.db.rollback()
+		frappe.throw(str(e))
 
 
 class HotpotUser(Document):
@@ -98,7 +97,6 @@ class HotpotUser(Document):
 					"form_sidebar":0,
 					"timeline":0,
 					"dashboard":0,
-					# "module_profile": "Hotpot Admin" if role == "Hotpot Admin" else "Hotpot",
 					"module_profile": "Hotpot",
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
