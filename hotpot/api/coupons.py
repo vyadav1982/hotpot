@@ -1014,8 +1014,9 @@ def search_coupon(start_date,end_date,identifier):
 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 	
+
 @frappe.whitelist()
-def get_admin_guest_coupon(date, qty=None):
+def get_admin_guest_coupon(date, qty=None, page=1, limit=10):
 	try:
 		if frappe.request and frappe.request.method != "GET":
 			return set_response(405, False, "Only GET method is allowed")
@@ -1030,29 +1031,20 @@ def get_admin_guest_coupon(date, qty=None):
 		if not date:
 			return set_response(400, False, "Please provide date")
 
-		start_date = f"{date} 00:00:00"
-		end_date = f"{date} 23:59:59"
-		start_date = get_utc_datetime_obj(start_date)
-		end_date = get_utc_datetime_obj(end_date)
-
-		start_date = get_local_datetime_obj(start_date).date()
-		end_date = get_local_datetime_obj(end_date).date()
-				
+		start_date = get_local_datetime_obj(get_utc_datetime_obj(f"{date} 00:00:00")).date()
+		end_date = get_local_datetime_obj(get_utc_datetime_obj(f"{date} 23:59:59")).date()
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 
-		limit_clause = ""
-		params = [user_timezone, start_date, end_date]
-		
-		if qty:
-			try:
-				qty = int(qty)
-				if qty <= 0:
-					return set_response(400, False, "Quantity must be greater than 0")
-				limit_clause = "LIMIT %s"
-				params.append(qty)
-			except ValueError:
-				return set_response(400, False, "Invalid quantity value")
-		
+		try:
+			page = int(page)
+			limit = int(qty) if qty else int(limit)
+			if page < 0 or limit <= 0:
+				return set_response(400, False, "Page must be >= 0 and Limit must be > 0")
+		except ValueError:
+			return set_response(400, False, "Invalid pagination values")
+		start = (page - 1) * limit
+		params = [user_timezone, start_date, end_date, start, limit]
+
 		query = f"""
 			SELECT 
 				hc.name AS coupon_id,
@@ -1069,13 +1061,13 @@ def get_admin_guest_coupon(date, qty=None):
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 			ORDER BY hc.modified DESC
-			{limit_clause}
+			LIMIT %s, %s
 		"""
 
 		coupons_data = frappe.db.sql(query, tuple(params), as_dict=True)
 
 		if not coupons_data:
-			return set_response(200, False, "No guest coupon found.",[])
+			return set_response(200, False, "No guest coupon found.", [])
 
 		return set_response(200, True, "Guest coupons fetched successfully", coupons_data)
 
@@ -1083,6 +1075,76 @@ def get_admin_guest_coupon(date, qty=None):
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
 		return set_response(500, False, f"Server error: {str(e)}")
+
+# @frappe.whitelist()
+# def get_admin_guest_coupon(date, qty=None):
+# 	try:
+# 		if frappe.request and frappe.request.method != "GET":
+# 			return set_response(405, False, "Only GET method is allowed")
+
+# 		user_doc = get_hotpot_user_by_email()
+# 		if not user_doc:
+# 			return set_response(404, False, "User Not found")
+
+# 		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin"]:
+# 			return set_response(403, False, "Not Permitted to access this resource")
+
+# 		if not date:
+# 			return set_response(400, False, "Please provide date")
+
+# 		start_date = f"{date} 00:00:00"
+# 		end_date = f"{date} 23:59:59"
+# 		start_date = get_utc_datetime_obj(start_date)
+# 		end_date = get_utc_datetime_obj(end_date)
+
+# 		start_date = get_local_datetime_obj(start_date).date()
+# 		end_date = get_local_datetime_obj(end_date).date()
+				
+# 		user_timezone = get_user_timezone() or "Asia/Kolkata"
+
+# 		limit_clause = ""
+# 		params = [user_timezone, start_date, end_date]
+		
+# 		if qty:
+# 			try:
+# 				qty = int(qty)
+# 				if qty <= 0:
+# 					return set_response(400, False, "Quantity must be greater than 0")
+# 				limit_clause = "LIMIT %s"
+# 				params.append(qty)
+# 			except ValueError:
+# 				return set_response(400, False, "Invalid quantity value")
+		
+# 		query = f"""
+# 			SELECT 
+# 				hc.name AS coupon_id,
+# 				hc.modified,
+# 				hm.meal_title,
+# 				U.employee_name,
+# 				hc.coupon_date,
+# 				hc.coupon_status
+# 			FROM 
+# 				`tabHotpot Coupons` AS hc
+# 			LEFT JOIN 
+# 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
+# 			INNER JOIN
+# 				`tabHotpot User` AS U ON hm.vendor_id = U.name
+# 			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+# 			ORDER BY hc.modified DESC
+# 			{limit_clause}
+# 		"""
+
+# 		coupons_data = frappe.db.sql(query, tuple(params), as_dict=True)
+
+# 		if not coupons_data:
+# 			return set_response(200, False, "No guest coupon found.",[])
+
+# 		return set_response(200, True, "Guest coupons fetched successfully", coupons_data)
+
+# 	except Exception as e:
+# 		frappe.db.rollback()
+# 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
+# 		return set_response(500, False, f"Server error: {str(e)}")
 @frappe.whitelist()
 def get_guest_coupon(date):
 	try:
