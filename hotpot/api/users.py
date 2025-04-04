@@ -460,12 +460,13 @@ def get_dashboard_data():
 
 
 		set_response(200, True, "Data fetched successfully", {
-			"user_data": user_data,
+			**user_data[0],
+			**vendor_data[0],
+			**total_service_requests[0],
 			"meal_data": meal_data,
-			"vendor_data": vendor_data,
-			"total_service_requests": total_service_requests,
 			"guest_coupon_data": guest_coupon_data
 		})
+
 
 	except Exception as e:
 		frappe.db.rollback()
