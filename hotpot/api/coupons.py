@@ -1016,7 +1016,7 @@ def search_coupon(start_date,end_date,identifier):
 	
 
 @frappe.whitelist()
-def get_admin_guest_coupon(date, qty=None, page=1, limit=10):
+def get_admin_guest_coupon(date, qty=None, page=0, limit=10):
 	try:
 		if frappe.request and frappe.request.method != "GET":
 			return set_response(405, False, "Only GET method is allowed")
@@ -1042,6 +1042,8 @@ def get_admin_guest_coupon(date, qty=None, page=1, limit=10):
 				return set_response(400, False, "Page must be >= 0 and Limit must be > 0")
 		except ValueError:
 			return set_response(400, False, "Invalid pagination values")
+		if page==0:
+			page=1
 		start = (page - 1) * limit
 		params = [user_timezone, start_date, end_date, start, limit]
 
