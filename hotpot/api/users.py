@@ -401,4 +401,55 @@ def email_wrapper():
 		frappe.log_error(frappe.get_traceback(), "Configuration Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 	
+@frappe.whitelist()
+def get_dashboard_data():
+	try:
+		if frappe.request.method!= "GET":
+			set_response(405, False, "Only GET method is allowed")
+			return
+		user_doc = get_hotpot_user_by_email()
+		if not user_doc:
+			set_response(404, False, "User Not found")
+			return
+		if not user_doc.get("role") in ["Hotpot Finance","Hotpot Admin","Hotpot HR"]:
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+		user_data = frappe.db.sql("""
+			SELECT role, COUNT(*) AS user_count
+			FROM `tabHotpot User`
+			WHERE is_active = 1
+			GROUP BY role
+		""", as_dict=True)
+
+		meal_data = frappe.db.sql("""
+			SELECT vendor_id, COUNT(*) AS meal_count
+			FROM `tabHotpot Meal`
+			WHERE is_active = 1
+			GROUP BY vendor_id
+		""", as_dict=True)
+
+		approval_data = frappe.db.sql("""
+			SELECT approval_status, COUNT(*) AS status_count
+			FROM `tabHotpot Approvals`
+			GROUP BY approval_status
+		""", as_dict=True)
+
+		guest_coupon_data = frappe.db.sql("""
+			SELECT employee_id, COUNT(*) AS coupon_count
+			FROM `tabHotpot Coupons`
+			WHERE guest_of IS NOT NULL
+			GROUP BY employee_id
+		""", as_dict=True)
+
+		set_response(200, True, "Data fetched successfully", {
+			"user_data": user_data,
+			"meal_data": meal_data,
+			"approval_data": approval_data,
+			"guest_coupon_data": guest_coupon_data
+		})
+	except Exception as e:
+		frappe.db.rollback()
+		frappe.log_error(frappe.get_traceback(), "Dashboard Error")
+		return set_response(500, False, f"Server error: {str(e)}")
+	
 
