@@ -415,23 +415,26 @@ def get_dashboard_data():
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		user_data = frappe.db.sql("""
-			SELECT role, COUNT(*) AS user_count
+			SELECT COUNT(*) AS total_user_count
 			FROM `tabHotpot User`
-			WHERE is_active = 1
-			GROUP BY role
+			WHERE is_active = 1 AND role ="Hotpot User"
+		""", as_dict=True)
+		vendor_data = frappe.db.sql("""
+			SELECT COUNT(*) AS total_vendor_count
+			FROM `tabHotpot User`
+			WHERE is_active = 1 AND role ="Hotpot Vendor"
 		""", as_dict=True)
 
-		meal_data = frappe.db.sql("""
-			SELECT vendor_id, COUNT(*) AS meal_count
-			FROM `tabHotpot Meal`
-			WHERE is_active = 1
-			GROUP BY vendor_id
-		""", as_dict=True)
+		# meal_data = frappe.db.sql("""
+		# 	SELECT vendor_id, COUNT(*) AS meal_count
+		# 	FROM `tabHotpot Meal`
+		# 	WHERE is_active = 1
+		# 	GROUP BY vendor_id
+		# """, as_dict=True)
 
-		approval_data = frappe.db.sql("""
-			SELECT approval_status, COUNT(*) AS status_count
+		total_service_requests = frappe.db.sql("""
+			SELECT  COUNT(*) AS total_service_requests
 			FROM `tabHotpot Approvals`
-			GROUP BY approval_status
 		""", as_dict=True)
 
 		guest_coupon_data = frappe.db.sql("""
@@ -440,13 +443,30 @@ def get_dashboard_data():
 			WHERE guest_of IS NOT NULL
 			GROUP BY employee_id
 		""", as_dict=True)
+		for row in guest_coupon_data:
+			row["email"] = "test@example.com"
+		
+		meal_data = frappe.db.sql("""
+			SELECT 
+				m.vendor_id,
+				m.meal_title,
+				COUNT(c.name) AS meal_count
+			FROM `tabHotpot Meal` m
+			LEFT JOIN `tabHotpot Coupons` c 
+				ON c.parent = m.name AND c.coupon_status != 2
+			WHERE m.is_active = 1
+			GROUP BY m.vendor_id, m.meal_title
+		""", as_dict=True)
+
 
 		set_response(200, True, "Data fetched successfully", {
 			"user_data": user_data,
 			"meal_data": meal_data,
-			"approval_data": approval_data,
+			"vendor_data": vendor_data,
+			"total_service_requests": total_service_requests,
 			"guest_coupon_data": guest_coupon_data
 		})
+
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Dashboard Error")
