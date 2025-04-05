@@ -389,7 +389,7 @@ def email_wrapper():
 			return set_response(404, False, "Missing mandatory fields")
 		
 		try:
-			send_email(template_name, to_email, context, subject,qr_code_base64=None)
+			send_email(template_name, to_email, context, subject,qr_code_base64)
 			return set_response(200, True, "Email sent successfully")
 		
 		except Exception as e:
