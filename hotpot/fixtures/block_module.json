@@ -32,9 +32,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.369712",
+  "modified": "2025-04-02 13:48:21.319902",
   "module": "Automation",
-  "name": "ej16ig932t",
+  "name": "l9d7perh68",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -72,9 +72,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.395620",
+  "modified": "2025-04-02 13:48:21.342230",
   "module": "commit",
-  "name": "7ecqulqkb1",
+  "name": "7mrfmm3bak",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -112,9 +112,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.396027",
+  "modified": "2025-04-02 13:48:21.342583",
   "module": "Contacts",
-  "name": "akgsnjtfv9",
+  "name": "2lv1pf9fje",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -152,9 +152,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.396408",
+  "modified": "2025-04-02 13:48:21.342922",
   "module": "Custom",
-  "name": "9pqgend6e0",
+  "name": "9mopcoutrj",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -192,9 +192,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.396783",
+  "modified": "2025-04-02 13:48:21.343261",
   "module": "Email",
-  "name": "vlvvngi48q",
+  "name": "ckdcgm2v8p",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -232,9 +232,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.397162",
+  "modified": "2025-04-02 13:48:21.343596",
   "module": "Frappe Er Generator",
-  "name": "348fu260ru",
+  "name": "50tdjqdtnp",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -272,9 +272,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.397569",
+  "modified": "2025-04-02 13:48:21.344019",
   "module": "Geo",
-  "name": "ekbpl5k2gr",
+  "name": "c41hg1as09",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -312,9 +312,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.397946",
+  "modified": "2025-04-02 13:48:21.344376",
   "module": "Integrations",
-  "name": "nsri3g5j9g",
+  "name": "ggjv8gggb8",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -352,9 +352,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.398341",
+  "modified": "2025-04-02 13:48:21.344920",
   "module": "Mrx Audit",
-  "name": "66upg4lnou",
+  "name": "b71j8qv4lo",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -392,9 +392,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.398720",
+  "modified": "2025-04-02 13:48:21.345256",
   "module": "MrxSurvey",
-  "name": "il58l8fuku",
+  "name": "msjoa5g8hb",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -432,9 +432,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.399097",
+  "modified": "2025-04-02 13:48:21.345596",
   "module": "MrxTracking",
-  "name": "ibq8n4ef5i",
+  "name": "19jpft4k11",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -472,9 +472,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.399480",
+  "modified": "2025-04-02 13:48:21.345982",
   "module": "MrxWorkMod",
-  "name": "p2o9c57u12",
+  "name": "lkhn2k1qee",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -512,9 +512,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.399859",
+  "modified": "2025-04-02 13:48:21.346297",
   "module": "Printing",
-  "name": "dq9a4tbvvo",
+  "name": "cqjpd47jbj",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -552,9 +552,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.400237",
+  "modified": "2025-04-02 13:48:21.346597",
   "module": "PulseEye",
-  "name": "80g6rurt00",
+  "name": "18ihl0054f",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -592,9 +592,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.400614",
+  "modified": "2025-04-02 13:48:21.346947",
   "module": "Social",
-  "name": "sb25v97csd",
+  "name": "46a4aedf2e",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -632,9 +632,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.400992",
+  "modified": "2025-04-02 13:48:21.347278",
   "module": "Website",
-  "name": "3ilmj8e6op",
+  "name": "ee45lo4smn",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -672,9 +672,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.401388",
+  "modified": "2025-04-02 13:48:21.347622",
   "module": "Workflow",
-  "name": "02e889f3n9",
+  "name": "k6fsvhaelr",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -702,9 +702,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-01 13:43:49.401805",
+  "modified": "2025-04-02 13:48:21.347970",
   "module": "Core",
-  "name": "u22hki5coo",
+  "name": "83nasnpqg1",
   "parent": "newuser@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"

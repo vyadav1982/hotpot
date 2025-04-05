@@ -1054,7 +1054,8 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=10):
 				hm.meal_title,
 				U.employee_name,
 				hc.coupon_date,
-				hc.coupon_status
+				hc.coupon_status,
+				hc.email,
 			FROM 
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN 
@@ -1240,7 +1241,7 @@ def generate_coupon_admin():
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
-		required_fields = ["meal_id", "date"]
+		required_fields = ["meal_id", "date","email"]
 		for_guest = data.get('guest', False) 
 		if for_guest and role=="Hotpot User":
 			required_fields.append("approval_id")
@@ -1250,6 +1251,7 @@ def generate_coupon_admin():
 		
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
+		email = data.get("email")
 		qty = data.get("qty",1)
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
@@ -1408,6 +1410,7 @@ def generate_coupon_admin():
 							**({"birthday_coupon": 1} if is_birthday and not for_guest else {}),
 							**({"joining_day": 1} if is_joining_day and not for_guest else {}),
 							**({"approval_id": approval_id} if (for_guest and role=="Hotpot User") else {}),
+							"email":email,
 						},
 					)
 

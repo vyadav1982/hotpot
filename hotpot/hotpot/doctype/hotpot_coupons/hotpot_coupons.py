@@ -18,6 +18,7 @@ class HotpotCoupons(Document):
 		birthday_coupon: DF.Check
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
+		email: DF.Data | None
 		employee_id: DF.Data | None
 		guest_of: DF.Link | None
 		joining_day: DF.Check
