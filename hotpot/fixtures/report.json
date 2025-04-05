@@ -99,7 +99,7 @@
   "modified": "2025-03-28 11:46:35.343491",
   "module": "Hotpot",
   "name": "Joining Day Coupons Report",
-  "prepared_report": 0,
+  "prepared_report": 0 ,
   "query": null,
   "ref_doctype": "Hotpot Meal",
   "reference_report": null,
