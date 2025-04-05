@@ -47,6 +47,7 @@ def execute(filters=None):
 			employee.employee_id AS employee_id,
 			employee.employee_name AS employee_name,
 			approval.guest_name AS guest_name,
+            hc.email,
             approval.guest_mobile_no AS guest_mobile_no    
 		FROM
 			`tabHotpot Coupons` AS hc
