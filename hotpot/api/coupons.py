@@ -1055,7 +1055,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=10):
 				U.employee_name,
 				hc.coupon_date,
 				hc.coupon_status,
-				hc.email,
+				hc.email
 			FROM 
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN 
