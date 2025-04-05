@@ -14,7 +14,8 @@
   "guest_of",
   "approval_id",
   "birthday_coupon",
-  "joining_day"
+  "joining_day",
+  "email"
  ],
  "fields": [
   {
@@ -67,12 +68,17 @@
    "label": "Approval Id",
    "options": "Hotpot Approvals",
    "search_index": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-26 12:07:51.527657",
+ "modified": "2025-04-05 16:24:07.475715",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
