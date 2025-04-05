@@ -1251,10 +1251,14 @@ def generate_coupon_admin():
 		
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
-		email = data.get("email")
+		emails = data.get("email")
 		qty = data.get("qty",1)
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
+		if not isinstance(emails, list):
+			emails = [emails]
+		if qty != len(emails):
+			return set_response(400, False, "Quantity and Email length mismatch")
 		meal_docs = {}
 		temp_docs = []
 		coupon_id=[]
@@ -1262,6 +1266,7 @@ def generate_coupon_admin():
 		for j in range(int(qty)):
 			for i in range(len(meal_ids)):
 				meal_id = meal_ids[i]
+				email = emails[j]
 				local_time_now = get_local_time_now()
 				start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
 				from_date = start_date.date()
