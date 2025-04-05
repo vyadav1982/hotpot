@@ -51,7 +51,8 @@ def clean_and_decode_base64(base64_string):
     if not base64_string:
         frappe.log_error("Empty Base64 string provided", "Base64 Decoding Error")
         return None
-
+    if base64_string.startswith('"') and base64_string.endswith('"'):
+        base64_string = base64_string[1:-1]
     if base64_string.startswith("data:image/png;base64,"):
         base64_string = base64_string.split(",", 1)[1]
 
