@@ -1245,6 +1245,8 @@ def generate_coupon_admin():
 		for_guest = data.get('guest', False) 
 		if for_guest and role=="Hotpot User":
 			required_fields.append("approval_id")
+		if not data.get("email"):
+			return set_response(400,False,f"Email cannot be empty")
 		missing = [field for field in required_fields if not data.get(field)]
 		if missing:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing)}")
@@ -1257,6 +1259,10 @@ def generate_coupon_admin():
 			meal_ids = [meal_ids]
 		if not isinstance(emails, list):
 			emails = [emails]
+		for email in emails:
+			print(email)
+			if not is_valid_email(email):
+				return set_response(400,False,f"Enter a valid email")
 		if qty != len(emails):
 			return set_response(400, False, "Quantity and Email length mismatch")
 		meal_docs = {}
