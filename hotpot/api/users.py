@@ -418,6 +418,13 @@ def get_dashboard_data():
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 		user_timezone = str(user_timezone)
 		today_str = now_datetime().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(user_timezone)).strftime("%Y-%m-%d")
+		start_date = f"{today_str} 00:00:00"
+		end_date = f"{today_str} 23:59:59"
+		start_date = get_utc_datetime_obj(start_date)
+		end_date = get_utc_datetime_obj(end_date)
+
+		start_date = get_local_datetime_obj(start_date).date()
+		end_date = get_local_datetime_obj(end_date).date()
 		user_data = frappe.db.sql("""
 			SELECT COUNT(*) AS total_user_count
 			FROM `tabHotpot User`
@@ -444,9 +451,8 @@ def get_dashboard_data():
 		guest_coupon_data = frappe.db.sql("""
 			SELECT COUNT(*) AS guest_coupon_count
 			FROM `tabHotpot Coupons` as hc
-			WHERE hc.guest_of IS NOT NULL
-			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) = %s
-		""",(user_timezone,today_str), as_dict=True)
+			WHERE hc.guest_of IS NOT NULL AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+		""",(user_timezone,start_date,end_date), as_dict=True)
 		
 		meal_data = frappe.db.sql("""
 			SELECT 
