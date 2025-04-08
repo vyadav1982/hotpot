@@ -438,13 +438,11 @@ def get_dashboard_data():
 		""", as_dict=True)
 
 		guest_coupon_data = frappe.db.sql("""
-			SELECT employee_id, COUNT(*) AS coupon_count
+			SELECT employee_id,email, COUNT(*) AS coupon_count
 			FROM `tabHotpot Coupons`
 			WHERE guest_of IS NOT NULL
 			GROUP BY employee_id
 		""", as_dict=True)
-		for row in guest_coupon_data:
-			row["email"] = "test@example.com"
 		
 		meal_data = frappe.db.sql("""
 			SELECT 
