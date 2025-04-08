@@ -5,6 +5,7 @@ import json
 
 from hotpot.utils.utc_time import *
 from hotpot.utils.email import *
+from hotpot.api.meal import get_meals_dashboard
 
 from frappe.model.document import Document
 from frappe.utils import now_datetime
@@ -425,6 +426,7 @@ def get_dashboard_data():
 
 		start_date = get_local_datetime_obj(start_date).date()
 		end_date = get_local_datetime_obj(end_date).date()
+		meals = get_meals_dashboard(today_str)
 		user_data = frappe.db.sql("""
 			SELECT COUNT(*) AS total_user_count
 			FROM `tabHotpot User`
@@ -454,19 +456,25 @@ def get_dashboard_data():
 			WHERE hc.guest_of IS NOT NULL AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 		""",(user_timezone,start_date,end_date), as_dict=True)
 		
-		meal_data = frappe.db.sql("""
-			SELECT 
-				m.vendor_id,
-				m.meal_title,
-				m.start_time,
-				m.end_time,
-				COUNT(c.name) AS meal_count
-			FROM `tabHotpot Meal` m
-			LEFT JOIN `tabHotpot Coupons` c 
-				ON c.parent = m.name AND c.coupon_status != 2
-			WHERE m.is_active = 1
-			GROUP BY m.vendor_id, m.meal_title
-		""", as_dict=True)
+		meal_data = []
+
+		for meal in meals:
+			meal_count = frappe.db.count(
+				"Hotpot Coupons",
+				filters={
+					"parent": meal["name"],
+					"coupon_status": ["!=", 2]
+				}
+			)
+			
+			meal_data.append({
+				"vendor_name": meal.get("vendor_name"),
+				"meal_title": meal.get("meal_title"),
+				"start_time": meal.get("start_time"),
+				"end_time": meal.get("end_time"),
+				"meal_count": meal_count
+			})
+
 
 
 		set_response(200, True, "Data fetched successfully", {
