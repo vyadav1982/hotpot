@@ -452,6 +452,8 @@ def get_dashboard_data():
 			SELECT 
 				m.vendor_id,
 				m.meal_title,
+				m.start_time,
+				m.end_time,
 				COUNT(c.name) AS meal_count
 			FROM `tabHotpot Meal` m
 			LEFT JOIN `tabHotpot Coupons` c 
