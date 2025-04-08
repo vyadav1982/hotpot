@@ -451,7 +451,7 @@ def get_dashboard_data():
 		guest_coupon_data = frappe.db.sql("""
 			SELECT COUNT(*) AS guest_coupon_count
 			FROM `tabHotpot Coupons` as hc
-			WHERE hc.guest_of IS NOT NULL AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 		""",(user_timezone,start_date,end_date), as_dict=True)
 		
 		meal_data = frappe.db.sql("""
