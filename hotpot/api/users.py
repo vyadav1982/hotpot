@@ -7,6 +7,7 @@ from hotpot.utils.utc_time import *
 from hotpot.utils.email import *
 
 from frappe.model.document import Document
+from frappe.utils import now_datetime
 
 @frappe.whitelist(methods=["GET"])
 def get_current_user():
@@ -414,6 +415,9 @@ def get_dashboard_data():
 		if not user_doc.get("role") in ["Hotpot Finance","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		user_timezone = get_user_timezone() or "Asia/Kolkata"
+		user_timezone = str(user_timezone)
+		today_str = now_datetime().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(user_timezone)).strftime("%Y-%m-%d")
 		user_data = frappe.db.sql("""
 			SELECT COUNT(*) AS total_user_count
 			FROM `tabHotpot User`
@@ -438,11 +442,11 @@ def get_dashboard_data():
 		""", as_dict=True)
 
 		guest_coupon_data = frappe.db.sql("""
-			SELECT employee_id,email, COUNT(*) AS coupon_count
-			FROM `tabHotpot Coupons`
-			WHERE guest_of IS NOT NULL
-			GROUP BY employee_id
-		""", as_dict=True)
+			SELECT COUNT(*) AS guest_coupon_count
+			FROM `tabHotpot Coupons` as hc
+			WHERE hc.guest_of IS NOT NULL
+			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) = %s
+		""",(user_timezone,today_str), as_dict=True)
 		
 		meal_data = frappe.db.sql("""
 			SELECT 
@@ -461,8 +465,8 @@ def get_dashboard_data():
 			**user_data[0],
 			**vendor_data[0],
 			**total_service_requests[0],
+			**guest_coupon_data[0],
 			"meal_data": meal_data,
-			"guest_coupon_data": guest_coupon_data
 		})
 
 
