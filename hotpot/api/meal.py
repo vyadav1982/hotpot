@@ -89,7 +89,7 @@ def create_meal():
 
 		meal_title = data.get("meal_title")
 		day = get_utc_datetime_obj(meal_date).day
-		vendor_id = user_data.get("guest_of")
+		vendor_id = user_data.get("guest_of") or data.get("vendor_id")
 		meal_items = ",".join(data.get("meal_items", []))
 		start_time = get_utc_datetime_obj(start_time)
 		end_time = get_utc_datetime_obj(end_time)
