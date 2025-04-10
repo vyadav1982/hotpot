@@ -467,17 +467,22 @@ def add_meal_items():
 		if not user_data:
 			set_response(404, False, "User Not found")
 			return
-		if not user_data["role"] == "Hotpot Vendor":
+		if not user_data["role"] in ["Hotpot Vendor","Hotpot Admin"]:
 			set_response(403, False, "Not Permitted to access this resouce")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
 		item_name = data.get("item_name")
 		item_name = item_name.lower()
+		vendor_id=None
+		if user_data.get("role") =="Hotpot Vendor":
+			vendor_id = user_data.get("guest_of")
+		else:
+			vendor_id = data.get("vendor_id")
 		existing_meal_item = frappe.get_list(
 			"Hotpot Meal Items",
 			fields=["name"],
-			filters=[["item_name", "=", item_name], ["vendor_id", "=", user_data.get("guest_of")]],
+			filters=[["item_name", "=", item_name], ["vendor_id", "=", vendor_id]],
 		)
 		if existing_meal_item:
 			set_response(409, False, f"A meal item '{item_name}' already exists")
@@ -489,7 +494,7 @@ def add_meal_items():
 			{
 				"doctype": "Hotpot Meal Items",
 				"item_name": item_name,
-				"vendor_id": user_data.get("guest_of"),
+				"vendor_id": vendor_id,
 				"is_active": "1",
 			}
 		)
@@ -500,6 +505,53 @@ def add_meal_items():
 	except Exception as e:
 		set_response(500, False, f"Failed to add item: {str(e)}")
 		return
+	
+@frappe.whitelist()
+def update_meal_items():
+	try:
+		if frappe.request.method != "PUT":
+			return set_response(405, False, "Only PUT method is allowed")
+
+		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			return set_response(404, False, "User not found")
+
+		if user_data["role"] not in ["Hotpot Vendor", "Hotpot Admin"]:
+			return set_response(403, False, "Not permitted to access this resource")
+
+		data = json.loads(frappe.request.data or "{}")
+		item_id = data.get("item_id")
+		item_name = (data.get("item_name") or "").strip().lower()
+
+		if not item_id or not item_name:
+			return set_response(400, False, "Item ID and Item name are required")
+
+		if not frappe.db.exists("Hotpot Meal Items", item_id):
+			return set_response(409, False, f"Meal item '{item_name}' does not exist")
+
+		vendor_id = (
+			user_data.get("guest_of") if user_data["role"] == "Hotpot Vendor"
+			else data.get("vendor_id")
+		)
+		if not frappe.db.get_value("Hotpot Meal Items", {"name": item_id, "vendor_id": vendor_id}):
+			set_response(409, False, f"Meal item '{item_name}' does not exist for the vendor")
+			return
+
+		meal_item_doc = frappe.get_doc("Hotpot Meal Items", item_id)
+
+		if "is_active" in data:
+			meal_item_doc.is_active = data["is_active"]
+
+		if "item_name" in data:
+			meal_item_doc.item_name = data["item_name"]
+
+		meal_item_doc.save()
+		frappe.db.commit()
+
+		return set_response(200, True, "Item updated successfully", {"item": meal_item_doc.name})
+
+	except Exception as e:
+		return set_response(500, False, f"Failed to update item: {str(e)}")
 
 
 @frappe.whitelist()
