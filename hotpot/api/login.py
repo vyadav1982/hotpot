@@ -12,7 +12,9 @@ from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys
 from frappe.utils.password import get_decrypted_password
 from hotpot.utils.email import *
 from frappe.utils.password import update_password
+import re
 import hashlib
+from hotpot.api.users import get_hotpot_user_by_email
 
 # no_cache = True
 
@@ -258,49 +260,49 @@ def get_password_otp(email):
 	
 	return
 
+@frappe.whitelist() 
+def reset_password():
+	if frappe.request.method != "POST":
+		set_response(405, False, "Only POST method is allowed")
+		return
+
+	user_data = get_hotpot_user_by_email()
+	if not user_data:
+		set_response(404, False, "User Not found")
+		return
+	if not user_data["role"] in ["Hotpot Vendor", "Hotpot User"]:
+		set_response(403, False, "Not Permitted to access this resource")
+		return
+
+	data = json.loads(frappe.request.data or "{}")
+	new_password = data.get("new_password")
+
+	if not (new_password):
+		set_response(400, False, " New passwords is required")
+		return
+	email = user_data.get("email")
+	if not email:
+		set_response(400, False, "Email not found.")
+		return
+
+	user = frappe.get_doc("User", email)
+	if not user:
+		set_response(404, False, "User not found.")
+		return
+	password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+	if not re.match(password_regex, new_password):
+		set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
+		return
+
+	try:
+		update_password(email, new_password, logout_all_sessions=True)
+		set_response(200, True, "Password updated successfully!")
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error setting password")
+		frappe.db.rollback()
+		frappe.throw(str(e))
 
 
-@frappe.whitelist(allow_guest=True)
-def set_password():
-    try:
-        data = json.loads(frappe.request.data)
-        email = data.get("email")
-        submitted_otp = data.get("otp")
-        new_password = data.get("password")
+	
 
-        if not (email and submitted_otp and new_password):
-            set_response(400, False, "Email, OTP, and password are required.")
-            return
-
-        if not frappe.db.exists("Hotpot User", {"email": email}):
-            set_response(404, False, f"User with email {email} not found.")
-            return
-
-        # Get stored OTP from cache
-        key = f"{OTP_PREFIX}{email}"
-        stored_hashed_otp = frappe.cache().get_value(key)
-
-        if not stored_hashed_otp:
-            set_response(400, False, "Session Expired.")
-            return
-
-        # Hash the submitted OTP and compare
-        hashed_submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
-
-        if hashed_submitted_otp != stored_hashed_otp:
-            set_response(400, False, "Invalid OTP.")
-            return
-
-        # OTP is valid, proceed with password reset
-        update_password(email, new_password, logout_all_sessions=True)
-
-        # Remove OTP from cache to prevent reuse
-        frappe.cache().delete_value(key)
-
-        set_response(200, True, "Password reset successfully.")
-        return
-
-    except Exception as e:
-        frappe.log_error(f"Password reset error: {str(e)}", "Set Password Error")
-        set_response(500, False, f"An error occurred: {str(e)}")
-        return
+	
