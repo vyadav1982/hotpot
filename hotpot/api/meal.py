@@ -473,7 +473,7 @@ def add_meal_items():
 
 		data = json.loads(frappe.request.data or "{}")
 		item_name = data.get("item_name")
-		item_name = item_name.lower()
+		item_name = item_name.strip().lower()
 		vendor_id=None
 		if user_data.get("role") =="Hotpot Vendor":
 			vendor_id = user_data.get("guest_of")
