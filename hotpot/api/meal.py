@@ -530,5 +530,76 @@ def get_meal_items():
 	except Exception as e:
 		set_response(500, False, f"Failed to get meal items: {str(e)}")
 		return
+
+
+
+@frappe.whitelist()
+def update_meal_admin():
+
+	try:
+		if frappe.request.method != "PUT":
+			set_response(405, False, "Only PUT method is allowed")
+			return
+
+		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(404, False, "User Not found")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		meal_id = data.get("meal_id")
+
+		if not meal_id:
+			set_response(400, False, "Meal Id is required")
+			return
+
+		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+
+		if not meal_doc:
+			set_response(404, False, "Meal not found")
+			return
+
+		local_time = get_local_time_now()
+		
+		if data.get("start_time"):
+			data["start_time"] = get_utc_datetime_obj(f"{data['meal_date']} {data['start_time']}")
+		if data.get("end_time"):
+			data["end_time"] = get_utc_datetime_obj(f"{data['meal_date']} {data['end_time']}")
+		if data.get("meal_date"):
+			data["meal_date"] = get_utc_datetime_obj(f"{data["meal_date"]} {local_time}")
+
+		for field in [
+			"meal_title",
+			"meal_date",
+			"meal_items",
+			"start_time",
+			"end_time",
+			"buffer_coupon_count",
+			"meal_weight",
+			"is_active",
+			"is_special",
+			"is_deleted",
+			"cancellation_time",
+			"repeat_type",
+			"repeat_days",
+			"lead_time"
+		]:
+			if field in data:
+				if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
+					setattr(meal_doc, field, str(",".join(data[field])))
+				else:
+					setattr(meal_doc, field, data[field])
+
+		meal_doc.save()
+		frappe.db.commit()
+
+		set_response(200, True, "Meal updated successfully", {"meal_id": meal_doc.name})
+		return
+
+	except Exception as e:
+		frappe.db.rollback()
+		set_response(500, False, f"Failed to update meal: {str(e)}")
+		return
+
 	
 
