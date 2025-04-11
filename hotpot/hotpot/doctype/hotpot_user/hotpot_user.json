@@ -20,6 +20,7 @@
   "is_guest",
   "is_vendor",
   "is_server",
+  "is_deleted",
   "guest_of",
   "coupon_count",
   "date_of_birth",
@@ -172,11 +173,17 @@
    "fieldtype": "Data",
    "label": "Tag Id",
    "unique": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_deleted",
+   "fieldtype": "Check",
+   "label": "Is Deleted"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-27 17:13:30.889529",
+ "modified": "2025-04-11 11:37:18.258218",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

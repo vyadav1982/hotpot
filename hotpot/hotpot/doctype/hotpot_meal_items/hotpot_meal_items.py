@@ -15,6 +15,7 @@ class HotpotMealItems(Document):
 		from frappe.types import DF
 
 		is_active: DF.Check
+		is_deleted: DF.Check
 		item_name: DF.Data | None
 		vendor_id: DF.Link | None
 	# end: auto-generated types
