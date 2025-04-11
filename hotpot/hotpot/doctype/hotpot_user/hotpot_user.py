@@ -168,7 +168,7 @@ class HotpotUser(Document):
 			frappe_user = frappe.get_doc("User", {"email": self.email})
 			if frappe_user:
 				names = self.employee_name.split(" ", 1) if self.employee_name else ["", ""]
-				frappe_user.enabled = self.is_active if self.is_active is not None else frappe_user.enabled
+				frappe_user.enabled = 1 if self.is_active == 1 and self.is_deleted == 0 else 0
 				frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
 				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
 				frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
