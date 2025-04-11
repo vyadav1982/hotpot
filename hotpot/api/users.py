@@ -428,12 +428,12 @@ def get_dashboard_data():
 		user_data = frappe.db.sql("""
 			SELECT COUNT(*) AS total_user_count
 			FROM `tabHotpot User`
-			WHERE is_active = 1 AND role ="Hotpot User"
+			WHERE is_deleted = 0 AND role ="Hotpot User"
 		""", as_dict=True)
 		vendor_data = frappe.db.sql("""
 			SELECT COUNT(*) AS total_vendor_count
 			FROM `tabHotpot User`
-			WHERE is_active = 1 AND role ="Hotpot Vendor"
+			WHERE us_deleted = 0 AND role ="Hotpot Vendor"
 		""", as_dict=True)
 
 		# meal_data = frappe.db.sql("""
