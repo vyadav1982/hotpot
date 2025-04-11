@@ -53,6 +53,7 @@ class HotpotUser(Document):
 		employee_name: DF.Data | None
 		guest_of: DF.Link | None
 		is_active: DF.Check
+		is_deleted: DF.Check
 		is_guest: DF.Check
 		is_server: DF.Check
 		is_vendor: DF.Check

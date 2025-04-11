@@ -8,7 +8,8 @@
  "field_order": [
   "item_name",
   "is_active",
-  "vendor_id"
+  "vendor_id",
+  "is_deleted"
  ],
  "fields": [
   {
@@ -27,11 +28,17 @@
    "fieldtype": "Link",
    "label": "Vendor Id",
    "options": "Hotpot User"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_deleted",
+   "fieldtype": "Check",
+   "label": "Is Deleted"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-24 13:34:54.032737",
+ "modified": "2025-04-11 11:37:44.260495",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
