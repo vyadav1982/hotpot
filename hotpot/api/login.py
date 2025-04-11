@@ -259,6 +259,51 @@ def get_password_otp(email):
 	send_email("password_reset", email, context, "Password Reset OTP")
 	
 	return
+	
+@frappe.whitelist(allow_guest=True)
+def set_password():
+    try:
+        data = json.loads(frappe.request.data)
+        email = data.get("email")
+        submitted_otp = data.get("otp")
+        new_password = data.get("password")
+
+        if not (email and submitted_otp and new_password):
+            set_response(400, False, "Email, OTP, and password are required.")
+            return
+
+        if not frappe.db.exists("Hotpot User", {"email": email}):
+            set_response(404, False, f"User with email {email} not found.")
+            return
+
+        # Get stored OTP from cache
+        key = f"{OTP_PREFIX}{email}"
+        stored_hashed_otp = frappe.cache().get_value(key)
+
+        if not stored_hashed_otp:
+            set_response(400, False, "Session Expired.")
+            return
+
+        # Hash the submitted OTP and compare
+        hashed_submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
+
+        if hashed_submitted_otp != stored_hashed_otp:
+            set_response(400, False, "Invalid OTP.")
+            return
+
+        # OTP is valid, proceed with password reset
+        update_password(email, new_password, logout_all_sessions=True)
+
+        # Remove OTP from cache to prevent reuse
+        frappe.cache().delete_value(key)
+
+        set_response(200, True, "Password reset successfully.")
+        return
+
+    except Exception as e:
+        frappe.log_error(f"Password reset error: {str(e)}", "Set Password Error")
+        set_response(500, False, f"An error occurred: {str(e)}")
+        return
 
 @frappe.whitelist() 
 def reset_password():
