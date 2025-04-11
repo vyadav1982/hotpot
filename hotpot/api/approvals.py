@@ -15,7 +15,7 @@ def send_approval_request_email(to_email, user_data, request_data, doc,meal_name
         "user_data": user_data,
         "request_data": request_data,
         "meal_name": meal_name,
-        "get_approval_link": get_approval_link(doc)
+        "get_approval_link": "https://hotpot-admin.vercel.app/service-requests"
     }
     send_email("approval_email", to_email, context, email_subject)
 
