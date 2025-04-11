@@ -259,7 +259,7 @@ def get_password_otp(email):
 	send_email("password_reset", email, context, "Password Reset OTP")
 	
 	return
-	
+
 @frappe.whitelist(allow_guest=True)
 def set_password():
     try:
@@ -290,7 +290,11 @@ def set_password():
         if hashed_submitted_otp != stored_hashed_otp:
             set_response(400, False, "Invalid OTP.")
             return
-
+		
+		password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+		if not re.match(password_regex, new_password):
+			set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
+			return
         # OTP is valid, proceed with password reset
         update_password(email, new_password, logout_all_sessions=True)
 
