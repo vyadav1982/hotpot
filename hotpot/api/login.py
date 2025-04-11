@@ -262,52 +262,52 @@ def get_password_otp(email):
 
 @frappe.whitelist(allow_guest=True)
 def set_password():
-    try:
-        data = json.loads(frappe.request.data)
-        email = data.get("email")
-        submitted_otp = data.get("otp")
-        new_password = data.get("password")
+	try:
+		data = json.loads(frappe.request.data)
+		email = data.get("email")
+		submitted_otp = data.get("otp")
+		new_password = data.get("password")
 
-        if not (email and submitted_otp and new_password):
-            set_response(400, False, "Email, OTP, and password are required.")
-            return
+		if not (email and submitted_otp and new_password):
+			set_response(400, False, "Email, OTP, and password are required.")
+			return
 
-        if not frappe.db.exists("Hotpot User", {"email": email}):
-            set_response(404, False, f"User with email {email} not found.")
-            return
+		if not frappe.db.exists("Hotpot User", {"email": email}):
+			set_response(404, False, f"User with email {email} not found.")
+			return
 
-        # Get stored OTP from cache
-        key = f"{OTP_PREFIX}{email}"
-        stored_hashed_otp = frappe.cache().get_value(key)
+		# Get stored OTP from cache
+		key = f"{OTP_PREFIX}{email}"
+		stored_hashed_otp = frappe.cache().get_value(key)
 
-        if not stored_hashed_otp:
-            set_response(400, False, "Session Expired.")
-            return
+		if not stored_hashed_otp:
+			set_response(400, False, "Session Expired.")
+			return
 
-        # Hash the submitted OTP and compare
-        hashed_submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
+		# Hash the submitted OTP and compare
+		hashed_submitted_otp = hashlib.sha256(submitted_otp.encode()).hexdigest()
 
-        if hashed_submitted_otp != stored_hashed_otp:
-            set_response(400, False, "Invalid OTP.")
-            return
+		if hashed_submitted_otp != stored_hashed_otp:
+			set_response(400, False, "Invalid OTP.")
+			return
 		
 		password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
 		if not re.match(password_regex, new_password):
 			set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
 			return
-        # OTP is valid, proceed with password reset
-        update_password(email, new_password, logout_all_sessions=True)
+		# OTP is valid, proceed with password reset
+		update_password(email, new_password, logout_all_sessions=True)
 
-        # Remove OTP from cache to prevent reuse
-        frappe.cache().delete_value(key)
+		# Remove OTP from cache to prevent reuse
+		frappe.cache().delete_value(key)
 
-        set_response(200, True, "Password reset successfully.")
-        return
+		set_response(200, True, "Password reset successfully.")
+		return
 
-    except Exception as e:
-        frappe.log_error(f"Password reset error: {str(e)}", "Set Password Error")
-        set_response(500, False, f"An error occurred: {str(e)}")
-        return
+	except Exception as e:
+		frappe.log_error(f"Password reset error: {str(e)}", "Set Password Error")
+		set_response(500, False, f"An error occurred: {str(e)}")
+		return
 
 @frappe.whitelist() 
 def reset_password():
