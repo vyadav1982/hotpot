@@ -291,7 +291,7 @@ def set_password():
 			set_response(400, False, "Invalid OTP.")
 			return
 		
-		password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+		password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$'
 		if not re.match(password_regex, new_password):
 			set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
 			return
@@ -338,7 +338,7 @@ def reset_password():
 	if not user:
 		set_response(404, False, "User not found.")
 		return
-	password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+	password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$'
 	if not re.match(password_regex, new_password):
 		set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
 		return
