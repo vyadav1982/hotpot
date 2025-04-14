@@ -6,6 +6,8 @@ import json
 from hotpot.utils.utc_time import *
 from hotpot.utils.email import *
 
+import re
+
 from frappe.utils import now_datetime
 
 @frappe.whitelist(methods=["GET"])
@@ -595,4 +597,93 @@ def update_coupon_status():
 		frappe.log_error(frappe.get_traceback(), "Failed to update status")
 		set_response(500, False, f"Server error: {str(e)}")
 		return
+
+@frappe.whitelist(allow_guest=True)
+def bulk_insert_employee():
+	import json
+	if frappe.request.method!= "POST":
+			set_response(405, False, "Only POST method is allowed")
+			return
+	user_doc = get_hotpot_user_by_email()
+	if not user_doc:
+		set_response(404, False, "User Not found")
+		return
+	# if not user_doc.get("role") in ["Hotpot Admin"]:
+	# 	set_response(403, False, "Not Permitted to access this resource")
+	# 	return
+
+	try:
+		data = json.loads(frappe.request.data or "{}")
+		fields = data.get("fields", [])
+		values = data.get("values", [])
+
+		status_report = []
+
+		for row in values:
+			record = dict(zip(fields, row))
+			email = record.get("email", "").strip()
+			empid = record.get("employee_id","").strip()
+			name = record.get("employee_name", "").strip()
+			mobile = record.get("mobile_no", "").strip()
+			coupon_count = record.get("coupon_count", 0)
+			dob = record.get("date_of_birth")
+			doj = record.get("date_of_joining")
+
+			if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
+				status_report.append({ "email": email, "status": "failed", "reason": "Invalid email format" })
+				continue
+
+			if not re.match(r"^\+91- \d{10}$", mobile):
+				status_report.append({ "email": email, "status": "failed", "reason": "Mobile number must be +91- XXXXXXXXXX" })
+				continue
+
+			if not name.replace(" ", "").isalpha():
+				status_report.append({ "email": email, "status": "failed", "reason": "Name must contain only letters and spaces" })
+				continue
+
+			try:
+				coupon_count = int(coupon_count)
+				if coupon_count < 0:
+					raise ValueError()
+			except:
+				status_report.append({ "email": email, "status": "failed", "reason": "Coupon count must be a number >= 0" })
+				continue
+
+			date_pattern = r"^\d{4}-\d{2}-\d{2}$"
+
+			if dob and not re.match(date_pattern, dob):
+				status_report.append({ "email": email, "status": "failed", "reason": "Invalid DOB format (expected YYYY-MM-DD)" })
+				continue
+
+			if doj and not re.match(date_pattern, doj):
+				status_report.append({ "email": email, "status": "failed", "reason": "Invalid DOJ format (expected YYYY-MM-DD)" })
+				continue
+
+			if frappe.db.exists("Hotpot User", {"email": email}):
+				status_report.append({ "email": email, "status": "failed", "reason": "Email already exists" })
+				continue
+			if frappe.db.exists("Hotpot User", {"employee_id": empid}):
+				status_report.append({ "email": email, "status": "failed", "reason": "Email already exists" })
+				continue
+
+			try:
+				doc = frappe.get_doc({
+					"doctype": "Hotpot User",
+					**record,
+					"is_active":1,
+					"latitude":"19.11129943940169",
+					"longitude":"72.88780368917921",
+					"role":"Hotpot User",
+				})
+				doc.insert(ignore_permissions=True)
+				status_report.append({ "email": email, "status": "success", "reason": "Inserted successfully" })
+			except Exception as e:
+				status_report.append({ "email": email, "status": "failed", "reason": f"Insertion error: {str(e)}" })
+
+		return set_response(200,True,{ "status_report": status_report })
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "bulk_insert_employee")
+		return set_response(500,False,{ "error": "Something went wrong", "details": str(e) })
+
 
