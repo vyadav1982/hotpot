@@ -608,9 +608,9 @@ def bulk_insert_employee():
 	if not user_doc:
 		set_response(404, False, "User Not found")
 		return
-	# if not user_doc.get("role") in ["Hotpot Admin"]:
-	# 	set_response(403, False, "Not Permitted to access this resource")
-	# 	return
+	if not user_doc.get("role") in ["Hotpot Admin"]:
+		set_response(403, False, "Not Permitted to access this resource")
+		return
 	bliss_doc = frappe.get_doc("Hotpot Locations",{"location":"Bliss HQ"})
 	try:
 		data = json.loads(frappe.request.data or "{}")
@@ -687,3 +687,56 @@ def bulk_insert_employee():
 		return set_response(500,False,{ "error": "Something went wrong", "details": str(e) })
 
 
+@frappe.whitelist()
+def get_hotpot_history(start_date,end_date):
+	if frappe.request.method!= "GET":
+			set_response(405, False, "Only GET method is allowed")
+			return
+	user_doc = get_hotpot_user_by_email()
+	if not user_doc:
+		set_response(404, False, "User Not found")
+		return
+	if not user_doc.get("role") in ["Hotpot User"]:
+		set_response(403, False, "Not Permitted to access this resource")
+		return
+	
+	start_date = f"{start_date} 00:00:00"
+	start_date = get_utc_datetime_obj(start_date)
+	end_date = f"{end_date} 23:59:59"
+	end_date = get_utc_datetime_obj(end_date)
+	start_date = get_local_datetime_obj(start_date).date()
+	end_date = get_local_datetime_obj(end_date).date()
+
+	user_timezone = get_user_timezone() or "Asia/Kolkata"
+	try:
+		query="""
+			SELECT 
+				CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
+				hm.meal_title,
+				hm.meal_weight,
+				hm.start_time,
+				hm.end_time
+			FROM 
+				`tabHotpot Coupons` AS hc
+			JOIN 
+				`tabHotpot Meal` AS hm
+				ON hc.parent = hm.name
+			WHERE
+				hc.employee_id = %(user_name)s 
+				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
+		"""
+
+		data = frappe.db.sql(query,{
+					"user_name": user_doc.get("name"),
+					"timezone": user_timezone,
+					"timezone": user_timezone,
+					"start_date": start_date,
+					"end_date": end_date
+				},as_dict=True)
+		set_response(200,True,"Coupon data fetched successfully",data)
+		return
+	except Exception as e:
+		set_response(500, False, "ERROR: " + str(e))
+
+
+	
