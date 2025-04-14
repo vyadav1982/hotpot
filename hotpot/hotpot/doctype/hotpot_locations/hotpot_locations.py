@@ -14,6 +14,7 @@ class HotpotLocations(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		is_active: DF.Check
 		latitude: DF.Data | None
 		location: DF.Data | None
 		longitude: DF.Data | None

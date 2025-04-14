@@ -7,13 +7,15 @@
  "field_order": [
   "location",
   "latitude",
-  "longitude"
+  "longitude",
+  "is_active"
  ],
  "fields": [
   {
    "fieldname": "location",
    "fieldtype": "Data",
-   "label": "Location"
+   "label": "Location",
+   "search_index": 1
   },
   {
    "fieldname": "latitude",
@@ -23,12 +25,19 @@
   {
    "fieldname": "longitude",
    "fieldtype": "Data",
-   "label": "Longitude"
+   "label": "Longitude",
+   "search_index": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-14 13:06:55.908697",
+ "modified": "2025-04-14 15:24:25.265499",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Locations",
