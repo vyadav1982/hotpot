@@ -27,7 +27,8 @@ extend_bootinfo = "hotpot.boot.boot_session"
 
 fixtures = [
     
-	"Module Profile",  
+	"Module Profile", 
+	"Hotpot Locations", 
 	"Block Module",
 	{
 		"doctype": "Role",

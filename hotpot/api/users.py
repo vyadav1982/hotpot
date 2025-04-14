@@ -611,7 +611,7 @@ def bulk_insert_employee():
 	# if not user_doc.get("role") in ["Hotpot Admin"]:
 	# 	set_response(403, False, "Not Permitted to access this resource")
 	# 	return
-
+	bliss_doc = frappe.get_doc("Hotpot Locations",{"location":"Bliss HQ"})
 	try:
 		data = json.loads(frappe.request.data or "{}")
 		fields = data.get("fields", [])
@@ -671,8 +671,8 @@ def bulk_insert_employee():
 					"doctype": "Hotpot User",
 					**record,
 					"is_active":1,
-					"latitude":"19.11129943940169",
-					"longitude":"72.88780368917921",
+					"latitude":bliss_doc.latitude,
+					"longitude":bliss_doc.longitude,
 					"role":"Hotpot User",
 				})
 				doc.insert(ignore_permissions=True)
