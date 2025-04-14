@@ -6,7 +6,8 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
-  "date"
+  "date",
+  "is_active"
  ],
  "fields": [
   {
@@ -18,11 +19,18 @@
    "fieldname": "date",
    "fieldtype": "Date",
    "label": "Date"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-14 14:53:05.349120",
+ "modified": "2025-04-14 15:24:49.108297",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Holidays",
