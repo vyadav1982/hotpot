@@ -305,6 +305,10 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		if not user_data:
 			set_response(404, False, "User Not Found")
 			return
+
+		if frappe.db.exists("Hotpot Holidays", {"date": date}):
+			return set_response(200, True, "Oops! Today is off.")
+
 		local_time = get_local_time_now()
 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
 		utc_now = datetime.utcnow().replace(tzinfo=None)
