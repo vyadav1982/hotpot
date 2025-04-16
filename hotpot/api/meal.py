@@ -313,8 +313,13 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			set_response(404, False, "User Not Found")
 			return
 
-		if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}):
-			return set_response(200, True, "Oops! Today is off.")
+		hotpot_config = frappe.get_single("Hotpot Configurations")
+		
+		if user_data.get("role") == "Hotpot User":
+			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
+				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+			):
+				return set_response(200, False, "Oops! Today is off.")
 
 
 		local_time = get_local_time_now()

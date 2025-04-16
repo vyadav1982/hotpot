@@ -10,18 +10,18 @@ from hotpot.utils.email import *
 
 
 def send_approval_request_email(to_email, user_data, request_data, doc,meal_name):
-    email_subject = f"Approval Request from {user_data.employee_name} ({user_data.employee_id}) for {request_data['request_type']}"
-    context = {
-        "user_data": user_data,
-        "request_data": request_data,
-        "meal_name": meal_name,
-        "get_approval_link": "https://hotpot-admin.vercel.app/service-requests"
-    }
-    send_email("approval_email", to_email, context, email_subject)
+	email_subject = f"Approval Request from {user_data.employee_name} ({user_data.employee_id}) for {request_data['request_type']}"
+	context = {
+		"user_data": user_data,
+		"request_data": request_data,
+		"meal_name": meal_name,
+		"get_approval_link": "https://hotpot-admin.vercel.app/service-requests"
+	}
+	send_email("approval_email", to_email, context, email_subject)
 
 def get_approval_link(doc):
 	# return f"http://shashi.localhost:8000/app/hotpot-approvals/{doc}"
-    return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
+	return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
 
 
 def set_response(http_status_code, status, message, data=None):
@@ -171,44 +171,44 @@ def create_approval():
 
 @frappe.whitelist(allow_guest=False)
 def upload_attachment():
-    try:
-        if frappe.request.method != "POST":
-            return {"success": False, "message": "Only POST method is allowed"}
+	try:
+		if frappe.request.method != "POST":
+			return {"success": False, "message": "Only POST method is allowed"}
 
-        user_data = get_hotpot_user_by_email()
-        if not user_data:
-            return {"success": False, "message": "User not found"}
+		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			return {"success": False, "message": "User not found"}
 
-        uploaded_file = frappe.request.files.get("file")
-        if not uploaded_file:
-            return {"success": False, "message": "No file uploaded"}
+		uploaded_file = frappe.request.files.get("file")
+		if not uploaded_file:
+			return {"success": False, "message": "No file uploaded"}
 
-        allowed_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"}
-        allowed_mime_types = {
-            "image/jpeg", "image/png", "image/gif", "image/bmp",
-            "image/webp", "image/svg+xml", "image/tiff"
-        }
+		allowed_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"}
+		allowed_mime_types = {
+			"image/jpeg", "image/png", "image/gif", "image/bmp",
+			"image/webp", "image/svg+xml", "image/tiff"
+		}
 
-        filename = uploaded_file.filename.lower()
-        file_ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
-        file_mime_type = uploaded_file.content_type
+		filename = uploaded_file.filename.lower()
+		file_ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
+		file_mime_type = uploaded_file.content_type
 
-        if file_ext not in allowed_extensions or file_mime_type not in allowed_mime_types:
-            return {"success": False, "message": "Only image files are allowed"}
+		if file_ext not in allowed_extensions or file_mime_type not in allowed_mime_types:
+			return {"success": False, "message": "Only image files are allowed"}
 
-        doctype = "Hotpot User"
-        docname = user_data.get("name")
+		doctype = "Hotpot User"
+		docname = user_data.get("name")
 
-        file_doc = save_file(filename, uploaded_file.read(), doctype, docname, is_private=0)
+		file_doc = save_file(filename, uploaded_file.read(), doctype, docname, is_private=0)
 
-        return {
-            "success": True,
-            "message": "File uploaded successfully",
-            "file_url": file_doc.file_url,
-            "file_name": file_doc.file_name,
-            "file_id": file_doc.name,
-        }
+		return {
+			"success": True,
+			"message": "File uploaded successfully",
+			"file_url": file_doc.file_url,
+			"file_name": file_doc.file_name,
+			"file_id": file_doc.name,
+		}
 
-    except Exception as e:
-        frappe.log_error(f"Error in file upload: {str(e)}")
-        return {"success": False, "message": f"Error: {str(e)}"}
+	except Exception as e:
+		frappe.log_error(f"Error in file upload: {str(e)}")
+		return {"success": False, "message": f"Error: {str(e)}"}
