@@ -51,6 +51,7 @@ class HotpotUser(Document):
 		email: DF.Data
 		employee_id: DF.Data
 		employee_name: DF.Data | None
+		fcm_token: DF.Data | None
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_deleted: DF.Check
@@ -146,6 +147,19 @@ class HotpotUser(Document):
 							meal_doc.insert(ignore_permissions=True)
 
 						frappe.db.commit()
+					if user_doc.get("role") == "Hotpot User":
+						transaction_doc = frappe.new_doc("Hotpot Transaction History")
+						transaction_doc.update(
+							{
+								"employee_id": user_doc.get("name"),
+								"type": "Credit",
+								"message": f"{self.coupon_count} tokens have been credited to your wallet",
+								"title": "Token added by Admin",
+								"amount": self.coupon_count
+							}
+						)
+						transaction_doc.insert()
+
 				password = frappe.generate_hash(length=8)
 				set_user_password(frappe.local.site, self.email,password,user_doc)
 				frappe.db.commit()	
