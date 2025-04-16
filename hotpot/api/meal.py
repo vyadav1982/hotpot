@@ -80,6 +80,16 @@ def create_meal():
 		meal_date = data.get("meal_date")
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
+		
+		if user_data.get("role") =="Hotpot Vendor":
+			vendor_id = user_data.get("guest_of")
+		else:
+			vendor_id = data.get("vendor_id")
+
+		output = check_valid_meal(meal_date,start_time,end_time,vendor_id)
+		if (output.get("status")=="error") :
+			return set_response(500,False,output.get("message"))
+
 		start_time = f"{meal_date} {start_time}"
 		end_time = f"{meal_date} {end_time}"
 		local_time_now = get_local_time_now()
@@ -89,10 +99,7 @@ def create_meal():
 		vendor_id=None
 		meal_title = data.get("meal_title")
 		day = get_utc_datetime_obj(meal_date).day
-		if user_data.get("role") =="Hotpot Vendor":
-			vendor_id = user_data.get("guest_of")
-		else:
-			vendor_id = data.get("vendor_id")
+
 		meal_items = ",".join(data.get("meal_items", []))
 		start_time = get_utc_datetime_obj(start_time)
 		end_time = get_utc_datetime_obj(end_time)
@@ -657,6 +664,157 @@ def update_meal_admin():
 		frappe.db.rollback()
 		set_response(500, False, f"Failed to update meal: {str(e)}")
 		return
+
+
+@frappe.whitelist()
+def get_meals_internal(date, vendor_id=None):
+	try:
+		
+		user_data = frappe.get_doc("Hotpot User",vendor_id)
+		if not user_data:
+			return
+
+		local_time = get_local_time_now()
+		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
+		utc_now = datetime.utcnow().replace(tzinfo=None)
+		update_coupon_status()
+		start_date = get_utc_datetime_obj(f"{date} 00:00:00")
+		end_date = get_utc_datetime_obj(f"{date} 23:59:59")
+
+		base_fields = [
+			"name", "meal_title", "day", "meal_items", "start_time", "end_time",
+			"buffer_coupon_count", "meal_weight", "meal_date", "is_special","is_active",
+			"vendor_id", "repeat_type", "repeat_days","lead_time","cancellation_time"
+		]
+		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
+			filters = [
+				["vendor_id", "=", user_data.get("guest_of")],
+				["is_deleted", "=", 0]
+			]
+
+			meals = frappe.db.get_list(
+				"Hotpot Meal",
+				fields=base_fields,
+				filters=filters,
+				order_by="creation desc",
+			)
+
+		else:
+			filters = [
+				["is_active", "=", 1],
+			]
+			if vendor_id:
+				filters.append(["vendor_id", "=", vendor_id])
+
+			meals = frappe.db.get_list(
+				"Hotpot Meal",
+				fields=base_fields,
+				filters=filters,
+			)
+		meals = [
+			meal for meal in meals if meal["meal_date"] <= end_date
+		]
+		processed_meals = []
+		for meal in meals:
+			meal_date = meal["meal_date"]
+			repeat_type = meal.get("repeat_type", "once")
+			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
+
+
+
+			valid = False
+			if repeat_type == "once":
+				valid = (meal_date >= start_date and meal_date <= end_date)
+			elif repeat_type == "daily":
+				valid = meal_date <= end_date
+			elif repeat_type == "specific_days":
+				weekday = date_param_utc.strftime("%A").upper()
+				valid = meal_date <= end_date and weekday in repeat_days
+
+			if not valid:
+				continue
+
+			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin"]:
+				if get_local_datetime_obj(meal["end_time"]).time()<=get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time():
+					continue
+
+			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "employee_name")
+			meal["vendor_name"] = vendor
+
+			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
+			if user_data.get("role") == "Hotpot User":
+				meal["coupon"] = [
+					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+					for c in meal_doc.coupons if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+				]
+			else:
+				meal["coupon"] = [
+					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc
+				]
+
+			ratings = [
+				float(r.rating) if isinstance(r.rating, str) else r.rating
+				for r in meal_doc.ratings if r.rating is not None
+			]
+			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
+
+			if user_data.get("role") == "Hotpot User":
+				meal["rating"] = [
+					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
+					for r in meal_doc.ratings if r.employee_id == user_data.name
+				]
+			else:
+				meal["rating"] = [
+					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
+					for r in meal_doc.ratings
+				]
+			meal["meal_id"] = meal_doc.name
+			
+			processed_meals.append(meal)
+
+		processed_meals.sort(
+			key=lambda x: (
+				get_local_datetime_obj(x["start_time"]).time(),
+				get_local_datetime_obj(x["end_time"]).time()
+		))
+		return processed_meals
+
+	except Exception as e:
+		return
+
+@frappe.whitelist()
+def check_valid_meal(meal_date,start_time,end_time,vendor_id):
+	hotpot_config = frappe.get_single("Hotpot Configurations")
+	MIN_HOUR_GAP = hotpot_config.get("hourly_difference_between_meal")
+	if MIN_HOUR_GAP is None:
+		MIN_HOUR_GAP=1
+
+
+	new_start = datetime.combine(datetime.strptime(meal_date, "%Y-%m-%d").date(),  datetime.strptime(start_time, "%H:%M:%S").time())
+	new_end = datetime.combine(datetime.strptime(meal_date, "%Y-%m-%d").date(),  datetime.strptime(end_time, "%H:%M:%S").time())
+
+	current_meals = get_meals_internal(meal_date, vendor_id)
+	
+	for meal in current_meals:
+		existing_start = datetime.combine(datetime.strptime(meal_date, "%Y-%m-%d").date(), get_local_datetime_obj(meal.start_time).time())
+		existing_end = datetime.combine(datetime.strptime(meal_date, "%Y-%m-%d").date(), get_local_datetime_obj(meal.end_time).time())
+
+		gap_before = (new_start - existing_end).total_seconds() / 3600
+		gap_after = (existing_start - new_end).total_seconds() / 3600
+
+
+		if gap_before < MIN_HOUR_GAP and gap_after < MIN_HOUR_GAP:
+			return {
+				"status": "error",
+				"message": f"Meal timing conflicts with '{meal.meal_title}' from ({get_local_datetime_obj(meal.start_time).time()} to {get_local_datetime_obj(meal.end_time).time()}). A minimum {int(MIN_HOUR_GAP)}-hour gap is required."
+			}
+
+	return {
+		"status": "success",
+		"message": "Valid meal timing. No conflict found."
+	}
+
 
 	
 

@@ -7,7 +7,9 @@
  "field_order": [
   "free_birthday_meal",
   "free_joining_day_meal",
-  "can_generate_for_guest"
+  "can_generate_for_guest",
+  "allow_meal_on_sunday",
+  "hourly_difference_between_meal"
  ],
  "fields": [
   {
@@ -27,12 +29,25 @@
    "fieldname": "can_generate_for_guest",
    "fieldtype": "Check",
    "label": "Can Generate for Guest"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_meal_on_sunday",
+   "fieldtype": "Check",
+   "label": "Allow Meal on Sunday"
+  },
+  {
+   "default": "1",
+   "fieldname": "hourly_difference_between_meal",
+   "fieldtype": "Float",
+   "label": "Hourly difference between meal",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-02-25 13:24:50.177382",
+ "modified": "2025-04-16 11:04:19.445053",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",
