@@ -5,6 +5,7 @@ import json
 from frappe.utils.file_manager import save_file
 from hotpot.utils.utc_time import *
 from hotpot.utils.email import *
+from hotpot.utils.guest_coupon_generate import *
 
 
 
@@ -114,7 +115,7 @@ def create_approval():
 				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
 				limit=1
 			)
-		if existing_approval:
+		if existing_approval and user_data.get("role")!="Hotpot Admin":
 			return set_response(400, False, "Pending approval already exists for this mobile number.")
 
 
@@ -129,6 +130,7 @@ def create_approval():
 			"attachments": json.dumps(data.get("attachments", [])),
 			"approval_status": "Pending",
 			"is_active": 1,
+			"coupon_count":data.get("coupon_count")
 		}
 		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			approval_data.update({
@@ -157,15 +159,27 @@ def create_approval():
 			meal_doc.save()
 
 		approval_list.append(approval.name)
-		send_approval_request_email("sashikant12rao@gmail.com",user_data,data,approval.name,meal_doc.meal_title)
+		if user_data.get("role")!="Hotpot Admin":
+			send_approval_request_email("sashikant12rao@gmail.com",user_data,data,approval.name,meal_doc.meal_title)
 
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()
+		if user_data.get("role") == "Hotpot Admin":
+			approval_doc = frappe.get_doc("Hotpot Approvals",approval.name)
+			approval_doc.approval_status="Approved"
+			approval_doc.is_active=0
+			approval_doc.save()
+			res = generate_guest_coupon(approval_doc)
+			frappe.db.commit()
+			return set_response(200, res.get("status") == "success", res.get("msg"))
+
+			
 
 		return set_response(200, True, "Approval created successfully", approval.name)
 
 	except Exception as e:
+		frappe.rollback()
 		frappe.log_error(f"Error creating approval: {str(e)}")
 		return set_response(500, False, f"Server error: {str(e)}")
 
