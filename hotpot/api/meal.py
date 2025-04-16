@@ -81,6 +81,7 @@ def create_meal():
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
 		
+		vendor_id=None
 		if user_data.get("role") =="Hotpot Vendor":
 			vendor_id = user_data.get("guest_of")
 		else:
@@ -96,7 +97,6 @@ def create_meal():
 
 		if isinstance(meal_date, str):
 			meal_date = f"{meal_date} {local_time_now}"
-		vendor_id=None
 		meal_title = data.get("meal_title")
 		day = get_utc_datetime_obj(meal_date).day
 
