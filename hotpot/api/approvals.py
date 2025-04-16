@@ -129,8 +129,7 @@ def create_approval():
 			"meal_id": data.get("meal_id"),
 			"attachments": json.dumps(data.get("attachments", [])),
 			"approval_status": "Pending",
-			"is_active": 1,
-			"coupon_count":data.get("coupon_count")
+			"is_active": 1
 		}
 		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			approval_data.update({
@@ -138,6 +137,7 @@ def create_approval():
 				"guest_name": data.get("guest_name"),
 				"guest_mobile_no" : mobile_no,
 				"date": date,
+				"coupon_count":data.get("coupon_count")
 			})
 
 		approval = frappe.get_doc(approval_data)
