@@ -16,7 +16,8 @@
   "attachments",
   "approval_status",
   "approval_remarks",
-  "is_active"
+  "is_active",
+  "coupon_count"
  ],
  "fields": [
   {
@@ -89,11 +90,17 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "is Active"
+  },
+  {
+   "fieldname": "coupon_count",
+   "fieldtype": "Int",
+   "label": "Coupon Count",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-26 15:37:59.732940",
+ "modified": "2025-04-15 16:11:24.016950",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
