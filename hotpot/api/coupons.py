@@ -874,27 +874,26 @@ def generate_coupon():
 
 				try:
 					# History for user transactions
-					history_doc = frappe.new_doc("Hotpot Coupons History")
-					if for_guest and role=="Hotpot User":
-						history_doc.update(
-							{
-								"employee_id": user_doc.get("name"),
-								"type": "Guest Creation",
-								"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
-								"meal_id": meal_id,
-							}
-						)
-					else:
-						history_doc.update(
-							{
-								"employee_id": user_doc.get("name"),
-								"type": "Creation",
-								"message": f"Created coupon for {meal_title} {start_date}",
-								"meal_id": meal_id,
-							}
-						)
-					
-					temp_docs.append(history_doc)
+					# history_doc = frappe.new_doc("Hotpot Coupons History")
+					# if for_guest and role=="Hotpot User":
+					# 	history_doc.update(
+					# 		{
+					# 			"employee_id": user_doc.get("name"),
+					# 			"type": "Guest Creation",
+					# 			"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
+					# 			"meal_id": meal_id,
+					# 		}
+					# 	)
+					# else:
+					# 	history_doc.update(
+					# 		{
+					# 			"employee_id": user_doc.get("name"),
+					# 			"type": "Creation",
+					# 			"message": f"Created coupon for {meal_title} {start_date}",
+					# 			"meal_id": meal_id,
+					# 		}
+					# 	)
+
 
 					# Append created coupon in meal
 					meal_doc.append(
@@ -914,6 +913,18 @@ def generate_coupon():
 					if not for_guest and not is_birthday and not is_joining_day:
 						user_coupon_count -= meal_weight
 						total_coupons_consumed+=meal_weight
+
+					transaction_doc= frappe.new_doc("Hotpot Transaction History")
+					transaction_doc.update(
+						{
+							"employee_id": user_doc.get("name"),
+							"type": "Debit",
+							"message": f"Deducted {meal_weight} tokens for {meal_title} meal",
+							"amount": meal_weight,
+							"title":"Meal Cost Deduction"
+						}
+					)
+					temp_docs.append(transaction_doc)
 					
 
 				except Exception as e:
