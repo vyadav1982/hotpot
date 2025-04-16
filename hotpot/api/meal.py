@@ -27,7 +27,7 @@ def give_feedback():
 			return
 
 		user_data = get_hotpot_user_by_email()
-		if user_data.get("role") != "Hotpot User":
+		if user_data.get("role") not in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 		if not user_data:
@@ -315,7 +315,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 		
-		if user_data.get("role") == "Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 			):
@@ -390,7 +390,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			if not valid:
 				continue
 
-			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin"]:
+			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				if get_local_datetime_obj(meal["end_time"]).time()<=get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time():
 					continue
 
@@ -398,7 +398,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
-			if user_data.get("role") == "Hotpot User":
+			if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
@@ -415,7 +415,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			]
 			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
 
-			if user_data.get("role") == "Hotpot User":
+			if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				meal["rating"] = [
 					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
 					for r in meal_doc.ratings if r.employee_id == user_data.name
@@ -739,7 +739,7 @@ def get_meals_internal(date, vendor_id=None):
 			if not valid:
 				continue
 
-			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin"]:
+			if start_date<=utc_now and utc_now<=end_date and user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				if get_local_datetime_obj(meal["end_time"]).time()<=get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time():
 					continue
 
@@ -747,7 +747,7 @@ def get_meals_internal(date, vendor_id=None):
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
-			if user_data.get("role") == "Hotpot User":
+			if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
@@ -764,7 +764,7 @@ def get_meals_internal(date, vendor_id=None):
 			]
 			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
 
-			if user_data.get("role") == "Hotpot User":
+			if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				meal["rating"] = [
 					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
 					for r in meal_doc.ratings if r.employee_id == user_data.name
