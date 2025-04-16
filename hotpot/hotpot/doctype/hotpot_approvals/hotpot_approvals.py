@@ -34,6 +34,20 @@ class HotpotApprovals(Document):
 
 
 	def on_update(self):
-		res = generate_guest_coupon(self,from_hook=True)
-		print(res)
-		return
+		if self.is_active == 1:
+			try:
+				res = generate_guest_coupon(self, from_hook=True)
+
+				# Only mark approved if coupon generation succeeded
+				if res:
+					self.approval_status = "Approved"
+					self.is_active = 0
+					self.save()
+				else:
+					frappe.msgprint(_("Coupon generation failed: {0}").format(res.get("msg", "Unknown error")))
+
+				print(res)
+				return
+			except Exception as e:
+				frappe.log_error(str(e), "on_update error")
+				frappe.msgprint(_("An error occurred while generating coupon."))
