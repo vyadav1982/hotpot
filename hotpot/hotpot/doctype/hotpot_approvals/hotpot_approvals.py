@@ -37,12 +37,8 @@ class HotpotApprovals(Document):
 		if self.is_active == 1:
 			try:
 				res = generate_guest_coupon(self, from_hook=True)
-
-				# Only mark approved if coupon generation succeeded
 				if res:
-					self.approval_status = "Approved"
-					self.is_active = 0
-					self.save()
+					print(res)
 				else:
 					frappe.msgprint(_("Coupon generation failed: {0}").format(res.get("msg", "Unknown error")))
 
