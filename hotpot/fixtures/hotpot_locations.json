@@ -2,6 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "Hotpot Locations",
+  "is_active": 0,
   "latitude": "19.11129943940169",
   "location": "Bliss HQ",
   "longitude": "72.88780368917921",
