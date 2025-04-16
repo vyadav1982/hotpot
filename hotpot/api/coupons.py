@@ -254,7 +254,7 @@ def cancel_coupon():
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
 		transaction_doc = frappe.new_doc("Hotpot Transaction History")
-		history_doc.update(
+		transaction_doc.update(
 			{
 				"employee_id": user_doc.get("name"),
 				"type": "Credit",
@@ -263,7 +263,7 @@ def cancel_coupon():
 				"amount":meal_doc.meal_weight
 			}
 		)
-		history_doc.insert()
+		transaction_doc.insert()
 		user_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Coupon cancelled successfully")
