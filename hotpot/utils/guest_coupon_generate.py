@@ -4,8 +4,6 @@ from hotpot.api.coupons import *
 def generate_guest_coupon(data,from_hook=False):
 	if from_hook==True :
 		if data.approval_status == "Approved" and data.is_active == 1:
-			print("((((()))))")
-			print(from_hook)
 			try:
 				user = frappe.get_doc("Hotpot User", data.requested_by)
 				if user:
