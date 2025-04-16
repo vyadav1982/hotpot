@@ -41,7 +41,7 @@ def get_approvals():
 			set_response(404, False, "User not found")
 			return
 
-		fields = ["name", "request_type","meal_id", "descrption", "approval_status", "attachments", "approval_remarks","is_active"]
+		fields = ["name", "request_type","meal_id", "descrption", "approval_status", "attachments", "approval_remarks","is_active","coupon_count"]
 
 		if user_data.get("role") == "Hotpot User":
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date"]
@@ -94,7 +94,7 @@ def create_approval():
 		required_fields = ["request_type", "description", "meal_id"]
 		
 		if user_data.get("role") == "Hotpot User":
-			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date","country_code"]
+			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date","country_code","coupon_count"]
 
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
