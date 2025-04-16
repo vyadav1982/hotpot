@@ -1504,6 +1504,17 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 		coupon_id = []
 		date = get_local_datetime_obj(date).date()
 		total_coupons_consumed = 0
+		approval_doc = None
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+			if approval_doc.approval_status != "Approved":
+				return {"status": "error", "msg": "Approval is not approved"}
+			if approval_doc.meal_id != meal_id:
+				return {"status": "error", "msg": "Approval is not for this meal"}
+			if approval_doc.requested_by != user_doc.get("name"):
+				return {"status": "error", "msg": "Approval is not for this user"}
+			if approval_doc.date.date() != from_date:
+				return {"status": "error", "msg": "Approval is not for this date"}
 
 		for j in range(int(qty)):
 			for i in range(len(meal_ids)):
@@ -1515,7 +1526,6 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				if role in ["Hotpot User","Hotpot Admin","Hotpot HR"] and for_guest and hotpot_config.get("can_generate_for_guest") == 0:
 					return {"status": "error", "msg": "Not allowed to generate coupon for guest"}
 
-				approval_doc = None
 				dob = user_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
@@ -1538,16 +1548,6 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				except frappe.DoesNotExistError:
 					return {"status": "error", "msg": "Meal not found"}
 
-				if approval_id:
-					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
-					if approval_doc.approval_status != "Approved":
-						return {"status": "error", "msg": "Approval is not approved"}
-					if approval_doc.meal_id != meal_id:
-						return {"status": "error", "msg": "Approval is not for this meal"}
-					if approval_doc.requested_by != user_doc.get("name"):
-						return {"status": "error", "msg": "Approval is not for this user"}
-					if approval_doc.date.date() != from_date:
-						return {"status": "error", "msg": "Approval is not for this date"}
 
 				current_datetime_local = get_local_datetime_obj(datetime.utcnow())
 				local_date_today = current_datetime_local.date()
