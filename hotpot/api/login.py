@@ -319,7 +319,7 @@ def reset_password():
 	if not user_data:
 		set_response(404, False, "User Not found")
 		return
-	if not user_data["role"] in ["Hotpot Vendor", "Hotpot User"]:
+	if not user_data["role"] in ["Hotpot Vendor", "Hotpot User","Hotpot Admin","Hotpot HR"]:
 		set_response(403, False, "Not Permitted to access this resource")
 		return
 

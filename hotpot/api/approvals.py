@@ -43,7 +43,7 @@ def get_approvals():
 
 		fields = ["name", "request_type","meal_id", "descrption", "approval_status", "attachments", "approval_remarks","is_active"]
 
-		if user_data.get("role") == "Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date","coupon_count"]
 
 		approvals = frappe.db.get_list(
@@ -93,22 +93,22 @@ def create_approval():
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["request_type", "description", "meal_id"]
 		
-		if user_data.get("role") == "Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			required_fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date","country_code","coupon_count"]
 
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing_fields)}")
-		if user_data.get("role")=="Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if data.get("guest_mobile_no") and not data.get("guest_mobile_no").strip().isdigit():
 				return set_response(400, False, "Mobile number should contain only digits")
 			if data.get("guest_mobile_no") and len(data.get("guest_mobile_no").strip()) != 10:
 				return set_response(400, False, "Mobile number should contain 10 digits")
 		
-		if user_data.get("role")=="Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			mobile_no = data.get("country_code")+"- "+data.get("guest_mobile_no")
 		existing_approval = None
-		if user_data.get("role") == "Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			existing_approval = frappe.get_all(
 				"Hotpot Approvals",
 				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
@@ -130,7 +130,7 @@ def create_approval():
 			"approval_status": "Pending",
 			"is_active": 1,
 		}
-		if user_data.get("role") == "Hotpot User":
+		if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			approval_data.update({
 				"purpose_of_visiting": data.get("purpose_of_visiting"),
 				"guest_name": data.get("guest_name"),
