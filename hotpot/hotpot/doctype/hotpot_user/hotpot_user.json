@@ -15,6 +15,7 @@
   "tag_id",
   "password",
   "approval_id",
+  "fcm_token",
   "column_break_eopt",
   "is_active",
   "is_guest",
@@ -179,11 +180,16 @@
    "fieldname": "is_deleted",
    "fieldtype": "Check",
    "label": "Is Deleted"
+  },
+  {
+   "fieldname": "fcm_token",
+   "fieldtype": "Data",
+   "label": "FCM Token"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-11 11:37:18.258218",
+ "modified": "2025-04-16 13:47:34.822162",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
