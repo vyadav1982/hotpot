@@ -34,16 +34,26 @@ class HotpotApprovals(Document):
 
 
 	def on_update(self):
-		if self.is_active == 1:
+		if self.is_active == 1 and self.request_type == "Guest Coupon Generation":
 			try:
 				res = generate_guest_coupon(self, from_hook=True)
 				if res:
 					print(res)
 				else:
-					frappe.msgprint(_("Coupon generation failed: {0}").format(res.get("msg", "Unknown error")))
+					frappe.msgprint(_("Coupon generation failed"))
 
 				print(res)
 				return
+			except Exception as e:
+				frappe.log_error(str(e), "on_update error")
+				frappe.msgprint(_("An error occurred while generating coupon."))
+
+		elif self.is_active == 1 and self.request_type == "Meal Delete"
+			try:
+				meal_doc = frappe.get_doc("Hotpot Meal",self.meal_id)
+				meal_doc.is_deleted=1
+				meal_doc.save()
+				frappe.db.commit()
 			except Exception as e:
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while generating coupon."))
