@@ -356,6 +356,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		else:
 			filters = [
 				["is_active", "=", 1],
+				["is_deleted", "=", 0]
 			]
 			if vendor_id:
 				filters.append(["vendor_id", "=", vendor_id])
