@@ -753,6 +753,11 @@ def generate_coupon():
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
 		qty = data.get("qty",1)
+		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
+				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+			):
+				return set_response(200, False, "Oops! Today is off.")
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
 		meal_docs = {}
@@ -1269,6 +1274,11 @@ def generate_coupon_admin():
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
 		emails = data.get("email")
+		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
+				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+			):
+				return set_response(200, False, "Oops! Today is off.")
 		qty = data.get("qty",1)
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
@@ -1498,6 +1508,12 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
+
+		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
+				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+			):
+				return set_response(200, False, "Oops! Today is off.")
 
 		meal_docs = {}
 		temp_docs = []
