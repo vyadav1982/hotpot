@@ -511,6 +511,7 @@ def get_meals_dashboard(date):
 
 		filters = [
 			["is_active", "=", 1],
+			["is_deleted","=",0]
 		]
 		
 
