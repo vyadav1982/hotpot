@@ -176,7 +176,7 @@ def create_approval():
 
 			
 
-		return set_response(200, True, "Approval created successfully", approval.name)
+		return set_response(200, True, "Request created successfully", approval.name)
 
 	except Exception as e:
 		frappe.rollback()
