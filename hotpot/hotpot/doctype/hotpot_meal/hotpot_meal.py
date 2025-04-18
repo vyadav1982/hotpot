@@ -19,6 +19,7 @@ class HotpotMeal(Document):
 		approval_id: DF.Link | None
 		buffer_coupon_count: DF.Int
 		cancellation_time: DF.Int
+		category: DF.Link | None
 		coupons: DF.Table[HotpotCoupons]
 		end_time: DF.Datetime | None
 		is_active: DF.Check

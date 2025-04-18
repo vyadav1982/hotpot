@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "category",
   "meal_title",
   "meal_items",
   "start_time",
@@ -130,11 +131,17 @@
    "fieldname": "is_deleted",
    "fieldtype": "Check",
    "label": "Is Deleted"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "Hotpot Meal Category"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-03-26 17:42:59.936988",
+ "modified": "2025-04-18 12:56:46.956422",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
