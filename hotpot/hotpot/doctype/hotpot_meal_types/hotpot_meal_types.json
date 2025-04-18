@@ -12,7 +12,8 @@
   {
    "fieldname": "type",
    "fieldtype": "Data",
-   "label": "Type"
+   "label": "Type",
+   "unique": 1
   },
   {
    "default": "0",
@@ -23,7 +24,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-18 12:45:06.746516",
+ "modified": "2025-04-18 13:26:38.403979",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Types",
@@ -42,7 +43,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "type"
 }
