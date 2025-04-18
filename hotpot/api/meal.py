@@ -111,6 +111,7 @@ def create_meal():
 		cancellation_time = data.get("cancellation_time")
 		repeat_type = data.get("repeat_type", "once")
 		repeat_days = ",".join(data.get("repeat_days", []))
+		category = data.get("category",None)
 
 		required_fields = [
 			"meal_title",
@@ -332,10 +333,8 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 		base_fields = [
 			"name", "meal_title", "day", "meal_items", "start_time", "end_time",
 			"buffer_coupon_count", "meal_weight", "meal_date", "is_special","is_active",
-			"vendor_id", "repeat_type", "repeat_days","lead_time","cancellation_time"
+			"vendor_id", "repeat_type", "repeat_days","lead_time","cancellation_time","category"
 		]
-		if for_kiosk:
-			base_fields.append("lead_time")
 
 		# start = (page - 1) * limit
 		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
