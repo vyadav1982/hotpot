@@ -12,30 +12,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.179566",
-  "module": "Automation",
-  "name": "4uunb766it",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.041791",
   "module": "commit",
   "name": "gjaogsrk9k",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.212003",
-  "module": "commit",
-  "name": "e6liltrftv",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -52,30 +32,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.212463",
-  "module": "Contacts",
-  "name": "tbq0eba881",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.042805",
   "module": "Custom",
   "name": "tthpq6jaru",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.212901",
-  "module": "Custom",
-  "name": "ejr4aepdl2",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -92,30 +52,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.213331",
-  "module": "Email",
-  "name": "jbaihckm5i",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.044508",
   "module": "Frappe Er Generator",
   "name": "6b8m307jj2",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.213799",
-  "module": "Frappe Er Generator",
-  "name": "5th6gfgrm3",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -132,30 +72,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.214229",
-  "module": "Geo",
-  "name": "g556g0572l",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.046183",
   "module": "Integrations",
   "name": "lhk2et980l",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.214660",
-  "module": "Integrations",
-  "name": "5bvpgscuvl",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -172,30 +92,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.215319",
-  "module": "Mrx Audit",
-  "name": "44r07ub117",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.047627",
   "module": "MrxSurvey",
   "name": "ad4i35nh89",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.215844",
-  "module": "MrxSurvey",
-  "name": "33u7lvckvq",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -212,30 +112,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.216394",
-  "module": "MrxTracking",
-  "name": "0dp6ctlj61",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.048587",
   "module": "MrxWorkMod",
   "name": "o7hf9c40vs",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.216846",
-  "module": "MrxWorkMod",
-  "name": "pjh8q69u7d",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -252,30 +132,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.217282",
-  "module": "Printing",
-  "name": "u34rvnnsfn",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.049535",
   "module": "PulseEye",
   "name": "6njq30uhsf",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.217740",
-  "module": "PulseEye",
-  "name": "cunrriqi3r",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -292,30 +152,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.218210",
-  "module": "Social",
-  "name": "05i30ssalf",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.050454",
   "module": "Website",
   "name": "sp4oigjujt",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.218693",
-  "module": "Website",
-  "name": "m5l98sr4au",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -332,30 +172,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.219450",
-  "module": "Workflow",
-  "name": "hftrrdavau",
-  "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-03 14:42:48.051608",
   "module": "Core",
   "name": "ukfcke529r",
   "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-04 12:11:09.219909",
-  "module": "Core",
-  "name": "mghq7jto12",
-  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -392,6 +212,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.545285",
+  "module": "Automation",
+  "name": "o8gg6prl9l",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.802604",
   "module": "commit",
   "name": "knqnqd747n",
@@ -416,6 +246,16 @@
   "module": "commit",
   "name": "7sq24p8smi",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.582776",
+  "module": "commit",
+  "name": "0ocsipakl5",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -452,6 +292,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.583467",
+  "module": "Contacts",
+  "name": "b6rdr93mqd",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.806268",
   "module": "Custom",
   "name": "rq5j7kccc8",
@@ -476,6 +326,16 @@
   "module": "Custom",
   "name": "dcb9jkcm2l",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.584023",
+  "module": "Custom",
+  "name": "b7lfjk26v3",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -512,6 +372,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.584633",
+  "module": "Email",
+  "name": "na1spti0in",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.807902",
   "module": "Frappe Er Generator",
   "name": "num3feidsb",
@@ -536,6 +406,16 @@
   "module": "Frappe Er Generator",
   "name": "6d8lvtqvfq",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.585184",
+  "module": "Frappe Er Generator",
+  "name": "ti124evs36",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -572,6 +452,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.585735",
+  "module": "Geo",
+  "name": "v9a0eeka9t",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.809461",
   "module": "Integrations",
   "name": "q1aitg4kh9",
@@ -596,6 +486,16 @@
   "module": "Integrations",
   "name": "tfhaovmm1k",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.586342",
+  "module": "Integrations",
+  "name": "i5bn3migu5",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -632,6 +532,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.586932",
+  "module": "Mrx Audit",
+  "name": "sgl1kkt6t3",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.811165",
   "module": "MrxSurvey",
   "name": "tp2t2rr5oo",
@@ -656,6 +566,16 @@
   "module": "MrxSurvey",
   "name": "j0sfd6s570",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.587472",
+  "module": "MrxSurvey",
+  "name": "ihc174iebg",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -692,6 +612,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.588045",
+  "module": "MrxTracking",
+  "name": "lss8lli3en",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.814582",
   "module": "MrxWorkMod",
   "name": "mrbkfui0gh",
@@ -716,6 +646,16 @@
   "module": "MrxWorkMod",
   "name": "qjjuihgn1m",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.588607",
+  "module": "MrxWorkMod",
+  "name": "gb283imi6v",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -752,6 +692,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.589161",
+  "module": "Printing",
+  "name": "q16u3k00lb",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.816030",
   "module": "PulseEye",
   "name": "25vnodui03",
@@ -776,6 +726,16 @@
   "module": "PulseEye",
   "name": "0e3r0fg530",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.589715",
+  "module": "PulseEye",
+  "name": "bjgbi7brar",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -812,6 +772,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.590311",
+  "module": "Social",
+  "name": "c32ir235rg",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:42.817639",
   "module": "Website",
   "name": "iequ1iqs3g",
@@ -836,6 +806,16 @@
   "module": "Website",
   "name": "kk3td0u861",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.590993",
+  "module": "Website",
+  "name": "ccne3l6bt5",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -872,6 +852,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.591628",
+  "module": "Workflow",
+  "name": "m8i7112sva",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-09 10:00:43.039285",
   "module": "Core",
   "name": "ta3inthv29",
@@ -886,6 +876,16 @@
   "module": "Core",
   "name": "p74bplerhd",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-16 19:36:37.592266",
+  "module": "Core",
+  "name": "qvtbp1k51t",
+  "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  }
