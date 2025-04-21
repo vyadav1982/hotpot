@@ -144,6 +144,7 @@ def create_meal():
 				"cancellation_time": cancellation_time,
 				"repeat_type": repeat_type,
 				"repeat_days": repeat_days,
+				"category": category,
 			}
 		)
 
