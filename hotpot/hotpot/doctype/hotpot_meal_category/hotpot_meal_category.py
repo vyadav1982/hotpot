@@ -18,7 +18,7 @@ class HotpotMealCategory(Document):
 		end_time: DF.Datetime | None
 		is_active: DF.Check
 		lead_time: DF.Int
-		order: DF.Int
+		sequence: DF.Int
 		start_time: DF.Datetime | None
 		type: DF.Link | None
 	# end: auto-generated types
