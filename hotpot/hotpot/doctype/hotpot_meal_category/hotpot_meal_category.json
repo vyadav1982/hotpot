@@ -10,7 +10,8 @@
   "end_time",
   "lead_time",
   "cancellation_time",
-  "is_active"
+  "is_active",
+  "order"
  ],
  "fields": [
   {
@@ -44,11 +45,18 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "order",
+   "fieldtype": "Int",
+   "label": "Order",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-18 13:28:00.275770",
+ "modified": "2025-04-21 16:35:04.597640",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
@@ -71,5 +79,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "type"
+ "title_field": "type",
+ "translated_doctype": 1
 }
