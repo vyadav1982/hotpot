@@ -427,9 +427,8 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 					for r in meal_doc.ratings
 				]
 			meal["meal_id"] = meal_doc.name
-			cat_type = frappe.db.get_value("Hotpot Meal Category", meal["category"], "type") if meal.get("category") else None
-			meal["category_name"] = frappe.db.get_value("Hotpot Meal Types", cat_type, "type") if cat_type else None
-			
+			cat_type = frappe.get_doc("Hotpot Meal Category", meal["category"]) if meal.get("category") else None
+			meal["category_name"] = frappe.db.get_value("Hotpot Meal Types", cat_type.get("type"), "type") if cat_type else None
 			processed_meals.append(meal)
 
 		processed_meals.sort(
