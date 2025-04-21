@@ -50,13 +50,13 @@
    "default": "0",
    "fieldname": "order",
    "fieldtype": "Int",
-   "label": "Order",
+   "label": "Sequence",
    "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-21 16:35:04.597640",
+ "modified": "2025-04-21 17:02:10.718113",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
