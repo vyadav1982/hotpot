@@ -11,7 +11,7 @@
   "lead_time",
   "cancellation_time",
   "is_active",
-  "order"
+  "sequence"
  ],
  "fields": [
   {
@@ -48,7 +48,7 @@
   },
   {
    "default": "0",
-   "fieldname": "order",
+   "fieldname": "sequence",
    "fieldtype": "Int",
    "label": "Sequence",
    "non_negative": 1
@@ -56,7 +56,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-21 17:02:10.718113",
+ "modified": "2025-04-21 17:05:28.205375",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
