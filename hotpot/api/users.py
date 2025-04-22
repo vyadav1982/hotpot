@@ -271,7 +271,7 @@ def get_all_vendor():
 			return
 		user_list = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["role", "=", "Hotpot Vendor"],["is_active","=",1]],
+			filters=[["role", "=", "Hotpot Vendor"],["is_active","=",1],["is_deleted","=",0]],
 			fields=["name", "employee_name"],
 		)
 		if not user_list:
