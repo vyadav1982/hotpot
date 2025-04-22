@@ -20,13 +20,13 @@ def create_banner():
 			return
 
 		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 		
-		if not user_data:
-			set_response(404, False, "User Not found")
-			return
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = [
 			"intent",
@@ -89,7 +89,7 @@ def get_active_banners():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		
 		today = datetime.utcnow().replace(tzinfo=None)
@@ -129,13 +129,13 @@ def update_banner(banner_id, **kwargs):
 			return
 
 		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 		
-		if not user_data:
-			set_response(404, False, "User Not found")
-			return
 		banner = frappe.get_doc("Banner", banner_id)
 		if not banner:
 			set_response(404, False, "Banner not found")
@@ -164,13 +164,13 @@ def delete_banner(banner_id):
 			return
 
 		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 		
-		if not user_data:
-			set_response(404, False, "User Not found")
-			return
 		banner = frappe.get_doc("Hotpot Banner", banner_id)
 		if not banner:
 			set_response(404, False, "Banner not found")

@@ -39,7 +39,7 @@ def get_approvals():
 			return
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User not found")
+			set_response(401, False, "User not found")
 			return
 
 		fields = ["name", "request_type","meal_id", "descrption", "approval_status", "attachments", "approval_remarks","is_active"]
@@ -89,7 +89,7 @@ def create_approval():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			return set_response(404, False, "User not found")
+			return set_response(401, False, "User not found")
 
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["request_type", "description", "meal_id"]

@@ -27,11 +27,11 @@ def give_feedback():
 			return
 
 		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
 		if user_data.get("role") not in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to acess this resouce")
-			return
-		if not user_data:
-			set_response(404, False, "User Not found")
 			return
 		data = json.loads(frappe.request.data or "{}")
 
@@ -72,7 +72,7 @@ def create_meal():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -176,7 +176,7 @@ def update_meal():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -259,7 +259,7 @@ def delete_meal():
 			return
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -312,7 +312,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not Found")
+			set_response(401, False, "User Not Found")
 			return
 
 		hotpot_config = frappe.get_single("Hotpot Configurations")
@@ -484,7 +484,7 @@ def add_meal_items():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not user_data["role"] in ["Hotpot Vendor","Hotpot Admin"]:
 			set_response(403, False, "Not Permitted to access this resouce")
@@ -533,7 +533,7 @@ def update_meal_items():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			return set_response(404, False, "User not found")
+			return set_response(401, False, "User not found")
 
 		if user_data["role"] not in ["Hotpot Vendor", "Hotpot Admin"]:
 			return set_response(403, False, "Not permitted to access this resource")
@@ -582,7 +582,7 @@ def get_meal_items():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not user_data["role"] == "Hotpot Vendor":
 			set_response(403, False, "Not Permitted to acess this resouce")
@@ -614,7 +614,7 @@ def update_meal_admin():
 
 		user_data = get_hotpot_user_by_email()
 		if not user_data:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
