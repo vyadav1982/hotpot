@@ -19,7 +19,7 @@ def get_coupon_count(start_date, end_date,user=False):
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not user and  user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
@@ -118,7 +118,7 @@ def get_report(start_date,end_date):
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
@@ -175,7 +175,7 @@ def cancel_coupon():
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
@@ -283,7 +283,7 @@ def get_redeemed_coupon():
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
@@ -360,7 +360,7 @@ def scan_coupon():
 			set_response(404, False, "Employee not found")
 			return
 		if not user_doc:
-			set_response(404, False, "User Not Found")
+			set_response(401, False, "User Not Found")
 			return
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
 			set_response(403, False, "Not Permitted to access this resource")
@@ -461,7 +461,7 @@ def get_scanned_coupons(
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
@@ -524,7 +524,7 @@ def update_coupon_status():
 	try:
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
@@ -569,7 +569,7 @@ def get_all_coupons(
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not page or not limit or not end_date or not start_date:
@@ -745,7 +745,7 @@ def generate_coupon():
 		tagId = data.get("tag_id")
 		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not Found")
+			set_response(401, False, "User Not Found")
 			return
 		role = user_doc.get("role")
 		if role not in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]:
@@ -1003,7 +1003,7 @@ def search_coupon(start_date,end_date,identifier):
 
 		vendor_doc = get_hotpot_user_by_email()
 		if not vendor_doc:
-			return set_response(404, False, "User Not found")
+			return set_response(401, False, "User Not found")
 
 		if not vendor_doc.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
 			return set_response(403, False, "Not Permitted to access this resource")
@@ -1051,7 +1051,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=10):
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			return set_response(404, False, "User Not found")
+			return set_response(401, False, "User Not found")
 
 		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin"]:
 			return set_response(403, False, "Not Permitted to access this resource")
@@ -1187,7 +1187,7 @@ def get_guest_coupon(date):
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin"]:
@@ -1264,7 +1264,7 @@ def generate_coupon_admin():
 		tagId = data.get("tag_id")
 		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not Found")
+			set_response(401, False, "User Not Found")
 			return
 		role = user_doc.get("role")
 		if role not in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]:

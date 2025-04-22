@@ -317,7 +317,7 @@ def reset_password():
 
 	user_data = get_hotpot_user_by_email()
 	if not user_data:
-		set_response(404, False, "User Not found")
+		set_response(401, False, "User Not found")
 		return
 	if not user_data["role"] in ["Hotpot Vendor", "Hotpot User","Hotpot Admin","Hotpot HR"]:
 		set_response(403, False, "Not Permitted to access this resource")

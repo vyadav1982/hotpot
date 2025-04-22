@@ -62,7 +62,7 @@ def get_coupons_history(page=1,limit=10):
 		user_doc = get_hotpot_user_by_email()
 
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
@@ -196,11 +196,11 @@ def get_hotpot_user_by_email():
 	try:
 		email = frappe.session.user
 		if not email:
-			set_response(404, False, "No auth token found")
+			set_response(401, False, "No auth token found")
 			return
 
 		if not frappe.has_permission("Hotpot User", "read"):
-			set_response(404, False, "No auth token found")
+			set_response(401, False, "No auth token found")
 			return
 		user = frappe.db.get_list(
 			"Hotpot User",
@@ -243,7 +243,7 @@ def get_hotpot_loggedin_user():
 			set_response(200, True, "Data fetched successfully", user)
 			return
 
-		set_response(404, False, "No user found with the given email")
+		set_response(401, False, "No user found with the given email")
 		return
 	except frappe.PermissionError:
 		set_response(403, False, "You do not have permission to access this resource")
@@ -264,7 +264,7 @@ def get_all_vendor():
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
@@ -293,7 +293,7 @@ def update_user_timezone():
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
@@ -323,7 +323,7 @@ def update_latlong():
 
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -350,7 +350,7 @@ def get_config():
 			return
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		config_doc = frappe.get_doc("Hotpot Configurations")
 		meta = frappe.get_meta("Hotpot Configurations")
@@ -378,7 +378,7 @@ def email_wrapper():
 			return
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		data = json.loads(frappe.request.data or "{}")
 		template_name = data.get("template_name")
@@ -411,7 +411,7 @@ def get_dashboard_data():
 			return
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		if not user_doc.get("role") in ["Hotpot Finance","Hotpot Admin","Hotpot HR"]:
 			set_response(403, False, "Not Permitted to access this resource")
@@ -570,7 +570,7 @@ def update_coupon_status():
 	try:
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
-			set_response(404, False, "User Not found")
+			set_response(401, False, "User Not found")
 			return
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
@@ -607,7 +607,7 @@ def bulk_insert_employee():
 			return
 	user_doc = get_hotpot_user_by_email()
 	if not user_doc:
-		set_response(404, False, "User Not found")
+		set_response(401, False, "User Not found")
 		return
 	if not user_doc.get("role") in ["Hotpot Admin"]:
 		set_response(403, False, "Not Permitted to access this resource")
@@ -695,7 +695,7 @@ def get_hotpot_history(start_date,end_date):
 			return
 	user_doc = get_hotpot_user_by_email()
 	if not user_doc:
-		set_response(404, False, "User Not found")
+		set_response(401, False, "User Not found")
 		return
 	if not user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 		set_response(403, False, "Not Permitted to access this resource")
