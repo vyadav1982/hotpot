@@ -1,5 +1,33 @@
 frappe.ui.form.on("Hotpot Meal", {
-    onload(frm) {
+    refresh: function(frm) {
+        const userRoles = frappe.user_roles;
+        const grid = frm.fields_dict.coupons.grid;
+        
+        
+        const disableGear = () => grid.wrapper.find('use[href="#icon-setting-gear"]').closest('a').hide().off('click');
+        grid.wrapper.find('.col.grid-static-col.d-flex.justify-content-center').css({'pointer-events': 'none', 'cursor': 'default'}).off('click');
+        if (!userRoles.includes('Hotpot Admin')) {
+            grid.wrapper.find('.grid-row').css('pointer-events', 'none');
+            grid.wrapper.find('.btn-open-row').hide();
+            frm.fields.forEach(function(field) {
+                if (!['Section Break', 'Column Break', 'Table'].includes(field.df.fieldtype)) {
+                    frm.set_df_property(field.df.fieldname, 'read_only', 1);
+                }
+            });
+            setTimeout(disableGear, 0);
+        }
+        const grid2 = frm.fields_dict.ratings.grid;
+        
+        
+        const disableGear2 = () => grid2.wrapper.find('use[href="#icon-setting-gear"]').closest('a').hide().off('click');
+        grid2.wrapper.find('.col.grid-static-col.d-flex.justify-content-center').css({'pointer-events': 'none', 'cursor': 'default'}).off('click');
+        if (!userRoles.includes('Hotpot Admin')) {
+            grid2.wrapper.find('.grid-row').css('pointer-events', 'none');
+            grid2.wrapper.find('.btn-open-row').hide();
+            setTimeout(disableGear2, 0);
+        }
+    },
+    onload(frm) {        
         updateLocalDescriptions(frm);
     },
 
@@ -11,7 +39,6 @@ frappe.ui.form.on("Hotpot Meal", {
         updateLocalDescriptions(frm);
     }
 });
-
 function updateLocalDescriptions(frm) {
     if (frm.doc.start_time) {
         const localStartTime = formatUtcToLocal(frm.doc.start_time);

@@ -182,70 +182,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.800795",
-  "module": "Automation",
-  "name": "5om0agin9g",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.027244",
-  "module": "Automation",
-  "name": "qftnbh1vvs",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.427775",
-  "module": "Automation",
-  "name": "4fei1cnui1",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.545285",
   "module": "Automation",
   "name": "o8gg6prl9l",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.802604",
-  "module": "commit",
-  "name": "knqnqd747n",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.028267",
-  "module": "commit",
-  "name": "kitug0m507",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.456058",
-  "module": "commit",
-  "name": "7sq24p8smi",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -262,70 +202,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.805393",
-  "module": "Contacts",
-  "name": "dv451cm6j1",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.029001",
-  "module": "Contacts",
-  "name": "rqvj6hajc4",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.456414",
-  "module": "Contacts",
-  "name": "4dups9uqu7",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.583467",
   "module": "Contacts",
   "name": "b6rdr93mqd",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.806268",
-  "module": "Custom",
-  "name": "rq5j7kccc8",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.029652",
-  "module": "Custom",
-  "name": "2gk7b6u1a1",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.456752",
-  "module": "Custom",
-  "name": "dcb9jkcm2l",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -342,70 +222,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.806969",
-  "module": "Email",
-  "name": "s1bh2l2abc",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.030286",
-  "module": "Email",
-  "name": "446e5nd8vs",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.457072",
-  "module": "Email",
-  "name": "p4denb3m30",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.584633",
   "module": "Email",
   "name": "na1spti0in",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.807902",
-  "module": "Frappe Er Generator",
-  "name": "num3feidsb",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.030966",
-  "module": "Frappe Er Generator",
-  "name": "3597p1fcqj",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.457395",
-  "module": "Frappe Er Generator",
-  "name": "6d8lvtqvfq",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -422,70 +242,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.808743",
-  "module": "Geo",
-  "name": "s64ensim7c",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.031675",
-  "module": "Geo",
-  "name": "v52aaopvsj",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.457794",
-  "module": "Geo",
-  "name": "hq57j3mm26",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.585735",
   "module": "Geo",
   "name": "v9a0eeka9t",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.809461",
-  "module": "Integrations",
-  "name": "q1aitg4kh9",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.032314",
-  "module": "Integrations",
-  "name": "p2hjfildc9",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.458213",
-  "module": "Integrations",
-  "name": "tfhaovmm1k",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -502,70 +262,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.810334",
-  "module": "Mrx Audit",
-  "name": "u904omtbrv",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.032968",
-  "module": "Mrx Audit",
-  "name": "0i44elu8a7",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.458649",
-  "module": "Mrx Audit",
-  "name": "e82c9n45jl",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.586932",
   "module": "Mrx Audit",
   "name": "sgl1kkt6t3",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.811165",
-  "module": "MrxSurvey",
-  "name": "tp2t2rr5oo",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.033674",
-  "module": "MrxSurvey",
-  "name": "bc7vcovlnl",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.459001",
-  "module": "MrxSurvey",
-  "name": "j0sfd6s570",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -582,70 +282,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.813805",
-  "module": "MrxTracking",
-  "name": "epr18but5s",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.034404",
-  "module": "MrxTracking",
-  "name": "usr6lbqlkf",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.459383",
-  "module": "MrxTracking",
-  "name": "ji1a56hk8t",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.588045",
   "module": "MrxTracking",
   "name": "lss8lli3en",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.814582",
-  "module": "MrxWorkMod",
-  "name": "mrbkfui0gh",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.035115",
-  "module": "MrxWorkMod",
-  "name": "4fp4dmm3lj",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.459737",
-  "module": "MrxWorkMod",
-  "name": "qjjuihgn1m",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -662,70 +302,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.815281",
-  "module": "Printing",
-  "name": "08n5npmpoh",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.035762",
-  "module": "Printing",
-  "name": "tj9f2g0mlp",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.460075",
-  "module": "Printing",
-  "name": "njb7vnhde4",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.589161",
   "module": "Printing",
   "name": "q16u3k00lb",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.816030",
-  "module": "PulseEye",
-  "name": "25vnodui03",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.036415",
-  "module": "PulseEye",
-  "name": "apv62pke97",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.460444",
-  "module": "PulseEye",
-  "name": "0e3r0fg530",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -742,70 +322,10 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.816893",
-  "module": "Social",
-  "name": "d8s1ufviv8",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.037113",
-  "module": "Social",
-  "name": "5o10fkdu9p",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.460783",
-  "module": "Social",
-  "name": "4qh4dfm8ma",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.590311",
   "module": "Social",
   "name": "c32ir235rg",
   "parent": "sashikant12rao@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.817639",
-  "module": "Website",
-  "name": "iequ1iqs3g",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.037857",
-  "module": "Website",
-  "name": "b1f0ci9nj1",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.461074",
-  "module": "Website",
-  "name": "kk3td0u861",
-  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -822,36 +342,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:42.818370",
-  "module": "Workflow",
-  "name": "ki7q0cgan5",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.038544",
-  "module": "Workflow",
-  "name": "9u6j2i9ife",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.461362",
-  "module": "Workflow",
-  "name": "p10ododgu1",
-  "parent": "premiumnoida24@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.591628",
   "module": "Workflow",
   "name": "m8i7112sva",
@@ -862,9 +352,29 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-09 10:00:43.039285",
+  "modified": "2025-04-16 19:36:37.592266",
   "module": "Core",
-  "name": "ta3inthv29",
+  "name": "qvtbp1k51t",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.318738",
+  "module": "Automation",
+  "name": "p3fp26e7ub",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.436161",
+  "module": "Automation",
+  "name": "24s91qoj1e",
   "parent": "Hotpot",
   "parentfield": "block_modules",
   "parenttype": "Module Profile"
@@ -872,9 +382,9 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-16 13:10:08.461650",
-  "module": "Core",
-  "name": "p74bplerhd",
+  "modified": "2025-04-23 14:50:49.378232",
+  "module": "Automation",
+  "name": "ipp9dpc1t7",
   "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
@@ -882,10 +392,500 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-16 19:36:37.592266",
+  "modified": "2025-04-23 13:48:50.319141",
+  "module": "commit",
+  "name": "pk2c00orlf",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.436528",
+  "module": "commit",
+  "name": "7phila47fp",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.410015",
+  "module": "commit",
+  "name": "fq57hggdkm",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.319573",
+  "module": "Contacts",
+  "name": "pcp8tk7aue",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.436882",
+  "module": "Contacts",
+  "name": "pcltuk1mje",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.410387",
+  "module": "Contacts",
+  "name": "35o5cdan43",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.322343",
+  "module": "Custom",
+  "name": "64hh92888q",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.437231",
+  "module": "Custom",
+  "name": "nbshbb17g3",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.410741",
+  "module": "Custom",
+  "name": "ur3nuscvpk",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.322730",
+  "module": "Email",
+  "name": "iqm68i75ve",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.437580",
+  "module": "Email",
+  "name": "41bl3u7aee",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.411306",
+  "module": "Email",
+  "name": "r9k14mn82a",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.323082",
+  "module": "Frappe Er Generator",
+  "name": "teg3n98vv4",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.437926",
+  "module": "Frappe Er Generator",
+  "name": "0463o4e6hj",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.411664",
+  "module": "Frappe Er Generator",
+  "name": "9bi1fprlra",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.323432",
+  "module": "Geo",
+  "name": "h3i8mv5qla",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.438303",
+  "module": "Geo",
+  "name": "q96vo16efv",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.412020",
+  "module": "Geo",
+  "name": "honq2mrp8m",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.323778",
+  "module": "Integrations",
+  "name": "2dea6u3ujm",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.438656",
+  "module": "Integrations",
+  "name": "r8iegotgis",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.412416",
+  "module": "Integrations",
+  "name": "0ddtsmg0ol",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.324121",
+  "module": "Mrx Audit",
+  "name": "3asad3ltqn",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.439051",
+  "module": "Mrx Audit",
+  "name": "a055j8mcan",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.412769",
+  "module": "Mrx Audit",
+  "name": "fg13s08qr8",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.324488",
+  "module": "MrxSurvey",
+  "name": "3nvtvlgjgn",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.439498",
+  "module": "MrxSurvey",
+  "name": "53qlsevv7f",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.413114",
+  "module": "MrxSurvey",
+  "name": "g5188f8b6c",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.324864",
+  "module": "MrxTracking",
+  "name": "bjuhh1veqj",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.439939",
+  "module": "MrxTracking",
+  "name": "e8972b55p8",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.413487",
+  "module": "MrxTracking",
+  "name": "r2r69nc38h",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.325208",
+  "module": "MrxWorkMod",
+  "name": "otpbrm1uub",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.440302",
+  "module": "MrxWorkMod",
+  "name": "00859hb01p",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.413833",
+  "module": "MrxWorkMod",
+  "name": "8cgruaacai",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.325550",
+  "module": "Printing",
+  "name": "dnvqd1559e",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.440667",
+  "module": "Printing",
+  "name": "n3lhl9fvls",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.414183",
+  "module": "Printing",
+  "name": "t69bomq3le",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.325912",
+  "module": "PulseEye",
+  "name": "05t7occ8gt",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.441026",
+  "module": "PulseEye",
+  "name": "oljp5pbsl8",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.414526",
+  "module": "PulseEye",
+  "name": "lb108ktjqk",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.326289",
+  "module": "Social",
+  "name": "9l9vl413q0",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.441368",
+  "module": "Social",
+  "name": "gkn8jrbegv",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.414870",
+  "module": "Social",
+  "name": "o8cm5frq5l",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.326709",
+  "module": "Website",
+  "name": "f9o2hehfdk",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.441750",
+  "module": "Website",
+  "name": "i306hh1p5f",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.415213",
+  "module": "Website",
+  "name": "prm9ljivud",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.327112",
+  "module": "Workflow",
+  "name": "i0pe79ael0",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.442094",
+  "module": "Workflow",
+  "name": "ei75sikc2s",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.415557",
+  "module": "Workflow",
+  "name": "3cod2kvg80",
+  "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 13:48:50.444610",
   "module": "Core",
-  "name": "qvtbp1k51t",
-  "parent": "sashikant12rao@gmail.com",
+  "name": "qie8rnrnt8",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-23 14:50:49.415901",
+  "module": "Core",
+  "name": "fmjubpna8g",
+  "parent": "premiumnoida24@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  }
