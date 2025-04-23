@@ -7,6 +7,8 @@
  "engine": "InnoDB",
  "field_order": [
   "title",
+  "employee_code",
+  "guest_employee_code",
   "employee_id",
   "coupon_status",
   "coupon_date",
@@ -73,12 +75,22 @@
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email"
+  },
+  {
+   "fieldname": "employee_code",
+   "fieldtype": "Data",
+   "label": "Employee Code"
+  },
+  {
+   "fieldname": "guest_employee_code",
+   "fieldtype": "Data",
+   "label": "Guest Employee Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-04-05 16:24:07.475715",
+ "modified": "2025-04-23 12:11:46.475919",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
