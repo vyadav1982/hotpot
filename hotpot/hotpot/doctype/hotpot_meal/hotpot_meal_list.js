@@ -1,29 +1,24 @@
 frappe.listview_settings["Hotpot Meal"] = {
     hide_name_column: true,
-
     onload: function (listview) {
-        setTimeout(() => {
-            const $menuList = $(listview.page.menu[0]);
-            $menuList.find("li").each(function () {
-                const text = $(this).text().trim();
-                if (text !== "Import") {
-                    $(this).remove();
-                }
-            });
-            listview.page.actions.hide()
-            // const $body = $(listview.page.body[0]);
-            // console.log(body)
-            // $body.find('input.list-row-checkbox').remove();
-            // $body.find('input.list-check-all').remove();
-        }, 100);
-        console.log(listview)
-        if (!listview.datatable) {
-            setTimeout(() => {
-                applyColumnWidths(listview);
-            }, 500);
-        } else {
-            applyColumnWidths(listview);
-        }
+        const doctype = this.doctype;
+        listview.page.clear_menu();
+        listview.page.clear_actions();
+        listview.page.hide_menu();
+        listview.page.hide_actions_menu();
+        listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
+            frappe.set_route("list", "data-import", {
+                reference_doctype: doctype,
+            })})
+        listview.page.add_button(__("Add Hotpot Meal", null, "Button in list view menu"), function () {
+            if (!frappe.boot.read_only && listview.can_create) {
+                frappe.new_doc("Hotpot Meal");
+            } else {
+                frappe.msgprint(__("You do not have permission to create a Hotpot Meal."));
+            }
+        });
+            
+            
 
         const allowedFields = [
             "meal_title", "start_time", "end_time", "meal_items",
@@ -42,22 +37,17 @@ frappe.listview_settings["Hotpot Meal"] = {
             repeat_days: formatRepeatDays,
             is_special: formatIsSpecial
         };
+    },
+    refresh: function (listview) {
+        listview.page.clear_menu();
+        listview.page.clear_actions();
+        listview.page.hide_menu();
+        listview.page.hide_actions_menu();
+        listview.toggle_actions_menu_button =  function (toggle){
+            return
+        }
     }
 };
-
-function applyColumnWidths(listview) {
-    if (listview.datatable) {
-        listview.datatable.options.columnWidths = {
-            meal_title: 450,
-            start_time: 150,
-            end_time: 150,
-            vendor_id: 120,
-            is_special: 120,
-            is_active: 120
-        };
-        listview.datatable.refresh();
-    }
-}
 
 function formatIsSpecial(value) {
     return value == 1 ? "Yes" : "No";

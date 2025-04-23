@@ -1,23 +1,27 @@
 frappe.listview_settings["Hotpot User"] = {
     hide_name_column: true,
-    onload(listview) {
-        let buttonText = __("Disable User");
-        setTimeout(() => {
-            const $menuList = $(listview.page.menu[0]);
-            $menuList.find("li").each(function () {
-                const text = $(this).text().trim();
-                if (text !== "Import") {
-                    $(this).remove();
-                }
-            });
-            listview.page.actions.hide()
-            // const $body = $(listview.page.body[0]);
-            // console.log(body)
-            // $body.find('input.list-row-checkbox').remove();
-            // $body.find('input.list-check-all').remove();
-        }, 100);
 
-        let disableBtn = listview.page.add_inner_button(buttonText, function () {
+    onload(listview) {
+        const doctype = listview.doctype;
+        listview.page.clear_menu();
+        listview.page.clear_actions();
+        listview.page.hide_menu();
+        listview.page.hide_actions_menu();
+
+        listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
+            frappe.set_route("list", "data-import", {
+                reference_doctype: doctype,
+            });
+        });
+        listview.page.add_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
+            if (!frappe.boot.read_only && listview.can_create) {
+                frappe.new_doc("Hotpot User");
+            } else {
+                frappe.msgprint(__("You do not have permission to create a Hotpot User."));
+            }
+        });
+
+        let disableBtn = listview.page.add_inner_button(__("Disable User"), function () {
             let selectedUsers = listview.get_checked_items().map(doc => doc.name);
 
             if (selectedUsers.length > 0) {
@@ -27,7 +31,7 @@ frappe.listview_settings["Hotpot User"] = {
                     args: {
                         user_list: selectedUsers
                     },
-                    callback: function (r) {
+                    callback: function () {
                         frappe.show_alert({
                             message: __("Users Disabled Successfully"),
                             indicator: "green"
@@ -41,13 +45,21 @@ frappe.listview_settings["Hotpot User"] = {
         });
 
         disableBtn.hide();
+
         listview.page.wrapper.on("change", ":checkbox", function () {
             let selectedUsers = listview.get_checked_items();
-            if (selectedUsers.length > 0) {
-                disableBtn.show();
-            } else {
-                disableBtn.hide();
-            }
+            disableBtn.toggle(selectedUsers.length > 0);
         });
-    }
+    },
+    refresh: function (listview) {
+        listview.page.clear_menu();
+        listview.page.clear_actions();
+        listview.page.hide_menu();
+        listview.page.hide_actions_menu();
+        listview.toggle_actions_menu_button =  function (toggle){
+            return
+        }
+    },
+   
 };
+
