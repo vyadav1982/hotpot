@@ -2,7 +2,20 @@ frappe.listview_settings["Hotpot User"] = {
     hide_name_column: true,
     onload(listview) {
         let buttonText = __("Disable User");
-        console.log("Hellooo........")
+        setTimeout(() => {
+            const $menuList = $(listview.page.menu[0]);
+            $menuList.find("li").each(function () {
+                const text = $(this).text().trim();
+                if (text !== "Import") {
+                    $(this).remove();
+                }
+            });
+            listview.page.actions.hide()
+            // const $body = $(listview.page.body[0]);
+            // console.log(body)
+            // $body.find('input.list-row-checkbox').remove();
+            // $body.find('input.list-check-all').remove();
+        }, 100);
 
         let disableBtn = listview.page.add_inner_button(buttonText, function () {
             let selectedUsers = listview.get_checked_items().map(doc => doc.name);
