@@ -2,21 +2,26 @@ frappe.listview_settings["Hotpot Meal"] = {
     hide_name_column: true,
     onload: function (listview) {
         const doctype = this.doctype;
-        listview.page.clear_menu();
-        listview.page.clear_actions();
-        listview.page.hide_menu();
-        listview.page.hide_actions_menu();
-        listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
-            frappe.set_route("list", "data-import", {
-                reference_doctype: doctype,
-            })})
-        listview.page.add_button(__("Add Hotpot Meal", null, "Button in list view menu"), function () {
-            if (!frappe.boot.read_only && listview.can_create) {
-                frappe.new_doc("Hotpot Meal");
-            } else {
-                frappe.msgprint(__("You do not have permission to create a Hotpot Meal."));
-            }
-        });
+        const roles = frappe.user_roles;
+        const isAdmin = roles.includes("Administrator");
+        if(!isAdmin) {
+
+            listview.page.clear_menu();
+            listview.page.clear_actions();
+            listview.page.hide_menu();
+            listview.page.hide_actions_menu();
+            listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
+                frappe.set_route("list", "data-import", {
+                    reference_doctype: doctype,
+                })})
+            listview.page.add_button(__("Add Hotpot Meal", null, "Button in list view menu"), function () {
+                if (!frappe.boot.read_only && listview.can_create) {
+                    frappe.new_doc("Hotpot Meal");
+                } else {
+                    frappe.msgprint(__("You do not have permission to create a Hotpot Meal."));
+                }
+            });
+        }
             
             
 
@@ -39,12 +44,16 @@ frappe.listview_settings["Hotpot Meal"] = {
         };
     },
     refresh: function (listview) {
+        const roles = frappe.user_roles;
+        const isAdmin = roles.includes("Administrator");
+        if(!isAdmin) {
         listview.page.clear_menu();
-        listview.page.clear_actions();
-        listview.page.hide_menu();
-        listview.page.hide_actions_menu();
-        listview.toggle_actions_menu_button =  function (toggle){
-            return
+            listview.page.clear_actions();
+            listview.page.hide_menu();
+            listview.page.hide_actions_menu();
+            listview.toggle_actions_menu_button =  function (toggle){
+                return
+            }
         }
     }
 };
