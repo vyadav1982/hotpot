@@ -90,7 +90,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "depends_on": "eval:doc.role == \"Hotpot User\";",
+   "depends_on": "eval:doc.role != \"Hotpot Vendor\" && doc.role!=\"Hotpot Server\";",
    "fieldname": "coupon_count",
    "fieldtype": "Int",
    "label": "Coupon Count",
@@ -111,7 +111,7 @@
    "label": "Password"
   },
   {
-   "depends_on": "eval:doc.role == \"Hotpot User\";",
+   "depends_on": "eval:doc.role != \"Hotpot Vendor\" && doc.role!=\"Hotpot Server\";",
    "fieldname": "date_of_birth",
    "fieldtype": "Date",
    "label": "Date Of Birth"
@@ -122,7 +122,7 @@
    "label": "Date of Joining"
   },
   {
-   "depends_on": "eval:doc.role == \"Hotpot User\";",
+   "depends_on": "eval:doc.role != \"Hotpot Vendor\" && doc.role!=\"Hotpot Server\";",
    "fieldname": "department",
    "fieldtype": "Data",
    "label": "Department"
@@ -189,7 +189,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-16 13:47:34.822162",
+ "modified": "2025-04-24 09:32:15.893014",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
