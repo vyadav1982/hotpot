@@ -162,8 +162,8 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			date: $("#datePicker").val(),
 			meal: $("#mealSelect").val(),
 			quantity: $("#quantity").val(),
-			emails: emails,
 		};
+		var meal_title= $("#mealSelect option:selected").text();
 
 		for (let key in qrData) {
 			if (!qrData[key] || qrData[key].toString().trim() === "") {
@@ -184,37 +184,43 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			date: $("#datePicker").val(),
 			guest: true,
 			qty: $("#quantity").val(),
+			email:emails,
 		};
 
 		try {
-			let couponGenerated = await generateCoupon(d);
+			var couponGenerated = await generateCoupon(d);
 			if (!couponGenerated) return;
 		} catch (error) {
 			console.error("Error generating coupon:", error);
 			return;
 		}
-
-		try {
-			let response = await frappe.call({
-				method: "hotpot.api.coupons.get_admin_guest_coupon",
-				type: "GET",
-				args: {
-					date: $("#datePicker").val(),
-					qty: $("#quantity").val(),
-				},
-			});
-			console.log(response);
-			if (response.status === false) {
-				alert(response.message);
-				return;
-			} else {
-				coupons = response.data;
-			}
-		} catch (error) {
-			console.error("Error in fetching coupon:", error);
-			alert("Failed to fetch coupons. Please try again.");
+		let coupons = couponGenerated;
+		if (!coupons || coupons.length === 0) {
+			alert("No coupons generated.");
 			return;
 		}
+
+		// try {
+		// 	let response = await frappe.call({
+		// 		method: "hotpot.api.coupons.get_admin_guest_coupon",
+		// 		type: "GET",
+		// 		args: {
+		// 			date: $("#datePicker").val(),
+		// 			qty: $("#quantity").val(),
+		// 		},
+		// 	});
+		// 	console.log(response);
+		// 	if (response.status === false) {
+		// 		alert(response.message);
+		// 		return;
+		// 	} else {
+		// 		coupons = response.data;
+		// 	}
+		// } catch (error) {
+		// 	console.error("Error in fetching coupon:", error);
+		// 	alert("Failed to fetch coupons. Please try again.");
+		// 	return;
+		// }
 
 		let unsentEmails = [];
 
@@ -243,6 +249,15 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				continue;
 			}
 
+			const rawDate = $("#datePicker").val();
+			const dateObj = new Date(rawDate);
+
+			const day = dateObj.getDate();
+			const month = dateObj.toLocaleString('default', { month: 'short' });
+			const year = dateObj.getFullYear().toString().slice(-2);
+
+			const formattedDate = `${day} ${month} ${year}`;
+
 			let qrLink = qrImage.src;
 			await frappe.call({
 				method: "hotpot.utils.email.send_email",
@@ -250,30 +265,26 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 					template_name: "qr_email",
 					to_email: emails[i],
 					context: JSON.stringify({
-						meal_title: coupon.meal_title, // Ensure it's a string
+						meal_title: meal_title, // Ensure it's a string
 						// qr_code_url: qrLink,// Ensure it's a valid URL
 					}),
-					subject: `Your Meal QR Code - ${coupon.meal_title} on ${$(
-						"#datePicker"
-					).val()}`,
+					subject: `Your Meal QR Code - ${meal_title} on ${formattedDate}`,
                     qr_code_base64:qrLink,
 				},
 				callback: function (response) {
-					console.log(`Email sent to ${emails[i]}:`, response);
+					
 				},
 			});
 		}
 		if (unsentEmails.length > 0) {
 			alert(`These emails did not receive a coupon: \n${unsentEmails.join("\n")}`);
-		} else {
-			alert("All emails have received a QR code successfully!");
 		}
 	});
 
 	async function generateCoupon(d) {
 		return new Promise((resolve, reject) => {
 			$.ajax({
-				url: "/api/method/hotpot.api.coupons.generate_coupon",
+				url: "/api/method/hotpot.api.coupons.generate_coupon_admin",
 				type: "POST",
 				data: JSON.stringify(d),
 				contentType: "application/json",
@@ -286,9 +297,9 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 						alert(response.message.error || "Failed to generate coupon");
 						reject(false); // Rejecting promise to indicate failure
 					} else {
-						alert("Coupon generated successfully!");
+						alert("Coupon generated successfully and emails sent!");
 						console.log("Response:", response.message);
-						resolve(true); // Resolving promise to indicate success
+						resolve(response.data); // Resolving promise to indicate success
 					}
 				},
 				error: function (xhr, status, error) {
@@ -360,6 +371,10 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				method: "hotpot.api.users.get_all_vendor",
 				type: "GET",
 			});
+			if (response.status === false) {
+				alert(response.message);
+				return;
+			}
 
 			let vendors = response.data || [];
 			vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
@@ -416,7 +431,16 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				args: { vendor_id: vendor, date: date },
 				type: "GET",
 			});
+			if(response.status === false) {
+				alert(response.message);
+				return;
+			}
+			else{
+				if(response.data.length === 0){
+					alert("No meals available for the selected vendor and date.");
+				}
 
+			}
 			let meals = response.data || [];
 			mealSelect.innerHTML = '<option value="">Select Meal</option>';
 
