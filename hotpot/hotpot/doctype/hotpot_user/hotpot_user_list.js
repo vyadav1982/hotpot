@@ -1,25 +1,28 @@
 frappe.listview_settings["Hotpot User"] = {
     hide_name_column: true,
-
     onload(listview) {
+        const roles = frappe.user_roles;
+        const isAdmin = roles.includes("Administrator");
         const doctype = listview.doctype;
-        listview.page.clear_menu();
-        listview.page.clear_actions();
-        listview.page.hide_menu();
-        listview.page.hide_actions_menu();
+        if (!isAdmin) {
+            listview.page.clear_menu();
+            listview.page.clear_actions();
+            listview.page.hide_menu();
+            listview.page.hide_actions_menu();
 
-        listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
-            frappe.set_route("list", "data-import", {
-                reference_doctype: doctype,
+            listview.page.add_button(__("Import", null, "Button in list view menu"), function () {
+                frappe.set_route("list", "data-import", {
+                    reference_doctype: doctype,
+                });
             });
-        });
-        listview.page.add_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
-            if (!frappe.boot.read_only && listview.can_create) {
-                frappe.new_doc("Hotpot User");
-            } else {
-                frappe.msgprint(__("You do not have permission to create a Hotpot User."));
-            }
-        });
+            listview.page.add_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
+                if (!frappe.boot.read_only && listview.can_create) {
+                    frappe.new_doc("Hotpot User");
+                } else {
+                    frappe.msgprint(__("You do not have permission to create a Hotpot User."));
+                }
+            });
+        }
 
         let disableBtn = listview.page.add_inner_button(__("Disable User"), function () {
             let selectedUsers = listview.get_checked_items().map(doc => doc.name);
@@ -52,14 +55,18 @@ frappe.listview_settings["Hotpot User"] = {
         });
     },
     refresh: function (listview) {
-        listview.page.clear_menu();
-        listview.page.clear_actions();
-        listview.page.hide_menu();
-        listview.page.hide_actions_menu();
-        listview.toggle_actions_menu_button =  function (toggle){
-            return
+        const roles = frappe.user_roles;
+        const isAdmin = roles.includes("Administrator");
+        if(!isAdmin){
+            listview.page.clear_menu();
+            listview.page.clear_actions();
+            listview.page.hide_menu();
+            listview.page.hide_actions_menu();
+            listview.toggle_actions_menu_button = function (toggle) {
+                return
+            }
         }
     },
-   
+
 };
 
