@@ -350,7 +350,9 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                                 <td>${coupon.meal_title}</td>
                                 <td>${formatDate(coupon.coupon_date)}</td>
                                 <td>${coupon.employee_name}</td>
+                                <td>${coupon.employee_name}</td>
                                 <td>${formatDateTime(coupon.modified)}</td>
+                                <td>${coupon.email}</td>
                                 </tr>
                         `);
 					});
