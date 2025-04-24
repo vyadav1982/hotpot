@@ -232,7 +232,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 
 			let coupon = coupons[i];
 
-			let qrData = `hotpot${coupon.coupon_id},${$("#mealSelect").val()},${userId}`;
+			let qrData = `hotpot${coupon},${$("#mealSelect").val()},${userId}`;
 
 			let qrContainer = document.getElementById("qrContainer");
 			qrContainer.innerHTML = "";
