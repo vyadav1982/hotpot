@@ -2,13 +2,16 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Hotpot Meal Category", {
-    start_time(frm) {
+     onload(frm) {       
         updateLocalDescriptions(frm);
     },
+    // start_time(frm) {
+    //     updateLocalDescriptions(frm);
+    // },
 
-    end_time(frm) {
-        updateLocalDescriptions(frm);
-    }
+    // end_time(frm) {
+    //     updateLocalDescriptions(frm);
+    // }
 });
 
 function updateLocalDescriptions(frm) {
