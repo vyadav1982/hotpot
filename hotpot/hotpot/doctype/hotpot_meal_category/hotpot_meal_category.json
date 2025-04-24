@@ -34,15 +34,17 @@
   {
    "fieldname": "lead_time",
    "fieldtype": "Int",
-   "label": "Lead Time"
+   "label": "Lead Time",
+   "non_negative": 1
   },
   {
    "fieldname": "cancellation_time",
    "fieldtype": "Int",
-   "label": "Cancellation Time"
+   "label": "Cancellation Time",
+   "non_negative": 1
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
@@ -57,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-21 17:35:21.286653",
+ "modified": "2025-04-24 10:50:22.894649",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
