@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:title",
+ "autoname": "hash",
  "creation": "2025-04-14 14:52:34.650932",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -32,11 +32,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-24 10:41:13.139472",
+ "modified": "2025-04-24 11:28:01.609632",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Holidays",
- "naming_rule": "By fieldname",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
