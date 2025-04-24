@@ -755,7 +755,7 @@ def generate_coupon():
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 		required_fields = ["meal_id", "date"]
 		for_guest = data.get('guest', False) 
-		if for_guest and role in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+		if for_guest and role in ["Hotpot User","Hotpot HR"]:
 			required_fields.append("approval_id")
 		missing = [field for field in required_fields if not data.get(field)]
 		if missing:
@@ -925,7 +925,7 @@ def generate_coupon():
 							**({"guest_of": user_doc.get("name")} if for_guest else {}),
 							**({"birthday_coupon": 1} if is_birthday and not for_guest else {}),
 							**({"joining_day": 1} if is_joining_day and not for_guest else {}),
-							**({"approval_id": approval_id} if (for_guest and role in ["Hotpot User","Hotpot Admin","Hotpot HR"]) else {}),
+							**({"approval_id": approval_id} if (for_guest and role in ["Hotpot User","Hotpot HR"]) else {}),
 						},
 					)
 
@@ -956,7 +956,7 @@ def generate_coupon():
 				# Update meal buffer count if buffer time
 				if is_buffer_time and buffer_used > 0:
 					meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
-				if for_guest and role in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+				if for_guest and role in ["Hotpot User","Hotpot HR"]:
 					approval_doc.is_active = 0
 				if role in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 					meal_docs[meal_id] = meal_doc
@@ -978,8 +978,10 @@ def generate_coupon():
 			doc.insert()
 		frappe.db.commit()
 		message = f"Generated coupon for {from_date.strftime('%d %b %Y')}."
-		if for_guest and role in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
+		if for_guest and role in ["Hotpot User","Hotpot HR"]:
 			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
+		elif for_guest and role=="Hotpot Admin":
+			message=f"{qty} Coupons(s) Generated successfully."
 		elif is_birthday and role in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if start.month == get_local_datetime_obj(datetime.utcnow()).month and start.day == get_local_datetime_obj(datetime.utcnow()).day:
 				message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
@@ -1301,6 +1303,7 @@ def generate_coupon_admin():
 			print(email)
 			if not is_valid_email(email):
 				return set_response(400,False,f"Enter a valid email")
+		qty = int(qty)
 		if qty != len(emails):
 			return set_response(400, False, "Quantity and Email length mismatch")
 		meal_docs = {}
@@ -1524,16 +1527,16 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
 
+
 		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 			):
-				return set_response(200, False, "Oops! Today is off.")
+				return {"status": "error", "msg": "Oops! Today is off."}
 
 		meal_docs = {}
 		temp_docs = []
 		coupon_id = []
-		date = get_local_datetime_obj(date).date()
 		total_coupons_consumed = 0
 
 		for j in range(int(qty)):

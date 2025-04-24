@@ -1,4 +1,5 @@
 from hotpot.api.coupons import * 
+from hotpot.utils.utc_time import *
 
 @frappe.whitelist()
 def generate_guest_coupon(data,from_hook=False):
@@ -11,10 +12,9 @@ def generate_guest_coupon(data,from_hook=False):
 						data.requested_by,
 						data.name,
 						data.meal_id,
-						data.date,
+						get_local_datetime_obj(data.date).strftime("%Y-%m-%d"),
 						data.coupon_count
 					)
-
 					if isinstance(response, dict):
 						return response
 					else:

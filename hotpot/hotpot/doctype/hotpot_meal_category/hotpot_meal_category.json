@@ -18,30 +18,40 @@
   {
    "fieldname": "type",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Type",
-   "options": "Hotpot Meal Types"
+   "options": "Hotpot Meal Types",
+   "reqd": 1,
+   "unique": 1
   },
   {
    "fieldname": "start_time",
    "fieldtype": "Datetime",
-   "label": "Start Time"
+   "in_list_view": 1,
+   "label": "Start Time",
+   "reqd": 1
   },
   {
    "fieldname": "end_time",
    "fieldtype": "Datetime",
-   "label": "End Time"
+   "in_list_view": 1,
+   "label": "End Time",
+   "reqd": 1
   },
   {
    "fieldname": "lead_time",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Lead Time",
-   "non_negative": 1
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "fieldname": "cancellation_time",
    "fieldtype": "Int",
    "label": "Cancellation Time",
-   "non_negative": 1
+   "non_negative": 1,
+   "reqd": 1
   },
   {
    "default": "1",
@@ -54,12 +64,13 @@
    "fieldname": "sequence",
    "fieldtype": "Int",
    "label": "Sequence",
-   "non_negative": 1
+   "non_negative": 1,
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-24 10:50:22.894649",
+ "modified": "2025-04-24 12:21:00.142334",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
