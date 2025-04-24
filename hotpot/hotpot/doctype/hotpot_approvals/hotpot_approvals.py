@@ -6,7 +6,6 @@ from frappe.model.document import Document
 from frappe import _ 
 from hotpot.utils.guest_coupon_generate import *
 
-
 class HotpotApprovals(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
@@ -38,13 +37,14 @@ class HotpotApprovals(Document):
 			try:
 				res = generate_guest_coupon(self, from_hook=True)
 				if res:
-					print(res)
+					indicator_color = "green" if res.get("status") == "success" else "red"
+					frappe.msgprint(_(res.get("msg")), indicator=indicator_color)
 				else:
 					frappe.msgprint(_("Coupon generation failed"))
-
-				print(res)
+				self.is_active = 0
 				return
 			except Exception as e:
+				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while generating coupon."))
 
@@ -58,3 +58,10 @@ class HotpotApprovals(Document):
 				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while generating coupon."))
+	# def before_save(self):
+	# 	print(self.to_dict())
+	# 	if self.approval_status != "Pending":
+	# 		self.is_active = 0
+		# self.is_active = 0
+		# self.save()
+		# frappe.db.commit()

@@ -1524,16 +1524,16 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
 
+
 		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 			):
-				return set_response(200, False, "Oops! Today is off.")
+				return {"status": "error", "msg": "Oops! Today is off."}
 
 		meal_docs = {}
 		temp_docs = []
 		coupon_id = []
-		date = get_local_datetime_obj(date).date()
 		total_coupons_consumed = 0
 
 		for j in range(int(qty)):
