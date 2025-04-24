@@ -84,6 +84,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                     <th>Coupon Date</th>
                     <th>Vendor Name</th>
                     <th>Created On</th>
+					<th>Email</th>
                 </tr>
             </thead>
             <tbody></tbody>
