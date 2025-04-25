@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot HR Workspace",
  "links": [],
- "modified": "2025-04-24 11:25:57.507250",
+ "modified": "2025-04-25 12:29:06.343199",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot HR Workspace",
@@ -30,19 +30,11 @@
  "sequence_id": 2.0,
  "shortcuts": [
   {
-   "color": "Blue",
-   "doc_view": "List",
-   "label": "Hotpot Holidays",
-   "link_to": "Hotpot Holidays",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
    "color": "Green",
    "doc_view": "List",
    "label": "Hotpot User",
    "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot User\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false]]",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot User\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -53,19 +45,19 @@
    "type": "Report"
   },
   {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Hotpot Vendor",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Grey",
    "doc_view": "List",
    "label": "Joining day Meal Report",
    "link_to": "Joining Day Coupons Report",
    "type": "Report"
-  },
-  {
-   "color": "Pink",
-   "doc_view": "List",
-   "label": "Hotpot HR",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot HR\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false]]",
-   "type": "DocType"
   },
   {
    "color": "Grey",
@@ -75,11 +67,19 @@
    "type": "Report"
   },
   {
+   "color": "Pink",
+   "doc_view": "List",
+   "label": "Hotpot HR",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot HR\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Orange",
    "doc_view": "List",
    "label": "Hotpot Server",
    "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Server\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false]]",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Server\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -90,19 +90,19 @@
    "type": "Report"
   },
   {
-   "color": "Red",
-   "doc_view": "List",
-   "label": "Hotpot Vendor",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false]]",
-   "type": "DocType"
-  },
-  {
    "color": "Orange",
    "doc_view": "List",
    "label": "Pending Approvals",
    "link_to": "Hotpot Approvals",
    "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Pending\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Hotpot Holidays",
+   "link_to": "Hotpot Holidays",
+   "stats_filter": "[[\"Hotpot Holidays\",\"is_active\",\"=\",1,false]]",
    "type": "DocType"
   },
   {

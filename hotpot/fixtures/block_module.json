@@ -2,186 +2,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.002090",
-  "module": "Automation",
-  "name": "8s4c59rr4s",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.041791",
-  "module": "commit",
-  "name": "gjaogsrk9k",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.042324",
-  "module": "Contacts",
-  "name": "fahpc73n9e",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.042805",
-  "module": "Custom",
-  "name": "tthpq6jaru",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.043642",
-  "module": "Email",
-  "name": "guu27mo28m",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.044508",
-  "module": "Frappe Er Generator",
-  "name": "6b8m307jj2",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.045419",
-  "module": "Geo",
-  "name": "29fiud95nt",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.046183",
-  "module": "Integrations",
-  "name": "lhk2et980l",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.046802",
-  "module": "Mrx Audit",
-  "name": "c7cj3vgv0g",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.047627",
-  "module": "MrxSurvey",
-  "name": "ad4i35nh89",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.048111",
-  "module": "MrxTracking",
-  "name": "mjn2kcqmp7",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.048587",
-  "module": "MrxWorkMod",
-  "name": "o7hf9c40vs",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.049071",
-  "module": "Printing",
-  "name": "tf0oakbb7m",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.049535",
-  "module": "PulseEye",
-  "name": "6njq30uhsf",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.049995",
-  "module": "Social",
-  "name": "u5gmkqa81g",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.050454",
-  "module": "Website",
-  "name": "sp4oigjujt",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.050914",
-  "module": "Workflow",
-  "name": "3k039qv0sg",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-03 14:42:48.051608",
-  "module": "Core",
-  "name": "ukfcke529r",
-  "parent": "prajune1996@gmail.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-16 19:36:37.545285",
   "module": "Automation",
   "name": "o8gg6prl9l",
@@ -392,6 +212,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.479469",
+  "module": "Automation",
+  "name": "hhualqaten",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.319141",
   "module": "commit",
   "name": "pk2c00orlf",
@@ -416,6 +246,16 @@
   "module": "commit",
   "name": "fq57hggdkm",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.514564",
+  "module": "commit",
+  "name": "ofkd959pj6",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -452,6 +292,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.515088",
+  "module": "Contacts",
+  "name": "1of2ejjdbs",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.322343",
   "module": "Custom",
   "name": "64hh92888q",
@@ -476,6 +326,16 @@
   "module": "Custom",
   "name": "ur3nuscvpk",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.515528",
+  "module": "Custom",
+  "name": "p80l3c6v36",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -512,6 +372,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.515966",
+  "module": "Email",
+  "name": "a4a6lvopli",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.323082",
   "module": "Frappe Er Generator",
   "name": "teg3n98vv4",
@@ -536,6 +406,16 @@
   "module": "Frappe Er Generator",
   "name": "9bi1fprlra",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.516456",
+  "module": "Frappe Er Generator",
+  "name": "c7qnsl8o8j",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -572,6 +452,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.516895",
+  "module": "Geo",
+  "name": "4btfc8f5c7",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.323778",
   "module": "Integrations",
   "name": "2dea6u3ujm",
@@ -596,6 +486,16 @@
   "module": "Integrations",
   "name": "0ddtsmg0ol",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.517323",
+  "module": "Integrations",
+  "name": "egu63dgpgp",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -632,6 +532,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.517892",
+  "module": "Mrx Audit",
+  "name": "1e62tlungo",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.324488",
   "module": "MrxSurvey",
   "name": "3nvtvlgjgn",
@@ -656,6 +566,16 @@
   "module": "MrxSurvey",
   "name": "g5188f8b6c",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.518357",
+  "module": "MrxSurvey",
+  "name": "f71lorhbes",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -692,6 +612,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.518794",
+  "module": "MrxTracking",
+  "name": "r0vn6qh6vv",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.325208",
   "module": "MrxWorkMod",
   "name": "otpbrm1uub",
@@ -716,6 +646,16 @@
   "module": "MrxWorkMod",
   "name": "8cgruaacai",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.519321",
+  "module": "MrxWorkMod",
+  "name": "us3nuhnvnv",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -752,6 +692,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.519790",
+  "module": "Printing",
+  "name": "7dlui6hi6u",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.325912",
   "module": "PulseEye",
   "name": "05t7occ8gt",
@@ -776,6 +726,16 @@
   "module": "PulseEye",
   "name": "lb108ktjqk",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.520239",
+  "module": "PulseEye",
+  "name": "tqcv357css",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -812,6 +772,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.520669",
+  "module": "Social",
+  "name": "954il2t908",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.326709",
   "module": "Website",
   "name": "f9o2hehfdk",
@@ -836,6 +806,16 @@
   "module": "Website",
   "name": "prm9ljivud",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.521122",
+  "module": "Website",
+  "name": "psgnsaeq53",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -872,6 +852,16 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.521667",
+  "module": "Workflow",
+  "name": "nfjtglijsl",
+  "parent": "prajune1996@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
   "modified": "2025-04-23 13:48:50.444610",
   "module": "Core",
   "name": "qie8rnrnt8",
@@ -886,6 +876,16 @@
   "module": "Core",
   "name": "fmjubpna8g",
   "parent": "premiumnoida24@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-24 15:28:33.522133",
+  "module": "Core",
+  "name": "rvcjsghu5g",
+  "parent": "prajune1996@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  }
