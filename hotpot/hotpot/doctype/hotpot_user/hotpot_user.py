@@ -12,7 +12,7 @@ def send_password_email(to_email, user_doc, password):
 		"user_data": user_doc,
 		"password": password,
 		# "login_url": frappe.utils.get_url('app/login')
-		"login_url": "https://hotpot-admin.vercel.app/authentication/login"
+		"login_url": "https://hotpot.bytepanda.in/login#login"
 	}
 	send_email("initial_password", to_email, context, email_subject)
 def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
