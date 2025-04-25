@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot Workspace",
  "links": [],
- "modified": "2025-04-24 10:52:39.103031",
+ "modified": "2025-04-25 12:31:35.088093",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Workspace",
@@ -30,27 +30,11 @@
  "sequence_id": 3.0,
  "shortcuts": [
   {
-   "color": "Orange",
+   "color": "Red",
    "doc_view": "List",
-   "label": "Hotpot Meal Items",
-   "link_to": "Hotpot Meal Items",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "List",
-   "label": "Hotpot Meal",
-   "link_to": "Hotpot Meal",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
-   "color": "Blue",
-   "doc_view": "List",
-   "label": "Hotpot Holidays",
-   "link_to": "Hotpot Holidays",
-   "stats_filter": "[]",
+   "label": "Hotpot Users",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot User\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -61,14 +45,6 @@
    "type": "Page"
   },
   {
-   "color": "Yellow",
-   "doc_view": "List",
-   "label": "Hotpot Meal Category",
-   "link_to": "Hotpot Meal Category",
-   "stats_filter": "[]",
-   "type": "DocType"
-  },
-  {
    "color": "Grey",
    "doc_view": "List",
    "label": "Guest Coupon Report",
@@ -76,11 +52,11 @@
    "type": "Report"
   },
   {
-   "color": "Pink",
+   "color": "Yellow",
    "doc_view": "List",
-   "label": "Hotpot Meal Types",
-   "link_to": "Hotpot Meal Types",
-   "stats_filter": "[]",
+   "label": "Hotpot Vendor",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -89,6 +65,22 @@
    "label": "Pending Approvals",
    "link_to": "Hotpot Approvals",
    "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Pending\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Hotpot Meal",
+   "link_to": "Hotpot Meal",
+   "stats_filter": "[[\"Hotpot Meal\",\"is_active\",\"=\",1,false],[\"Hotpot Meal\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Hotpot Meal Items",
+   "link_to": "Hotpot Meal Items",
+   "stats_filter": "[[\"Hotpot Meal Items\",\"is_active\",\"=\",1,false],[\"Hotpot Meal Items\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -107,19 +99,27 @@
    "type": "Report"
   },
   {
-   "color": "Red",
-   "doc_view": "List",
-   "label": "Hotpot Users",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot User\",false]]",
-   "type": "DocType"
-  },
-  {
    "color": "Green",
    "doc_view": "List",
    "label": "Hotpot Server",
    "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Server\",false]]",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Server\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Hotpot Holidays",
+   "link_to": "Hotpot Holidays",
+   "stats_filter": "[[\"Hotpot Holidays\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "doc_view": "List",
+   "label": "Hotpot Meal Category",
+   "link_to": "Hotpot Meal Category",
+   "stats_filter": "[[\"Hotpot Meal Category\",\"is_active\",\"=\",1,false]]",
    "type": "DocType"
   },
   {
@@ -131,19 +131,19 @@
    "type": "DocType"
   },
   {
+   "color": "Pink",
+   "doc_view": "List",
+   "label": "Hotpot Meal Types",
+   "link_to": "Hotpot Meal Types",
+   "stats_filter": "[[\"Hotpot Meal Types\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Grey",
    "doc_view": "List",
    "label": "Joining Day Report",
    "link_to": "Joining Day Coupons Report",
    "type": "Report"
-  },
-  {
-   "color": "Yellow",
-   "doc_view": "List",
-   "label": "Hotpot Vendor",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false]]",
-   "type": "DocType"
   },
   {
    "color": "Grey",
