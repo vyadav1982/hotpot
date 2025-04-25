@@ -488,7 +488,8 @@ def get_scanned_coupons(
 				U2.employee_name,
 				hc.employee_id,
 				hc.served_by,
-				U.employee_name AS vendor_name
+				U.employee_name AS vendor_name,
+				mt.type
 			FROM
 				`tabHotpot Coupons` AS hc
 			INNER JOIN
@@ -497,6 +498,10 @@ def get_scanned_coupons(
 				`tabHotpot User` as U on hm.vendor_id = U.name
 			INNER JOIN
 				`tabHotpot User` as U2 on hc.employee_id = U2.name
+			INNER JOIN
+				`tabHotpot Meal Category` AS mc ON mc.name = hm.category
+			INNER JOIN
+				`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 			WHERE
 				hc.coupon_status = 0
 				and hm.vendor_id = %(vendor_id)s
@@ -1234,7 +1239,8 @@ def get_guest_coupon(date):
 				hm.name AS meal_id,
 				U.employee_name AS vendor_name,
 				ap.guest_name AS guest_name,
-				ap.is_active AS approval_active
+				ap.is_active AS approval_active,
+				mt.type
 
 			FROM 
 				`tabHotpot Coupons` AS hc
@@ -1244,6 +1250,10 @@ def get_guest_coupon(date):
 				`tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
+			INNER JOIN
+				`tabHotpot Meal Category` AS mc ON mc.name = hm.category
+			INNER JOIN
+				`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 			WHERE 
 				hc.guest_of = %s 
 				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
