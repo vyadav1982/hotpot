@@ -484,6 +484,8 @@ def get_scanned_coupons(
 				hm.end_time,
 				hc.name AS coupon_id,
 				hc.title AS coupon_title,
+				hc.guest_of,
+				U2.employee_name,
 				hc.employee_id,
 				hc.served_by,
 				U.employee_name AS vendor_name
@@ -493,6 +495,8 @@ def get_scanned_coupons(
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			INNER JOIN
 				`tabHotpot User` as U on hm.vendor_id = U.name
+			INNER JOIN
+				`tabHotpot User` as U2 on hc.employee_id = U2.name
 			WHERE
 				hc.coupon_status = 0
 				and hm.vendor_id = %(vendor_id)s
@@ -605,7 +609,8 @@ def get_all_coupons(
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
 					U.employee_name AS vendor_name,
-					# mt.type,
+					U2.employee_name AS employee_name,
+					mt.type,
 					hc.*
 				FROM
 					`tabHotpot Coupons` AS hc
@@ -613,10 +618,12 @@ def get_all_coupons(
 					`tabHotpot Meal` AS hm ON hm.name = hc.parent
 				INNER JOIN
 					`tabHotpot User` as U on hm.vendor_id = U.name
-				# INNER JOIN
-				# 	`tabHotpot Meal Category` AS mc ON mc.name = hm.category
-				# INNER JOIN
-				# 	`tabHotpot Meal Types` AS mt ON mt.name = mc.type
+				INNER JOIN
+					`tabHotpot User` as U2 on hc.employee_id = U2.name
+				INNER JOIN
+					`tabHotpot Meal Category` AS mc ON mc.name = hm.category
+				INNER JOIN
+					`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 				WHERE
 					hm.vendor_id = %(vendor_name)s
 					AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
@@ -668,16 +675,16 @@ def get_all_coupons(
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
 					hm.name AS meal_id,
-					# mt.type, 
+					mt.type, 
 					U.employee_name AS vendor_name
 				FROM 
 					`tabHotpot Coupons` AS hc
 				INNER JOIN 
 					`tabHotpot Meal` AS hm ON hm.name = hc.parent
-				# INNER JOIN
-				# 	`tabHotpot Meal Category` AS mc ON mc.name = hm.category
-				# INNER JOIN
-				# 	`tabHotpot Meal Types` AS mt ON mt.name = mc.type
+				INNER JOIN
+					`tabHotpot Meal Category` AS mc ON mc.name = hm.category
+				INNER JOIN
+					`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 				INNER JOIN 
 					`tabHotpot User` AS U ON hm.vendor_id = U.name
 				WHERE
