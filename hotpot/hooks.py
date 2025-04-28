@@ -196,9 +196,9 @@ after_uninstall = "hotpot.uninstall.after_uninstall"
 # 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
 #
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+has_permission = {
+	"Hotpot Meal": "hotpot.hotpot.doctype.hotpot_meal.hotpot_meal.has_permission",
+}
 
 # DocType Class
 # ---------------
