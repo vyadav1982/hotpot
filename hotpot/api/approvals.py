@@ -179,7 +179,7 @@ def create_approval():
 		return set_response(200, True, "Request created successfully", approval.name)
 
 	except Exception as e:
-		frappe.rollback()
+		frappe.db.rollback()
 		frappe.log_error(f"Error creating approval: {str(e)}")
 		return set_response(500, False, f"Server error: {str(e)}")
 
