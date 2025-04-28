@@ -7,12 +7,17 @@ frappe.ui.form.on("Hotpot Meal", {
             frm.toggle_enable("coupons", false);
             frm.toggle_enable("ratings", false);
         }
+        if(!isAdmin && !frm.doc.__islocal){
+            frm.toggle_enable("vendor_id", false);
+            frm.toggle_enable("start_time", false);
+            frm.toggle_enable("end_time", false);
+            frm.toggle_enable("meal_date", false);
+        } 
         if(!isAdmin){
             frm.toggle_display("repeat_type", false);
             frm.toggle_display("repeat_days", false);
             frm.toggle_display("approval_id", false);
-            frm.toggle_enable("vendor_id", false);
-        }   
+        }  
         
     },
     onload(frm) {       

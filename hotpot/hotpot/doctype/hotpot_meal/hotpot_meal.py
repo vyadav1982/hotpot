@@ -22,6 +22,34 @@ def is_frappe_ui_request():
 
 	return False
 
+def has_permission(doc, ptype="read", user=None):
+	if not user:
+		user = frappe.session.user
+
+	print(">>>> Checking Permission <<<<")
+	print("User:", user)
+	print("Doc:", doc)
+	print("Doc Type:", doc.doctype)
+	print("Command:", frappe.form_dict.get("cmd"))
+	print("Request Path:", frappe.request.path)
+
+	# Restrict Hotpot HR on desk only
+	if ptype == "read" and user != "Administrator":
+		roles = frappe.get_roles(user)
+		if "Hotpot HR" in roles:
+			# Detect desk access
+			cmd = frappe.form_dict.get("cmd")
+			if cmd and cmd.startswith("frappe.desk"):
+				print(">>> Desk UI access blocked")
+				return False
+
+			if frappe.request.path and "/api/method/frappe.desk." in frappe.request.path:
+				print(">>> Desk UI access blocked via path")
+				return False
+
+	return True
+
+
 class HotpotMeal(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
@@ -72,3 +100,4 @@ class HotpotMeal(Document):
 		if is_frappe_ui_request():
 			self.start_time = get_utc_datetime_obj(self.start_time)
 			self.end_time = get_utc_datetime_obj(self.end_time)
+
