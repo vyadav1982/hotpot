@@ -1544,7 +1544,10 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
 
-
+		if not isinstance(date,str):
+			date_obj = get_local_datetime_obj(date)
+			date = date_obj.strftime('%Y-%m-%d')
+			
 		if user_doc.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0))
@@ -1630,6 +1633,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				is_buffer_time = get_local_datetime_obj(meal_doc.start_time).time() <= current_time <= get_local_datetime_obj(meal_doc.end_time).time()
 				buffer_used = 0
 				third = from_date == datetime.utcnow().date()
+
 
 				if first and second and third:
 					return {"status": "error", "msg": "Cannot generate during meal preparation time"}
