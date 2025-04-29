@@ -12,7 +12,7 @@ def get_filtered_import_template(doctype):
     meta = frappe.get_meta(doctype)
     
     user_field = ["Employee ID","E Mail","Mobile no.","Employee Name","Role","Tag Id","Department","Date of Joining","Date Of Birth","Coupon Count","Location"]
-    meal_field = ["Category","Meal Title","Meal Items","Buffer Coupon Count","Vendor Id","Meal Date","Meal Weight","Is Special"]
+    meal_field = ["Category","Meal Title","Meal Items","Vendor Id","Meal Date"]
 
     fields_to_include = []
     if doctype == "Hotpot User":

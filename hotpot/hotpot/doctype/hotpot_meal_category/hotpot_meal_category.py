@@ -35,7 +35,9 @@ class HotpotMealCategory(Document):
 		cancellation_time: DF.Int
 		end_time: DF.Datetime
 		is_active: DF.Check
+		is_special: DF.Check
 		lead_time: DF.Int
+		meal_rate: DF.Int
 		sequence: DF.Int
 		start_time: DF.Datetime
 		type: DF.Link

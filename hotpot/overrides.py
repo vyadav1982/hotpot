@@ -5,6 +5,7 @@ import re
 import os
 import openpyxl
 from frappe.utils import getdate, today, nowdate
+from hotpot.utils.utc_time import *
 
 
 import openpyxl
@@ -20,8 +21,8 @@ class CustomDataImport(DataImport):
 			file_path = file_doc.get_full_path()
 			
 			if os.path.exists(file_path):
-				print(f"File exists: {file_path}")
-				self.modify_excel_file(file_path)
+				if self.reference_doctype == "Hotpot User":
+					self.modify_excel_file(file_path)
 			
 				
 		return super().start_import()
@@ -53,10 +54,7 @@ class CustomDataImport(DataImport):
 				"Tag Id", "Department", "Date of Joining", "Date Of Birth",
 				"Coupon Count", "Location"
 			]
-			meal_fields = [
-				"Category", "Meal Title", "Meal Items", "Buffer Coupon Count",
-				"Vendor Id", "Meal Date", "Meal Weight", "Is Special"
-			]
+			meal_fields = ["Category", "Meal Title", "Meal Items","Vendor Id", "Meal Date"]
 
 			if self.reference_doctype == "Hotpot User":
 				expected_fields = user_fields
@@ -96,6 +94,8 @@ class CustomDataImport(DataImport):
 				# Perform doctype-specific validation
 				if self.reference_doctype == "Hotpot User":
 					self.validate_hotpot_user(preview_data, header_to_index)
+				elif self.reference_doctype == "Hotpot Meal":
+					self.validate_hotpot_meal(preview_data, header_to_index)
 
 			return preview_data
 			
@@ -107,7 +107,7 @@ class CustomDataImport(DataImport):
 	def _process_date_fields(self, row, row_idx, header_to_index):
 		"""Process date fields in a row safely"""
 		try:
-			date_fields = ["Date of Joining", "Date Of Birth"]
+			date_fields = ["Date of Joining", "Date Of Birth","Meal Date"]
 			for date_field in date_fields:
 				idx = header_to_index.get(date_field)
 				if idx is not None and idx < len(row):
@@ -192,6 +192,107 @@ class CustomDataImport(DataImport):
 				frappe.throw(f"Error validating user data: {str(e)}")
 			else:
 				raise
+
+	def validate_hotpot_meal(self, preview_data, header_to_index):
+		"""Validate fields for Hotpot Meal imports."""
+		try:
+			errors = []
+
+			for row_num, row in enumerate(preview_data["data"], start=2):
+				if not isinstance(row, list):
+					continue
+
+				category = row[header_to_index.get("Category", -1)].strip() if header_to_index.get("Category") is not None else ""
+				vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
+				meal_items_raw = row[header_to_index.get("Meal Items", -1)].strip() if header_to_index.get("Meal Items") is not None else ""
+				print("category", category)
+				try:
+					category_doc = frappe.db.get_value("Hotpot Meal Category", {
+						"name": category,
+						"is_active": 1
+					}, "*", as_dict=True)
+					print(category_doc)
+
+					if not category_doc:
+						errors.append(f"Row {row_num}: Category '{category}' not found or inactive.")
+						continue
+				except Exception as e:
+					errors.append(f"Row {row_num}: Error fetching Category '{category}': {str(e)}")
+					continue
+
+				try:
+					vendor_doc = frappe.db.get_value("Hotpot User", {
+						"name": vendor_id,
+						"is_active": 1,
+						"is_deleted": 0,
+						"role": "Hotpot Vendor"
+					}, "*", as_dict=True)
+
+					if not vendor_doc:
+						errors.append(f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted.")
+						continue
+				except Exception as e:
+					errors.append(f"Row {row_num}: Error fetching Vendor ID '{vendor_id}': {str(e)}")
+					continue
+
+
+				entered_items = [item.strip() for item in meal_items_raw.split(',') if item.strip()]
+				existing_items = frappe.get_all("Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name")
+				existing_items_lower = set(ei.lower() for ei in existing_items)
+				print("existing_items_lower", existing_items_lower)
+				missing_items = [item for item in entered_items if item.lower() not in existing_items_lower]
+
+				if missing_items:
+					errors.append(f"Row {row_num}: These meal items are not found for vendor '{vendor_id}': {', '.join(missing_items)}")
+					continue
+				category_fields =["Start Time","End Time","Lead Time","Cancellation Time","Meal Weight"]
+				field_mapping = {
+					"start_time": "Start Time",
+					"end_time": "End Time",
+					"lead_time": "Lead Time",
+					"cancellation_time": "Cancellation Time", 
+					"meal_rate": "Meal Weight"
+				}
+				for doc_field, import_field in field_mapping.items():
+					if import_field not in header_to_index:
+						header_to_index[import_field] = len(preview_data["columns"])
+						new_index = len(preview_data["columns"])
+						preview_data["columns"].append({
+							"index": new_index,
+							"column_number": new_index + 1,
+							"doctype": "Hotpot Meal",
+							"header_title": import_field,
+							"map_to_field": None,
+							"date_format": None,
+							"df": {
+								"fieldtype": "Datetime" if "Time" in import_field else "Float",  # Adjust as needed
+								"fieldname": doc_field,
+								"label": import_field,
+								"parent": "Hotpot Meal"
+							},
+							"skip_import": False,
+							"warnings": []
+						})
+					field_idx = header_to_index[import_field]
+					
+					while len(row) <= field_idx:
+						row.append("")
+					
+					value = category_doc.get(doc_field)
+					row[field_idx] = value				
+			print("Updated columns:", preview_data["columns"])
+			print("Updated row:", row)
+
+			if errors:
+				frappe.throw("<br>".join(errors))
+
+		except Exception as e:
+			if not str(e).startswith("Row"):
+				frappe.log_error(f"Error validating Hotpot Meal data: {str(e)}")
+				frappe.throw(f"Unexpected error during validation: {str(e)}")
+			else:
+				raise
+
 
 				
 	def modify_excel_file(self, file_path):

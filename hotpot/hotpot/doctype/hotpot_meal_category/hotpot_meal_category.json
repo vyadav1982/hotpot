@@ -12,7 +12,9 @@
   "lead_time",
   "cancellation_time",
   "is_active",
-  "sequence"
+  "sequence",
+  "meal_rate",
+  "is_special"
  ],
  "fields": [
   {
@@ -66,11 +68,24 @@
    "label": "Sequence",
    "non_negative": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "meal_rate",
+   "fieldtype": "Int",
+   "label": "Meal Rate",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_special",
+   "fieldtype": "Check",
+   "label": "Is Special"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-28 13:06:51.922129",
+ "modified": "2025-04-29 11:58:55.598668",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
