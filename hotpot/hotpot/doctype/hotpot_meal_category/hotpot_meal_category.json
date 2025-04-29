@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "hash",
+ "autoname": "field:type",
  "creation": "2025-04-18 12:42:46.663760",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -70,11 +70,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-24 12:21:00.142334",
+ "modified": "2025-04-28 13:06:51.922129",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
- "naming_rule": "Random",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
