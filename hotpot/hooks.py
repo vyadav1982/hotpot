@@ -98,7 +98,12 @@ fixtures = [
 app_include_css = "hotpot.bundle.css"
 app_include_js = "hotpot.bundle.js"
 app_include_js = "/assets/hotpot/js/navbar_customizations.js"
+# app_include_js = "/assets/hotpot/js/data_import_list.js"
 
+
+
+
+# website_path_resolver = "hotpot.utils.route_protection.protect_routes"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/hotpot/css/hotpot.css"
@@ -115,8 +120,8 @@ app_include_js = "/assets/hotpot/js/navbar_customizations.js"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_js = {"Data Import" : "public/js/data_import.js"}
+doctype_list_js = {"Data Import" : "public/js/data_import_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -204,9 +209,9 @@ has_permission = {
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Data Import": "hotpot.overrides.CustomDataImport",
+}
 
 # Document Events
 # ---------------
