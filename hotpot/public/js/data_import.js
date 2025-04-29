@@ -44,12 +44,13 @@ frappe.ui.form.on('Data Import', {
                             }
                         });
             });
-            frm.set_df_property("mute_emails","hidden",1);
-            frm.set_df_property("google_sheets_url","hidden",1);
-            frm.set_df_property("download_template","hidden",1)
-            frm.set_df_property("html_5","hidden",1)
-
+            
         }
+        frm.set_df_property("mute_emails","hidden",1);
+        frm.set_df_property("google_sheets_url","hidden",1);
+        frm.set_df_property("download_template","hidden",1)
+        frm.set_df_property("html_5","hidden",1)
+        frm.set_df_property("import_type","options","Insert New Records");
     }
     },
 });
