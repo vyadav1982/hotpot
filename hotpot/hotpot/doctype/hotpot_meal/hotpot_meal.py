@@ -93,11 +93,25 @@ class HotpotMeal(Document):
 
 			if self.start_time.date() != self.end_time.date():
 				frappe.throw("Start time and End time must be on the same date.")
-		if self.start_time >= self.end_time:
-			frappe.throw("Start time must be before End time.")
+			if self.start_time >= self.end_time:
+				frappe.throw("Start time must be before End time.")
 
 	def before_insert(self):
 		if is_frappe_ui_request():
-			self.start_time = get_utc_datetime_obj(self.start_time)
-			self.end_time = get_utc_datetime_obj(self.end_time)
-
+			if self.start_time :
+				if isinstance(self.start_time, datetime.datetime):
+		   			self.start_time = self.start_time.strftime('%Y-%m-%d %H:%M:%S')
+				self.start_time = get_utc_datetime_obj(self.start_time)
+			if self.end_time :
+				if isinstance(self.end_time, datetime.datetime):
+		   			self.end_time = self.end_time.strftime('%Y-%m-%d %H:%M:%S')
+				self.end_time = get_utc_datetime_obj(self.end_time)
+			if not self.start_time and not self.end_time:
+				category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+				self.start_time =category_doc.start_time
+				self.end_time = category_doc.end_time
+				self.is_active = 1
+				self.lead_time = category_doc.lead_time
+				self.cancellation_time = category_doc.cancellation_time
+				self.is_special = category_doc.is_special
+				self.meal_weight = category_doc.meal_rate
