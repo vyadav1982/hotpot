@@ -8,19 +8,21 @@ from hotpot.utils.utc_time import *
 
 
 def is_frappe_ui_request():
-	referer = frappe.get_request_header("Referer")
-	csrf_token = frappe.get_request_header("X-Frappe-CSRF-Token")
-	user_agent = frappe.get_request_header("User-Agent")
+	try:
+		referer = frappe.get_request_header("Referer")
+		csrf_token = frappe.get_request_header("X-Frappe-CSRF-Token")
+		user_agent = frappe.get_request_header("User-Agent")
 
-	# Heuristics to detect Frappe UI
-	if referer and "app" in referer:
-		return True
-	if csrf_token:
-		return True
-	if user_agent and "frappe" in user_agent.lower():
-		return True
-
+		if referer and "app" in referer:
+			return True
+		if csrf_token:
+			return True
+		if user_agent and "frappe" in user_agent.lower():
+			return True
+	except Exception:
+		pass
 	return False
+
 
 def has_permission(doc, ptype="read", user=None):
 	if not user:
@@ -97,7 +99,9 @@ class HotpotMeal(Document):
 				frappe.throw("Start time must be before End time.")
 
 	def before_insert(self):
-		if is_frappe_ui_request():
+		print(">>>> Before Insert <<<<")
+		print(frappe.flags.in_import)
+		if is_frappe_ui_request() or frappe.flags.in_import:
 			if self.start_time :
 				if isinstance(self.start_time, datetime.datetime):
 		   			self.start_time = self.start_time.strftime('%Y-%m-%d %H:%M:%S')
