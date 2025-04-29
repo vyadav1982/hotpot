@@ -205,13 +205,13 @@ class CustomDataImport(DataImport):
 				category = row[header_to_index.get("Category", -1)].strip() if header_to_index.get("Category") is not None else ""
 				vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
 				meal_items_raw = row[header_to_index.get("Meal Items", -1)].strip() if header_to_index.get("Meal Items") is not None else ""
-				print("category", category)
+				# print("category", category)
 				try:
 					category_doc = frappe.db.get_value("Hotpot Meal Category", {
 						"name": category,
 						"is_active": 1
 					}, "*", as_dict=True)
-					print(category_doc)
+					# print(category_doc)
 
 					if not category_doc:
 						errors.append(f"Row {row_num}: Category '{category}' not found or inactive.")
@@ -239,7 +239,7 @@ class CustomDataImport(DataImport):
 				entered_items = [item.strip() for item in meal_items_raw.split(',') if item.strip()]
 				existing_items = frappe.get_all("Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name")
 				existing_items_lower = set(ei.lower() for ei in existing_items)
-				print("existing_items_lower", existing_items_lower)
+				# print("existing_items_lower", existing_items_lower)
 				missing_items = [item for item in entered_items if item.lower() not in existing_items_lower]
 
 				if missing_items:
@@ -280,8 +280,8 @@ class CustomDataImport(DataImport):
 					
 					value = category_doc.get(doc_field)
 					row[field_idx] = value				
-			print("Updated columns:", preview_data["columns"])
-			print("Updated row:", row)
+			# print("Updated columns:", preview_data["columns"])
+			# print("Updated row:", row)
 
 			if errors:
 				frappe.throw("<br>".join(errors))
