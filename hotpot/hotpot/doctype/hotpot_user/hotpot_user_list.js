@@ -56,6 +56,7 @@ frappe.listview_settings["Hotpot User"] = {
     },
     refresh: function (listview) {
         const roles = frappe.user_roles;
+        const doctype = this.doctype;
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin){
             listview.page.clear_menu();
