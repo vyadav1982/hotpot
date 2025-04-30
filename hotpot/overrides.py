@@ -68,7 +68,7 @@ class CustomDataImport(DataImport):
 
 			# Check for missing/extra fields
 			missing = [col for col in expected_fields if col not in column_headers]
-			extra = [col for col in column_headers if col not in expected_fields and not col.startswith("Sr.")]
+			extra = [col for col in column_headers if col and col not in expected_fields and not col.startswith("Sr.")]
 
 			if missing or extra:
 				error_msg = []
