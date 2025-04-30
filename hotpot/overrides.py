@@ -54,7 +54,10 @@ class CustomDataImport(DataImport):
 				"Tag Id", "Department", "Date of Joining", "Date Of Birth",
 				"Coupon Count", "Location"
 			]
-			meal_fields = ["Category", "Meal Title", "Meal Items","Vendor Id", "Meal Date"]
+			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date"]
+			roles = frappe.get_roles()
+			if "Hotpot Vendor" not in roles:
+				meal_fields.append("Vendor Id")
 
 			if self.reference_doctype == "Hotpot User":
 				expected_fields = user_fields
@@ -201,9 +204,13 @@ class CustomDataImport(DataImport):
 			for row_num, row in enumerate(preview_data["data"], start=2):
 				if not isinstance(row, list):
 					continue
+				roles = frappe.get_roles()
+				if "Hotpot Vendor" not in roles:
+					vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
+				else:
+					vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 
 				category = row[header_to_index.get("Category", -1)].strip() if header_to_index.get("Category") is not None else ""
-				vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
 				meal_items_raw = row[header_to_index.get("Meal Items", -1)].strip() if header_to_index.get("Meal Items") is not None else ""
 				# print("category", category)
 				try:
@@ -246,6 +253,7 @@ class CustomDataImport(DataImport):
 					errors.append(f"Row {row_num}: These meal items are not found for vendor '{vendor_id}': {', '.join(missing_items)}")
 					continue
 				category_fields =["Start Time","End Time","Lead Time","Cancellation Time","Meal Weight"]
+					
 				field_mapping = {
 					"start_time": "Start Time",
 					"end_time": "End Time",
@@ -253,6 +261,9 @@ class CustomDataImport(DataImport):
 					"cancellation_time": "Cancellation Time", 
 					"meal_rate": "Meal Weight"
 				}
+				if "Hotpot Vendor" in roles:
+					field_mapping["vendor_id"] = "Vendor Id"
+
 				for doc_field, import_field in field_mapping.items():
 					if import_field not in header_to_index:
 						header_to_index[import_field] = len(preview_data["columns"])
@@ -279,7 +290,9 @@ class CustomDataImport(DataImport):
 						row.append("")
 					
 					value = category_doc.get(doc_field)
-					row[field_idx] = value				
+					row[field_idx] = value
+					if(import_field=="Vendor Id"):
+						row[field_idx] = vendor_id
 			# print("Updated columns:", preview_data["columns"])
 			# print("Updated row:", row)
 
