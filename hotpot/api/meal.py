@@ -272,16 +272,23 @@ def delete_meal():
 			meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		except frappe.DoesNotExistError:
 			return set_response(404, False, "Meal not found")
-
+		upcoming_coupons = False
 		coupons = meal_doc.coupons
+		for coupon in coupons:
+			if coupon.coupon_status == 1:
+				upcoming_coupons = True
+				break
 		approval_id = meal_doc.approval_id
 		status = False
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 			if approval_doc.approval_status == "Approved":
 				status = True
-		if coupons and not status:
-			set_response(409, False, "Need Admin Approval for this operation.")
+		if not status:
+			set_response(400, False, "Your, Request in still pending.")
+			return
+		if upcoming_coupons :
+			set_response(409, False, "Coupons are already generated for this meal. Need Admin Approval for this operation.")
 			return
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
