@@ -253,20 +253,20 @@ def cancel_coupon():
 		user_doc = frappe.get_doc("Hotpot User",coupon_found.employee_id)
 		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of:
 			user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
+			transaction_doc.update(
+				{
+					"employee_id": user_doc.get("name"),
+					"type": "Credit",
+					"message": f"{meal_doc.meal_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
+					"title": "Meal Cost Refund",
+					"amount": meal_doc.meal_weight
+				}
+			)
+			transaction_doc = frappe.new_doc("Hotpot Transaction History")
+			transaction_doc.insert()
 		
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
 		frappe.db.sql(query, params)
-		transaction_doc = frappe.new_doc("Hotpot Transaction History")
-		transaction_doc.update(
-			{
-				"employee_id": user_doc.get("name"),
-				"type": "Credit",
-				"message": f"{meal_doc.meal_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
-				"title": "Meal Cost Refund",
-				"amount": meal_doc.meal_weight
-			}
-		)
-		transaction_doc.insert()
 		user_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Coupon cancelled successfully")
