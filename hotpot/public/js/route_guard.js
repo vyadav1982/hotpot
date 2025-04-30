@@ -47,7 +47,7 @@ function getRouteStr() {
     if (frappe.get_route_str && typeof frappe.get_route_str === 'function') {
         const routeStr = frappe.get_route_str();
         if (routeStr) {
-            console.log("Route detected via frappe.get_route_str():", routeStr);
+            //console.log("Route detected via frappe.get_route_str():", routeStr);
             return routeStr;
         }
     }
@@ -56,7 +56,7 @@ function getRouteStr() {
     if (frappe.get_route && typeof frappe.get_route === 'function') {
         const route = frappe.get_route();
         if (Array.isArray(route) && route.length) {
-            console.log("Route detected via frappe.get_route():", route.join("/"));
+            //console.log("Route detected via frappe.get_route():", route.join("/"));
             return route.join("/");
         }
     }
@@ -64,30 +64,30 @@ function getRouteStr() {
     // Try to get route from other Frappe properties
     if (frappe._cur_route) {
         const routeStr = Array.isArray(frappe._cur_route) ? frappe._cur_route.join("/") : frappe._cur_route;
-        console.log("Route detected via frappe._cur_route:", routeStr);
+        //console.log("Route detected via frappe._cur_route:", routeStr);
         return routeStr;
     }
 
     if (frappe._route && Array.isArray(frappe._route) && frappe._route.length) {
-        console.log("Route detected via frappe._route:", frappe._route.join("/"));
+        //console.log("Route detected via frappe._route:", frappe._route.join("/"));
         return frappe._route.join("/");
     }
 
     // Check if we can extract from page_name
     if (frappe.current_page && frappe.current_page.page_name) {
-        console.log("Route detected via page_name:", frappe.current_page.page_name);
+        //console.log("Route detected via page_name:", frappe.current_page.page_name);
         return frappe.current_page.page_name;
     }
 
     // Fallback to window location
     const hash = window.location.hash.replace("#", "");
     if (hash) {
-        console.log("Route detected via window.location.hash:", hash);
+        //console.log("Route detected via window.location.hash:", hash);
         return hash;
     }
 
     const path = window.location.pathname.replace(/^\/+|\/+$/g, "");
-    console.log("Route detected via window.location.pathname:", path);
+    //console.log("Route detected via window.location.pathname:", path);
     return path;
 }
 
@@ -120,7 +120,7 @@ function isRouteAllowed(route) {
     }
     const normalized = normalizeRoute(route);
     if (user_roles.includes("Administrator")) {
-        console.log("✅ User is Administrator — full access granted");
+        //console.log("✅ User is Administrator — full access granted");
         return true;
     }
     if (user_roles.includes("Hotpot Vendor") && route.includes("List")) {
@@ -136,13 +136,13 @@ function isRouteAllowed(route) {
         if (user_roles.includes(role)) {
             const allowed_routes = allowed_routes_by_role[role];
             if (allowed_routes.includes(normalized)) {
-                console.log(`✅ Access granted to "${normalized}" for role: ${role}`);
+                //console.log(`✅ Access granted to "${normalized}" for role: ${role}`);
                 return true;
             }
         }
     }
 
-    console.log(`⛔ Access denied to "${normalized}"`);
+    //console.log(`⛔ Access denied to "${normalized}"`);
     return false;
 }
 
@@ -173,12 +173,12 @@ function blockIfUnauthorized() {
             return;
         }
 
-        console.log("🔍 Checking access for route:", route);
+        //console.log("🔍 Checking access for route:", route);
         const normalized = normalizeRoute(route);
-        console.log("Normalized to:", normalized);
+        //console.log("Normalized to:", normalized);
 
         if (common_whitelist.includes(normalized) || pendingRedirect === route) {
-            console.log("Route is whitelisted or pending redirect");
+            //console.log("Route is whitelisted or pending redirect");
             resetAuthorizationState();
             authCheckInProgress = false;
             return;
@@ -187,10 +187,10 @@ function blockIfUnauthorized() {
         // Get the actual DOM content to verify we're checking the right page
         const pageTitle = document.title || '';
         const visibleContent = $(".page-container").text().substring(0, 100);
-        console.log("Current page appears to be:", pageTitle, "Content preview:", visibleContent);
+        //console.log("Current page appears to be:", pageTitle, "Content preview:", visibleContent);
 
         if (!isRouteAllowed(route)) {
-            console.log("⛔ Access denied to route:", route);
+            //console.log("⛔ Access denied to route:", route);
 
             // Check if we're on a doctype page specifically
             const isDoctypePage = route.toLowerCase().includes("doctype") ||
@@ -198,7 +198,7 @@ function blockIfUnauthorized() {
                 visibleContent.toLowerCase().includes("doctype");
 
             if (isDoctypePage) {
-                console.log("Detected unauthorized doctype page");
+                //console.log("Detected unauthorized doctype page");
             }
 
             if (!isMessageDisplayed) {
@@ -211,14 +211,14 @@ function blockIfUnauthorized() {
             }
 
             const fallback = getDefaultWorkspace();
-            console.log("Redirecting to fallback:", fallback);
+            //console.log("Redirecting to fallback:", fallback);
 
             if (route !== fallback && normalizeRoute(route) !== fallback) {
                 pendingRedirect = fallback;
 
                 // Force reload if content doesn't match route (handles stale content)
                 if (isDoctypePage) {
-                    console.log("Forcing page reload to clear doctype content");
+                    //console.log("Forcing page reload to clear doctype content");
                     window.location.href = window.location.origin + "/app/" + fallback;
                     authCheckInProgress = false;
                     return;
@@ -232,12 +232,12 @@ function blockIfUnauthorized() {
                 authCheckInProgress = false;
             }
         } else {
-            console.log("✅ Access granted to route:", route);
+            //console.log("✅ Access granted to route:", route);
             resetAuthorizationState();
             authCheckInProgress = false;
         }
     } catch (e) {
-        console.error("Error in blockIfUnauthorized:", e);
+        //console.error("Error in blockIfUnauthorized:", e);
         authCheckInProgress = false;
     }
 }
@@ -254,13 +254,13 @@ frappe.set_route = function (...args) {
         redirectAttempts++;
 
         if (redirectAttempts > 5) {
-            console.error("🚨 Too many redirects, routing to home.");
+            //console.error("🚨 Too many redirects, routing to home.");
             resetAuthorizationState();
             return original_set_route("app");
         }
 
         if (pendingRedirect && target !== pendingRedirect) {
-            console.log("🔁 Redirecting to authorized route:", pendingRedirect);
+            //console.log("🔁 Redirecting to authorized route:", pendingRedirect);
             const result = original_set_route(pendingRedirect);
             setTimeout(() => (redirectAttempts = 0), 500);
             return result;
@@ -274,7 +274,7 @@ frappe.set_route = function (...args) {
         setTimeout(blockIfUnauthorized, 200);
         return result;
     } catch (e) {
-        console.error("Error in set_route override:", e);
+        //console.error("Error in set_route override:", e);
         resetAuthorizationState();
         return original_set_route.apply(this, args);
     }
@@ -308,7 +308,7 @@ function setupRouteChangeHandler() {
                         setTimeout(() => frappe.set_route(fallback), 300);
                     }
                 } catch (e) {
-                    console.error("Error in route change handler:", e);
+                    //console.error("Error in route change handler:", e);
                 }
             }, 100);
         });
@@ -331,7 +331,7 @@ $(document).ready(() => {
             });
         }, 500);
     } catch (e) {
-        console.error("Error in document ready handler:", e);
+        //console.error("Error in document ready handler:", e);
     }
 });
 
@@ -341,7 +341,7 @@ $(document).on('frappe.after_ajax', function () {
         setupRouteChangeHandler();
         setTimeout(blockIfUnauthorized, 200);
     } catch (e) {
-        console.error("Error in after_ajax handler:", e);
+        //console.error("Error in after_ajax handler:", e);
     }
 });
 
@@ -355,7 +355,7 @@ if (frappe.ready) {
 
 // Handle content loaded after page navigation
 $(document).on("page-change", function () {
-    console.log("Page change detected");
+    //console.log("Page change detected");
     setTimeout(blockIfUnauthorized, 100);
 });
 
@@ -367,7 +367,7 @@ if (frappe.router) {
         // Before showing 404, check if this is an authorization issue
         const currentRoute = getRouteStr();
         if (currentRoute && !isRouteAllowed(currentRoute)) {
-            console.log("Caught unauthorized 404 attempt:", currentRoute);
+            //console.log("Caught unauthorized 404 attempt:", currentRoute);
             frappe.set_route(getDefaultWorkspace());
             return;
         }
@@ -404,10 +404,10 @@ function checkForDoctypeContent() {
         $('[data-doctype]').length > 0;
 
     if (hasDoctypeElements) {
-        console.log("Doctype elements detected in DOM");
+        //console.log("Doctype elements detected in DOM");
         const currentRoute = getRouteStr();
         if (!isRouteAllowed(currentRoute)) {
-            console.log("Forcing redirect from unauthorized doctype page");
+            //console.log("Forcing redirect from unauthorized doctype page");
             frappe.set_route(getDefaultWorkspace());
         }
     }
