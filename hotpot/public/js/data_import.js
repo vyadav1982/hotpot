@@ -7,6 +7,15 @@ frappe.ui.form.on('Data Import', {
         frm.page.remove_inner_button(__("Don't Send Emails"));
         
         if(!frm.doc.reference_doctype) {
+            if(roles.includes("Hotpot Vendor")){
+                frm.set_query('reference_doctype', function() {
+                    return {
+                        filters: {
+                            name: ['in', ['Hotpot Meal']]
+                        }
+                    };});
+            }
+            else{
             frm.set_query('reference_doctype', function() {
                 return {
                     filters: {
@@ -14,6 +23,7 @@ frappe.ui.form.on('Data Import', {
                     }
                 };
             });
+        }
         }
         
         if(frm.doc.reference_doctype) {
