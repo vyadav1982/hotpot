@@ -1,10 +1,14 @@
 import frappe
 
-def get_all_vendor(self):
-    users = frappe.get_all("Hotpot User", 
-        filters={"role": "Hotpot Vendor"}, 
+@frappe.whitelist()
+def get_all_vendor(doctype, txt, searchfield, start, page_len, filters):
+    users = frappe.get_all(
+        "Hotpot User",
+        filters={"role": "Hotpot Vendor"},
+        fields=["employee_id", "employee_name"],
     )
-    return [[r.name, r.mrname] for r in users]
+    return [[r["employee_id"], r["employee_name"]] for r in users]
+
 
 @frappe.whitelist()
 def disable_users(user_list):

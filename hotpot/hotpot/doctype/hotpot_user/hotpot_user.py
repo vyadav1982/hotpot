@@ -73,6 +73,10 @@ class HotpotUser(Document):
 		if self.role=="Hotpot Server" and self.guest_of=="":
 			frappe.throw("The field 'guest_of' is mandatory for Hotpot Server.")
 
+	def before_insert(self):
+		if self.role == "Hotpot Vendor":
+			self.is_vendor = 1
+
 	def after_insert(self):
 		try:
 			user = frappe.db.exists("User", {"email": self.email})
@@ -80,7 +84,7 @@ class HotpotUser(Document):
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				role = self.role
-				user_type = "System User" if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin"] else "Website User"
+				user_type = "System User" if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin","Hotpot Vendor"] else "Website User"
 				new_user.update({
 					"email": self.email,
 					"first_name": names[0],
@@ -103,6 +107,10 @@ class HotpotUser(Document):
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
+				if role == "Hotpot Vendor":
+					new_user.update({
+						"roles": [{"role": "System Manager"}],
+					})
 				if role == "Hotpot Admin":
 					new_user.update({
 						"roles": [{"role": "System Manager"}],
@@ -192,6 +200,9 @@ class HotpotUser(Document):
 				frappe_user.roles = []  
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
+
+				if self.role == "Hotpot Vendor":
+					frappe_user.append_roles("System Manager")
 
 				if self.role == "Hotpot Admin":
 					frappe_user.append_roles("System Manager")

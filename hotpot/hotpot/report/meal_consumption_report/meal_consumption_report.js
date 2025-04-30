@@ -1,10 +1,43 @@
 // Copyright (c) 2025, Bytepanda Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
-const get_all_vendor = import('.hotpot.hotpot.doctype.hotpot_user.get_all_vendor');
+// const get_all_vendor = import('.hotpot.hotpot.doctype.hotpot_user.get_all_vendor');
 
 
 frappe.query_reports["Meal Consumption Report"] = {
-	filters: [
+  onload: function (report) {
+    report.page.trigger_ready = false;
+    const roles = frappe.user_roles;
+    const hasAdminRole = roles.includes('Administrator');
+    if (!hasAdminRole) {
+      report.page.clear_menu();
+      report.add_card_button_to_toolbar = () => { };
+      report.add_chart_buttons_to_toolbar = () => { };
+      report.page.add_inner_button("Print", () => {
+        let dialog = frappe.ui.get_print_settings(
+          false,
+          (print_settings) => report.print_report(print_settings),
+          report.report_doc.letter_head,
+          report.get_visible_columns()
+        );
+        report.add_portrait_warning(dialog);
+      },)
+      report.page.add_inner_button("PDF", () => {
+        let dialog = frappe.ui.get_print_settings(
+          false,
+          (print_settings) => report.pdf_report(print_settings),
+          report.report_doc.letter_head,
+          report.get_visible_columns()
+        );
+
+        report.add_portrait_warning(dialog);
+      },)
+      report.page.add_inner_button("Export", () => {
+        report.export_report();
+      },)
+
+    }
+  },
+  filters: [
     {
       fieldname: "vendor_id",
       label: __("Vendor"),
@@ -13,7 +46,7 @@ frappe.query_reports["Meal Consumption Report"] = {
       options: "Hotpot User",
       get_query: () => {
         return {
-          query: get_all_vendor,
+          query: "hotpot.hotpot.doctype.hotpot_user.get_all_vendor",
         };
       },
     },
@@ -34,4 +67,36 @@ frappe.query_reports["Meal Consumption Report"] = {
       default: frappe.datetime.get_today(),
     },
   ],
+  refresh: function (report) {
+    report.page.trigger_ready = false;
+    const roles = frappe.user_roles;
+    const hasAdminRole = roles.includes('Administrator');
+    if (!hasAdminRole) {
+      report.add_card_button_to_toolbar = () => { };
+      report.add_chart_buttons_to_toolbar = () => { };
+      report.page.clear_menu();
+      report.page.add_inner_button("Print", () => {
+        let dialog = frappe.ui.get_print_settings(
+          false,
+          (print_settings) => report.print_report(print_settings),
+          report.report_doc.letter_head,
+          report.get_visible_columns()
+        );
+        report.add_portrait_warning(dialog);
+      },)
+      report.page.add_inner_button("PDF", () => {
+        let dialog = frappe.ui.get_print_settings(
+          false,
+          (print_settings) => report.pdf_report(print_settings),
+          report.report_doc.letter_head,
+          report.get_visible_columns()
+        );
+
+        report.add_portrait_warning(dialog);
+      },)
+      report.page.add_inner_button("Export", () => {
+        report.export_report();
+      },)
+    }
+  }
 };

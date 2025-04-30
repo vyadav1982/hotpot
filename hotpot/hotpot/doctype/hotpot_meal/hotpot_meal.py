@@ -99,8 +99,6 @@ class HotpotMeal(Document):
 				frappe.throw("Start time must be before End time.")
 
 	def before_insert(self):
-		print(">>>> Before Insert <<<<")
-		print(frappe.flags.in_import)
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			if self.start_time :
 				if isinstance(self.start_time, datetime.datetime):
@@ -119,3 +117,7 @@ class HotpotMeal(Document):
 				self.cancellation_time = category_doc.cancellation_time
 				self.is_special = category_doc.is_special
 				self.meal_weight = category_doc.meal_rate
+			roles = frappe.get_roles()
+			if "Hotpot Vendor" in roles:
+				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
+				self.vendor_id = vendor_id

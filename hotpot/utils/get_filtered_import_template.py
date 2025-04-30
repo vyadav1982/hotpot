@@ -12,8 +12,10 @@ def get_filtered_import_template(doctype):
     meta = frappe.get_meta(doctype)
     
     user_field = ["Employee ID","E Mail","Mobile no.","Employee Name","Role","Tag Id","Department","Date of Joining","Date Of Birth","Coupon Count","Location"]
-    meal_field = ["Category","Meal Title","Meal Items","Vendor Id","Meal Date"]
-
+    meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date"]
+    roles = frappe.get_roles()
+    if "Hotpot Vendor" not in roles:
+        meal_field.append("Vendor Id")
     fields_to_include = []
     if doctype == "Hotpot User":
         fields_to_include = user_field
