@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot Vendor Workspace",
  "links": [],
- "modified": "2025-04-30 15:08:40.421314",
+ "modified": "2025-04-30 15:30:34.689509",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Vendor Workspace",
@@ -34,7 +34,7 @@
    "doc_view": "List",
    "label": "Meal Import",
    "type": "URL",
-   "url": "/app/data-import/new-data-import-xzooexoauu"
+   "url": "/app/data-import/new-data-import"
   }
  ],
  "title": "Hotpot Vendor Workspace"
