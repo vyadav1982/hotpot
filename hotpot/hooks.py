@@ -97,7 +97,11 @@ fixtures = [
 # include js, css files in header of desk.html
 app_include_css = "hotpot.bundle.css"
 app_include_js = "hotpot.bundle.js"
-app_include_js = "/assets/hotpot/js/navbar_customizations.js"
+app_include_js = [
+    "/assets/hotpot/js/navbar_customizations.js",
+    "/assets/hotpot/js/route_guard.js"
+]
+
 # app_include_js = "/assets/hotpot/js/data_import_list.js"
 
 
