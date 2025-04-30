@@ -1272,52 +1272,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.739729",
-  "module": "Automation",
-  "name": "q42ul5r7kb",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.941645",
-  "module": "Automation",
-  "name": "1loihulaok",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.281234",
   "module": "commit",
   "name": "c0kvg83hui",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.742427",
-  "module": "commit",
-  "name": "hip31mlbnc",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.942204",
-  "module": "commit",
-  "name": "bvdvqesp2q",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1332,52 +1292,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.743007",
-  "module": "Contacts",
-  "name": "rdpccmm3v8",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.942711",
-  "module": "Contacts",
-  "name": "3idrpekvdj",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.281969",
   "module": "Custom",
   "name": "e3uas7lq6v",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.743492",
-  "module": "Custom",
-  "name": "0m09o8imb1",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.943187",
-  "module": "Custom",
-  "name": "qm4kjm2fma",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1392,52 +1312,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.743950",
-  "module": "Email",
-  "name": "majd0o3ese",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.943656",
-  "module": "Email",
-  "name": "i6kkaloghk",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.282602",
   "module": "Frappe Er Generator",
   "name": "iu36ugcsos",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.744472",
-  "module": "Frappe Er Generator",
-  "name": "tsm49mqdgm",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.944154",
-  "module": "Frappe Er Generator",
-  "name": "876bae67fm",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1452,52 +1332,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.744895",
-  "module": "Geo",
-  "name": "abnrnjf0he",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.944639",
-  "module": "Geo",
-  "name": "ldb2tu8smg",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.283226",
   "module": "Integrations",
   "name": "tkg4r338cv",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.745375",
-  "module": "Integrations",
-  "name": "da6uetvbk0",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.945289",
-  "module": "Integrations",
-  "name": "6mgqnkmqe4",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1512,52 +1352,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.745853",
-  "module": "Mrx Audit",
-  "name": "9nvb5coc7g",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.945893",
-  "module": "Mrx Audit",
-  "name": "n09eq5040k",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.283843",
   "module": "MrxSurvey",
   "name": "bahpbpj1df",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.746327",
-  "module": "MrxSurvey",
-  "name": "4d7pn5s7hk",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.946659",
-  "module": "MrxSurvey",
-  "name": "9b0habki37",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1572,52 +1372,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.746786",
-  "module": "MrxTracking",
-  "name": "8r19djjoug",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.947177",
-  "module": "MrxTracking",
-  "name": "cek0t8smf7",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.284460",
   "module": "MrxWorkMod",
   "name": "m56d23pq2f",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.747233",
-  "module": "MrxWorkMod",
-  "name": "uf3i5p8vmh",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.947658",
-  "module": "MrxWorkMod",
-  "name": "ak4vr6jsam",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1632,52 +1392,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.747713",
-  "module": "Printing",
-  "name": "7f402o3mg1",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.948600",
-  "module": "Printing",
-  "name": "3ujp01nu4e",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.285085",
   "module": "PulseEye",
   "name": "e8dgebkle3",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.748198",
-  "module": "PulseEye",
-  "name": "0o5rosp34b",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.949210",
-  "module": "PulseEye",
-  "name": "qvu5bu8c6g",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1692,52 +1412,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.748677",
-  "module": "Social",
-  "name": "31sfu3f31i",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.949693",
-  "module": "Social",
-  "name": "u5007tp1vu",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.285933",
   "module": "Website",
   "name": "q105i4a9qc",
   "parent": "yifit30032@ingitel.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.749152",
-  "module": "Website",
-  "name": "p2tp67d4je",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.950110",
-  "module": "Website",
-  "name": "1vbkh88i2j",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1752,26 +1432,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.749854",
-  "module": "Workflow",
-  "name": "76skr97jsi",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.950594",
-  "module": "Workflow",
-  "name": "003o4qs9o0",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-04-30 13:07:52.286752",
   "module": "Core",
   "name": "02k4vu6t9a",
@@ -1782,9 +1442,529 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-04-30 13:21:27.950990",
+  "modified": "2025-04-30 15:02:57.846760",
+  "module": "Automation",
+  "name": "i7n9pn13qs",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.470193",
+  "module": "Automation",
+  "name": "r846010rgu",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.618297",
+  "module": "Automation",
+  "name": "mnikvlrnmr",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.879009",
+  "module": "commit",
+  "name": "ohnqfkqq1u",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.472063",
+  "module": "commit",
+  "name": "iu69do6jpu",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.618718",
+  "module": "commit",
+  "name": "er299j3f3l",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.879376",
+  "module": "Contacts",
+  "name": "lcjtilahll",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.472531",
+  "module": "Contacts",
+  "name": "u1797ibg7j",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.619106",
+  "module": "Contacts",
+  "name": "v48obt5q9r",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.879695",
+  "module": "Custom",
+  "name": "lo50b7hb9i",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.473018",
+  "module": "Custom",
+  "name": "p8c57h19lp",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.619482",
+  "module": "Custom",
+  "name": "66ie7g82v6",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.880007",
+  "module": "Email",
+  "name": "tj7d7ag797",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.473520",
+  "module": "Email",
+  "name": "0hk2mpuv6s",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.619856",
+  "module": "Email",
+  "name": "vmdn9kv65g",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.880321",
+  "module": "Frappe Er Generator",
+  "name": "22obe9iuep",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.473995",
+  "module": "Frappe Er Generator",
+  "name": "im8r63thja",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.620232",
+  "module": "Frappe Er Generator",
+  "name": "j1gn20fbea",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.880668",
+  "module": "Geo",
+  "name": "l09v0ut52n",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.474368",
+  "module": "Geo",
+  "name": "pteouidchf",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.620612",
+  "module": "Geo",
+  "name": "8gnqfbg4tn",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.880980",
+  "module": "Integrations",
+  "name": "6gdeb35c3u",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.474813",
+  "module": "Integrations",
+  "name": "2jr18japt1",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.620998",
+  "module": "Integrations",
+  "name": "kbrvhqt11m",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.881314",
+  "module": "Mrx Audit",
+  "name": "r0db7b7j6v",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.475244",
+  "module": "Mrx Audit",
+  "name": "m8aoogq2n3",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.621444",
+  "module": "Mrx Audit",
+  "name": "79ugtsrddn",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.881647",
+  "module": "MrxSurvey",
+  "name": "e6a3paa0o6",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.475657",
+  "module": "MrxSurvey",
+  "name": "9ck2678fjl",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.621867",
+  "module": "MrxSurvey",
+  "name": "77qpl9412g",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.882032",
+  "module": "MrxTracking",
+  "name": "hs0s08sdi5",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.476065",
+  "module": "MrxTracking",
+  "name": "u9oeankvtu",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.622283",
+  "module": "MrxTracking",
+  "name": "8jm0hp73oa",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.882345",
+  "module": "MrxWorkMod",
+  "name": "gomc7llsqr",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.476495",
+  "module": "MrxWorkMod",
+  "name": "pc1etnad1o",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.622654",
+  "module": "MrxWorkMod",
+  "name": "78iksk7559",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.882660",
+  "module": "Printing",
+  "name": "t67ule0bpm",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.476980",
+  "module": "Printing",
+  "name": "voq29qa3or",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.623034",
+  "module": "Printing",
+  "name": "illklfhq11",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.882968",
+  "module": "PulseEye",
+  "name": "7b979ke6mi",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.477483",
+  "module": "PulseEye",
+  "name": "mj092uu0s5",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.623433",
+  "module": "PulseEye",
+  "name": "dt274a1o8i",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.883275",
+  "module": "Social",
+  "name": "1inei6it5m",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.477842",
+  "module": "Social",
+  "name": "5cf67gajo0",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.623831",
+  "module": "Social",
+  "name": "kb4a3c5uj4",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.883582",
+  "module": "Website",
+  "name": "t376va0iqf",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.478189",
+  "module": "Website",
+  "name": "q2s1vleiq2",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.624507",
+  "module": "Website",
+  "name": "n5q9bdko1g",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.883962",
+  "module": "Workflow",
+  "name": "62cu2u5jq5",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.478526",
+  "module": "Workflow",
+  "name": "6i36rqorba",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.624914",
+  "module": "Workflow",
+  "name": "chmtqob45h",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:02:57.884294",
   "module": "Core",
-  "name": "om5qv6o6rs",
+  "name": "u7d3g70usk",
+  "parent": "yifit30032@ingitel.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-04-30 15:41:33.625318",
+  "module": "Core",
+  "name": "n75sipni1u",
   "parent": "Hotpot",
   "parentfield": "block_modules",
   "parenttype": "Module Profile"
