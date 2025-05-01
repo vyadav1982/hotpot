@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-from ....utils.utc_time import *
+from hotpot.utils.utc_time import *
 
 
 def get_star_rating(rating):
@@ -22,21 +22,22 @@ def execute(filters=None):
 	if not start_date or not end_date:
 		frappe.throw("Please select both Start Date and End Date")
 
-	start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
-	end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
+	# start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
+	# end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
 
 	columns = [
 		# {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
 		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
 		# {"label": "Meal Date", "fieldname": "meal_date", "fieldtype": "Date", "width": 120},
-		{"label": "Meal Weight", "fieldname": "meal_weight", "fieldtype": "float", "width": 120},
+		{"label": "Meal Rate", "fieldname": "meal_weight", "fieldtype": "float", "width": 120},
 		# {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
 		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
 		{"label": "Coupon Count", "fieldname": "coupon_count", "fieldtype": "Data", "width": 120},
-		{"label": "Total Weight", "fieldname": "total_weight", "fieldtype": "Data", "width": 120},
+		{"label": "Total Price", "fieldname": "total_weight", "fieldtype": "Data", "width": 120},
 		{"label": "Average Rating", "fieldname": "avg_rating", "fieldtype": "float", "width": 120},
 		# {"label": "Feedback's", "fieldname": "feedback_list", "fieldtype": "Data", "width": 150},
 	]
+	user_timezone = get_user_timezone() or "Asia/Kolkata"
 
 	query = """
 	   SELECT
@@ -59,10 +60,11 @@ def execute(filters=None):
 		LEFT JOIN
 			`tabHotpot Meal Rating` AS hr ON hr.parent = hm.name
 		WHERE
-			hc.coupon_status !=2 AND hc.coupon_date BETWEEN %s AND %s
+			hc.coupon_status !=2 AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-	params = [start_date, end_date]
+	params = [user_timezone,start_date, end_date]
+
 
 	if vendor_id:
 		query += "		AND hm.vendor_id = %s"
@@ -78,6 +80,8 @@ def execute(filters=None):
 	data = frappe.db.sql(query, params, as_dict=True)
 	for row in data:
 		row["avg_rating"] = get_star_rating(row["avg_rating"]) 
+		row["total_weight"] = f"₹{row['total_weight']:.2f}" 
+
 
 	return columns, data
 

@@ -6,7 +6,7 @@
 
 import frappe
 
-from ....utils.utc_time import *
+from hotpot.utils.utc_time import *
 
 
 def execute(filters=None):
@@ -20,21 +20,23 @@ def execute(filters=None):
     if not start_date or not end_date:
         frappe.throw("Please select both Start Date and End Date")
 
-    start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
-    end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
+    # start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
+    # end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
 
     columns = [
         # {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
         {"label": "Employee Id", "fieldname": "employee_id", "fieldtype": "Data", "width": 120},
         {"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Data", "width": 150},
         {"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
-        {"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
-        {"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 150},
         # {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
         {"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
         {"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
+        {"label": "Guest Email", "fieldname": "email", "fieldtype": "Data", "width": 150},
+        {"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
+        {"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 150},
         # {"label": "Coupon Id", "fieldname": "coupon_id", "fieldtype": "Data", "width": 120},
     ]
+    user_timezone = get_user_timezone() or "Asia/Kolkata"
 
     query = """
         SELECT
@@ -47,7 +49,7 @@ def execute(filters=None):
 			employee.employee_id AS employee_id,
 			employee.employee_name AS employee_name,
 			approval.guest_name AS guest_name,
-            hc.email,
+            hc.email AS email,
             approval.guest_mobile_no AS guest_mobile_no    
 		FROM
 			`tabHotpot Coupons` AS hc
@@ -61,10 +63,11 @@ def execute(filters=None):
 			`tabHotpot Approvals` AS approval ON approval.name = hc.approval_id
 		WHERE
 			hc.guest_of IS NOT NULL
-			AND hc.coupon_date BETWEEN %s AND %s
+			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
     """
 
-    params = [start_date, end_date]
+    params = [user_timezone,start_date, end_date]
+
 
     if vendor_id:
         query += " AND hm.vendor_id = %s"
@@ -73,6 +76,8 @@ def execute(filters=None):
     query += " ORDER BY hc.coupon_date DESC;"
 
     data = frappe.db.sql(query, tuple(params), as_dict=True)
+    for d in data:
+        d["coupon_date"] = get_local_datetime_obj(d["coupon_date"]).date()
 
     return columns, data
 
