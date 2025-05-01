@@ -101,11 +101,11 @@ class HotpotMeal(Document):
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			if self.start_time :
-				if isinstance(self.start_time, datetime.datetime):
+				if isinstance(self.start_time, datetime):
 		   			self.start_time = self.start_time.strftime('%Y-%m-%d %H:%M:%S')
 				self.start_time = get_utc_datetime_obj(self.start_time)
 			if self.end_time :
-				if isinstance(self.end_time, datetime.datetime):
+				if isinstance(self.end_time, datetime):
 		   			self.end_time = self.end_time.strftime('%Y-%m-%d %H:%M:%S')
 				self.end_time = get_utc_datetime_obj(self.end_time)
 			if not self.start_time and not self.end_time:

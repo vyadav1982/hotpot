@@ -44,12 +44,20 @@ class HotpotMealCategory(Document):
 	
 	def validate(self):
 		"""Validate that start and end times are on the same day and start is before end."""
-		if self.start_time and self.end_time:
-			if self.start_time.date() != self.end_time.date():
-				frappe.throw("Start time and End time must be on the same date.")
-			if self.start_time >= self.end_time:
-				frappe.throw("Start time must be before End time.")
 
+		def parse_datetime(dt):
+			if isinstance(dt, str):
+				return datetime.fromisoformat(dt)
+			return dt
+
+		if self.start_time and self.end_time:
+			start = parse_datetime(self.start_time)
+			end = parse_datetime(self.end_time)
+
+			if start.date() != end.date():
+				frappe.throw("Start time and End time must be on the same date.")
+			if start >= end:
+				frappe.throw("Start time must be before End time.")
 
 	
 

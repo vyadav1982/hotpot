@@ -31,12 +31,6 @@
     "parent": "Meal Consumption Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Finance"
-   },
-   {
-    "parent": "Meal Consumption Report",
-    "parentfield": "roles",
-    "parenttype": "Report",
     "role": "Hotpot HR"
    }
   ],
@@ -69,12 +63,6 @@
     "parentfield": "roles",
     "parenttype": "Report",
     "role": "Hotpot Admin"
-   },
-   {
-    "parent": "Birthday Coupons Report",
-    "parentfield": "roles",
-    "parenttype": "Report",
-    "role": "Hotpot Finance"
    },
    {
     "parent": "Birthday Coupons Report",
@@ -117,12 +105,6 @@
     "parent": "Joining Day Coupons Report",
     "parentfield": "roles",
     "parenttype": "Report",
-    "role": "Hotpot Finance"
-   },
-   {
-    "parent": "Joining Day Coupons Report",
-    "parentfield": "roles",
-    "parenttype": "Report",
     "role": "Hotpot HR"
    }
   ],
@@ -150,12 +132,6 @@
   "report_script": null,
   "report_type": "Script Report",
   "roles": [
-   {
-    "parent": "Guest Meal Consumption Report",
-    "parentfield": "roles",
-    "parenttype": "Report",
-    "role": "Hotpot Finance"
-   },
    {
     "parent": "Guest Meal Consumption Report",
     "parentfield": "roles",
