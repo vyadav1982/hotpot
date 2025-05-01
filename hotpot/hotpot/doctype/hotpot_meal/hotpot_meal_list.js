@@ -7,17 +7,17 @@ frappe.listview_settings["Hotpot Meal"] = {
         if(!isAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
 
             // Add items inside the 3-dots menu
-            listview.page.add_menu_item(__("Import"),  () => {
+            listview.page.add_inner_button(__("Import"),  () => {
                 frappe.set_route("list", "data-import", {
                     reference_doctype: doctype,
                 });
             });
 
-            listview.page.add_menu_item(__("Add Hotpot Meal"), function () {
+            listview.page.add_inner_button(__("Add Hotpot Meal"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot Meal");
                 } else {
@@ -56,18 +56,18 @@ frappe.listview_settings["Hotpot Meal"] = {
             // listview.page.clear_menu();
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
             listview.toggle_actions_menu_button =  function (toggle){
                 return
             }
-            listview.page.add_menu_item(__("Import"), function () {
+            listview.page.add_inner_button(__("Import"), function () {
                 frappe.set_route("list", "data-import", {
                     reference_doctype: doctype,
                 });
             });
 
-            listview.page.add_menu_item(__("Add Hotpot Meal"), function () {
+            listview.page.add_inner_button(__("Add Hotpot Meal"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot Meal");
                 } else {

@@ -6,6 +6,8 @@ frappe.ui.form.on("Hotpot Approvals", {
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin) {
+            frm.page.wrapper.find(".comment-box").css({'display':'none'});
+            frm.page.hide_menu();
             frm.toggle_display("is_active", false);
             if(frm.doc.approval_status !== "Pending"){
                 frm.disable_form();

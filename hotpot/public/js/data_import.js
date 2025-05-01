@@ -5,6 +5,7 @@ frappe.ui.form.on('Data Import', {
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin){
         frm.page.remove_inner_button(__("Don't Send Emails"));
+        frm.page.wrapper.find(".comment-box").css({'display':'none'});
         
         if(!frm.doc.reference_doctype) {
             if(roles.includes("Hotpot Vendor")){
@@ -28,7 +29,8 @@ frappe.ui.form.on('Data Import', {
         
         if(frm.doc.reference_doctype) {
             frm.page.clear_menu()
-            frm.page.add_menu_item(__("Download Template", null, "Button in list view menu"), function () {
+            frm.page.hide_menu()
+            frm.page.add_inner_button(__("Download Template", null, "Button in list view menu"), function () {
                 frappe.call({
                             method: "hotpot.utils.get_filtered_import_template.get_filtered_import_template",
                             args: {

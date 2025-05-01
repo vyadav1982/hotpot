@@ -108,21 +108,39 @@ class CustomDataImport(DataImport):
 			return None
 
 	def _process_date_fields(self, row, row_idx, header_to_index):
-		"""Process date fields in a row safely"""
 		try:
-			date_fields = ["Date of Joining", "Date Of Birth","Meal Date"]
+			date_fields = ["Date of Joining", "Date Of Birth", "Meal Date"]
+			today = frappe.utils.getdate(frappe.utils.today())
+			if isinstance(today, datetime):
+				today = today.date()
+
 			for date_field in date_fields:
 				idx = header_to_index.get(date_field)
 				if idx is not None and idx < len(row):
 					value = row[idx]
-					if value and not isinstance(value, datetime):
-						try:
-							parsed_date = frappe.utils.getdate(value)
-							row[idx] = parsed_date.strftime("%Y-%m-%d")
-						except Exception:
-							frappe.throw(f"Row {row_idx+2}: Invalid date format in '{date_field}'. Expected format: YYYY-MM-DD.")
+
+					if value:
+						parsed_date = frappe.utils.getdate(value)
+
+						if not parsed_date:
+							frappe.throw(
+								f"Row {row_idx+2}: Invalid date format or value in '{date_field}' (value: {value}). Expected format: YYYY-MM-DD."
+							)
+
+						if isinstance(parsed_date, datetime):
+							parsed_date = parsed_date.date()
+
+						if parsed_date < today:
+							frappe.throw(
+								f"Row {row_idx+2}: '{date_field}' cannot be in the past (value: {value})."
+							)
+
+						row[idx] = parsed_date.strftime("%Y-%m-%d")
+
 		except Exception as e:
 			frappe.log_error(f"Error processing date fields: {str(e)}")
+			raise
+
 			
 	def validate_hotpot_user(self, preview_data, header_to_index):
 		"""Validate fields for Hotpot User imports."""
