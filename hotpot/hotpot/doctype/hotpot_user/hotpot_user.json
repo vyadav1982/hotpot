@@ -56,9 +56,10 @@
   {
    "default": "Hotpot User",
    "fieldname": "role",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Role",
-   "options": "Hotpot User\nHotpot Server\nHotpot Vendor\nHotpot Admin\nHotpot HR\nHotpot Finance",
+   "link_filters": "[[\"Role\", \"name\", \"like\", \"%hotpot%\"], [\"Role\", \"disabled\", \"=\", 0]]\r\n",
+   "options": "Role",
    "search_index": 1
   },
   {
@@ -189,7 +190,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-24 09:32:15.893014",
+ "modified": "2025-05-01 10:54:39.293078",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
