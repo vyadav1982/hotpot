@@ -6,6 +6,7 @@ frappe.ui.form.on("Hotpot User", {
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
         if (!frm.doc.__islocal && !isAdmin) {
+            frm.page.hide_menu();
             frm.toggle_enable("role", false);
             frm.toggle_enable("email", false);
         }
@@ -15,6 +16,7 @@ frappe.ui.form.on("Hotpot User", {
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin){
+            frm.page.hide_menu();
             frm.toggle_display("approval_id", false);
             frm.toggle_display("fcm_token", false);
             frm.toggle_display("latitude", false);

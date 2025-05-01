@@ -34,9 +34,8 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                 </div>
                 <div class="form-group col-md-5">
                     <label for="datePicker">Date:</label>
-                    <input type="date" id="datePicker" class="form-control" value="${
-						new Date().toISOString().split("T")[0]
-					}">
+                    <input type="date" id="datePicker" class="form-control" value="${new Date().toISOString().split("T")[0]
+		}">
                 </div>
             </div>
 
@@ -71,9 +70,8 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
         <div class="d-flex align-items-center mt-3">
             <div class="text-center">
                 <label for="prevDatePicker">Select Date:</label>
-                <input type="date" id="prevDatePicker" value="${
-					new Date().toISOString().split("T")[0]
-				}" class="form-control" style="width: 150px; display: inline-block;">
+                <input type="date" id="prevDatePicker" value="${new Date().toISOString().split("T")[0]
+		}" class="form-control" style="width: 150px; display: inline-block;">
             </div>
             <button class="btn btn-secondary ml-3" id="refreshTable">Refresh Table</button>
         </div>
@@ -116,6 +114,10 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 	}
 
 	$(document).ready(function () {
+		const today = new Date().toISOString().split("T")[0];
+		const datePicker = document.getElementById("datePicker");
+		datePicker.value = today;
+		datePicker.min = today;
 		fetchVendors();
 		fetchUser();
 	});
@@ -146,17 +148,17 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 
 	$("#generateQR").click(async () => {
 		let emails = [];
-        let isValid = true;
+		let isValid = true;
 		$("#emailFields input").each(function () {
 			let email = $(this).val().trim();
 			if (email) emails.push(email);
 			else {
 				alert("Please enter all emails");
-                isValid = false;
+				isValid = false;
 				return false;
 			}
 		});
-        if(!isValid) return;
+		if (!isValid) return;
 
 		let qrData = {
 			vendor: $("#vendorSelect").val(),
@@ -164,28 +166,28 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			meal: $("#mealSelect").val(),
 			quantity: $("#quantity").val(),
 		};
-		var meal_title= $("#mealSelect option:selected").text();
+		var meal_title = $("#mealSelect option:selected").text();
 
 		for (let key in qrData) {
 			if (!qrData[key] || qrData[key].toString().trim() === "") {
-                isValid=false;
+				isValid = false;
 				alert(`Please fill in the ${key} field`);
 				return false;
 			}
 		}
-        if(!isValid) return;
+		if (!isValid) return;
 		if (!userId) {
-            isValid=false;
+			isValid = false;
 			alert("User Not found");
 			return false;
 		}
-        if(!isValid) return;
+		if (!isValid) return;
 		let d = {
 			meal_id: $("#mealSelect").val(),
 			date: $("#datePicker").val(),
 			guest: true,
 			qty: $("#quantity").val(),
-			email:emails,
+			email: emails,
 		};
 
 		try {
@@ -270,10 +272,10 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 						// qr_code_url: qrLink,// Ensure it's a valid URL
 					}),
 					subject: `Your Meal QR Code - ${meal_title} on ${formattedDate}`,
-                    qr_code_base64:qrLink,
+					qr_code_base64: qrLink,
 				},
 				callback: function (response) {
-					
+
 				},
 			});
 		}
@@ -433,12 +435,12 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				args: { vendor_id: vendor, date: date },
 				type: "GET",
 			});
-			if(response.status === false) {
+			if (response.status === false) {
 				alert(response.message);
 				return;
 			}
-			else{
-				if(response.data.length === 0){
+			else {
+				if (response.data.length === 0) {
 					alert("No meals available for the selected vendor and date.");
 				}
 

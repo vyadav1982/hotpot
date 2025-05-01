@@ -14,6 +14,7 @@ frappe.ui.form.on("Hotpot Meal", {
             frm.toggle_enable("meal_date", false);
         } 
         if(!isAdmin){
+            frm.page.hide_menu();
             frm.toggle_display("repeat_type", false);
             frm.toggle_display("repeat_days", false);
             frm.toggle_display("approval_id", false);
