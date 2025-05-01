@@ -215,6 +215,7 @@ after_uninstall = "hotpot.uninstall.after_uninstall"
 
 override_doctype_class = {
 	"Data Import": "hotpot.overrides.CustomDataImport",
+	"Notification Settings": "hotpot.notification_settings.CustomNotificationSettings",
 }
 
 # Document Events
