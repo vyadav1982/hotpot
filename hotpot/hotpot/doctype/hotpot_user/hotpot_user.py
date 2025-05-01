@@ -12,7 +12,7 @@ def send_password_email(to_email, user_doc, password):
 		"user_data": user_doc,
 		"password": password,
 		# "login_url": frappe.utils.get_url('app/login')
-		"login_url": "https://hotpot.bytepanda.in/login#login"
+		"login_url": "https://hotpot.bytepanda.in/app"
 	}
 	send_email("initial_password", to_email, context, email_subject)
 def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
@@ -63,7 +63,7 @@ class HotpotUser(Document):
 		longitude: DF.Data | None
 		mobile_no: DF.Phone
 		password: DF.Data | None
-		role: DF.Literal["Hotpot User", "Hotpot Server", "Hotpot Vendor", "Hotpot Admin", "Hotpot HR", "Hotpot Finance"]
+		role: DF.Link | None
 		tag_id: DF.Data | None
 		timezone: DF.Data | None
 	# end: auto-generated types
@@ -76,6 +76,8 @@ class HotpotUser(Document):
 	def before_insert(self):
 		if self.role == "Hotpot Vendor":
 			self.is_vendor = 1
+		if self.role == "Hotpot Server":
+			self.is_server = 1
 
 	def after_insert(self):
 		try:
@@ -107,17 +109,16 @@ class HotpotUser(Document):
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
-				if role == "Hotpot Admin":
-					new_user.update({
-						"roles": [{"role": "System Manager"}],
-						"notifications": 1,
-						"list_sidebar": 1,
-						"bulk_action": 1,
-						"view_switcher": 1,
-						"form_sidebar": 1,
-						"timeline": 1,
-						"dashboard": 1,
-					})
+				# if role == "Hotpot Admin":
+				# 	new_user.update({
+				# 		"notifications": 1,
+				# 		"list_sidebar": 1,
+				# 		"bulk_action": 1,
+				# 		"view_switcher": 1,
+				# 		"form_sidebar": 1,
+				# 		"timeline": 1,
+				# 		"dashboard": 1,
+				# 	})
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
 
@@ -137,18 +138,18 @@ class HotpotUser(Document):
 						user_doc.guest_of = user_doc.name
 						user_doc.save(ignore_permissions=True)
 
-						meals = ["Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
-								"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs",
-								"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"]
-						meal_items = random.sample(meals, 5)
+						# meals = ["Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
+						# 		"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs",
+						# 		"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"]
+						# meal_items = random.sample(meals, 5)
 
-						for meal in meal_items:
-							meal_doc = frappe.get_doc({
-								"doctype": "Hotpot Meal Items",
-								"item_name": meal,
-								"vendor_id": user_doc.get("name")
-							})
-							meal_doc.insert(ignore_permissions=True)
+						# for meal in meal_items:
+						# 	meal_doc = frappe.get_doc({
+						# 		"doctype": "Hotpot Meal Items",
+						# 		"item_name": meal,
+						# 		"vendor_id": user_doc.get("name")
+						# 	})
+						# 	meal_doc.insert(ignore_permissions=True)
 
 						frappe.db.commit()
 					if user_doc.get("role") == "Hotpot User":
@@ -197,15 +198,15 @@ class HotpotUser(Document):
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
 
-				if self.role == "Hotpot Admin":
-					frappe_user.append_roles("System Manager")
-					frappe_user.notifications = 1,
-					frappe_user.list_sidebar = 1,
-					frappe_user.bulk_action = 1,
-					frappe_user.view_switcher = 1,
-					frappe_user.form_sidebar = 1,
-					frappe_user.timeline = 1,
-					frappe_user.dashboard = 1,
+				# if self.role == "Hotpot Admin":
+				# 	frappe_user.append_roles("System Manager")
+				# 	frappe_user.notifications = 1,
+				# 	frappe_user.list_sidebar = 1,
+				# 	frappe_user.bulk_action = 1,
+				# 	frappe_user.view_switcher = 1,
+				# 	frappe_user.form_sidebar = 1,
+				# 	frappe_user.timeline = 1,
+				# 	frappe_user.dashboard = 1,
 
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
