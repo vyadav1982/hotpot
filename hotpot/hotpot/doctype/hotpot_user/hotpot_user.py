@@ -109,16 +109,16 @@ class HotpotUser(Document):
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
-				# if role == "Hotpot Admin":
-				# 	new_user.update({
+				if role == "Hotpot Admin":
+					new_user.update({
 				# 		"notifications": 1,
 				# 		"list_sidebar": 1,
 				# 		"bulk_action": 1,
 				# 		"view_switcher": 1,
 				# 		"form_sidebar": 1,
-				# 		"timeline": 1,
+						"timeline": 1,
 				# 		"dashboard": 1,
-				# 	})
+					})
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
 
@@ -198,15 +198,12 @@ class HotpotUser(Document):
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
 
-				# if self.role == "Hotpot Admin":
-				# 	frappe_user.append_roles("System Manager")
-				# 	frappe_user.notifications = 1,
-				# 	frappe_user.list_sidebar = 1,
-				# 	frappe_user.bulk_action = 1,
-				# 	frappe_user.view_switcher = 1,
-				# 	frappe_user.form_sidebar = 1,
-				# 	frappe_user.timeline = 1,
-				# 	frappe_user.dashboard = 1,
+				print(self.role == "Hotpot Admin")
+				if self.role == "Hotpot Admin":
+					frappe_user.update({
+						"bulk_action": 0,
+						"timeline": 1,
+					})
 
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()

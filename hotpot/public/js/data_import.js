@@ -5,6 +5,7 @@ frappe.ui.form.on('Data Import', {
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin){
         frm.page.remove_inner_button(__("Don't Send Emails"));
+        frm.page.wrapper.find(".comment-box").css({'display':'none'});
         
         if(!frm.doc.reference_doctype) {
             if(roles.includes("Hotpot Vendor")){

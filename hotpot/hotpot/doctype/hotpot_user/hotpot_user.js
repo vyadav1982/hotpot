@@ -16,6 +16,7 @@ frappe.ui.form.on("Hotpot User", {
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
         if(!isAdmin){
+            frm.page.wrapper.find(".comment-box").css({'display':'none'});
             frm.page.hide_menu();
             frm.toggle_display("approval_id", false);
             frm.toggle_display("fcm_token", false);

@@ -6,6 +6,7 @@ frappe.ui.form.on("Hotpot Meal Types", {
         const userRoles = frappe.user_roles;
         const isAdmin = userRoles.includes("Administrator")
         if (!isAdmin) {
+            frm.page.wrapper.find(".comment-box").css({'display':'none'});
             frm.page.hide_menu();
         }
     }
