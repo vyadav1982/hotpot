@@ -46,7 +46,28 @@ function updateLocalDescriptions(frm) {
     } else {
         frm.set_df_property('end_time', 'description', '');
     }
+    if (frm.doc.meal_date) {
+        const localDate = formatUtcToLocalDate(frm.doc.meal_date);
+        frm.set_df_property('meal_date', 'description', `Local Date: ${localDate}`);
+    } else {
+        frm.set_df_property('meal_date', 'description', '');
+    }
 }
+
+function formatUtcToLocalDate(utc_datetime) {
+    if (!utc_datetime) return "";
+
+    let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    let date = new Date(utc_datetime + "Z");
+    return date.toLocaleDateString("en-GB", {
+        timeZone: user_timezone,
+        day: "2-digit",
+        month: "short",
+        year: "2-digit"
+    });
+}
+
 
 function formatUtcToLocal(utc_datetime) {
     if (!utc_datetime) return "";

@@ -31,7 +31,7 @@ frappe.listview_settings["Hotpot Meal"] = {
 
         const allowedFields = [
             "meal_title", "start_time", "end_time", "meal_items",
-            "repeat_type", "repeat_days", "meal_weight", "vendor_id",
+            "meal_date", "meal_weight", "vendor_id",
             "is_special", "is_active"
         ];
 
@@ -42,9 +42,10 @@ frappe.listview_settings["Hotpot Meal"] = {
         listview.settings.formatters = {
             start_time: formatUtcToLocal,
             end_time: formatUtcToLocal,
-            repeat_type: formatRepeatType,
-            repeat_days: formatRepeatDays,
-            is_special: formatIsSpecial
+            // repeat_type: formatRepeatType,
+            // repeat_days: formatRepeatDays,
+            is_special: formatIsSpecial,
+            meal_date: formatUtcToLocalDate,
         };
     },
     refresh: function (listview) {
@@ -76,6 +77,21 @@ frappe.listview_settings["Hotpot Meal"] = {
         }
     }
 };
+
+function formatUtcToLocalDate(utc_datetime) {
+    if (!utc_datetime) return "";
+
+    let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    let date = new Date(utc_datetime + "Z");
+    return date.toLocaleDateString("en-GB", {
+        timeZone: user_timezone,
+        day: "2-digit",
+        month: "short",
+        year: "2-digit"
+    });
+}
+
 
 function formatIsSpecial(value) {
     return value == 1 ? "Yes" : "No";
