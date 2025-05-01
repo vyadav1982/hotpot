@@ -107,10 +107,6 @@ class HotpotUser(Document):
 					"roles": [{"role": self.role}],
 					"default_app": "hotpot",
 				})
-				if role == "Hotpot Vendor":
-					new_user.update({
-						"roles": [{"role": "System Manager"}],
-					})
 				if role == "Hotpot Admin":
 					new_user.update({
 						"roles": [{"role": "System Manager"}],
@@ -200,9 +196,6 @@ class HotpotUser(Document):
 				frappe_user.roles = []  
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
-
-				if self.role == "Hotpot Vendor":
-					frappe_user.append_roles("System Manager")
 
 				if self.role == "Hotpot Admin":
 					frappe_user.append_roles("System Manager")
