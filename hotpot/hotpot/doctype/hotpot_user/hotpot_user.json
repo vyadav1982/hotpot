@@ -36,6 +36,7 @@
   {
    "fieldname": "employee_id",
    "fieldtype": "Data",
+   "in_filter": 1,
    "in_list_view": 1,
    "label": "Employee ID",
    "reqd": 1,
@@ -65,6 +66,7 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
+   "in_filter": 1,
    "label": "E Mail",
    "reqd": 1,
    "unique": 1
@@ -190,7 +192,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-01 10:54:39.293078",
+ "modified": "2025-05-01 15:51:11.195720",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
