@@ -284,9 +284,9 @@ def delete_meal():
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 			if approval_doc.approval_status == "Approved":
 				status = True
-		if not status:
-			set_response(400, False, "Your, Request in still pending.")
-			return
+			if not status:
+				set_response(400, False, "Your, Request in still pending.")
+				return
 		if upcoming_coupons :
 			set_response(409, False, "Coupons are already generated for this meal. Need Admin Approval for this operation.")
 			return
