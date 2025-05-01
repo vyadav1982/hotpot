@@ -7,9 +7,9 @@ frappe.listview_settings["Hotpot Holidays"] = {
 
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
-            listview.page.add_menu_item(__("Add Hotpot Holiday", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Add Hotpot Holiday", null, "Button in list view menu"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot Holidays");
                 } else {
@@ -26,9 +26,9 @@ frappe.listview_settings["Hotpot Holidays"] = {
         if(!isAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
-            listview.page.add_menu_item(__("Add Hotpot Holiday", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Add Hotpot Holiday", null, "Button in list view menu"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot Holidays");
                 } else {

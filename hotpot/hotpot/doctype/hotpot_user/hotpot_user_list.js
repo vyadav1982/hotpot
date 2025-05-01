@@ -7,15 +7,15 @@ frappe.listview_settings["Hotpot User"] = {
         if (!isAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
 
-            listview.page.add_menu_item(__("Import", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
                 frappe.set_route("list", "data-import", {
                     reference_doctype: doctype,
                 });
             });
-            listview.page.add_menu_item(__("Add Hotpot User", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot User");
                 } else {
@@ -61,14 +61,14 @@ frappe.listview_settings["Hotpot User"] = {
         if(!isAdmin){
             listview.page.clear_menu();
             listview.page.clear_actions();
-            // listview.page.hide_menu();
+            listview.page.hide_menu();
             // listview.page.hide_actions_menu();
-            listview.page.add_menu_item(__("Import", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
                 frappe.set_route("list", "data-import", {
                     reference_doctype: doctype,
                 });
             });
-            listview.page.add_menu_item(__("Add Hotpot User", null, "Button in list view menu"), function () {
+            listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
                 if (!frappe.boot.read_only && listview.can_create) {
                     frappe.new_doc("Hotpot User");
                 } else {
