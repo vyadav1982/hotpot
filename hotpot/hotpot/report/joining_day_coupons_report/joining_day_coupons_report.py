@@ -6,9 +6,7 @@
 
 import frappe
 from frappe.utils import getdate
-
-from ....utils.utc_time import *
-
+from hotpot.utils.utc_time import *
 
 def execute(filters=None):
     if not filters:
@@ -21,8 +19,8 @@ def execute(filters=None):
     if not start_date or not end_date:
         frappe.throw("Please select both Start Date and End Date")
 
-    start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
-    end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
+    # start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
+    # end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
 
     columns = [
         # {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
@@ -34,6 +32,7 @@ def execute(filters=None):
         {"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
         # {"label": "Coupon Id", "fieldname": "coupon_id", "fieldtype": "Data", "width": 120},
     ]
+    user_timezone = get_user_timezone() or "Asia/Kolkata"
 
     query = """
         SELECT
@@ -55,10 +54,11 @@ def execute(filters=None):
             `tabHotpot User` AS employee ON employee.name = hc.employee_id
         WHERE
             hc.joining_day = 1
-            AND hc.coupon_date BETWEEN %s AND %s
+            AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
     """
 
-    params = [start_date, end_date]
+    params = [user_timezone,start_date, end_date]
+
 
     if vendor_id:
         query += " AND hm.vendor_id = %s"
@@ -67,6 +67,8 @@ def execute(filters=None):
     query += " ORDER BY hc.coupon_date DESC"
 
     data = frappe.db.sql(query, tuple(params), as_dict=True)
+    for d in data:
+        d["coupon_date"] = get_local_datetime_obj(d["coupon_date"]).date()
 
     return columns, data
 
