@@ -13,6 +13,7 @@ frappe.query_reports["Joining Day Coupons Report"] = {
       report.page.clear_menu();
       report.add_card_button_to_toolbar = () => { };
       report.add_chart_buttons_to_toolbar = () => { };
+      report.page.remove_inner_button(__("Download Report"), __("Actions"));
       report.page.add_inner_button("Print", () => {
         let dialog = frappe.ui.get_print_settings(
           false,
@@ -76,6 +77,7 @@ frappe.query_reports["Joining Day Coupons Report"] = {
     if (!hasAdminRole) {
       report.add_card_button_to_toolbar = () => { };
       report.add_chart_buttons_to_toolbar = () => { };
+      report.page.remove_inner_button(__("Download Report"), __("Actions"));
       report.page.clear_menu();
       report.page.add_inner_button("Print", () => {
         let dialog = frappe.ui.get_print_settings(
