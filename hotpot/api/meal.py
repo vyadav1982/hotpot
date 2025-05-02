@@ -275,7 +275,7 @@ def delete_meal():
 		upcoming_coupons = False
 		coupons = meal_doc.coupons
 		for coupon in coupons:
-			if coupon.coupon_status == 1:
+			if coupon.coupon_status == '1':
 				upcoming_coupons = True
 				break
 		approval_id = meal_doc.approval_id
