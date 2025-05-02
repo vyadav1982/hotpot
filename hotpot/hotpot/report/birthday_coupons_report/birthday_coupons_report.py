@@ -55,6 +55,7 @@ def execute(filters=None):
             `tabHotpot User` AS employee ON employee.name = hc.employee_id
         WHERE
             hc.birthday_coupon = 1
+            AND hc.coupon_status !=2 AND hc.coupon_status != 1
             AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
     """
 

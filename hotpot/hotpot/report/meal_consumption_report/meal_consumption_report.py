@@ -60,7 +60,7 @@ def execute(filters=None):
 		LEFT JOIN
 			`tabHotpot Meal Rating` AS hr ON hr.parent = hm.name
 		WHERE
-			hc.coupon_status !=2 AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			hc.coupon_status !=2 AND hc.coupon_status != 1 AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
 	params = [user_timezone,start_date, end_date]
