@@ -2,12 +2,25 @@ import frappe
 
 @frappe.whitelist()
 def get_all_vendor(doctype, txt, searchfield, start, page_len, filters):
+    filters = {"role": "Hotpot Vendor"}
+
+    roles = frappe.get_roles()
+    if "Hotpot HR" in roles and "Administrator" not in roles:
+        filters["is_active"] = 1
+        filters["is_deleted"] = 0
+
     users = frappe.get_all(
         "Hotpot User",
-        filters={"role": "Hotpot Vendor"},
+        filters=filters,
         fields=["employee_id", "employee_name"],
+        or_filters=[
+            ["employee_id", "like", f"%{txt}%"],
+            ["employee_name", "like", f"%{txt}%"]
+        ],
     )
-    return [[r["employee_id"], r["employee_name"]] for r in users]
+
+    return [[u["employee_id"], u["employee_name"]] for u in users]
+
 
 
 @frappe.whitelist()
