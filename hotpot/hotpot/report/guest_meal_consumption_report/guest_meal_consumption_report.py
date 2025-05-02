@@ -63,6 +63,7 @@ def execute(filters=None):
 			`tabHotpot Approvals` AS approval ON approval.name = hc.approval_id
 		WHERE
 			hc.guest_of IS NOT NULL
+            AND hc.coupon_status !=2 AND hc.coupon_status != 1
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
     """
 
