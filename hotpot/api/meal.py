@@ -414,7 +414,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			else:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
-					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc and c.coupon_status == 1
+					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc and c.coupon_status == 2
 				]
 
 			ratings = [
