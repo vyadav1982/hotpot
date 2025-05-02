@@ -406,6 +406,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
+			meal["total_coupons"] = 0
 			if user_data.get("role") in ["Hotpot User","Hotpot Admin","Hotpot HR"]:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
@@ -416,6 +417,9 @@ def get_meals(date, vendor_id=None, page=1, limit=10,for_kiosk=False):
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons if c.coupon_date.date() == date_param_utc and c.coupon_status != '2'
 				]
+			for coupon in meal_doc.coupons:
+				if coupon.coupon_status != '2':
+					meal["total_coupons"] += 1
 
 			ratings = [
 				float(r.rating) if isinstance(r.rating, str) else r.rating

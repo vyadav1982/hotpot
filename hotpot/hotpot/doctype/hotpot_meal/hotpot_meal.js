@@ -3,7 +3,7 @@ frappe.ui.form.on("Hotpot Meal", {
         const userRoles = frappe.user_roles;
         const isAdmin = userRoles.includes("Administrator") 
         const isHotpotAdmin=userRoles.includes("Hotpot Admin");
-        if(!isAdmin || !isHotpotAdmin){
+        if(!isAdmin && !isHotpotAdmin){
             frm.toggle_enable("coupons", false);
             frm.toggle_enable("ratings", false);
         }
