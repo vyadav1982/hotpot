@@ -282,7 +282,7 @@ def delete_meal():
 		status = False
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
-			if approval_doc.approval_status == "Approved":
+			if approval_doc.approval_status != "Pending":
 				status = True
 			if not status:
 				set_response(400, False, "Your, Request in still pending.")
