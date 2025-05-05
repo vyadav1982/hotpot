@@ -70,6 +70,7 @@ class HotpotApprovals(Document):
 							)
 							transaction_doc.insert()
 					coupon.coupon_status = 2
+				self.is_active = 0
 				meal_doc.save()
 				frappe.db.commit()
 				frappe.msgprint(_("Meal deleted successfully!."),indicator="green")
