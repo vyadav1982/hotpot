@@ -600,7 +600,14 @@ def get_meal_items():
 			return
 
 		data = frappe.db.get_list(
-			"Hotpot Meal Items", fields=["*"], filters=[["vendor_id", "=", user_data.get("guest_of")]]
+			"Hotpot Meal Items",
+			fields=["*"],
+			filters={
+				"vendor_id": user_data.get("guest_of"),
+				"is_active": 1,
+				"is_deleted": 0
+			},
+			order_by="item_name asc"
 		)
 
 		if not data:
