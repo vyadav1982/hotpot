@@ -186,13 +186,13 @@
   },
   {
    "fieldname": "fcm_token",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "label": "FCM Token"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-01 15:51:11.195720",
+ "modified": "2025-05-05 21:58:14.076393",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
