@@ -12,7 +12,7 @@ frappe.ui.form.on('Data Import', {
                 frm.set_query('reference_doctype', function() {
                     return {
                         filters: {
-                            name: ['in', ['Hotpot Meal']]
+                            name: ['in', ['Hotpot Meal','Hotpot Meal Items']]
                         }
                     };});
             }
@@ -20,7 +20,7 @@ frappe.ui.form.on('Data Import', {
             frm.set_query('reference_doctype', function() {
                 return {
                     filters: {
-                        name: ['in', ['Hotpot User', 'Hotpot Meal']]
+                        name: ['in', ['Hotpot User', 'Hotpot Meal','Hotpot Meal Items']]
                     }
                 };
             });

@@ -51,7 +51,7 @@ class HotpotUser(Document):
 		email: DF.Data
 		employee_id: DF.Data
 		employee_name: DF.Data | None
-		fcm_token: DF.Data | None
+		fcm_token: DF.Text | None
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_deleted: DF.Check
