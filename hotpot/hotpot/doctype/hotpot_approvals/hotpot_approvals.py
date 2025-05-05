@@ -52,12 +52,30 @@ class HotpotApprovals(Document):
 			try:
 				meal_doc = frappe.get_doc("Hotpot Meal",self.meal_id)
 				meal_doc.is_deleted=1
+				coupons = meal_doc.coupons
+				for coupon in coupons:
+					if coupon.coupon_status == '1':
+						user_doc  = frappe.get_doc("Hotpot User",coupon.get("employee_id"))
+						if not coupon.birthday_coupon and not coupon.joining_day and not coupon.guest_of:
+							user_doc.coupon_count= user_doc.coupon_count + meal_doc.meal_weight
+							transaction_doc = frappe.new_doc("Hotpot Transaction History")
+							transaction_doc.update(
+								{
+									"employee_id": user_doc.get("name"),
+									"type": "Credit",
+									"message": f"{meal_doc.meal_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
+									"title": "Meal Cost Refund",
+									"amount": meal_doc.meal_weight
+								}
+							)
+							transaction_doc.insert()
+						coupon.coupon_status = 2
 				meal_doc.save()
 				frappe.db.commit()
 			except Exception as e:
 				print(e)
 				frappe.log_error(str(e), "on_update error")
-				frappe.msgprint(_("An error occurred while generating coupon."))
+				frappe.msgprint(_("An error occurred while deleting meal."))
 	# def before_save(self):
 	# 	print(self.to_dict())
 	# 	if self.approval_status != "Pending":
