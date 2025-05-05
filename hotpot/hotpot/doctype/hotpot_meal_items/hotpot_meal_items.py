@@ -1,8 +1,24 @@
 # Copyright (c) 2025, Bytepanda Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-# import frappe
+import frappe
 from frappe.model.document import Document
+
+def is_frappe_ui_request():
+	try:
+		referer = frappe.get_request_header("Referer")
+		csrf_token = frappe.get_request_header("X-Frappe-CSRF-Token")
+		user_agent = frappe.get_request_header("User-Agent")
+
+		if referer and "app" in referer:
+			return True
+		if csrf_token:
+			return True
+		if user_agent and "frappe" in user_agent.lower():
+			return True
+	except Exception:
+		pass
+	return False
 
 
 class HotpotMealItems(Document):
@@ -20,4 +36,9 @@ class HotpotMealItems(Document):
 		vendor_id: DF.Link | None
 	# end: auto-generated types
 
-	pass
+	def before_insert(self):
+		if is_frappe_ui_request() or frappe.flags.in_import:
+			roles = frappe.get_roles()
+			if "Hotpot Vendor" in roles:
+				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
+				self.vendor_id = vendor_id

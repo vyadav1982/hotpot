@@ -21,24 +21,27 @@
    "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Is Active",
+   "search_index": 1
   },
   {
    "fieldname": "vendor_id",
    "fieldtype": "Link",
    "label": "Vendor Id",
-   "options": "Hotpot User"
+   "options": "Hotpot User",
+   "search_index": 1
   },
   {
    "default": "0",
    "fieldname": "is_deleted",
    "fieldtype": "Check",
-   "label": "Is Deleted"
+   "label": "Is Deleted",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-11 11:37:44.260495",
+ "modified": "2025-05-05 21:07:02.926064",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
