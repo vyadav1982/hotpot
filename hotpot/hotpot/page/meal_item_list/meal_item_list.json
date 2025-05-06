@@ -1,0 +1,23 @@
+{
+ "content": null,
+ "creation": "2025-05-06 10:07:26.334924",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-05-06 10:07:26.334924",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "meal-item-list",
+ "owner": "Administrator",
+ "page_name": "meal-item-list",
+ "roles": [
+  {
+   "role": "Hotpot Vendor"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Meal Item List"
+}

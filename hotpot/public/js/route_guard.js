@@ -35,7 +35,11 @@ const allowed_routes_by_role = {
     ],
     "Hotpot Vendor": [
         "hotpot-vendor-workspace",
-        "data-import"
+        "data-import",
+        "meal-list",
+        "hotpot-meal",
+        "hotpot-meal-items",
+        "meal-item-list"
     ]
 };
 
@@ -123,9 +127,9 @@ function isRouteAllowed(route) {
         //console.log("✅ User is Administrator — full access granted");
         return true;
     }
-    if (user_roles.includes("Hotpot Vendor") && route.includes("List")) {
-        return false;
-    }
+    // if (user_roles.includes("Hotpot Vendor") && route.includes("List")) {
+    //     return false;
+    // }
     // Allow common routes
     if (common_whitelist.includes(normalized)) {
         return true;
