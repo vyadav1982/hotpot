@@ -188,6 +188,7 @@ class CustomDataImport(DataImport):
 				# Validate Mobile Number
 				if mobile_no:
 					mobile_no = mobile_no.strip()
+					mobile_no = mobile_no.split('.')[0].strip()
 					if mobile_no.startswith('+'):
 						mobile_no = '+' + re.sub(r'\D', '', mobile_no[1:])
 					else:
