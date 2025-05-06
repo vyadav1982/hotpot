@@ -23,7 +23,7 @@ frappe.ui.form.on("Hotpot Meal", {
             frm.toggle_display("approval_id", false);
         }
         if (isVendor) {
-            cur_frm.disable_form()
+            frm.disable_form()
             frm.toggle_display("coupons",false);
             frm.toggle_display("ratings",false);
         }
