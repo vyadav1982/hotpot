@@ -121,15 +121,19 @@ class HotpotUser(Document):
 					})
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
-
-				new_user.append_roles(self.role)
-				new_user.flags.ignore_permissions = True
-				new_user.flags.ignore_if_duplicate = True
-				new_user.insert(ignore_permissions=True)
-				new_user.reload()
-				frappe.db.commit()
-
-				user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
+				try: 
+					new_user.append_roles(self.role)
+					new_user.flags.ignore_permissions = True
+					new_user.flags.ignore_if_duplicate = True
+					new_user.insert(ignore_permissions=True)
+					new_user.reload()
+				except Exception as e:
+					print("🔥 Error during user insert:", e)
+					frappe.log_error(frappe.get_traceback(), "User Creation Failed")
+				try:
+					user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
+				except Exception as e:
+					print(e)
 				user_doc=None
 				if user_name:
 					user_doc = frappe.get_doc("Hotpot User", user_name)
@@ -164,7 +168,6 @@ class HotpotUser(Document):
 							}
 						)
 						transaction_doc.insert()
-
 				password = frappe.generate_hash(length=8)
 				set_user_password(frappe.local.site, self.email,password,user_doc)
 				frappe.db.commit()	
@@ -198,7 +201,6 @@ class HotpotUser(Document):
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
 
-				print(self.role == "Hotpot Admin")
 				if self.role == "Hotpot Admin":
 					frappe_user.update({
 						"bulk_action": 0,

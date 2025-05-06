@@ -41,8 +41,9 @@ def send_email(template_name, to_email, context, subject,qr_code_base64=None):
             now=True
         )
         frappe.logger().info(f"Email sent successfully to {to_email}")
-
+        print("mail send successfully")
     except Exception as e:
+        print("---------->",e)
         frappe.log_error(frappe.get_traceback(), "Email Sending Error")
         frappe.throw(f"Failed to send email: {str(e)}")
 

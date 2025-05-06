@@ -5,7 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe import _ 
 from hotpot.utils.guest_coupon_generate import *
-from hotpot.utis.send_fcm import *
+from hotpot.utils.send_fcm import *
 
 class HotpotApprovals(Document):
 	# begin: auto-generated types
@@ -37,7 +37,7 @@ class HotpotApprovals(Document):
 		if self.is_active == 1 and self.request_type == "Guest Coupon Generation" and self.approval_status=="Approved":
 			try:
 				res = generate_guest_coupon(self, from_hook=True)
-				user_doc = frappe.db.get_doc("Hotpot User",self.requested_by)
+				user_doc = frappe.get_doc("Hotpot User",self.requested_by)
 				if res:
 					indicator_color = "green" if res.get("status") == "success" else "red"
 					frappe.msgprint(_(res.get("msg")), indicator=indicator_color)
