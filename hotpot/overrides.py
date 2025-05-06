@@ -135,11 +135,11 @@ class CustomDataImport(DataImport):
 
 						if isinstance(parsed_date, datetime):
 							parsed_date = parsed_date.date()
-
-						if parsed_date < today:
-							frappe.throw(
-								f"Row {row_idx+2}: '{date_field}' cannot be in the past (value: {value})."
-							)
+						if date_field == "Meal Date":
+							if parsed_date < today:
+								frappe.throw(
+									f"Row {row_idx+2}: '{date_field}' cannot be in the past (value: {value})."
+								)
 
 						row[idx] = parsed_date.strftime("%Y-%m-%d")
 
