@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"MdJbHyVe6r\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Quick Links</span>\",\"col\":12}},{\"id\":\"aUDsQS2KUO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"gE0QeIiZ68\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Vendor\",\"col\":3}},{\"id\":\"lz03tulgb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Holidays\",\"col\":3}},{\"id\":\"EsaQYi7qNF\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EV6h2cR0bU\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"UOoKVWQDzZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Birthday Meal Report\",\"col\":3}},{\"id\":\"GlbtuEKyZf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Joining day Meal Report\",\"col\":3}},{\"id\":\"-u6IxIatR_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Guest Meal Report\",\"col\":3}},{\"id\":\"DbiVmmu0JS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overall Meal Report\",\"col\":3}},{\"id\":\"C9Y-ZihUbq\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KkVUId6d75\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Approvals</b></span>\",\"col\":12}},{\"id\":\"jB6Pq67lcr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Requests\",\"col\":3}},{\"id\":\"RGxRIva0T0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Requests\",\"col\":3}},{\"id\":\"VluMNc6t2L\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Confirmed Requests\",\"col\":3}}]",
+ "content": "[{\"id\":\"MdJbHyVe6r\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">User Management \ud83e\udd37\ud83c\udffb\u200d\u2642\ufe0f</span>\",\"col\":12}},{\"id\":\"aUDsQS2KUO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"gE0QeIiZ68\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Vendor\",\"col\":3}},{\"id\":\"lek5t4lYZp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot HR\",\"col\":3}},{\"id\":\"lz03tulgb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Holidays\",\"col\":3}},{\"id\":\"05Rf__qGZx\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EV6h2cR0bU\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports \ud83d\uddc2\ufe0f</b></span>\",\"col\":12}},{\"id\":\"UOoKVWQDzZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Birthday Meal Report\",\"col\":3}},{\"id\":\"GlbtuEKyZf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Joining day Meal Report\",\"col\":3}},{\"id\":\"-u6IxIatR_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Guest Meal Report\",\"col\":3}},{\"id\":\"DbiVmmu0JS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overall Meal Report\",\"col\":3}},{\"id\":\"C9Y-ZihUbq\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KkVUId6d75\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Approvals \u2705</b></span>\",\"col\":12}},{\"id\":\"jB6Pq67lcr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Approvals\",\"col\":3}},{\"id\":\"RGxRIva0T0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Approvals\",\"col\":3}},{\"id\":\"VluMNc6t2L\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Confirmed Approvals\",\"col\":3}}]",
  "creation": "2025-03-28 11:00:41.254560",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot HR Workspace",
  "links": [],
- "modified": "2025-05-05 13:33:15.532183",
+ "modified": "2025-05-06 11:37:32.143069",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot HR Workspace",
@@ -45,27 +45,11 @@
    "type": "Report"
   },
   {
-   "color": "Orange",
-   "doc_view": "List",
-   "label": "Pending Requests",
-   "link_to": "Hotpot Approvals",
-   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Pending\",false]]",
-   "type": "DocType"
-  },
-  {
    "color": "Red",
    "doc_view": "List",
    "label": "Hotpot Vendor",
    "link_to": "Hotpot User",
    "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
-   "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Rejected Requests",
-   "link_to": "Hotpot Approvals",
-   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Rejected\",false]]",
    "type": "DocType"
   },
   {
@@ -83,11 +67,11 @@
    "type": "Report"
   },
   {
-   "color": "Green",
+   "color": "Pink",
    "doc_view": "List",
-   "label": "Confirmed Requests",
-   "link_to": "Hotpot Approvals",
-   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Approved\",false]]",
+   "label": "Hotpot HR",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot HR\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -98,11 +82,35 @@
    "type": "Report"
   },
   {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Pending Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Pending\",false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Blue",
    "doc_view": "List",
    "label": "Hotpot Holidays",
    "link_to": "Hotpot Holidays",
    "stats_filter": "[[\"Hotpot Holidays\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Rejected Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Rejected\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Confirmed Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Approved\",false]]",
    "type": "DocType"
   }
  ],
