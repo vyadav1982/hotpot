@@ -11,7 +11,7 @@ frappe.ui.form.on("Hotpot Meal Items", {
             frm.page.hide_menu();
         }
         if (isVendor) {
-            cur_frm.disable_form()
+            frm.disable_form()
         }
 	},
 });
