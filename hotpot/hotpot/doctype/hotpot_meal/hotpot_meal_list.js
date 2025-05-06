@@ -4,6 +4,10 @@ frappe.listview_settings["Hotpot Meal"] = {
         const doctype = this.doctype;
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
+        const isVendor = roles.includes("Hotpot Vendor");
+        if(isVendor){
+            $('.filter-selector').hide();
+        }
         if(!isAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();

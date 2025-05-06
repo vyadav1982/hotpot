@@ -1,28 +1,36 @@
 frappe.ui.form.on("Hotpot Meal", {
-    refresh: function(frm) {
+    refresh: function (frm) {
         const userRoles = frappe.user_roles;
-        const isAdmin = userRoles.includes("Administrator") 
-        const isHotpotAdmin=userRoles.includes("Hotpot Admin");
-        if(!isAdmin && !isHotpotAdmin){
+        const isAdmin = userRoles.includes("Administrator")
+        const isHotpotAdmin = userRoles.includes("Hotpot Admin");
+        const isVendor = userRoles.includes("Hotpot Vendor")
+        
+        if (!isAdmin && !isHotpotAdmin) {
             frm.toggle_enable("coupons", false);
             frm.toggle_enable("ratings", false);
         }
-        if(!isAdmin && !frm.doc.__islocal){
+        if (!isAdmin && !frm.doc.__islocal) {
             frm.toggle_enable("vendor_id", false);
             frm.toggle_enable("start_time", false);
             frm.toggle_enable("end_time", false);
             frm.toggle_enable("meal_date", false);
-        } 
-        if(!isAdmin){
-            frm.page.wrapper.find(".comment-box").css({'display':'none'});
+        }
+        if (!isAdmin) {
+            frm.page.wrapper.find(".comment-box").css({ 'display': 'none' });
             frm.page.hide_menu();
             frm.toggle_display("repeat_type", false);
             frm.toggle_display("repeat_days", false);
             frm.toggle_display("approval_id", false);
-        }  
+        }
+        if (isVendor) {
+            cur_frm.disable_form()
+            frm.toggle_display("coupons",false);
+            frm.toggle_display("ratings",false);
+        }
         
+
     },
-    onload(frm) {       
+    onload(frm) {
         updateLocalDescriptions(frm);
     },
 
