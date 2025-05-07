@@ -43,6 +43,7 @@ class HotpotApprovals(Document):
 					"Guest Coupon Request ❌",
 					"Oops! 😢 Your guest coupon request was rejected by the admin. Maybe next time!"
 				)
+			self.save()
 
 		elif self.is_active == 1 and self.request_type == "Guest Coupon Generation" and self.approval_status=="Approved":
 			try:
@@ -68,6 +69,7 @@ class HotpotApprovals(Document):
 				else:
 					frappe.msgprint(_("Coupon generation failed"))
 				self.is_active = 0
+				self.save()
 				return
 			except Exception as e:
 				print(e)
@@ -118,6 +120,7 @@ class HotpotApprovals(Document):
 
 					coupon.coupon_status = 2
 				self.is_active = 0
+				self.save()
 				meal_doc.save()
 				frappe.db.commit()
 				frappe.msgprint(_("Meal deleted successfully!."),indicator="green")
@@ -137,6 +140,7 @@ class HotpotApprovals(Document):
 					"Meal Deletion Request ❌",
 					f"Oops! 😢 Your {meal_doc.meal_title} meal delete request was rejected by the admin. Maybe next time!"
 				)
+			self.save()
 		elif self.is_active == 1 and self.request_type =="Meal Edit" and self.approval_status == "Rejected":
 			meal_doc = frappe.get_doc("Hotpot Meal",self.meal_id)
 			user_doc = frappe.get_doc("Hotpot User",self.requested_by)
@@ -147,6 +151,7 @@ class HotpotApprovals(Document):
 					"Meal Edit Request ❌",
 					f"Oops! 😢 Your {meal_doc.meal_title} meal edit request was rejected by the admin. Maybe next time!"
 				)
+			self.save()
 		elif self.is_active ==1 and self.request_type=="Meal Edit" and self.approval_status=="Approved":
 			meal_doc = frappe.get_doc("Hotpot Meal",self.meal_id)
 			user_doc = frappe.get_doc("Hotpot User",self.requested_by)
