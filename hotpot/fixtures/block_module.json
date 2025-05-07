@@ -912,16 +912,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.737084",
-  "module": "Automation",
-  "name": "bf1ddlfk13",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.061318",
   "module": "Automation",
   "name": "bkpip6bqeb",
@@ -936,16 +926,6 @@
   "module": "commit",
   "name": "7c91jbchu4",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.765861",
-  "module": "commit",
-  "name": "2r8l5ndrhi",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -972,16 +952,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.766282",
-  "module": "Contacts",
-  "name": "3h16bnj4bj",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.096825",
   "module": "Contacts",
   "name": "70roidsvcc",
@@ -996,16 +966,6 @@
   "module": "Custom",
   "name": "q9su2mad49",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.766703",
-  "module": "Custom",
-  "name": "344utq90jt",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1032,16 +992,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.767114",
-  "module": "Email",
-  "name": "1fmedgep9o",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.097752",
   "module": "Email",
   "name": "nqliev13h0",
@@ -1056,16 +1006,6 @@
   "module": "Frappe Er Generator",
   "name": "962k48ece5",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.767525",
-  "module": "Frappe Er Generator",
-  "name": "hopgu0513v",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1092,16 +1032,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.767950",
-  "module": "Geo",
-  "name": "791tfp1h31",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.098650",
   "module": "Geo",
   "name": "fau15m7jce",
@@ -1116,16 +1046,6 @@
   "module": "Integrations",
   "name": "1ora2obaca",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.768363",
-  "module": "Integrations",
-  "name": "naq325vrk0",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1152,16 +1072,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.768818",
-  "module": "Mrx Audit",
-  "name": "f5cjdh764a",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.099542",
   "module": "Mrx Audit",
   "name": "j735nuor6p",
@@ -1176,16 +1086,6 @@
   "module": "MrxSurvey",
   "name": "qur2mff9ds",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.769318",
-  "module": "MrxSurvey",
-  "name": "92je708b2i",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1212,16 +1112,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.769730",
-  "module": "MrxTracking",
-  "name": "p0bksg19ph",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.100580",
   "module": "MrxTracking",
   "name": "ou5ugl7nrv",
@@ -1236,16 +1126,6 @@
   "module": "MrxWorkMod",
   "name": "sbams8hvvj",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.770143",
-  "module": "MrxWorkMod",
-  "name": "loalpfov5b",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1272,16 +1152,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.770553",
-  "module": "Printing",
-  "name": "lpm0aeg26p",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.101663",
   "module": "Printing",
   "name": "3jbp7s31th",
@@ -1296,16 +1166,6 @@
   "module": "PulseEye",
   "name": "ssjfqv0p39",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.770917",
-  "module": "PulseEye",
-  "name": "jocvutbc46",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1332,16 +1192,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.771320",
-  "module": "Social",
-  "name": "u52b8bspcs",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.102575",
   "module": "Social",
   "name": "hplnor7o8v",
@@ -1356,16 +1206,6 @@
   "module": "Website",
   "name": "9fkijjq7sq",
   "parent": "yifit30032@ingitel.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.771738",
-  "module": "Website",
-  "name": "14g26tpjql",
-  "parent": "vowoyox144@javbing.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  },
@@ -1392,16 +1232,6 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.772178",
-  "module": "Workflow",
-  "name": "u0sgtsq5ea",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.103503",
   "module": "Workflow",
   "name": "o2l1jggjvg",
@@ -1422,42 +1252,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 11:41:39.772587",
-  "module": "Core",
-  "name": "v2qkrunmfd",
-  "parent": "vowoyox144@javbing.com",
-  "parentfield": "block_modules",
-  "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 11:42:16.104004",
   "module": "Core",
   "name": "ej8smac4ra",
   "parent": "abc@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.547245",
-  "module": "Automation",
-  "name": "acpn1m3ef6",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.683946",
-  "module": "Automation",
-  "name": "4meid0iemb",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1472,52 +1272,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.549258",
-  "module": "commit",
-  "name": "eqa5euekmg",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.684271",
-  "module": "commit",
-  "name": "2subhdkcq5",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.978158",
   "module": "commit",
   "name": "jl80hmfdq0",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.549754",
-  "module": "Contacts",
-  "name": "e3d3lfclcd",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.684560",
-  "module": "Contacts",
-  "name": "c12d2hd9qq",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1532,52 +1292,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.550256",
-  "module": "Custom",
-  "name": "s19gaocpff",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.684844",
-  "module": "Custom",
-  "name": "5lrm561fq9",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.979282",
   "module": "Custom",
   "name": "7igukk35sg",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.550907",
-  "module": "Email",
-  "name": "fb6i2po5hk",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.685127",
-  "module": "Email",
-  "name": "7eguef33fi",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1592,52 +1312,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.551310",
-  "module": "Frappe Er Generator",
-  "name": "ikhidl95me",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.685409",
-  "module": "Frappe Er Generator",
-  "name": "v94nrsr8nv",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.980234",
   "module": "Frappe Er Generator",
   "name": "3f5toeidfq",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.551795",
-  "module": "Geo",
-  "name": "4lijjdu246",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.685694",
-  "module": "Geo",
-  "name": "a6gv8a7be0",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1652,52 +1332,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.552114",
-  "module": "Integrations",
-  "name": "is4e8b657c",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.685975",
-  "module": "Integrations",
-  "name": "va3is3o198",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.981231",
   "module": "Integrations",
   "name": "8gebpuvfqd",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.552429",
-  "module": "Mrx Audit",
-  "name": "tr31h8uh7d",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.686255",
-  "module": "Mrx Audit",
-  "name": "nbonbtkost",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1712,52 +1352,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.552745",
-  "module": "MrxSurvey",
-  "name": "jm4ed6s85v",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.686606",
-  "module": "MrxSurvey",
-  "name": "o3hdqfcnoo",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.982388",
   "module": "MrxSurvey",
   "name": "dvu4tjeoh7",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.553058",
-  "module": "MrxTracking",
-  "name": "co2bt3pu7c",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.686917",
-  "module": "MrxTracking",
-  "name": "t8demt4opb",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1772,52 +1372,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.553371",
-  "module": "MrxWorkMod",
-  "name": "fdbkd3m0uv",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.687229",
-  "module": "MrxWorkMod",
-  "name": "m2m2ljb71d",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.983317",
   "module": "MrxWorkMod",
   "name": "65ps14jvhr",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.553685",
-  "module": "Printing",
-  "name": "au7ebvvgmb",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.687570",
-  "module": "Printing",
-  "name": "qjlvti56ud",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1832,52 +1392,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.553996",
-  "module": "PulseEye",
-  "name": "9ou7d7akm9",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.687902",
-  "module": "PulseEye",
-  "name": "6g1mos1ca6",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.984232",
   "module": "PulseEye",
   "name": "itk0952ju2",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.554303",
-  "module": "Social",
-  "name": "nhbrv6jh9l",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.688242",
-  "module": "Social",
-  "name": "s820eilkii",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1892,52 +1412,12 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.554613",
-  "module": "Website",
-  "name": "418qdpalbu",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.688552",
-  "module": "Website",
-  "name": "gvk0rab3sg",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
   "modified": "2025-05-01 14:50:59.984833",
   "module": "Website",
   "name": "mtjg739tot",
   "parent": "sashikant12rao@gmail.com",
   "parentfield": "block_modules",
   "parenttype": "User"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.554920",
-  "module": "Workflow",
-  "name": "l3e5dl2f5v",
-  "parent": "Hotpot Admin",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
- },
- {
-  "docstatus": 0,
-  "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.688884",
-  "module": "Workflow",
-  "name": "a5b5vof5bu",
-  "parent": "Hotpot",
-  "parentfield": "block_modules",
-  "parenttype": "Module Profile"
  },
  {
   "docstatus": 0,
@@ -1952,9 +1432,39 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:42:24.689195",
+  "modified": "2025-05-01 14:50:59.985465",
   "module": "Core",
-  "name": "h5qhc242ae",
+  "name": "jvvcmdrkj8",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.287344",
+  "module": "Automation",
+  "name": "e319hf2tsk",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.855058",
+  "module": "Automation",
+  "name": "gmu4ppsidi",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.114109",
+  "module": "Automation",
+  "name": "kvq6g555iv",
   "parent": "Hotpot",
   "parentfield": "block_modules",
   "parenttype": "Module Profile"
@@ -1962,10 +1472,680 @@
  {
   "docstatus": 0,
   "doctype": "Block Module",
-  "modified": "2025-05-01 14:50:59.985465",
-  "module": "Core",
-  "name": "jvvcmdrkj8",
+  "modified": "2025-05-06 21:17:48.091557",
+  "module": "Automation",
+  "name": "sa27n3arf4",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.329652",
+  "module": "commit",
+  "name": "2r44holg5l",
   "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.856576",
+  "module": "commit",
+  "name": "tb66lh65po",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.114509",
+  "module": "commit",
+  "name": "a7u30arhgj",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.117977",
+  "module": "commit",
+  "name": "ch9dddc224",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.330198",
+  "module": "Contacts",
+  "name": "vm5i1c827b",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.857829",
+  "module": "Contacts",
+  "name": "p678e5fdi5",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.114884",
+  "module": "Contacts",
+  "name": "cbjj194811",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.118348",
+  "module": "Contacts",
+  "name": "tc5rtfc7no",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.330755",
+  "module": "Custom",
+  "name": "psq4ivjcat",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.858514",
+  "module": "Custom",
+  "name": "9sd41jnpbn",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.115213",
+  "module": "Custom",
+  "name": "2e03dvql53",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.119622",
+  "module": "Custom",
+  "name": "b0uu0f7alm",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.331273",
+  "module": "Email",
+  "name": "64um9qoc1f",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.859130",
+  "module": "Email",
+  "name": "hj2evs08im",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.115560",
+  "module": "Email",
+  "name": "d6t4cv9uql",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.120011",
+  "module": "Email",
+  "name": "3nn66tftvr",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.331791",
+  "module": "Frappe Er Generator",
+  "name": "obspkhh0q2",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.859673",
+  "module": "Frappe Er Generator",
+  "name": "p2a57ise0n",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.115929",
+  "module": "Frappe Er Generator",
+  "name": "li3i4cb9dr",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.120370",
+  "module": "Frappe Er Generator",
+  "name": "2be5p8kgbd",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.332312",
+  "module": "Geo",
+  "name": "3o6js886a2",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.860173",
+  "module": "Geo",
+  "name": "j53thusb3p",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.116225",
+  "module": "Geo",
+  "name": "8i4uu9elkb",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.120726",
+  "module": "Geo",
+  "name": "e1v14bbsfa",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.332866",
+  "module": "Integrations",
+  "name": "3qgv6kcbkt",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.860627",
+  "module": "Integrations",
+  "name": "f52drlbt62",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.116611",
+  "module": "Integrations",
+  "name": "m4i1u4h9rt",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.121083",
+  "module": "Integrations",
+  "name": "ffjjjdqr65",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.333395",
+  "module": "Mrx Audit",
+  "name": "44jj9o9ult",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.861072",
+  "module": "Mrx Audit",
+  "name": "2egi60r41n",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.116986",
+  "module": "Mrx Audit",
+  "name": "1cs9m0vmlp",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.121504",
+  "module": "Mrx Audit",
+  "name": "ibdjn35r4u",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.333876",
+  "module": "MrxSurvey",
+  "name": "0foaodgfvr",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.861515",
+  "module": "MrxSurvey",
+  "name": "j132v0br4o",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.117332",
+  "module": "MrxSurvey",
+  "name": "e2i93mo40n",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.121859",
+  "module": "MrxSurvey",
+  "name": "rocgtekfh8",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.334687",
+  "module": "MrxTracking",
+  "name": "f4ansqobi4",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.861988",
+  "module": "MrxTracking",
+  "name": "9co19u2rkb",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.117759",
+  "module": "MrxTracking",
+  "name": "141hao3kl6",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.122232",
+  "module": "MrxTracking",
+  "name": "koj0tqutvj",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.335253",
+  "module": "MrxWorkMod",
+  "name": "0vvr7oeu2d",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.862438",
+  "module": "MrxWorkMod",
+  "name": "l0vm02j1ro",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.118211",
+  "module": "MrxWorkMod",
+  "name": "45ju9hd7rj",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.122620",
+  "module": "MrxWorkMod",
+  "name": "dcc9dh63lk",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.335787",
+  "module": "Printing",
+  "name": "4p8eokihi9",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.862882",
+  "module": "Printing",
+  "name": "5qe5kv88ua",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.118607",
+  "module": "Printing",
+  "name": "5ne43sidso",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.122981",
+  "module": "Printing",
+  "name": "4muv01gd34",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.336306",
+  "module": "PulseEye",
+  "name": "94d1ffd8f3",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.863347",
+  "module": "PulseEye",
+  "name": "jm4sh3s1rh",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.118926",
+  "module": "PulseEye",
+  "name": "am9fu273hh",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.123331",
+  "module": "PulseEye",
+  "name": "r12v72h4pi",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.336818",
+  "module": "Social",
+  "name": "g0hc4pn00c",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.863810",
+  "module": "Social",
+  "name": "o30gs57c1n",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.119244",
+  "module": "Social",
+  "name": "rpchn6adfd",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.123683",
+  "module": "Social",
+  "name": "t8panekvct",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.337337",
+  "module": "Website",
+  "name": "9d2j4ve2ld",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.864272",
+  "module": "Website",
+  "name": "jasestist4",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.119553",
+  "module": "Website",
+  "name": "undtckho9h",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.124039",
+  "module": "Website",
+  "name": "fktltnnn3u",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.337832",
+  "module": "Workflow",
+  "name": "251sr17tjj",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:02.864710",
+  "module": "Workflow",
+  "name": "mr9th2ocms",
+  "parent": "Hotpot Admin",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.119859",
+  "module": "Workflow",
+  "name": "tc39jbk5mt",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.124389",
+  "module": "Workflow",
+  "name": "5mm0ncn334",
+  "parent": "roperi1973@harinv.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-05 10:36:16.338356",
+  "module": "Core",
+  "name": "9l6uhvjenu",
+  "parent": "sashikant12rao@gmail.com",
+  "parentfield": "block_modules",
+  "parenttype": "User"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 12:17:03.120145",
+  "module": "Core",
+  "name": "vu7f4l5n78",
+  "parent": "Hotpot",
+  "parentfield": "block_modules",
+  "parenttype": "Module Profile"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Block Module",
+  "modified": "2025-05-06 21:17:48.124827",
+  "module": "Core",
+  "name": "665ged7eh4",
+  "parent": "roperi1973@harinv.com",
   "parentfield": "block_modules",
   "parenttype": "User"
  }
