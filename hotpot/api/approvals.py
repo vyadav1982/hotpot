@@ -147,7 +147,9 @@ def create_approval():
 				return set_response(404, False, "Meal not found")
 
 			if meal_doc.get("approval_id"):
-				return set_response(400, False, "Pending approval already exists for this meal.")
+				approval_doc = frappe.get_doc("Hotpot Approvals",meal_doc.get("approval_id"))
+				if approval_doc.is_active == 1 and approval_doc.approval_status=="Pending":
+					return set_response(400, False, "Pending approval already exists for this meal.")
 
 		approval.insert()
 		existing_approvals = frappe.db.get_value("Hotpot User", user_data.get("name"), "approval_id")
