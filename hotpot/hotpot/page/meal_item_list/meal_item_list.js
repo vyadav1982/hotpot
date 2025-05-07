@@ -11,7 +11,7 @@ frappe.pages['meal-item-list'].on_page_load = function(wrapper) {
         callback: function(response) {
             if (response.message) {
                 let vendor_id = response.message.name;
-                window.location.href = `/app/hotpot-meal-items?is_active=1&is_deleted=0&vendor_id=${vendor_id}`;
+                window.location.href = `/app/hotpot-meal-items?is_deleted=0&vendor_id=${vendor_id}`;
             } else {
                 frappe.msgprint("Vendor not found.");
             }

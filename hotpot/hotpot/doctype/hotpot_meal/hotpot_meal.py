@@ -66,16 +66,16 @@ class HotpotMeal(Document):
 		approval_id: DF.Link | None
 		buffer_coupon_count: DF.Int
 		cancellation_time: DF.Int
-		category: DF.Link | None
+		category: DF.Link
 		coupons: DF.Table[HotpotCoupons]
 		end_time: DF.Datetime | None
 		is_active: DF.Check
 		is_deleted: DF.Check
 		is_special: DF.Check
 		lead_time: DF.Int
-		meal_date: DF.Datetime | None
-		meal_items: DF.Data | None
-		meal_title: DF.Data | None
+		meal_date: DF.Datetime
+		meal_items: DF.Data
+		meal_title: DF.Data
 		meal_weight: DF.Int
 		ratings: DF.Table[HotpotMealRating]
 		repeat_days: DF.Data | None
@@ -97,6 +97,10 @@ class HotpotMeal(Document):
 				frappe.throw("Start time and End time must be on the same date.")
 			if self.start_time >= self.end_time:
 				frappe.throw("Start time must be before End time.")
+	def before_save(self):
+		roles = frappe.get_roles()
+		if "Hotpot Vendor" not in roles:
+			frappe.throw("Vendor Id is mandatory.")
 
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
