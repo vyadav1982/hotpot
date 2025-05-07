@@ -175,7 +175,6 @@ class CustomDataImport(DataImport):
 				# Convert all values to strings for safe comparison
 				role = str(role) if role is not None else None
 				mobile_no = str(mobile_no) if mobile_no is not None else None
-
 				# Validate Date of Joining
 				if doj:
 					try:
@@ -446,6 +445,7 @@ class CustomDataImport(DataImport):
 				mobile_no = str(mobile_cell).strip() if mobile_cell else ""
 				if mobile_no:
 					mobile_no = mobile_no.strip()
+					mobile_no = mobile_no.split('.')[0].strip()
 					if mobile_no.startswith('+'):
 						# Remove non-digits after '+'
 						mobile_no = '+' + re.sub(r'\D', '', mobile_no[1:])
