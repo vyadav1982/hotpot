@@ -8,6 +8,7 @@ import pytz
 from ..api.coupons import update_coupon_status
 from ..api.users import *
 from hotpot.utils.utc_time import *
+from hotpot.utils.send_fcm import *
 
 def set_response(http_status_code, status, message, data=None):
 	frappe.local.response["http_status_code"] = http_status_code
@@ -192,17 +193,31 @@ def update_meal():
 			set_response(404, False, "Meal not found")
 			return
 
+		upcoming_coupons = False
 		coupons = meal_doc.coupons
+		for coupon in coupons:
+			if coupon.coupon_status == '1':
+				upcoming_coupons = True
+				break
 		approval_id = meal_doc.approval_id
 		status = False
+		active_status=True
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
-			if approval_doc.approval_status == "Approved":
+			if approval_doc.approval_status != "Pending":
 				status = True
-		if coupons and not status:
-			set_response(400, False, "Need Admin Approval for this operation.")
+			if approval_doc.approval_status == "Approved" and approval_doc.is_active==0:
+				active_status= False
+			if not status:
+				set_response(400, False, "Your, Request in still pending.")
+				return
+			if not active_status:
+				set_response(400, False, "You don't have any active requests.")
+				return
+		if upcoming_coupons :
+			set_response(409, False, "Coupons are already generated for this meal. Need Admin Approval for this operation.")
 			return
-		
+
 		local_time = get_local_time_now()
 		
 		if data.get("start_time"):
@@ -241,6 +256,15 @@ def update_meal():
 			approval_doc.save()
 		meal_doc.save()
 		frappe.db.commit()
+		coupons = meal_doc.coupons
+		for coupon in coupons:
+			user_doc = frappe.get_doc("Hotpot User",coupon.employee_id)
+			if user_doc.fcm_token:
+				send_notification_by_token(
+					user_doc.fcm_token,
+					"Meal Plot Twist!",
+					f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!"
+				)
 
 		set_response(200, True, "Meal updated successfully", {"meal_id": meal_doc.name})
 		return
@@ -280,12 +304,18 @@ def delete_meal():
 				break
 		approval_id = meal_doc.approval_id
 		status = False
+		active_status = True
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 			if approval_doc.approval_status != "Pending":
 				status = True
 			if not status:
 				set_response(400, False, "Your, Request in still pending.")
+				return
+			if approval_doc.approval_status == "Approved" and approval_doc.is_active==0:
+				active_status= False
+			if not active_status:
+				set_response(400, False,"You don't have any active requests.")
 				return
 		if upcoming_coupons :
 			set_response(409, False, "Coupons are already generated for this meal. Need Admin Approval for this operation.")
