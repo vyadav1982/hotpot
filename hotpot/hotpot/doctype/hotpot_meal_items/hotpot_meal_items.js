@@ -5,13 +5,14 @@ frappe.ui.form.on("Hotpot Meal Items", {
 	refresh(frm) {
         const userRoles = frappe.user_roles;
         const isAdmin = userRoles.includes("Administrator")
-        const isVendor = userRoles.inclues("Hotpot Vendor")
+        const isVendor = userRoles.includes("Hotpot Vendor")
         if (!isAdmin) {
             frm.page.wrapper.find(".comment-box").css({'display':'none'});
             frm.page.hide_menu();
         }
         if (isVendor) {
-            frm.disable_form()
+            // frm.disable_form()
+            frm.toggle_display("vendor_id",false)
         }
 	},
 });
