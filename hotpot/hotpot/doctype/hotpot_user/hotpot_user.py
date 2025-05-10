@@ -26,8 +26,8 @@ class HotpotUser(Document):
 		discount: DF.Percent
 		discounted_meal_days: DF.Table[DiscountedMealDay]
 		email: DF.Data
-		employee_id: DF.Data
-		employee_name: DF.Data | None
+		employee_id: DF.Link
+		employee_name: DF.Data
 		fcm_token: DF.Text | None
 		guest_of: DF.Link | None
 		is_active: DF.Check
@@ -39,11 +39,11 @@ class HotpotUser(Document):
 		location: DF.Link | None
 		longitude: DF.Float
 		mobile_no: DF.Phone
-		password: DF.Data | None
 		role: DF.Link | None
 		tag_id: DF.Data | None
 	# ruff: noqa
 	# end: auto-generated types
+
 
 	def before_save(self):
 		if self.role == "Hotpot Server" and self.guest_of == "":
@@ -230,15 +230,13 @@ def add_user_to_hotpot(doc, method):
 
 
 def remove_user_from_hotpot(doc, method):
-	# called when the user is deleted
-	# If the user is deleted, then delete the Hotpot User record for the user.
+	# Called when the User is deleted
+	# If the user is deleted, then set is_deleted = 1 and is_active = 0.
 	if frappe.db.exists("Hotpot User", {"user": doc.name}):
-		# ez_user = frappe.get_doc("Hotpot User", {"user": doc.name})
-		# ez_user.delete(ignore_permissions=True)
-		# disable the hotpot user
-		# unassign Hotpot User role form USER
-
-		pass
+		hp_user = frappe.get_doc("Hotpot User", {"user": doc.name})
+		hp_user.is_deleted = 1
+		hp_user.is_active = 0
+		hp_user.save(ignore_permissions=True)
 
 
 def update_employee_to_hotpot(doc, method):

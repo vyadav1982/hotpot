@@ -13,7 +13,6 @@
   "email",
   "mobile_no",
   "tag_id",
-  "password",
   "approval_id",
   "fcm_token",
   "column_break_eopt",
@@ -34,17 +33,20 @@
  "fields": [
   {
    "fieldname": "employee_id",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_filter": 1,
    "in_list_view": 1,
-   "label": "Employee ID",
+   "label": "Employee",
+   "options": "Employee",
    "reqd": 1,
    "unique": 1
   },
   {
+   "fetch_from": "employee_id.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
-   "label": "Employee Name"
+   "label": "Employee Name",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -107,12 +109,6 @@
    "search_index": 1
   },
   {
-   "fieldname": "password",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Password"
-  },
-  {
    "fieldname": "location",
    "fieldtype": "Link",
    "label": "Location",
@@ -157,6 +153,7 @@
    "search_index": 1
   },
   {
+   "fetch_from": "employee_id.attendance_device_id",
    "fieldname": "tag_id",
    "fieldtype": "Data",
    "label": "Tag Id",
@@ -194,7 +191,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-10 07:47:52.107488",
+ "modified": "2025-05-10 09:57:52.451404",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

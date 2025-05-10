@@ -11,10 +11,10 @@ export interface HotpotUser{
 	parentfield?: string
 	parenttype?: string
 	idx?: number
-	/**	Employee ID : Data	*/
+	/**	Employee : Link - Employee	*/
 	employee_id: string
 	/**	Employee Name : Data	*/
-	employee_name?: string
+	employee_name: string
 	/**	Role : Link - Role	*/
 	role?: string
 	/**	E Mail : Data	*/
@@ -23,8 +23,6 @@ export interface HotpotUser{
 	mobile_no: string
 	/**	Tag Id : Data	*/
 	tag_id?: string
-	/**	Password : Data	*/
-	password?: string
 	/**	Approval Id : JSON	*/
 	approval_id?: any
 	/**	FCM Token : Text	*/
