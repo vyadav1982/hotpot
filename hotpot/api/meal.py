@@ -876,35 +876,5 @@ def get_meals_internal(date, vendor_id=None):
 
 @frappe.whitelist()
 def check_valid_meal(meal_date, start_time, end_time, vendor_id):
-	hotpot_config = frappe.get_single("Hotpot Configurations")
-	MIN_HOUR_GAP = hotpot_config.get("hourly_difference_between_meal")
-	if MIN_HOUR_GAP is None:
-		MIN_HOUR_GAP = 1
-
-	new_start = datetime.combine(
-		datetime.strptime(meal_date, "%Y-%m-%d").date(), datetime.strptime(start_time, "%H:%M:%S").time()
-	)
-	new_end = datetime.combine(
-		datetime.strptime(meal_date, "%Y-%m-%d").date(), datetime.strptime(end_time, "%H:%M:%S").time()
-	)
-
-	current_meals = get_meals_internal(meal_date, vendor_id)
-
-	for meal in current_meals:
-		existing_start = datetime.combine(
-			datetime.strptime(meal_date, "%Y-%m-%d").date(), get_local_datetime_obj(meal.start_time).time()
-		)
-		existing_end = datetime.combine(
-			datetime.strptime(meal_date, "%Y-%m-%d").date(), get_local_datetime_obj(meal.end_time).time()
-		)
-
-		gap_before = (new_start - existing_end).total_seconds() / 3600
-		gap_after = (existing_start - new_end).total_seconds() / 3600
-
-		if gap_before < MIN_HOUR_GAP and gap_after < MIN_HOUR_GAP:
-			return {
-				"status": "error",
-				"message": f"Meal timing conflicts with '{meal.meal_title}' from ({get_local_datetime_obj(meal.start_time).time()} to {get_local_datetime_obj(meal.end_time).time()}). A minimum {int(MIN_HOUR_GAP)}-hour gap is required.",
-			}
-
+	#### TODO
 	return {"status": "success", "message": "Valid meal timing. No conflict found."}

@@ -9,50 +9,22 @@ from frappe.model.document import Document
 from hotpot.utils.email import *
 
 
-def send_password_email(to_email, user_doc, password):
-	email_subject = f"Congrats, {user_doc.employee_name}! You’re Now Part of the Hotpot Club 🍽️"
-	context = {
-		"user_data": user_doc,
-		"password": password,
-		# "login_url": frappe.utils.get_url('app/login')
-		"login_url": "https://hotpot.bytepanda.in/app",
-	}
-	send_email("initial_password", to_email, context, email_subject)
-
-
-def set_user_password(site, user, password, user_doc, logout_all_sessions=False):
-	from frappe.utils.password import update_password
-
-	if not password:
-		raise ValueError("Password cannot be empty.")
-	try:
-		if not frappe.db.exists("User", user):
-			frappe.throw(f"User {user} does not exist")
-			return
-
-		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
-		frappe.db.commit()
-		send_password_email(user, user_doc, password)
-	except Exception as e:
-		frappe.log_error(frappe.get_traceback(), "Error setting password")
-		frappe.db.rollback()
-		frappe.throw(str(e))
-
-
 class HotpotUser(Document):
 	# begin: auto-generated types
+	# ruff: noqa
+
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+		from hotpot.hotpot.doctype.discounted_meal_day.discounted_meal_day import DiscountedMealDay
 
 		approval_id: DF.JSON | None
 		coupon_count: DF.Int
-		date_of_birth: DF.Date | None
-		date_of_joining: DF.Date | None
-		department: DF.Data | None
+		discount: DF.Percent
+		discounted_meal_days: DF.Table[DiscountedMealDay]
 		email: DF.Data
 		employee_id: DF.Data
 		employee_name: DF.Data | None
@@ -63,14 +35,14 @@ class HotpotUser(Document):
 		is_guest: DF.Check
 		is_server: DF.Check
 		is_vendor: DF.Check
-		latitude: DF.Data | None
-		location: DF.Data | None
-		longitude: DF.Data | None
+		latitude: DF.Float
+		location: DF.Link | None
+		longitude: DF.Float
 		mobile_no: DF.Phone
 		password: DF.Data | None
 		role: DF.Link | None
 		tag_id: DF.Data | None
-		timezone: DF.Data | None
+	# ruff: noqa
 	# end: auto-generated types
 
 	def before_save(self):
@@ -114,7 +86,6 @@ class HotpotUser(Document):
 						"form_sidebar": 0,
 						"timeline": 0,
 						"dashboard": 0,
-						"module_profile": "Hotpot",
 						"roles": [{"role": self.role}],
 						"default_app": "hotpot",
 					}
@@ -122,13 +93,7 @@ class HotpotUser(Document):
 				if role == "Hotpot Admin":
 					new_user.update(
 						{
-							# 		"notifications": 1,
-							# 		"list_sidebar": 1,
-							# 		"bulk_action": 1,
-							# 		"view_switcher": 1,
-							# 		"form_sidebar": 1,
 							"timeline": 1,
-							# 		"dashboard": 1,
 						}
 					)
 				if not frappe.db.exists("Role", self.role):
@@ -153,20 +118,6 @@ class HotpotUser(Document):
 					if user_doc.get("role") == "Hotpot Vendor":
 						user_doc.guest_of = user_doc.name
 						user_doc.save(ignore_permissions=True)
-
-						# meals = ["Pasta", "Burger", "Sushi", "Tacos", "Pizza", "Salad", "Biryani", "Steak", "Sandwich", "Noodles",
-						# 		"Soup", "Dosa", "Pancakes", "Omelette", "Grilled Chicken", "Shawarma", "Fried Rice", "Ramen", "BBQ Ribs",
-						# 		"Curry", "Lasagna", "Burrito", "Fish and Chips", "Momo", "Dim Sum"]
-						# meal_items = random.sample(meals, 5)
-
-						# for meal in meal_items:
-						# 	meal_doc = frappe.get_doc({
-						# 		"doctype": "Hotpot Meal Items",
-						# 		"item_name": meal,
-						# 		"vendor_id": user_doc.get("name")
-						# 	})
-						# 	meal_doc.insert(ignore_permissions=True)
-
 						frappe.db.commit()
 					if user_doc.get("role") == "Hotpot User":
 						transaction_doc = frappe.new_doc("Hotpot Transaction History")
@@ -204,8 +155,6 @@ class HotpotUser(Document):
 				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
 				frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
 
-				# frappe_user.module_profile = "Hotpot Admin" if self.role == "Hotpot Admin" else "Hotpot"
-				frappe_user.module_profile = "Hotpot"
 				frappe_user.roles = []
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
@@ -242,3 +191,65 @@ class HotpotUser(Document):
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user deletion")
 			return {"status": "error", "message": "An unexpected error occurred during user deletion."}
+
+
+def send_password_email(to_email, user_doc, password):
+	email_subject = f"Congrats, {user_doc.employee_name}! You’re Now Part of the Hotpot Club 🍽️"
+	context = {
+		"user_data": user_doc,
+		"password": password,
+		# "login_url": frappe.utils.get_url('app/login')
+		"login_url": "https://hotpot.bytepanda.in/app",
+	}
+	send_email("initial_password", to_email, context, email_subject)
+
+
+def set_user_password(site, user, password, user_doc, logout_all_sessions=False):
+	from frappe.utils.password import update_password
+
+	if not password:
+		raise ValueError("Password cannot be empty.")
+	try:
+		if not frappe.db.exists("User", user):
+			frappe.throw(f"User {user} does not exist")
+			return
+
+		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
+		frappe.db.commit()
+		send_password_email(user, user_doc, password)
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error setting password")
+		frappe.db.rollback()
+		frappe.throw(str(e))
+
+
+def add_user_to_hotpot(doc, method):
+	# check if the hotpot user already exists
+	# if not add to hotpot user
+	pass
+
+
+def remove_user_from_hotpot(doc, method):
+	# called when the user is deleted
+	# If the user is deleted, then delete the Hotpot User record for the user.
+	if frappe.db.exists("Hotpot User", {"user": doc.name}):
+		# ez_user = frappe.get_doc("Hotpot User", {"user": doc.name})
+		# ez_user.delete(ignore_permissions=True)
+		# disable the hotpot user
+		# unassign Hotpot User role form USER
+
+		pass
+
+
+def update_employee_to_hotpot(doc, method):
+	# check if the hotpot user already exists
+	# if not add to hotpot user
+	# update the Access ID in hotpot User
+	# update discounted coupon days for hotpot user
+	pass
+
+
+def remove_employee_to_hotpot(doc, method):
+	# disable the hotpot user
+	# unassign hotpotuser role form USER
+	pass

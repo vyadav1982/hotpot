@@ -9,7 +9,7 @@
   "free_joining_day_meal",
   "can_generate_for_guest",
   "allow_meal_on_sunday",
-  "hourly_difference_between_meal"
+  "discount"
  ],
  "fields": [
   {
@@ -37,17 +37,17 @@
    "label": "Allow Meal on Sunday"
   },
   {
-   "default": "1",
-   "fieldname": "hourly_difference_between_meal",
-   "fieldtype": "Float",
-   "label": "Hourly difference between meal",
-   "non_negative": 1
+   "default": "-1",
+   "fieldname": "discount",
+   "fieldtype": "Percent",
+   "label": "Discount",
+   "precision": "0"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-04-16 11:04:19.445053",
+ "modified": "2025-05-10 07:48:13.776632",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",
@@ -64,6 +64,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

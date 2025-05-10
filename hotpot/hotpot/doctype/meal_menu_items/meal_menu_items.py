@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class HotpotConfigurations(Document):
+class MealMenuItems(Document):
 	# begin: auto-generated types
 	# ruff: noqa
 
@@ -16,11 +16,10 @@ class HotpotConfigurations(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		allow_meal_on_sunday: DF.Check
-		can_generate_for_guest: DF.Check
-		discount: DF.Percent
-		free_birthday_meal: DF.Check
-		free_joining_day_meal: DF.Check
+		meal_item: DF.Link
+		parent: DF.Data
+		parentfield: DF.Data
+		parenttype: DF.Data
 	# ruff: noqa
 	# end: auto-generated types
 

@@ -173,9 +173,6 @@ def get_hotpot_user_by_tag_id(tag_id):
 				"guest_of",
 				"coupon_count",
 				"approval_id",
-				"date_of_birth",
-				"date_of_joining",
-				"department",
 				"location",
 				"latitude",
 				"longitude",
@@ -215,9 +212,6 @@ def get_hotpot_user_by_email():
 				"guest_of",
 				"coupon_count",
 				"approval_id",
-				"date_of_birth",
-				"date_of_joining",
-				"department",
 				"location",
 				"latitude",
 				"longitude",
@@ -279,37 +273,6 @@ def get_all_vendor():
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Vendor Error")
-		return set_response(500, False, f"Server error: {str(e)}")
-
-
-@frappe.whitelist()
-def update_user_timezone():
-	try:
-		if frappe.request.method != "PUT":
-			set_response(405, False, "Only PUT method is allowed")
-			return
-
-		user_doc = get_hotpot_user_by_email()
-		if not user_doc:
-			set_response(401, False, "User Not found")
-			return
-
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
-			set_response(403, False, "Not Permitted to access this resource")
-			return
-		data = json.loads(frappe.request.data or "{}")
-		timezone = data.get("timezone")
-		if not timezone:
-			set_response(400, False, "Timezone is required")
-			return
-		doc = frappe.get_doc("Hotpot User", user_doc.name)
-		doc.time_zone = timezone
-		doc.save(ignore_permissions=True)
-
-		set_response(200, True, "Timezone updated successfully")
-	except Exception as e:
-		frappe.db.rollback()
-		frappe.log_error(frappe.get_traceback(), "Timezone Error")
 		return set_response(500, False, f"Server error: {str(e)}")
 
 
@@ -659,8 +622,6 @@ def bulk_insert_employee():
 			name = record.get("employee_name", "").strip()
 			mobile = record.get("mobile_no", "").strip()
 			coupon_count = record.get("coupon_count", 0)
-			dob = record.get("date_of_birth")
-			doj = record.get("date_of_joining")
 
 			if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
 				status_report.append({"email": email, "status": "failed", "reason": "Invalid email format"})

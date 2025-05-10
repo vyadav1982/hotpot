@@ -1,5 +1,8 @@
-from hotpot.api.coupons import *
-from hotpot.utils.utc_time import *
+import frappe
+from frappe import _
+
+from hotpot.api.coupons import generate_coupon_guest
+from hotpot.utils.utc_time import get_local_datetime_obj
 
 
 @frappe.whitelist()

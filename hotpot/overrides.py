@@ -51,7 +51,6 @@ class CustomDataImport(DataImport):
 				"Employee Name",
 				"Role",
 				"Tag Id",
-				"Department",
 				"Date of Joining",
 				"Date Of Birth",
 				"Coupon Count",

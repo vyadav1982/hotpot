@@ -18,7 +18,6 @@ def get_filtered_import_template(doctype):
 		"Employee Name",
 		"Role",
 		"Tag Id",
-		"Department",
 		"Date of Joining",
 		"Date Of Birth",
 		"Coupon Count",
