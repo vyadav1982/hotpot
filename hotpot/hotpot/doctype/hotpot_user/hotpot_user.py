@@ -26,47 +26,43 @@ class HotpotUser(Document):
 		discount: DF.Percent
 		discounted_meal_days: DF.Table[DiscountedMealDay]
 		email: DF.Data
-		employee_id: DF.Link
-		employee_name: DF.Data
+		employee: DF.Link | None
+		employee_id: DF.Data | None
 		fcm_token: DF.Text | None
+		full_name: DF.Data
 		guest_of: DF.Link | None
 		is_active: DF.Check
 		is_deleted: DF.Check
+		is_employee: DF.Check
 		is_guest: DF.Check
 		is_server: DF.Check
 		is_vendor: DF.Check
 		latitude: DF.Float
-		location: DF.Link | None
+		location: DF.Link
 		longitude: DF.Float
 		mobile_no: DF.Phone
-		role: DF.Link | None
 		tag_id: DF.Data | None
+		user: DF.Link | None
 	# ruff: noqa
 	# end: auto-generated types
 
 
-	def before_save(self):
-		if self.role == "Hotpot Server" and self.guest_of == "":
-			frappe.throw("The field 'guest_of' is mandatory for Hotpot Server.")
-
-	def before_insert(self):
-		if self.role == "Hotpot Vendor":
-			self.is_vendor = 1
-		if self.role == "Hotpot Server":
-			self.is_server = 1
+	def autoname(self):
+		if self.is_employee:
+			self.name = self.employee
+		else:
+			self.name = self.email
 
 	def after_insert(self):
 		try:
+			if self.is_guest:
+				return
+
 			user = frappe.db.exists("User", {"email": self.email})
 			if not user or user.enabled == 0:
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
-				role = self.role
-				user_type = (
-					"System User"
-					if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin", "Hotpot Vendor"]
-					else "Website User"
-				)
+				user_type = "System User" if not self.is_guest else "Website User"
 				new_user.update(
 					{
 						"email": self.email,
@@ -86,20 +82,13 @@ class HotpotUser(Document):
 						"form_sidebar": 0,
 						"timeline": 0,
 						"dashboard": 0,
-						"roles": [{"role": self.role}],
+						"roles": [{"role": "Hotpot User"}],
 						"default_app": "hotpot",
 					}
 				)
-				if role == "Hotpot Admin":
-					new_user.update(
-						{
-							"timeline": 1,
-						}
-					)
-				if not frappe.db.exists("Role", self.role):
-					raise ValueError(f"Role {self.role} does not exist.")
+
 				try:
-					new_user.append_roles(self.role)
+					new_user.append_roles("Hotpot User")
 					new_user.flags.ignore_permissions = True
 					new_user.flags.ignore_if_duplicate = True
 					new_user.insert(ignore_permissions=True)
@@ -158,14 +147,6 @@ class HotpotUser(Document):
 				frappe_user.roles = []
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
-
-				if self.role == "Hotpot Admin":
-					frappe_user.update(
-						{
-							"bulk_action": 0,
-							"timeline": 1,
-						}
-					)
 
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
@@ -229,25 +210,42 @@ def add_user_to_hotpot(doc, method):
 	pass
 
 
-def remove_user_from_hotpot(doc, method):
-	# Called when the User is deleted
-	# If the user is deleted, then set is_deleted = 1 and is_active = 0.
+def update_employee_to_hotpot(doc, method):
+	if frappe.db.exists("Hotpot User", doc.name):
+		hp_user = frappe.get_doc("Hotpot User", doc.name)
+		hp_user.employee_id = doc.employee_number
+		hp_user.employee_name = doc.employee_name
+		hp_user.mobile_no = doc.cell_number if doc.cell_number else hp_user.mobile_no
+		hp_user.email = doc.company_email if doc.company_email else hp_user.email
+		hp_user.is_active = 1 if doc.status == "Active" else 0
+		hp_user.is_deleted = 0 if doc.status == "Active" else 1
+		hp_user.is_guest = 0
+		hp_user.is_vendor = 0
+		hp_user.is_server = 0
+		hp_user.tag_id = doc.attendance_device_id
+		hp_user.user = doc.user_id
+		hp_user.location = doc.branch if doc.branch else hp_user.location
+		hp_user.save(ignore_permissions=True)
+	else:
+		hp_user = frappe.new_doc("Hotpot User")
+		hp_user.employee_id = doc.employee_number
+		hp_user.employee_name = doc.employee_name
+		hp_user.mobile_no = doc.cell_number
+		hp_user.email = doc.company_email
+		hp_user.is_active = 1 if doc.status == "Active" else 0
+		hp_user.is_deleted = 0 if doc.status == "Active" else 1
+		hp_user.is_guest = 0
+		hp_user.is_vendor = 0
+		hp_user.is_server = 0
+		hp_user.tag_id = doc.attendance_device_id
+		hp_user.user = doc.user_id
+		hp_user.location = doc.branch
+		hp_user.insert(ignore_permissions=True)
+
+
+def remove_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", {"user": doc.name}):
 		hp_user = frappe.get_doc("Hotpot User", {"user": doc.name})
 		hp_user.is_deleted = 1
 		hp_user.is_active = 0
 		hp_user.save(ignore_permissions=True)
-
-
-def update_employee_to_hotpot(doc, method):
-	# check if the hotpot user already exists
-	# if not add to hotpot user
-	# update the Access ID in hotpot User
-	# update discounted coupon days for hotpot user
-	pass
-
-
-def remove_employee_to_hotpot(doc, method):
-	# disable the hotpot user
-	# unassign hotpotuser role form USER
-	pass

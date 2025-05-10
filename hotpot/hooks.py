@@ -208,11 +208,6 @@ override_doctype_class = {
 # Hook on document methods and events
 
 doc_events = {
-	"User": {
-		"after_insert": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.add_user_to_hotpot",
-		"on_update": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.add_user_to_hotpot",
-		"on_trash": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.remove_user_from_hotpot",
-	},
 	"Employee": {
 		"after_insert": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
 		"on_update": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
