@@ -62,7 +62,7 @@ def coupon_exists(name):
 
 
 @frappe.whitelist()
-def create_coupon(data):
+def create_coupon_old(data):
 	if not frappe.db.exists("Hotpot Coupon", extract_coupon_info(data)):
 		coupon = frappe.get_doc(coupon_from_info(data))
 		coupon.served_by = frappe.session.user

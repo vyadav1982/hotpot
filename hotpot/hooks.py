@@ -26,10 +26,10 @@ add_to_apps_screen = [
 extend_bootinfo = "hotpot.boot.boot_session"
 
 fixtures = [
-    
-	"Module Profile", 
-	"Hotpot Locations", 
-	"Block Module",
+	# "Module Profile",
+	# "Hotpot Locations",
+	# "Block Module",
+	# {"doctype": "Report", "filters": {"module": ["=", "Hotpot"]}},
 	{
 		"doctype": "Role",
 		"filters": {
@@ -40,8 +40,8 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
-                    "Hotpot HR",
-                    "Hotpot Finance",
+					"Hotpot HR",
+					"Hotpot Finance",
 				],
 			]
 		},
@@ -56,39 +56,29 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
-                    "Hotpot HR",
-                    "Hotpot Finance",
+					"Hotpot HR",
+					"Hotpot Finance",
 				],
 			],
 		},
 	},
-    {
-        "doctype": "Report",
-        "filters": {
-            "module": [
-                "=",
-                "Hotpot"
-            ]
-        }
-    },
-    {
-        "doctype": "Role Permission for Page and Report",
-        "filters": {
-            "set_role_for": "Report",
-            "role": [
-                "in",
-                [
-                    "Hotpot Admin",
-                    "Hotpot User",
-                    "Hotpot Server",
-                    "Hotpot Vendor",
-                    "Hotpot HR",
-                    "Hotpot Finance",
-                ]
-            ]
-        }
-    }
-
+	{
+		"doctype": "Role Permission for Page and Report",
+		"filters": {
+			"set_role_for": "Report",
+			"role": [
+				"in",
+				[
+					"Hotpot Admin",
+					"Hotpot User",
+					"Hotpot Server",
+					"Hotpot Vendor",
+					"Hotpot HR",
+					"Hotpot Finance",
+				],
+			],
+		},
+	},
 ]
 
 # Includes in <head>
@@ -97,14 +87,9 @@ fixtures = [
 # include js, css files in header of desk.html
 app_include_css = "hotpot.bundle.css"
 app_include_js = "hotpot.bundle.js"
-app_include_js = [
-    "/assets/hotpot/js/navbar_customizations.js",
-    "/assets/hotpot/js/route_guard.js"
-]
+app_include_js = ["/assets/hotpot/js/navbar_customizations.js", "/assets/hotpot/js/route_guard.js"]
 
 # app_include_js = "/assets/hotpot/js/data_import_list.js"
-
-
 
 
 # website_path_resolver = "hotpot.utils.route_protection.protect_routes"
@@ -124,8 +109,8 @@ app_include_js = [
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Data Import" : "public/js/data_import.js"}
-doctype_list_js = {"Data Import" : "public/js/data_import_list.js"}
+doctype_js = {"Data Import": "public/js/data_import.js"}
+doctype_list_js = {"Data Import": "public/js/data_import_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 

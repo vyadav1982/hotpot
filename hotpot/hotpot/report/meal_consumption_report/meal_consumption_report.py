@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+
 from hotpot.utils.utc_time import *
 
 
@@ -10,6 +11,7 @@ def get_star_rating(rating):
 	if not rating:
 		return "-"
 	return "⭐" * round(rating)
+
 
 def execute(filters=None):
 	if not filters:
@@ -63,8 +65,7 @@ def execute(filters=None):
 			hc.coupon_status !=2 AND hc.coupon_status != 1 AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-	params = [user_timezone,start_date, end_date]
-
+	params = [user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += "		AND hm.vendor_id = %s"
@@ -79,10 +80,7 @@ def execute(filters=None):
 
 	data = frappe.db.sql(query, params, as_dict=True)
 	for row in data:
-		row["avg_rating"] = get_star_rating(row["avg_rating"]) 
-		row["total_weight"] = f"₹{row['total_weight']:.2f}" 
-
+		row["avg_rating"] = get_star_rating(row["avg_rating"])
+		row["total_weight"] = f"₹{row['total_weight']:.2f}"
 
 	return columns, data
-
-

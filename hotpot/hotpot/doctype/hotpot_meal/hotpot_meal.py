@@ -3,8 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
-from hotpot.utils.utc_time import *
 
+from hotpot.utils.utc_time import *
 
 
 def is_frappe_ui_request():
@@ -60,6 +60,7 @@ class HotpotMeal(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
 
@@ -97,6 +98,7 @@ class HotpotMeal(Document):
 				frappe.throw("Start time and End time must be on the same date.")
 			if self.start_time >= self.end_time:
 				frappe.throw("Start time must be before End time.")
+
 	# def before_save(self):
 	# 	roles = frappe.get_roles()
 	# 	if "Hotpot Vendor" not in roles:
@@ -104,17 +106,17 @@ class HotpotMeal(Document):
 
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
-			if self.start_time :
+			if self.start_time:
 				if isinstance(self.start_time, datetime):
-		   			self.start_time = self.start_time.strftime('%Y-%m-%d %H:%M:%S')
+					self.start_time = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
 				self.start_time = get_utc_datetime_obj(self.start_time)
-			if self.end_time :
+			if self.end_time:
 				if isinstance(self.end_time, datetime):
-		   			self.end_time = self.end_time.strftime('%Y-%m-%d %H:%M:%S')
+					self.end_time = self.end_time.strftime("%Y-%m-%d %H:%M:%S")
 				self.end_time = get_utc_datetime_obj(self.end_time)
 			if not self.start_time and not self.end_time:
 				category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
-				self.start_time =category_doc.start_time
+				self.start_time = category_doc.start_time
 				self.end_time = category_doc.end_time
 				self.is_active = 1
 				self.lead_time = category_doc.lead_time

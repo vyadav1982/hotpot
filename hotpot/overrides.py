@@ -1,17 +1,13 @@
-import frappe
-from frappe.core.doctype.data_import.data_import import DataImport
-from datetime import datetime, timedelta
-import re
 import os
-import openpyxl
-from frappe.utils import getdate, today, nowdate
-from hotpot.utils.utc_time import *
-
-
-import openpyxl
 import re
-from frappe.utils import getdate, nowdate
+from datetime import datetime, timedelta
+
 import frappe
+import openpyxl
+from frappe.core.doctype.data_import.data_import import DataImport
+from frappe.utils import getdate, nowdate, today
+
+from hotpot.utils.utc_time import *
 
 
 class CustomDataImport(DataImport):
@@ -19,24 +15,23 @@ class CustomDataImport(DataImport):
 		if self.import_file:
 			file_doc = frappe.get_doc("File", {"file_url": self.import_file})
 			file_path = file_doc.get_full_path()
-			
+
 			if os.path.exists(file_path):
 				if self.reference_doctype == "Hotpot User":
 					self.modify_excel_file(file_path)
-			
-				
+
 		return super().start_import()
-	
+
 	def get_preview_from_template(self, import_file=None, google_sheets_url=None):
 		try:
 			preview_data = super().get_preview_from_template(import_file, google_sheets_url)
-			
+
 			if not preview_data or not isinstance(preview_data, dict):
 				return preview_data
-				
+
 			if "data" not in preview_data or "columns" not in preview_data:
 				return preview_data
-				
+
 			column_headers = []
 			if isinstance(preview_data["columns"], list):
 				for col in preview_data["columns"]:
@@ -44,15 +39,23 @@ class CustomDataImport(DataImport):
 						column_headers.append(col["header_title"])
 					elif isinstance(col, str):
 						column_headers.append(col)
-						
+
 			# If we couldn't extract headers, return original data
 			if not column_headers:
 				return preview_data
-				
+
 			user_fields = [
-				"Employee ID", "E Mail", "Mobile no.", "Employee Name", "Role",
-				"Tag Id", "Department", "Date of Joining", "Date Of Birth",
-				"Coupon Count", "Location"
+				"Employee ID",
+				"E Mail",
+				"Mobile no.",
+				"Employee Name",
+				"Role",
+				"Tag Id",
+				"Department",
+				"Date of Joining",
+				"Date Of Birth",
+				"Coupon Count",
+				"Location",
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date"]
 			meal_item_fields = ["Item Name"]
@@ -68,11 +71,17 @@ class CustomDataImport(DataImport):
 			elif self.reference_doctype == "Hotpot Meal Items":
 				expected_fields = meal_item_fields
 			else:
-				frappe.throw(f"Reference DocType '{self.reference_doctype}' is not allowed for custom import.")
+				frappe.throw(
+					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
+				)
 
 			# Check for missing/extra fields
 			missing = [col for col in expected_fields if col not in column_headers]
-			extra = [col for col in column_headers if col and col not in expected_fields and not col.startswith("Sr.")]
+			extra = [
+				col
+				for col in column_headers
+				if col and col not in expected_fields and not col.startswith("Sr.")
+			]
 
 			if missing or extra:
 				error_msg = []
@@ -94,10 +103,10 @@ class CustomDataImport(DataImport):
 					# Handle each row safely
 					if not isinstance(row, list):
 						continue
-						
+
 					# Process date fields
 					self._process_date_fields(row, row_idx, header_to_index)
-				
+
 				# Perform doctype-specific validation
 				if self.reference_doctype == "Hotpot User":
 					self.validate_hotpot_user(preview_data, header_to_index)
@@ -107,7 +116,7 @@ class CustomDataImport(DataImport):
 					self.validate_hotpot_meal_items(preview_data, header_to_index)
 
 			return preview_data
-			
+
 		except Exception as e:
 			frappe.log_error(f"Error in get_preview_from_template: {str(e)}")
 			frappe.throw(f"Error processing import template: {str(e)}")
@@ -130,7 +139,7 @@ class CustomDataImport(DataImport):
 
 						if not parsed_date:
 							frappe.throw(
-								f"Row {row_idx+2}: Invalid date format or value in '{date_field}' (value: {value}). Expected format: YYYY-MM-DD."
+								f"Row {row_idx + 2}: Invalid date format or value in '{date_field}' (value: {value}). Expected format: YYYY-MM-DD."
 							)
 
 						if isinstance(parsed_date, datetime):
@@ -138,7 +147,7 @@ class CustomDataImport(DataImport):
 						if date_field == "Meal Date":
 							if parsed_date < today:
 								frappe.throw(
-									f"Row {row_idx+2}: '{date_field}' cannot be in the past (value: {value})."
+									f"Row {row_idx + 2}: '{date_field}' cannot be in the past (value: {value})."
 								)
 
 						row[idx] = parsed_date.strftime("%Y-%m-%d")
@@ -147,13 +156,11 @@ class CustomDataImport(DataImport):
 			frappe.log_error(f"Error processing date fields: {str(e)}")
 			raise
 
-			
 	def validate_hotpot_user(self, preview_data, header_to_index):
 		"""Validate fields for Hotpot User imports."""
 		try:
-
 			today = frappe.utils.today()
-			eighteen_years_ago = (datetime.now() - timedelta(days=18*365)).date()
+			eighteen_years_ago = (datetime.now() - timedelta(days=18 * 365)).date()
 
 			allowed_roles = ["Hotpot Admin", "Hotpot User", "Hotpot Vendor", "Hotpot HR"]
 			errors = []
@@ -187,15 +194,15 @@ class CustomDataImport(DataImport):
 				# Validate Mobile Number
 				if mobile_no:
 					mobile_no = mobile_no.strip()
-					mobile_no = mobile_no.split('.')[0].strip()
-					if mobile_no.startswith('+'):
-						mobile_no = '+' + re.sub(r'\D', '', mobile_no[1:])
+					mobile_no = mobile_no.split(".")[0].strip()
+					if mobile_no.startswith("+"):
+						mobile_no = "+" + re.sub(r"\D", "", mobile_no[1:])
 					else:
-						mobile_no = re.sub(r'\D', '', mobile_no)
-						if not mobile_no.startswith('91'):
-							mobile_no = '+91' + mobile_no
+						mobile_no = re.sub(r"\D", "", mobile_no)
+						if not mobile_no.startswith("91"):
+							mobile_no = "+91" + mobile_no
 						else:
-							mobile_no = '+' + mobile_no
+							mobile_no = "+" + mobile_no
 					row[mobile_no_idx] = mobile_no
 
 				# Validate Date of Birth
@@ -209,7 +216,9 @@ class CustomDataImport(DataImport):
 
 				# Validate Role
 				if role and role not in allowed_roles:
-					errors.append(f"Row {row_num}: Role '{role}' is not a valid role. Allowed: {', '.join(allowed_roles)}")
+					errors.append(
+						f"Row {row_num}: Role '{role}' is not a valid role. Allowed: {', '.join(allowed_roles)}"
+					)
 
 			if errors:
 				frappe.throw("<br>".join(errors))
@@ -230,18 +239,29 @@ class CustomDataImport(DataImport):
 					continue
 				roles = frappe.get_roles()
 				if "Hotpot Vendor" not in roles:
-					vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
+					vendor_id = (
+						row[header_to_index.get("Vendor Id", -1)].strip()
+						if header_to_index.get("Vendor Id") is not None
+						else ""
+					)
 				else:
 					vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 
-				category = row[header_to_index.get("Category", -1)].strip() if header_to_index.get("Category") is not None else ""
-				meal_items_raw = row[header_to_index.get("Meal Items", -1)].strip() if header_to_index.get("Meal Items") is not None else ""
+				category = (
+					row[header_to_index.get("Category", -1)].strip()
+					if header_to_index.get("Category") is not None
+					else ""
+				)
+				meal_items_raw = (
+					row[header_to_index.get("Meal Items", -1)].strip()
+					if header_to_index.get("Meal Items") is not None
+					else ""
+				)
 				# print("category", category)
 				try:
-					category_doc = frappe.db.get_value("Hotpot Meal Category", {
-						"name": category,
-						"is_active": 1
-					}, "*", as_dict=True)
+					category_doc = frappe.db.get_value(
+						"Hotpot Meal Category", {"name": category, "is_active": 1}, "*", as_dict=True
+					)
 					# print(category_doc)
 
 					if not category_doc:
@@ -252,38 +272,42 @@ class CustomDataImport(DataImport):
 					continue
 
 				try:
-					vendor_doc = frappe.db.get_value("Hotpot User", {
-						"name": vendor_id,
-						"is_active": 1,
-						"is_deleted": 0,
-						"role": "Hotpot Vendor"
-					}, "*", as_dict=True)
+					vendor_doc = frappe.db.get_value(
+						"Hotpot User",
+						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "role": "Hotpot Vendor"},
+						"*",
+						as_dict=True,
+					)
 
 					if not vendor_doc:
-						errors.append(f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted.")
+						errors.append(
+							f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted."
+						)
 						continue
 				except Exception as e:
 					errors.append(f"Row {row_num}: Error fetching Vendor ID '{vendor_id}': {str(e)}")
 					continue
 
-
-				entered_items = [item.strip() for item in meal_items_raw.split(',') if item.strip()]
-				existing_items = frappe.get_all("Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name")
+				entered_items = [item.strip() for item in meal_items_raw.split(",") if item.strip()]
+				existing_items = frappe.get_all(
+					"Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name"
+				)
 				existing_items_lower = set(ei.lower() for ei in existing_items)
 				# print("existing_items_lower", existing_items_lower)
 				missing_items = [item for item in entered_items if item.lower() not in existing_items_lower]
 
 				if missing_items:
-					errors.append(f"Row {row_num}: These meal items are not found for vendor '{vendor_id}': {', '.join(missing_items)}")
+					errors.append(
+						f"Row {row_num}: These meal items are not found for vendor '{vendor_id}': {', '.join(missing_items)}"
+					)
 					continue
-				category_fields =["Start Time","End Time","Lead Time","Cancellation Time","Meal Weight"]
-					
+
 				field_mapping = {
 					"start_time": "Start Time",
 					"end_time": "End Time",
 					"lead_time": "Lead Time",
-					"cancellation_time": "Cancellation Time", 
-					"meal_rate": "Meal Weight"
+					"cancellation_time": "Cancellation Time",
+					"meal_rate": "Meal Weight",
 				}
 				if "Hotpot Vendor" in roles:
 					field_mapping["vendor_id"] = "Vendor Id"
@@ -292,30 +316,34 @@ class CustomDataImport(DataImport):
 					if import_field not in header_to_index:
 						header_to_index[import_field] = len(preview_data["columns"])
 						new_index = len(preview_data["columns"])
-						preview_data["columns"].append({
-							"index": new_index,
-							"column_number": new_index + 1,
-							"doctype": "Hotpot Meal",
-							"header_title": import_field,
-							"map_to_field": None,
-							"date_format": None,
-							"df": {
-								"fieldtype": "Datetime" if "Time" in import_field else "Float",  # Adjust as needed
-								"fieldname": doc_field,
-								"label": import_field,
-								"parent": "Hotpot Meal"
-							},
-							"skip_import": False,
-							"warnings": []
-						})
+						preview_data["columns"].append(
+							{
+								"index": new_index,
+								"column_number": new_index + 1,
+								"doctype": "Hotpot Meal",
+								"header_title": import_field,
+								"map_to_field": None,
+								"date_format": None,
+								"df": {
+									"fieldtype": "Datetime"
+									if "Time" in import_field
+									else "Float",  # Adjust as needed
+									"fieldname": doc_field,
+									"label": import_field,
+									"parent": "Hotpot Meal",
+								},
+								"skip_import": False,
+								"warnings": [],
+							}
+						)
 					field_idx = header_to_index[import_field]
-					
+
 					while len(row) <= field_idx:
 						row.append("")
-					
+
 					value = category_doc.get(doc_field)
 					row[field_idx] = value
-					if(import_field=="Vendor Id"):
+					if import_field == "Vendor Id":
 						row[field_idx] = vendor_id
 			# print("Updated columns:", preview_data["columns"])
 			# print("Updated row:", row)
@@ -329,7 +357,7 @@ class CustomDataImport(DataImport):
 				frappe.throw(f"Unexpected error during validation: {str(e)}")
 			else:
 				raise
-		
+
 	def validate_hotpot_meal_items(self, preview_data, header_to_index):
 		print(self.as_dict())
 		"""Validate fields for Hotpot Meal Items imports."""
@@ -341,45 +369,58 @@ class CustomDataImport(DataImport):
 					continue
 
 				roles = frappe.get_roles()
-				vendor_doc=None
+				vendor_doc = None
 				if "Hotpot Vendor" not in roles:
-					vendor_id = row[header_to_index.get("Vendor Id", -1)].strip() if header_to_index.get("Vendor Id") is not None else ""
+					vendor_id = (
+						row[header_to_index.get("Vendor Id", -1)].strip()
+						if header_to_index.get("Vendor Id") is not None
+						else ""
+					)
 				else:
 					vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
-				
+
 				try:
-					vendor_doc = frappe.db.get_value("Hotpot User", {
-						"name": vendor_id,
-						"is_active": 1,
-						"is_deleted": 0,
-						"role": "Hotpot Vendor"
-					}, "*", as_dict=True)
+					vendor_doc = frappe.db.get_value(
+						"Hotpot User",
+						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "role": "Hotpot Vendor"},
+						"*",
+						as_dict=True,
+					)
 
 					if not vendor_doc:
-						errors.append(f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted.")
+						errors.append(
+							f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted."
+						)
 						continue
 				except Exception as e:
 					errors.append(f"Row {row_num}: Error fetching Vendor ID '{vendor_id}': {str(e)}")
 					continue
 
-				item_name = row[header_to_index.get("Item Name", -1)].strip().lower() if header_to_index.get("Item Name") is not None else ""
+				item_name = (
+					row[header_to_index.get("Item Name", -1)].strip().lower()
+					if header_to_index.get("Item Name") is not None
+					else ""
+				)
 
 				if not item_name:
 					errors.append(f"Row {row_num}: Item Name is missing.")
 					continue
 				if self.status != "Success":
 					try:
-						existing_items = frappe.get_all("Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name")
+						existing_items = frappe.get_all(
+							"Hotpot Meal Items", filters={"vendor_id": vendor_id}, pluck="item_name"
+						)
 						existing_items_lower = set(ei.strip().lower() for ei in existing_items)
 
 						if item_name in existing_items_lower:
-							errors.append(f"Row {row_num}: Item '{item_name}' already exists for Vendor '{vendor_id}'.")
+							errors.append(
+								f"Row {row_num}: Item '{item_name}' already exists for Vendor '{vendor_id}'."
+							)
 							continue
 					except Exception as e:
 						errors.append(f"Row {row_num}: Error checking existing items: {str(e)}")
 						continue
-				
-				meal_item_fields = ["Item Name"]
+
 				field_mapping = {}
 				if "Hotpot Vendor" in roles:
 					field_mapping["vendor_id"] = "Vendor Id"
@@ -392,28 +433,32 @@ class CustomDataImport(DataImport):
 					if import_field not in header_to_index:
 						header_to_index[import_field] = len(preview_data["columns"])
 						new_index = len(preview_data["columns"])
-						preview_data["columns"].append({
-							"index": new_index,
-							"column_number": new_index + 1,
-							"doctype": "Hotpot Meal Items",
-							"header_title": import_field,
-							"map_to_field": None,
-							"date_format": None,
-							"df": {
-								"fieldtype": "Datetime" if "Time" in import_field else "Float",  # Adjust as needed
-								"fieldname": doc_field,
-								"label": import_field,
-								"parent": "Hotpot Meal Items"
-							},
-							"skip_import": False,
-							"warnings": []
-						})
+						preview_data["columns"].append(
+							{
+								"index": new_index,
+								"column_number": new_index + 1,
+								"doctype": "Hotpot Meal Items",
+								"header_title": import_field,
+								"map_to_field": None,
+								"date_format": None,
+								"df": {
+									"fieldtype": "Datetime"
+									if "Time" in import_field
+									else "Float",  # Adjust as needed
+									"fieldname": doc_field,
+									"label": import_field,
+									"parent": "Hotpot Meal Items",
+								},
+								"skip_import": False,
+								"warnings": [],
+							}
+						)
 					field_idx = header_to_index[import_field]
-					
+
 					while len(row) <= field_idx:
 						row.append("")
-					
-					if(import_field=="Vendor Id"):
+
+					if import_field == "Vendor Id":
 						row[field_idx] = f"{vendor_doc.employee_name} ({vendor_doc.employee_id})"
 
 			if errors:
@@ -426,8 +471,6 @@ class CustomDataImport(DataImport):
 			else:
 				raise
 
-
-						
 	def modify_excel_file(self, file_path):
 		try:
 			wb = openpyxl.load_workbook(file_path)
@@ -445,18 +488,18 @@ class CustomDataImport(DataImport):
 				mobile_no = str(mobile_cell).strip() if mobile_cell else ""
 				if mobile_no:
 					mobile_no = mobile_no.strip()
-					mobile_no = mobile_no.split('.')[0].strip()
-					if mobile_no.startswith('+'):
+					mobile_no = mobile_no.split(".")[0].strip()
+					if mobile_no.startswith("+"):
 						# Remove non-digits after '+'
-						mobile_no = '+' + re.sub(r'\D', '', mobile_no[1:])
+						mobile_no = "+" + re.sub(r"\D", "", mobile_no[1:])
 					else:
-						mobile_no = re.sub(r'\D', '', mobile_no)
-						if not mobile_no.startswith('91'):
-							mobile_no = '+91' + mobile_no
+						mobile_no = re.sub(r"\D", "", mobile_no)
+						if not mobile_no.startswith("91"):
+							mobile_no = "+91" + mobile_no
 						else:
-							mobile_no = '+' + mobile_no
+							mobile_no = "+" + mobile_no
 
-					if mobile_no.startswith('+91') and len(mobile_no) == 13:
+					if mobile_no.startswith("+91") and len(mobile_no) == 13:
 						formatted_mobile = f"+91- {mobile_no[3:]}"
 						row[header_map[mobile_field]].value = formatted_mobile
 					else:

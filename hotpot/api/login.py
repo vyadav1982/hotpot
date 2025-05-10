@@ -1,5 +1,7 @@
+import hashlib
 import json
 import random
+import re
 from datetime import datetime, timedelta
 
 import frappe
@@ -9,12 +11,10 @@ from frappe import _
 from frappe.twofactor import two_factor_is_enabled
 from frappe.utils.html_utils import get_icon_html
 from frappe.utils.oauth import get_oauth2_authorize_url, get_oauth_keys
-from frappe.utils.password import get_decrypted_password
-from hotpot.utils.email import *
-from frappe.utils.password import update_password
-import re
-import hashlib
+from frappe.utils.password import get_decrypted_password, update_password
+
 from hotpot.api.users import get_hotpot_user_by_email
+from hotpot.utils.email import *
 
 # no_cache = True
 
@@ -200,7 +200,7 @@ def verify_otp(identifier, submitted_otp):
 	Verifies the OTP for both phone numbers and email addresses.
 	Deletes the OTP if verification is successful.
 	"""
-	
+
 	# Determine whether the identifier is a phone number or an email
 	if "@" in identifier:
 		key = f"{OTP_PREFIX}{identifier}"  # Email OTP key
@@ -222,11 +222,9 @@ def verify_otp(identifier, submitted_otp):
 
 	# Validate OTP
 	if stored_otp == submitted_otp:
-
 		# Fetch user data based on email or phone
 		data = frappe.db.get_value(
-			"Hotpot User", {user_field: identifier},
-			["name", "email", "password"], as_dict=True
+			"Hotpot User", {user_field: identifier}, ["name", "email", "password"], as_dict=True
 		)
 
 		set_response(200, True, "OTP verified successfully.", data)
@@ -235,7 +233,7 @@ def verify_otp(identifier, submitted_otp):
 		set_response(400, False, "Invalid OTP.")
 		return
 
-	
+
 @frappe.whitelist(allow_guest=True)
 def get_password_otp(email):
 	if not frappe.db.exists("Hotpot User", {"email": email}):
@@ -244,21 +242,18 @@ def get_password_otp(email):
 	user_doc = frappe.get_doc("Hotpot User", {"email": email})
 
 	otp = str(random.randint(100000, 999999))
-	hash_otp= hashlib.sha256(otp.encode()).hexdigest()
+	hash_otp = hashlib.sha256(otp.encode()).hexdigest()
 
 	key = f"{OTP_PREFIX}{email}"
 
 	frappe.cache().set_value(key, hash_otp, expires_in_sec=300)
-	context = {
-		"user_data": user_doc,
-		"otp": otp,
-		"otp_expiry": 5
-	}
+	context = {"user_data": user_doc, "otp": otp, "otp_expiry": 5}
 
 	set_response(200, True, f"OTP generated and sent to {email}, valid for 5 minutes.")
 	send_email("password_reset", email, context, "Password Reset OTP")
-	
+
 	return
+
 
 @frappe.whitelist(allow_guest=True)
 def set_password():
@@ -290,10 +285,14 @@ def set_password():
 		if hashed_submitted_otp != stored_hashed_otp:
 			set_response(400, False, "Invalid OTP.")
 			return
-		
-		password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$'
+
+		password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$"
 		if not re.match(password_regex, new_password):
-			set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
+			set_response(
+				400,
+				False,
+				"Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.",
+			)
 			return
 		# OTP is valid, proceed with password reset
 		update_password(email, new_password, logout_all_sessions=True)
@@ -309,7 +308,8 @@ def set_password():
 		set_response(500, False, f"An error occurred: {str(e)}")
 		return
 
-@frappe.whitelist() 
+
+@frappe.whitelist()
 def reset_password():
 	if frappe.request.method != "POST":
 		set_response(405, False, "Only POST method is allowed")
@@ -319,7 +319,7 @@ def reset_password():
 	if not user_data:
 		set_response(401, False, "User Not found")
 		return
-	if not user_data["role"] in ["Hotpot Vendor", "Hotpot User","Hotpot Admin","Hotpot HR"]:
+	if user_data["role"] not in ["Hotpot Vendor", "Hotpot User", "Hotpot Admin", "Hotpot HR"]:
 		set_response(403, False, "Not Permitted to access this resource")
 		return
 
@@ -338,9 +338,13 @@ def reset_password():
 	if not user:
 		set_response(404, False, "User not found.")
 		return
-	password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$'
+	password_regex = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$"
 	if not re.match(password_regex, new_password):
-		set_response(400, False, "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.")
+		set_response(
+			400,
+			False,
+			"Password must contain at least 8 characters, including uppercase, lowercase, number, and special character.",
+		)
 		return
 
 	try:
@@ -350,8 +354,3 @@ def reset_password():
 		frappe.log_error(frappe.get_traceback(), "Error setting password")
 		frappe.db.rollback()
 		frappe.throw(str(e))
-
-
-	
-
-	

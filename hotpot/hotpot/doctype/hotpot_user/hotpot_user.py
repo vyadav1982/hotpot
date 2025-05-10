@@ -1,21 +1,26 @@
 # Copyright (c) 2024, Bytepanda Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
+import random
+
 import frappe
 from frappe.model.document import Document
-import random
-from hotpot.utils.email import * 
+
+from hotpot.utils.email import *
+
 
 def send_password_email(to_email, user_doc, password):
-	email_subject = f"Congrats, { user_doc.employee_name }! You’re Now Part of the Hotpot Club 🍽️"
+	email_subject = f"Congrats, {user_doc.employee_name}! You’re Now Part of the Hotpot Club 🍽️"
 	context = {
 		"user_data": user_doc,
 		"password": password,
 		# "login_url": frappe.utils.get_url('app/login')
-		"login_url": "https://hotpot.bytepanda.in/app"
+		"login_url": "https://hotpot.bytepanda.in/app",
 	}
 	send_email("initial_password", to_email, context, email_subject)
-def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
+
+
+def set_user_password(site, user, password, user_doc, logout_all_sessions=False):
 	from frappe.utils.password import update_password
 
 	if not password:
@@ -27,7 +32,7 @@ def set_user_password(site, user, password,user_doc, logout_all_sessions=False):
 
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)
 		frappe.db.commit()
-		send_password_email(user,user_doc,password)
+		send_password_email(user, user_doc, password)
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Error setting password")
 		frappe.db.rollback()
@@ -68,9 +73,8 @@ class HotpotUser(Document):
 		timezone: DF.Data | None
 	# end: auto-generated types
 
-
 	def before_save(self):
-		if self.role=="Hotpot Server" and self.guest_of=="":
+		if self.role == "Hotpot Server" and self.guest_of == "":
 			frappe.throw("The field 'guest_of' is mandatory for Hotpot Server.")
 
 	def before_insert(self):
@@ -82,46 +86,54 @@ class HotpotUser(Document):
 	def after_insert(self):
 		try:
 			user = frappe.db.exists("User", {"email": self.email})
-			if not user or user.enabled==0:
+			if not user or user.enabled == 0:
 				names = self.employee_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				role = self.role
-				user_type = "System User" if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin","Hotpot Vendor"] else "Website User"
-				new_user.update({
-					"email": self.email,
-					"first_name": names[0],
-					"username": self.employee_id,
-					"last_name": names[1] if len(names) > 1 else "",
-					"enabled": 1,
-					"document_follow_notify": 0,
-					"follow_liked_documents": 0,
-					"send_welcome_email": 0,
-					"user_type":user_type,
-					"search_bar":0,
-					"notifications":0,
-					"list_sidebar":0,
-					"bulk_action":0,
-					"view_switcher":0,
-					"form_sidebar":0,
-					"timeline":0,
-					"dashboard":0,
-					"module_profile": "Hotpot",
-					"roles": [{"role": self.role}],
-					"default_app": "hotpot",
-				})
+				user_type = (
+					"System User"
+					if role in ["Hotpot HR", "Hotpot Finance", "Hotpot Admin", "Hotpot Vendor"]
+					else "Website User"
+				)
+				new_user.update(
+					{
+						"email": self.email,
+						"first_name": names[0],
+						"username": self.employee_id,
+						"last_name": names[1] if len(names) > 1 else "",
+						"enabled": 1,
+						"document_follow_notify": 0,
+						"follow_liked_documents": 0,
+						"send_welcome_email": 0,
+						"user_type": user_type,
+						"search_bar": 0,
+						"notifications": 0,
+						"list_sidebar": 0,
+						"bulk_action": 0,
+						"view_switcher": 0,
+						"form_sidebar": 0,
+						"timeline": 0,
+						"dashboard": 0,
+						"module_profile": "Hotpot",
+						"roles": [{"role": self.role}],
+						"default_app": "hotpot",
+					}
+				)
 				if role == "Hotpot Admin":
-					new_user.update({
-				# 		"notifications": 1,
-				# 		"list_sidebar": 1,
-				# 		"bulk_action": 1,
-				# 		"view_switcher": 1,
-				# 		"form_sidebar": 1,
-						"timeline": 1,
-				# 		"dashboard": 1,
-					})
+					new_user.update(
+						{
+							# 		"notifications": 1,
+							# 		"list_sidebar": 1,
+							# 		"bulk_action": 1,
+							# 		"view_switcher": 1,
+							# 		"form_sidebar": 1,
+							"timeline": 1,
+							# 		"dashboard": 1,
+						}
+					)
 				if not frappe.db.exists("Role", self.role):
 					raise ValueError(f"Role {self.role} does not exist.")
-				try: 
+				try:
 					new_user.append_roles(self.role)
 					new_user.flags.ignore_permissions = True
 					new_user.flags.ignore_if_duplicate = True
@@ -134,7 +146,7 @@ class HotpotUser(Document):
 					user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
 				except Exception as e:
 					print(e)
-				user_doc=None
+				user_doc = None
 				if user_name:
 					user_doc = frappe.get_doc("Hotpot User", user_name)
 
@@ -164,18 +176,15 @@ class HotpotUser(Document):
 								"type": "Credit",
 								"message": f"{self.coupon_count} tokens have been credited to your wallet",
 								"title": "Token added by Admin",
-								"amount": self.coupon_count
+								"amount": self.coupon_count,
 							}
 						)
 						transaction_doc.insert()
 				password = frappe.generate_hash(length=8)
-				set_user_password(frappe.local.site, self.email,password,user_doc)
-				frappe.db.commit()	
+				set_user_password(frappe.local.site, self.email, password, user_doc)
+				frappe.db.commit()
 			else:
-				return {
-					"status": "error",
-					"message": "Duplicate user"
-				}
+				return {"status": "error", "message": "Duplicate user"}
 
 		except frappe.ValidationError as e:
 			frappe.log_error(f"User creation error: {e}")
@@ -197,15 +206,17 @@ class HotpotUser(Document):
 
 				# frappe_user.module_profile = "Hotpot Admin" if self.role == "Hotpot Admin" else "Hotpot"
 				frappe_user.module_profile = "Hotpot"
-				frappe_user.roles = []  
+				frappe_user.roles = []
 				frappe_user.save()
 				frappe_user.append_roles(self.role)
 
 				if self.role == "Hotpot Admin":
-					frappe_user.update({
-						"bulk_action": 0,
-						"timeline": 1,
-					})
+					frappe_user.update(
+						{
+							"bulk_action": 0,
+							"timeline": 1,
+						}
+					)
 
 				frappe_user.flags.ignore_permissions = True
 				frappe_user.save()
@@ -217,7 +228,6 @@ class HotpotUser(Document):
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user update")
 			return {"status": "error", "message": "An unexpected error occurred during user update."}
-
 
 	def on_trash(self):
 		try:
@@ -231,6 +241,4 @@ class HotpotUser(Document):
 			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
 		except Exception:
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user deletion")
-			return {"status": "error", "message": "An unexpected error occurred during user deletion."}	
-
-
+			return {"status": "error", "message": "An unexpected error occurred during user deletion."}

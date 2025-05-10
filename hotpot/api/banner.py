@@ -1,8 +1,10 @@
-import frappe
-from hotpot.utils.utc_time import *
-from ..api.users import *
 import json
 
+import frappe
+
+from hotpot.utils.utc_time import *
+
+from ..api.users import *
 
 
 def set_response(http_status_code, status, message, data=None):
@@ -26,7 +28,7 @@ def create_banner():
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
-		
+
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = [
 			"intent",
@@ -40,14 +42,14 @@ def create_banner():
 			return
 
 		if data["intent"] not in ["LinkClickable", "OpenModal", "NotClickable"]:
-			set_response(400,False,"Invalid intent type")
+			set_response(400, False, "Invalid intent type")
 			return
 
 		if data["intent"] == "LinkClickable" and not data.get("link"):
-			set_response(400,False,"Link is required for LinkClickable intent")
+			set_response(400, False, "Link is required for LinkClickable intent")
 			return
 		if data["intent"] == "OpenModal" and not data.get("description"):
-			set_response(400,False,"Description is required for OpenModal intent")
+			set_response(400, False, "Description is required for OpenModal intent")
 			return
 
 		start_date = data.get("start_date")
@@ -56,29 +58,32 @@ def create_banner():
 		start_date = get_utc_datetime_obj(f"{start_date} {local_time}")
 		end_date = get_utc_datetime_obj(f"{end_date} {local_time}")
 
-		banner = frappe.get_doc({
-			"doctype": "Hotpot Banner",
-			"title": data.get("title"),
-			"text": data.get("text"),
-			"intent": data.get("intent"),
-			"link": data.get("link"),
-			"description": data.get("description"),
-			"image": data.get("image"),
-			"start_date": start_date,
-			"end_date": end_date,
-			"priority": data.get("priority"),
-			"created_by": user_data.get("name"),
-			"is_active":1
-		})
+		banner = frappe.get_doc(
+			{
+				"doctype": "Hotpot Banner",
+				"title": data.get("title"),
+				"text": data.get("text"),
+				"intent": data.get("intent"),
+				"link": data.get("link"),
+				"description": data.get("description"),
+				"image": data.get("image"),
+				"start_date": start_date,
+				"end_date": end_date,
+				"priority": data.get("priority"),
+				"created_by": user_data.get("name"),
+				"is_active": 1,
+			}
+		)
 		banner.insert()
 		frappe.db.commit()
-		set_response(200,True,"Banner created successfully",banner.name)
+		set_response(200, True, "Banner created successfully", banner.name)
 		return
 
 	except Exception as e:
 		frappe.log_error(f"Error creating banner: {str(e)}")
-		set_response(500,False,f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
 		return
+
 
 @frappe.whitelist()
 def get_active_banners():
@@ -91,7 +96,7 @@ def get_active_banners():
 		if not user_data:
 			set_response(401, False, "User Not found")
 			return
-		
+
 		today = datetime.utcnow().replace(tzinfo=None)
 		filters = {
 			"is_active": 1,
@@ -103,21 +108,19 @@ def get_active_banners():
 		banners = frappe.get_all(
 			"Hotpot Banner",
 			filters=filters,
-			fields=[
-				"name", "title", "text", "intent", "link", "description", "image", "priority"
-			],
-			order_by="priority desc"
+			fields=["name", "title", "text", "intent", "link", "description", "image", "priority"],
+			order_by="priority desc",
 		)
 
 		if not banners:
-			set_response(200,True,"No active banners found")
+			set_response(200, True, "No active banners found")
 			return
-		set_response(200,True,"Banners Fetched successfully",banners)
+		set_response(200, True, "Banners Fetched successfully", banners)
 		return
 
 	except Exception as e:
 		frappe.log_error(f"Error fetching banners: {str(e)}")
-		set_response(500,False,f"Server error: {str(e)}")
+		set_response(500, False, f"Server error: {str(e)}")
 		return
 
 
@@ -135,7 +138,7 @@ def update_banner(banner_id, **kwargs):
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
-		
+
 		banner = frappe.get_doc("Banner", banner_id)
 		if not banner:
 			set_response(404, False, "Banner not found")
@@ -147,13 +150,13 @@ def update_banner(banner_id, **kwargs):
 
 		banner.save()
 		frappe.db.commit()
-		set_response(200,True,"Banner updated successfully", banner.name)
+		set_response(200, True, "Banner updated successfully", banner.name)
 		return
 
 	except Exception as e:
 		frappe.log_error(f"Error updating banner: {str(e)}")
-		set_response(500,False,f"Server error: {str(e)}")
-		return 
+		set_response(500, False, f"Server error: {str(e)}")
+		return
 
 
 @frappe.whitelist()
@@ -170,7 +173,7 @@ def delete_banner(banner_id):
 		if user_data.get("role") == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
-		
+
 		banner = frappe.get_doc("Hotpot Banner", banner_id)
 		if not banner:
 			set_response(404, False, "Banner not found")
@@ -182,4 +185,3 @@ def delete_banner(banner_id):
 	except Exception as e:
 		frappe.log_error(f"Error deleting banner: {str(e)}")
 		return {"status": "error", "message": str(e)}
-
