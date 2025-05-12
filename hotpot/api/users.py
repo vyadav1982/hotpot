@@ -190,6 +190,8 @@ def get_hotpot_user_by_tag_id(tag_id):
 def get_hotpot_user_by_email():
 	try:
 		email = frappe.session.user
+		roles = frappe.get_roles(frappe.session.user)
+		hotpot_roles = [role for role in roles if role.startswith("Hotpot")]
 		if not email:
 			set_response(401, False, "No auth token found")
 			return
@@ -202,6 +204,7 @@ def get_hotpot_user_by_email():
 			filters=[["email", "=", email], ["is_active", "=", 1]],
 			fields=[
 				"name",
+				"full_name",
 				"employee_name",
 				"employee_id",
 				"email",
@@ -218,7 +221,9 @@ def get_hotpot_user_by_email():
 			],
 		)
 		if user:
-			return user[0]
+			user_info = user[0]
+			user_info["role"] = check_hotpot_role(hotpot_roles)
+			return user_info
 
 		return None
 
@@ -756,3 +761,18 @@ def get_hotpot_history(start_date, end_date):
 		return
 	except Exception as e:
 		set_response(500, False, "ERROR: " + str(e))
+
+
+def check_hotpot_role(hotpot_roles):
+	if not hotpot_roles:
+		return None
+
+	normalized_roles = [r.replace("Hotpot Hotpot", "Hotpot").strip() for r in hotpot_roles]
+
+	priority = ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
+
+	for role in priority:
+		if role in normalized_roles:
+			return role
+
+	return normalized_roles[0]

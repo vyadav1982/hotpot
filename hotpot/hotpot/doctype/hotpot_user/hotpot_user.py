@@ -242,7 +242,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.insert(ignore_permissions=True)
 
 
-def remove_employee_to_hotpot(doc, method):
+def remove_employee_from_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", {"user": doc.name}):
 		hp_user = frappe.get_doc("Hotpot User", {"user": doc.name})
 		hp_user.is_deleted = 1

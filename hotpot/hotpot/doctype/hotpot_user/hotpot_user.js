@@ -57,7 +57,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.tag_id = null;
 			frm.doc.discount = -1;
 		} else {
-			if (!frm.doc.is_employee && !frm.doc.is_vender && !frm.doc.is_guest) {
+			if (!frm.doc.is_employee && !frm.doc.is_vendor && !frm.doc.is_guest) {
 				frm.doc.is_server = 1;
 			}
 		}
@@ -69,7 +69,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.is_server = 0;
 			frm.doc.is_guest = 0;
 		} else {
-			if (!frm.doc.is_server && !frm.doc.is_vender && !frm.doc.is_guest) {
+			if (!frm.doc.is_server && !frm.doc.is_vendor && !frm.doc.is_guest) {
 				frm.doc.is_employee = 1;
 			}
 		}
@@ -86,7 +86,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.tag_id = null;
 			frm.doc.discount = -1;
 		} else {
-			if (!frm.doc.is_employee && !frm.doc.is_vender && !frm.doc.is_server) {
+			if (!frm.doc.is_employee && !frm.doc.is_vendor && !frm.doc.is_server) {
 				frm.doc.is_guest = 1;
 			}
 		}
