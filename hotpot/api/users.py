@@ -622,6 +622,8 @@ def bulk_insert_employee():
 			name = record.get("employee_name", "").strip()
 			mobile = record.get("mobile_no", "").strip()
 			coupon_count = record.get("coupon_count", 0)
+			dob = record.get("date_of_birth")
+			doj = record.get("date_of_joining")
 
 			if not re.match(r"^[^@]+@[^@]+\.[^@]+$", email):
 				status_report.append({"email": email, "status": "failed", "reason": "Invalid email format"})
@@ -647,7 +649,7 @@ def bulk_insert_employee():
 				coupon_count = int(coupon_count)
 				if coupon_count < 0:
 					raise ValueError()
-			except:
+			except Exception:
 				status_report.append(
 					{"email": email, "status": "failed", "reason": "Coupon count must be a number >= 0"}
 				)

@@ -38,9 +38,9 @@ export interface HotpotUser{
 	/**	Name : Data	*/
 	full_name: string
 	/**	E Mail : Data	*/
-	email: string
+	email?: string
 	/**	Mobile no. : Phone	*/
-	mobile_no: string
+	mobile_no?: string
 	/**	Location : Link - Company Locations	*/
 	location: string
 	/**	FCM Token : Text	*/

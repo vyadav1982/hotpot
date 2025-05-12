@@ -25,7 +25,7 @@ class HotpotUser(Document):
 		coupon_count: DF.Int
 		discount: DF.Percent
 		discounted_meal_days: DF.Table[DiscountedMealDay]
-		email: DF.Data
+		email: DF.Data | None
 		employee: DF.Link | None
 		employee_id: DF.Data | None
 		fcm_token: DF.Text | None
@@ -40,12 +40,11 @@ class HotpotUser(Document):
 		latitude: DF.Float
 		location: DF.Link
 		longitude: DF.Float
-		mobile_no: DF.Phone
+		mobile_no: DF.Phone | None
 		tag_id: DF.Data | None
 		user: DF.Link | None
 	# ruff: noqa
 	# end: auto-generated types
-
 
 	def autoname(self):
 		if self.is_employee:
@@ -214,7 +213,7 @@ def update_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", doc.name):
 		hp_user = frappe.get_doc("Hotpot User", doc.name)
 		hp_user.employee_id = doc.employee_number
-		hp_user.employee_name = doc.employee_name
+		hp_user.full_name = doc.employee_name
 		hp_user.mobile_no = doc.cell_number if doc.cell_number else hp_user.mobile_no
 		hp_user.email = doc.company_email if doc.company_email else hp_user.email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
@@ -229,7 +228,7 @@ def update_employee_to_hotpot(doc, method):
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
-		hp_user.employee_name = doc.employee_name
+		hp_user.full_name = doc.employee_name
 		hp_user.mobile_no = doc.cell_number
 		hp_user.email = doc.company_email
 		hp_user.is_active = 1 if doc.status == "Active" else 0

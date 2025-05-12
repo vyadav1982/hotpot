@@ -68,7 +68,6 @@
    "in_filter": 1,
    "in_list_view": 1,
    "label": "E Mail",
-   "reqd": 1,
    "unique": 1
   },
   {
@@ -105,7 +104,6 @@
    "fieldtype": "Phone",
    "in_list_view": 1,
    "label": "Mobile no.",
-   "reqd": 1,
    "search_index": 1
   },
   {
@@ -293,7 +291,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-10 13:38:56.425493",
+ "modified": "2025-05-12 03:57:54.579036",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
