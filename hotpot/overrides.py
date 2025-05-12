@@ -458,7 +458,7 @@ class CustomDataImport(DataImport):
 						row.append("")
 
 					if import_field == "Vendor Id":
-						row[field_idx] = f"{vendor_doc.employee_name} ({vendor_doc.employee_id})"
+						row[field_idx] = f"{vendor_doc.full_name} ({vendor_doc.employee_id})"
 
 			if errors:
 				frappe.throw("<br>".join(errors))

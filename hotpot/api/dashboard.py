@@ -84,7 +84,7 @@ def get_coupon_list(params):
 		SELECT
 			a.employee_id,
 			a.title,
-			b.employee_name,
+			b.full_name,
 			a.coupon_date,
 			a.coupon_time,
 			a.served_by,

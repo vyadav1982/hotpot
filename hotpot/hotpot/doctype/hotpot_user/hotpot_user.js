@@ -36,7 +36,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.is_guest = 0;
 			frm.doc.employee = null;
 			frm.doc.employee_id = null;
-			frm.doc.employee_name = null;
+			frm.doc.full_name = null;
 			frm.doc.tag_id = null;
 			frm.doc.discount = -1;
 		} else {
@@ -53,7 +53,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.is_guest = 0;
 			frm.doc.employee = null;
 			frm.doc.employee_id = null;
-			frm.doc.employee_name = null;
+			frm.doc.full_name = null;
 			frm.doc.tag_id = null;
 			frm.doc.discount = -1;
 		} else {
@@ -82,7 +82,7 @@ frappe.ui.form.on("Hotpot User", {
 			frm.doc.is_server = 0;
 			frm.doc.employee = null;
 			frm.doc.employee_id = null;
-			frm.doc.employee_name = null;
+			frm.doc.full_name = null;
 			frm.doc.tag_id = null;
 			frm.doc.discount = -1;
 		} else {

@@ -18,7 +18,7 @@ def get_current_user():
 def get_list():
 	return frappe.db.get_list(
 		"Hotpot User",
-		fields=["name", "employee_id", "employee_name"],
+		fields=["name", "employee_id", "full_name"],
 		filters=[
 			["is_active", "=", 1],
 			["is_guest", "=", 0],
@@ -163,7 +163,7 @@ def get_hotpot_user_by_tag_id(tag_id):
 			filters=[["tag_id", "=", tag_id], ["is_active", "=", 1]],
 			fields=[
 				"name",
-				"employee_name",
+				"full_name",
 				"employee_id",
 				"email",
 				"mobile_no",
@@ -205,7 +205,6 @@ def get_hotpot_user_by_email():
 			fields=[
 				"name",
 				"full_name",
-				"employee_name",
 				"employee_id",
 				"email",
 				"mobile_no",
@@ -269,7 +268,7 @@ def get_all_vendor():
 		user_list = frappe.db.get_list(
 			"Hotpot User",
 			filters=[["role", "=", "Hotpot Vendor"], ["is_active", "=", 1], ["is_deleted", "=", 0]],
-			fields=["name", "employee_name"],
+			fields=["name", "full_name"],
 		)
 		if not user_list:
 			set_response(200, False, "No Vendor found")
@@ -543,7 +542,7 @@ def get_meals_dashboard(date):
 				):
 					continue
 
-			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "employee_name")
+			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "full_name")
 			meal["vendor_name"] = vendor
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 
@@ -624,7 +623,7 @@ def bulk_insert_employee():
 			record = dict(zip(fields, row, strict=False))
 			email = record.get("email", "").strip()
 			empid = record.get("employee_id", "").strip()
-			name = record.get("employee_name", "").strip()
+			name = record.get("full_name", "").strip()
 			mobile = record.get("mobile_no", "").strip()
 			coupon_count = record.get("coupon_count", 0)
 			dob = record.get("date_of_birth")

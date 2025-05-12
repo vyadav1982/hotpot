@@ -38,6 +38,6 @@ def get_current_user_info():
 	return frappe.db.get_value(
 		"Hotpot User",
 		frappe.session.user,
-		["employee_name", "employee_id", "email"],
+		["full_name", "employee_id", "email"],
 		as_dict=True,
 	)

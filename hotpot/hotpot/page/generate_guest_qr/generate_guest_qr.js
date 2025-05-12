@@ -34,8 +34,9 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                 </div>
                 <div class="form-group col-md-5">
                     <label for="datePicker">Date:</label>
-                    <input type="date" id="datePicker" class="form-control" value="${new Date().toISOString().split("T")[0]
-		}">
+                    <input type="date" id="datePicker" class="form-control" value="${
+						new Date().toISOString().split("T")[0]
+					}">
                 </div>
             </div>
 
@@ -70,8 +71,9 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
         <div class="d-flex align-items-center mt-3">
             <div class="text-center">
                 <label for="prevDatePicker">Select Date:</label>
-                <input type="date" id="prevDatePicker" value="${new Date().toISOString().split("T")[0]
-		}" class="form-control" style="width: 150px; display: inline-block;">
+                <input type="date" id="prevDatePicker" value="${
+					new Date().toISOString().split("T")[0]
+				}" class="form-control" style="width: 150px; display: inline-block;">
             </div>
             <button class="btn btn-secondary ml-3" id="refreshTable">Refresh Table</button>
         </div>
@@ -256,7 +258,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			const dateObj = new Date(rawDate);
 
 			const day = dateObj.getDate();
-			const month = dateObj.toLocaleString('default', { month: 'short' });
+			const month = dateObj.toLocaleString("default", { month: "short" });
 			const year = dateObj.getFullYear().toString().slice(-2);
 
 			const formattedDate = `${day} ${month} ${year}`;
@@ -274,9 +276,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 					subject: `Your Meal QR Code - ${meal_title} on ${formattedDate}`,
 					qr_code_base64: qrLink,
 				},
-				callback: function (response) {
-
-				},
+				callback: function (response) {},
 			});
 		}
 		if (unsentEmails.length > 0) {
@@ -351,7 +351,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                             <tr>
                                 <td>${coupon.meal_title}</td>
                                 <td>${formatDate(coupon.coupon_date)}</td>
-                                <td>${coupon.employee_name}</td>
+                                <td>${coupon.full_name}</td>
                                 <td>${formatDateTime(coupon.modified)}</td>
                                 <td>${coupon.email}</td>
                                 </tr>
@@ -387,7 +387,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			vendors.forEach((vendor) => {
 				let option = document.createElement("option");
 				option.value = vendor.name;
-				option.textContent = vendor.employee_name;
+				option.textContent = vendor.full_name;
 				fragment.appendChild(option);
 			});
 			vendorSelect.appendChild(fragment);
@@ -438,12 +438,10 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			if (response.status === false) {
 				alert(response.message);
 				return;
-			}
-			else {
+			} else {
 				if (response.data.length === 0) {
 					alert("No meals available for the selected vendor and date.");
 				}
-
 			}
 			let meals = response.data || [];
 			mealSelect.innerHTML = '<option value="">Select Meal</option>';

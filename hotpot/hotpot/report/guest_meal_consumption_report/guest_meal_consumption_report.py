@@ -26,7 +26,7 @@ def execute(filters=None):
 	columns = [
 		# {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
 		{"label": "Employee Id", "fieldname": "employee_id", "fieldtype": "Data", "width": 120},
-		{"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Data", "width": 150},
+		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 150},
 		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
 		# {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
@@ -43,11 +43,11 @@ def execute(filters=None):
 			hm.name AS meal_id,
 			hm.meal_title AS meal_title,
 			vendor.employee_id AS vendor_id,
-			vendor.employee_name AS vendor_name,
+			vendor.full_name AS vendor_name,
 			hc.name AS coupon_id,
 			hc.coupon_date AS coupon_date,
 			employee.employee_id AS employee_id,
-			employee.employee_name AS employee_name,
+			employee.full_name,
 			approval.guest_name AS guest_name,
             hc.email AS email,
             approval.guest_mobile_no AS guest_mobile_no

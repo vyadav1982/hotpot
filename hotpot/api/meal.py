@@ -451,7 +451,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				):
 					continue
 
-			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "employee_name")
+			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "full_name")
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
@@ -824,7 +824,7 @@ def get_meals_internal(date, vendor_id=None):
 				):
 					continue
 
-			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "employee_name")
+			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "full_name")
 			meal["vendor_name"] = vendor
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])

@@ -315,7 +315,7 @@ def get_redeemed_coupon():
 			set_response(404, False, "Coupon Not Found")
 			return
 		query = """
-			Select employee_name,employee_id from `tabHotpot User` AS hu where hu.name = %(user_id)s
+			Select full_name, employee_id from `tabHotpot User` AS hu where hu.name = %(user_id)s
 		"""
 		params = {"user_id": user_id}
 		user_data = frappe.db.sql(query, params, as_dict=True)
@@ -440,7 +440,7 @@ def scan_coupon():
 				"meal_date": meal_doc.get("meal_date"),
 				"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
 				"employee_id": emp_doc.get("employee_id"),
-				"employee_name": emp_doc.get("employee_name"),
+				"full_name": emp_doc.get("full_name"),
 				"coupon_id": coupon_found.get("name"),
 				"coupon_status": coupon_found.get("coupon_status"),
 				"coupon_date": coupon_found.get("coupon_date"),
@@ -492,10 +492,10 @@ def get_scanned_coupons(
 				hc.name AS coupon_id,
 				hc.title AS coupon_title,
 				hc.guest_of,
-				U2.employee_name,
+				U2.full_name,
 				hc.employee_id,
 				hc.served_by,
-				U.employee_name AS vendor_name,
+				U.full_name AS vendor_name,
 				mt.type
 			FROM
 				`tabHotpot Coupons` AS hc
@@ -616,8 +616,8 @@ def get_all_coupons(
 				SELECT
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
-					U.employee_name AS vendor_name,
-					U2.employee_name AS employee_name,
+					U.full_name AS vendor_name,
+					U2.full_name,
 					mt.type,
 					hc.*
 				FROM
@@ -684,7 +684,7 @@ def get_all_coupons(
 					hm.end_time AS end_time,
 					hm.name AS meal_id,
 					mt.type,
-					U.employee_name AS vendor_name
+					U.full_name AS vendor_name
 				FROM
 					`tabHotpot Coupons` AS hc
 				INNER JOIN
@@ -1053,12 +1053,14 @@ def generate_coupon():
 				start.month == get_local_datetime_obj(datetime.utcnow()).month
 				and start.day == get_local_datetime_obj(datetime.utcnow()).day
 			):
-				message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
+				message = (
+					f"🎉 Happy Birthday {user_doc.full_name}! 🎂 Enjoy your special day—your meal is on us!"
+				)
 			else:
-				message = f"🎉 Early Birthday Treat! 🎂 {user_doc.employee_name}, we’re celebrating you in advance! Your birthday meal coupon is ready for {start.strftime('%d %b %Y')}!"
-			# message = f"🎉 Happy Birthday {user_doc.employee_name}! 🎂 Enjoy your special day—your meal is on us!"
+				message = f"🎉 Early Birthday Treat! 🎂 {user_doc.full_name}, we’re celebrating you in advance! Your birthday meal coupon is ready for {start.strftime('%d %b %Y')}!"
+
 		elif is_joining_day and role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
-			message = f"🎊 Welcome aboard {user_doc.employee_name}! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
+			message = f"🎊 Welcome aboard {user_doc.full_name}! 🎉 As a warm gesture, your meal is on us today. Enjoy!"
 
 		return set_response(
 			200,
@@ -1164,7 +1166,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=1000):
 				hc.name AS coupon_id,
 				hc.modified,
 				hm.meal_title,
-				U.employee_name,
+				U.full_name,
 				hc.coupon_date,
 				hc.coupon_status,
 				hc.email,
@@ -1194,76 +1196,6 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=1000):
 		return set_response(500, False, f"Server error: {str(e)}")
 
 
-# @frappe.whitelist()
-# def get_admin_guest_coupon(date, qty=None):
-# 	try:
-# 		if frappe.request and frappe.request.method != "GET":
-# 			return set_response(405, False, "Only GET method is allowed")
-
-# 		user_doc = get_hotpot_user_by_email()
-# 		if not user_doc:
-# 			return set_response(404, False, "User Not found")
-
-# 		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin"]:
-# 			return set_response(403, False, "Not Permitted to access this resource")
-
-# 		if not date:
-# 			return set_response(400, False, "Please provide date")
-
-# 		start_date = f"{date} 00:00:00"
-# 		end_date = f"{date} 23:59:59"
-# 		start_date = get_utc_datetime_obj(start_date)
-# 		end_date = get_utc_datetime_obj(end_date)
-
-# 		start_date = get_local_datetime_obj(start_date).date()
-# 		end_date = get_local_datetime_obj(end_date).date()
-
-# 		user_timezone = get_user_timezone() or "Asia/Kolkata"
-
-# 		limit_clause = ""
-# 		params = [user_timezone, start_date, end_date]
-
-# 		if qty:
-# 			try:
-# 				qty = int(qty)
-# 				if qty <= 0:
-# 					return set_response(400, False, "Quantity must be greater than 0")
-# 				limit_clause = "LIMIT %s"
-# 				params.append(qty)
-# 			except ValueError:
-# 				return set_response(400, False, "Invalid quantity value")
-
-# 		query = f"""
-# 			SELECT
-# 				hc.name AS coupon_id,
-# 				hc.modified,
-# 				hm.meal_title,
-# 				U.employee_name,
-# 				hc.coupon_date,
-# 				hc.coupon_status
-# 			FROM
-# 				`tabHotpot Coupons` AS hc
-# 			LEFT JOIN
-# 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-# 			INNER JOIN
-# 				`tabHotpot User` AS U ON hm.vendor_id = U.name
-# 			WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
-# 			ORDER BY hc.modified DESC
-# 			{limit_clause}
-# 		"""
-
-# 		coupons_data = frappe.db.sql(query, tuple(params), as_dict=True)
-
-# 		if not coupons_data:
-# 			return set_response(200, False, "No guest coupon found.",[])
-
-# 		return set_response(200, True, "Guest coupons fetched successfully", coupons_data)
-
-
-# 	except Exception as e:
-# 		frappe.db.rollback()
-# 		frappe.log_error(frappe.get_traceback(), "Coupon Search Error")
-# 		return set_response(500, False, f"Server error: {str(e)}")
 @frappe.whitelist()
 def get_guest_coupon(date):
 	try:
@@ -1306,7 +1238,7 @@ def get_guest_coupon(date):
 				hm.start_time AS start_time,
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
-				U.employee_name AS vendor_name,
+				U.full_name AS vendor_name,
 				ap.guest_name AS guest_name,
 				ap.is_active AS approval_active,
 				mt.type

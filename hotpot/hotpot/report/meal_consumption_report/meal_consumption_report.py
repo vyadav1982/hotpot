@@ -48,7 +48,7 @@ def execute(filters=None):
 			hm.meal_date AS meal_date,
 			MAX(hm.meal_weight)  AS meal_weight,
 			vendor.employee_id AS vendor_id,
-			vendor.employee_name AS vendor_name,
+			vendor.full_name AS vendor_name,
 			COUNT(hc.name) AS coupon_count,
 			(MAX(hm.meal_weight) * COUNT(hc.name)) AS total_weight,
 			IFNULL(AVG(hr.rating), 0) AS avg_rating,
@@ -73,7 +73,7 @@ def execute(filters=None):
 
 	query += """
 		GROUP BY
-			hm.name, hm.meal_title, vendor.employee_id, vendor.employee_name
+			hm.name, hm.meal_title, vendor.employee_id, vendor.full_name
 		ORDER BY
 			hc.coupon_date DESC;
 	"""

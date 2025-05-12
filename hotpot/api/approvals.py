@@ -11,7 +11,7 @@ from ..api.users import *
 
 
 def send_approval_request_email(to_email, user_data, request_data, doc, meal_name):
-	email_subject = f"Approval Request from {user_data.employee_name} ({user_data.employee_id}) for {request_data['request_type']}"
+	email_subject = f"Approval Request from {user_data.full_name} ({user_data.employee_id}) for {request_data['request_type']}"
 	context = {
 		"user_data": user_data,
 		"request_data": request_data,

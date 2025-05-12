@@ -59,7 +59,7 @@ class HotpotUser(Document):
 
 			user = frappe.db.exists("User", {"email": self.email})
 			if not user or user.enabled == 0:
-				names = self.employee_name.split(" ", 1)
+				names = self.full_name.split(" ", 1)
 				new_user = frappe.new_doc("User")
 				user_type = "System User" if not self.is_guest else "Website User"
 				new_user.update(
@@ -137,7 +137,7 @@ class HotpotUser(Document):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
 			if frappe_user:
-				names = self.employee_name.split(" ", 1) if self.employee_name else ["", ""]
+				names = self.full_name.split(" ", 1) if self.full_name else ["", ""]
 				frappe_user.enabled = 1 if self.is_active == 1 and self.is_deleted == 0 else 0
 				frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
 				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
@@ -174,7 +174,7 @@ class HotpotUser(Document):
 
 
 def send_password_email(to_email, user_doc, password):
-	email_subject = f"Congrats, {user_doc.employee_name}! You’re Now Part of the Hotpot Club 🍽️"
+	email_subject = f"Congrats, {user_doc.full_name}! You’re Now Part of the Hotpot Club 🍽️"
 	context = {
 		"user_data": user_doc,
 		"password": password,
@@ -213,7 +213,7 @@ def update_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", doc.name):
 		hp_user = frappe.get_doc("Hotpot User", doc.name)
 		hp_user.employee_id = doc.employee_number
-		hp_user.full_name = doc.employee_name
+		hp_user.full_name = doc.full_name
 		hp_user.mobile_no = doc.cell_number if doc.cell_number else hp_user.mobile_no
 		hp_user.email = doc.company_email if doc.company_email else hp_user.email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
@@ -228,7 +228,7 @@ def update_employee_to_hotpot(doc, method):
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
-		hp_user.full_name = doc.employee_name
+		hp_user.full_name = doc.full_name
 		hp_user.mobile_no = doc.cell_number
 		hp_user.email = doc.company_email
 		hp_user.is_active = 1 if doc.status == "Active" else 0

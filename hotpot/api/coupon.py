@@ -4,9 +4,10 @@ import calendar
 from datetime import date, datetime, timedelta
 
 import frappe
-from hotpot.utils.meal_utils import get_discount
 import pytz
 from frappe.utils import today
+
+from hotpot.utils.meal_utils import get_discount
 
 # from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -76,7 +77,7 @@ def get_coupon_for_guest(data):
 	current_time = datetime.now().astimezone(pytz.timezone("Asia/Kolkata"))
 	if not frappe.db.exists("Hotpot User", data.get("mobile")):
 		new_user = frappe.new_doc("Hotpot User")
-		new_user.employee_name = data["name"]
+		new_user.full_name = data["name"]
 		new_user.employee_id = data["mobile"]
 		new_user.is_guest = True
 		new_user.mobile_no = data["mobile"]
