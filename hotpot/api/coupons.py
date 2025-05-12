@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import frappe
 import pytz
 
+from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.utc_time import *
 
 from ..api.users import *
@@ -257,7 +258,7 @@ def cancel_coupon():
 			"""
 		user_doc = frappe.get_doc("Hotpot User", coupon_found.employee_id)
 		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of:
-			user_doc.coupon_count = user_doc.coupon_count + meal_doc.meal_weight
+			user_doc.coupon_count = user_doc.coupon_count + coupon_found.coupon_weight
 			transaction_doc = frappe.new_doc("Hotpot Transaction History")
 			transaction_doc.update(
 				{
@@ -954,26 +955,13 @@ def generate_coupon():
 					buffer_used += 1
 
 				try:
-					# History for user transactions
-					# history_doc = frappe.new_doc("Hotpot Coupons History")
-					# if for_guest and role=="Hotpot User":
-					# 	history_doc.update(
-					# 		{
-					# 			"employee_id": user_doc.get("name"),
-					# 			"type": "Guest Creation",
-					# 			"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
-					# 			"meal_id": meal_id,
-					# 		}
-					# 	)
-					# else:
-					# 	history_doc.update(
-					# 		{
-					# 			"employee_id": user_doc.get("name"),
-					# 			"type": "Creation",
-					# 			"message": f"Created coupon for {meal_title} {start_date}",
-					# 			"meal_id": meal_id,
-					# 		}
-					# 	)
+					coupon_weight = 0
+					if not for_guest and not is_birthday and not is_joining_day:
+						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
+
+						coupon_weight = meal_weight * (100 - get_discount(user_doc, vendor)) * 0.01
+						user_coupon_count -= coupon_weight
+						total_coupons_consumed += coupon_weight
 
 					# Append created coupon in meal
 					meal_doc.append(
@@ -982,6 +970,7 @@ def generate_coupon():
 							"employee_id": user_doc.get("name"),
 							"employee_code": user_doc.get("employee_id"),
 							"coupon_date": start_date,
+							"coupon_weight": coupon_weight,
 							"title": meal_title,
 							"coupon_status": "1",
 							"guest_employee_code": user_doc.get("employee_id") if for_guest else None,
@@ -995,10 +984,6 @@ def generate_coupon():
 							),
 						},
 					)
-
-					if not for_guest and not is_birthday and not is_joining_day:
-						user_coupon_count -= meal_weight
-						total_coupons_consumed += meal_weight
 
 					transaction_doc = frappe.new_doc("Hotpot Transaction History")
 					transaction_doc.update(
@@ -1504,6 +1489,13 @@ def generate_coupon_admin():
 
 					temp_docs.append(history_doc)
 
+					coupon_weight = 0
+					if not for_guest and not is_birthday and not is_joining_day:
+						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
+						coupon_weight = meal_weight * (100 - get_discount(user_doc, vendor)) * 0.01
+						user_coupon_count -= coupon_weight
+						total_coupons_consumed += coupon_weight
+
 					# Append created coupon in meal
 					meal_doc.append(
 						"coupons",
@@ -1511,6 +1503,7 @@ def generate_coupon_admin():
 							"employee_id": user_doc.get("name"),
 							"employee_code": user_doc.get("employee_id"),
 							"coupon_date": start_date,
+							"coupon_weight": coupon_weight,
 							"title": meal_title,
 							"coupon_status": "1",
 							"guest_employee_code": user_doc.get("employee_id") if for_guest else None,
@@ -1521,10 +1514,6 @@ def generate_coupon_admin():
 							"email": email,
 						},
 					)
-
-					if not for_guest and not is_birthday and not is_joining_day:
-						user_coupon_count -= meal_weight
-						total_coupons_consumed += meal_weight
 
 				except Exception as e:
 					frappe.db.rollback()
@@ -1720,12 +1709,19 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 						)
 					history_doc.insert()
 
+					coupon_weight = 0
+					if not for_guest and not is_birthday and not is_joining_day:
+						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
+						coupon_weight = (100 - get_discount(user_doc, vendor)) * 0.01
+						user_coupon_count -= coupon_weight
+						total_coupons_consumed += coupon_weight
 					meal_doc.append(
 						"coupons",
 						{
 							"employee_id": user_doc.get("name"),
 							"employee_code": user_doc.get("employee_id"),
 							"coupon_date": start_date,
+							"coupon_weight": coupon_weight,
 							"title": meal_title,
 							"coupon_status": "1",
 							"guest_employee_code": user_doc.get("employee_id") if for_guest else None,
@@ -1739,10 +1735,6 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 							),
 						},
 					)
-
-					if not for_guest and not is_birthday and not is_joining_day:
-						user_coupon_count -= meal_weight
-						total_coupons_consumed += meal_weight
 
 				except Exception as e:
 					frappe.db.rollback()

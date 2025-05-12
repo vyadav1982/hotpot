@@ -7,6 +7,8 @@ from frappe.model.document import Document
 
 class HotpotCoupons(Document):
 	# begin: auto-generated types
+	# ruff: noqa
+
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -18,6 +20,7 @@ class HotpotCoupons(Document):
 		birthday_coupon: DF.Check
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
+		coupon_weight: DF.Float
 		email: DF.Data | None
 		employee_code: DF.Data | None
 		employee_id: DF.Data | None
@@ -29,5 +32,7 @@ class HotpotCoupons(Document):
 		parenttype: DF.Data
 		served_by: DF.Data | None
 		title: DF.Data | None
+	# ruff: noqa
 	# end: auto-generated types
+
 	pass
