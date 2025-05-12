@@ -2,7 +2,7 @@ import frappe
 
 
 def get_discount(user):
-	"""Get the discount for a user"""
+	"""Get the discount for a hotpot user"""
 
 	if user.discount != -1:
 		return user.discount

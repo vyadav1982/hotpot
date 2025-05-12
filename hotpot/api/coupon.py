@@ -1,11 +1,10 @@
 import calendar
-import pdb
 
 # import schedule
-import time
 from datetime import date, datetime, timedelta
 
 import frappe
+from hotpot.utils.meal_utils import get_discount
 import pytz
 from frappe.utils import today
 
@@ -123,20 +122,16 @@ def create_coupon(params):
 	to_date = year2 + "-" + month2 + "-" + date2
 	if not frappe.db.exists("Hotpot User", employee_id):
 		return frappe.throw(f"Employee ID: {employee_id} does not exist")
-	query = """
-        select coupon_count
-        from `tabHotpot User`
-        where employee_id = %s
-    """
-	coupon_count = frappe.db.sql(query, employee_id, as_dict=True)
+	hotpot_user = frappe.db.get_doc("Hotpot User", employee_id)
+	coupon_count = hotpot_user.coupon_count
+
 	if not coupon_count:
 		return {"message": "No coupon available for this employee"}
+
 	from_date = datetime.strptime(from_date, "%Y-%m-%d")
 	to_date = datetime.strptime(to_date, "%Y-%m-%d")
-	coupon_count = coupon_count[0].get("coupon_count")
 	day_difference = (to_date - from_date).days
-	# if (day_difference) * len(meal_type) > coupon_count:
-	# 	return {"message": "Not enough coupons available for this employee"}
+
 	query = """
         select title,start_hour
         from `tabHotpot Coupon Type`
@@ -186,7 +181,7 @@ def create_coupon(params):
 					meal + "_" + employee_id + "_" + (from_date + timedelta(days=x)).strftime("%Y-%m-%d"),
 				):
 					coupon.save(ignore_permissions=True)
-					coupon_count = coupon_count - db_meal_value
+					coupon_count = coupon_count - db_meal_value * (100 - get_discount(hotpot_user)) * 0.01
 					doc = frappe.new_doc("Hotpot Coupons History")
 					doc.employee_id = employee_id
 					doc.type = "Creation"
@@ -362,29 +357,3 @@ def coupon_from_info(input_str: str) -> str | None:
 		coupon_date=coupon_date,
 		coupon_time=coupon_time,
 	)
-
-
-# def change_status():
-# 	print("&&"*10)
-
-# schedule.every(10).seconds.do(change_status)
-
-# while True:
-# 	schedule.run_pending()
-# 	time.sleep(1)
-
-# while(True):
-#     print('hello geek!')
-#     time.sleep(300)
-
-
-# def myTask():
-# 	print ("Executed at: ",datetime.now())
-
-# scheduler=BlockingScheduler()
-# scheduler.add_job(myTask,'cron',hour =11,minute=11)
-
-# try:
-# 	scheduler.start()
-# except(keyboardInterrupt,SystemExit):
-# 	pass
