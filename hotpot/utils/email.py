@@ -47,7 +47,7 @@ def send_email(template_name, to_email, context, subject, qr_code_base64=None):
 	except Exception as e:
 		print("---------->", e)
 		frappe.log_error(frappe.get_traceback(), "Email Sending Error")
-		frappe.throw(f"Failed to send email: {str(e)}")
+		# frappe.throw(f"Failed to send email: {str(e)}")
 
 
 def clean_and_decode_base64(base64_string):

@@ -341,12 +341,10 @@ def scan_coupon():
 			return
 
 		data = json.loads(frappe.request.data or "{}")
-		data = json.loads(frappe.request.data or "{}")
 		meal_id = data.get("meal_id")
 		coupon_id = data.get("coupon_id")
 		user_id = data.get("user_id")
 		vendor_id = data.get("vendor_id")
-
 		if not meal_id or not user_id or not vendor_id:
 			set_response(400, False, "Missing required field")
 			return
