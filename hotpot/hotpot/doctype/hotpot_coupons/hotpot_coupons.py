@@ -29,7 +29,7 @@ class HotpotCoupons(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		served_by: DF.Data | None
-		title: DF.Data | None
+		title: DF.SmallText | None
 	# end: auto-generated types
 
 	pass
