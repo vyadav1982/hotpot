@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, time
 
 import frappe
 import pytz
@@ -679,10 +679,13 @@ def get_all_coupons(
 			return
 
 		elif primary_role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+			tz = pytz.timezone(user_timezone.zone)
+			start_datetime = tz.localize(datetime.combine(start_date, time.min)).astimezone(pytz.utc)
+			end_datetime = tz.localize(datetime.combine(end_date, time.max)).astimezone(pytz.utc)
 			params = {
 				"user_timezone": user_timezone,
-				"start_date": start_date,
-				"end_date": end_date,
+				"start_datetime": start_datetime,
+				"end_datetime": end_datetime,
 				"user_name": user_doc.get("name"),
 				"start": start,
 				"limit": limit,
@@ -713,7 +716,7 @@ def get_all_coupons(
 				INNER JOIN
 					`tabHotpot User` AS U ON hm.vendor_id = U.name
 				WHERE
-					DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
+					hc.coupon_date BETWEEN %(start_datetime)s AND %(end_datetime)s
 					AND hc.employee_id = %(user_name)s
 					AND hc.email IS NULL
 				LIMIT %(start)s, %(limit)s;

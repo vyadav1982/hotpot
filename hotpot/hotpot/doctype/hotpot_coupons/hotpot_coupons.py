@@ -7,8 +7,6 @@ from frappe.model.document import Document
 
 class HotpotCoupons(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -32,7 +30,6 @@ class HotpotCoupons(Document):
 		parenttype: DF.Data
 		served_by: DF.Data | None
 		title: DF.Data | None
-	# ruff: noqa
 	# end: auto-generated types
 
 	pass
