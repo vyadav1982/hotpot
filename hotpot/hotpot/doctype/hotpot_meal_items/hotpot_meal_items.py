@@ -24,8 +24,6 @@ def is_frappe_ui_request():
 
 class HotpotMealItems(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -36,13 +34,14 @@ class HotpotMealItems(Document):
 		is_active: DF.Check
 		is_deleted: DF.Check
 		item_name: DF.Data | None
-		vendor_id: DF.Link | None
-	# ruff: noqa
+		vendor_id: DF.Link
 	# end: auto-generated types
 
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			roles = frappe.get_roles()
+			if "Administrator" in roles:
+				return
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 				self.vendor_id = vendor_id
