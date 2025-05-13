@@ -1,4 +1,5 @@
 {
+ "app": "hotpot",
  "charts": [],
  "content": "[{\"id\":\"pUWCbHYIfc\",\"type\":\"header\",\"data\":{\"text\":\"<span style=\\\"font-size: 18px; letter-spacing: 0.18px;\\\"><b>Quick Links</b></span>\",\"col\":12}},{\"id\":\"fk2buZkq1n\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Joining Day Meal Report\",\"col\":3}},{\"id\":\"Ub3uy7GrkC\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overall Meal Report\",\"col\":3}},{\"id\":\"CKO5pKNJP7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Birthday Meal Report\",\"col\":3}},{\"id\":\"sdD0XR95TP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Guest Meal Report\",\"col\":3}}]",
  "creation": "2025-03-28 11:25:57.184270",
@@ -13,7 +14,7 @@
  "is_hidden": 1,
  "label": "Hotpot Finance Workspace",
  "links": [],
- "modified": "2025-05-01 11:04:10.264239",
+ "modified": "2025-05-13 04:28:13.221201",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Finance Workspace",
@@ -30,6 +31,7 @@
    "doc_view": "List",
    "label": "Joining Day Meal Report",
    "link_to": "Joining Day Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   },
   {
@@ -37,6 +39,7 @@
    "doc_view": "List",
    "label": "Overall Meal Report",
    "link_to": "Meal Consumption Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   },
   {
@@ -44,6 +47,7 @@
    "doc_view": "List",
    "label": "Birthday Meal Report",
    "link_to": "Birthday Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   },
   {
@@ -51,8 +55,10 @@
    "doc_view": "List",
    "label": "Guest Meal Report",
    "link_to": "Guest Meal Consumption Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   }
  ],
- "title": "Hotpot Finance Workspace"
+ "title": "Hotpot Finance Workspace",
+ "type": "Workspace"
 }

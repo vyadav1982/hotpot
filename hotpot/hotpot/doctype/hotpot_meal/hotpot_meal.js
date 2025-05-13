@@ -5,6 +5,16 @@ frappe.ui.form.on("Hotpot Meal", {
 		const isHotpotAdmin = userRoles.includes("Hotpot Admin");
 		const isVendor = userRoles.includes("Hotpot Vendor");
 
+		frm.set_query("vendor_id", function () {
+			return {
+				filters: {
+					is_vendor: 1,
+				},
+			};
+		});
+
+		frm.set_df_property("vendor_id", "only_select", true);
+
 		if (!isAdmin) {
 			frm.page.wrapper.find(".comment-box").css({ display: "none" });
 			frm.page.hide_menu();
@@ -62,6 +72,15 @@ frappe.ui.form.on("Hotpot Meal", {
 		}
 	},
 	onload(frm) {
+		frm.set_query("vendor_id", function () {
+			return {
+				filters: {
+					is_vendor: 1,
+				},
+			};
+		});
+
+		frm.set_df_property("vendor_id", "only_select", true);
 		updateLocalDescriptions(frm);
 	},
 

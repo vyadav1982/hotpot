@@ -1,4 +1,5 @@
 {
+ "app": "hotpot",
  "charts": [],
  "content": "[{\"id\":\"MdJbHyVe6r\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">User Management \ud83e\udd37\ud83c\udffb\u200d\u2642\ufe0f</span>\",\"col\":12}},{\"id\":\"aUDsQS2KUO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"gE0QeIiZ68\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Vendor\",\"col\":3}},{\"id\":\"lek5t4lYZp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot HR\",\"col\":3}},{\"id\":\"lz03tulgb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Holidays\",\"col\":3}},{\"id\":\"05Rf__qGZx\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EV6h2cR0bU\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports \ud83d\uddc2\ufe0f</b></span>\",\"col\":12}},{\"id\":\"UOoKVWQDzZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Birthday Meal Report\",\"col\":3}},{\"id\":\"GlbtuEKyZf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Joining day Meal Report\",\"col\":3}},{\"id\":\"-u6IxIatR_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Guest Meal Report\",\"col\":3}},{\"id\":\"DbiVmmu0JS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Overall Meal Report\",\"col\":3}},{\"id\":\"C9Y-ZihUbq\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KkVUId6d75\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Approvals \u2705</b></span>\",\"col\":12}},{\"id\":\"jB6Pq67lcr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Approvals\",\"col\":3}},{\"id\":\"RGxRIva0T0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Approvals\",\"col\":3}},{\"id\":\"VluMNc6t2L\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Confirmed Approvals\",\"col\":3}}]",
  "creation": "2025-03-28 11:00:41.254560",
@@ -13,7 +14,7 @@
  "is_hidden": 0,
  "label": "Hotpot HR Workspace",
  "links": [],
- "modified": "2025-05-06 11:37:32.143069",
+ "modified": "2025-05-13 04:26:53.032299",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot HR Workspace",
@@ -30,11 +31,27 @@
  "sequence_id": 2.0,
  "shortcuts": [
   {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Hotpot Vendor",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Green",
    "doc_view": "List",
    "label": "Hotpot User",
    "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot User\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",0,false],[\"Hotpot User\",\"is_server\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Pink",
+   "doc_view": "List",
+   "label": "Hotpot HR",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",0,false],[\"Hotpot User\",\"is_server\",\"=\",0,false]]",
    "type": "DocType"
   },
   {
@@ -42,21 +59,15 @@
    "doc_view": "List",
    "label": "Birthday Meal Report",
    "link_to": "Birthday Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
-  },
-  {
-   "color": "Red",
-   "doc_view": "List",
-   "label": "Hotpot Vendor",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot Vendor\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
-   "type": "DocType"
   },
   {
    "color": "Grey",
    "doc_view": "List",
    "label": "Joining day Meal Report",
    "link_to": "Joining Day Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   },
   {
@@ -64,21 +75,15 @@
    "doc_view": "List",
    "label": "Guest Meal Report",
    "link_to": "Guest Meal Consumption Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
-  },
-  {
-   "color": "Pink",
-   "doc_view": "List",
-   "label": "Hotpot HR",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"role\",\"=\",\"Hotpot HR\",false],[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
-   "type": "DocType"
   },
   {
    "color": "Grey",
    "doc_view": "List",
    "label": "Overall Meal Report",
    "link_to": "Meal Consumption Report",
+   "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
   },
   {
@@ -114,5 +119,6 @@
    "type": "DocType"
   }
  ],
- "title": "Hotpot HR Workspace"
+ "title": "Hotpot HR Workspace",
+ "type": "Workspace"
 }
