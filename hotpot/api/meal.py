@@ -85,7 +85,7 @@ def create_meal():
 
 		vendor_id = None
 		if user_data.get("role") == "Hotpot Vendor":
-			vendor_id = user_data.get("guest_of")
+			vendor_id = user_data.get("email")
 		else:
 			vendor_id = data.get("vendor_id")
 
@@ -398,7 +398,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 
 		# start = (page - 1) * limit
 		if user_data.get("role") in ["Hotpot Server", "Hotpot Vendor"]:
-			filters = [["vendor_id", "=", user_data.get("guest_of")], ["is_deleted", "=", 0]]
+			filters = [["vendor_id", "=", user_data.get("email")], ["is_deleted", "=", 0]]
 
 			meals = frappe.db.get_list(
 				"Hotpot Meal",
@@ -657,7 +657,7 @@ def get_meal_items():
 		data = frappe.db.get_list(
 			"Hotpot Meal Items",
 			fields=["*"],
-			filters={"vendor_id": user_data.get("guest_of"), "is_active": 1, "is_deleted": 0},
+			filters={"vendor_id": user_data.get("email"), "is_active": 1, "is_deleted": 0},
 			order_by="item_name asc",
 		)
 

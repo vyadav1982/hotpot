@@ -96,7 +96,7 @@
    "fieldtype": "Int",
    "label": "Wallet Balance",
    "non_negative": 1,
-   "read_only": 1
+   "read_only": 0
   },
   {
    "default": "+91- ",

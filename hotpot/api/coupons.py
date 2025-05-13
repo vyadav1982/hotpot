@@ -85,7 +85,7 @@ def get_coupon_count(start_date, end_date, user=False):
 		day_wise_data = frappe.db.sql(
 			coupon_query,
 			{
-				"vendor_name": user_doc.get("guest_of"),
+				"vendor_name": user_doc.get("email"),
 				"start_date": start_date,
 				"end_date": end_date,
 				"user_timezone": user_timezone,
@@ -96,7 +96,7 @@ def get_coupon_count(start_date, end_date, user=False):
 		total_feedback = frappe.db.sql(
 			feedback_query,
 			{
-				"vendor_name": user_doc.get("guest_of"),
+				"vendor_name": user_doc.get("email"),
 				"start_date": start_date,
 				"end_date": end_date,
 				"user_timezone": user_timezone,
@@ -162,7 +162,7 @@ def get_report(start_date, end_date):
 		data = frappe.db.sql(
 			coupon_query,
 			{
-				"vendor_name": user_doc.get("guest_of"),
+				"vendor_name": user_doc.get("email"),
 				"start_date": start_date,
 				"end_date": end_date,
 				"user_timezone": user_timezone,
@@ -570,6 +570,19 @@ def update_coupon_status():
 		set_response(500, False, f"Server error: {str(e)}")
 		return
 
+def check_hotpot_role(hotpot_roles):
+	if not hotpot_roles:
+		return None
+
+	normalized_roles = [r.replace("Hotpot Hotpot", "Hotpot").strip() for r in hotpot_roles]
+
+	priority = ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
+
+	for role in priority:
+		if role in normalized_roles:
+			return role
+
+	return normalized_roles[0]
 
 @frappe.whitelist()
 def get_all_coupons(
@@ -612,7 +625,10 @@ def get_all_coupons(
 		limit = int(limit)
 		start = (page - 1) * limit
 
-		if user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor":
+		roles = frappe.get_roles(frappe.session.user)
+		hotpot_roles = [role for role in roles if role.startswith("Hotpot")]
+		primary_role = check_hotpot_role(hotpot_roles)
+		if primary_role == "Hotpot Server" or primary_role == "Hotpot Vendor":
 			query = """
 				SELECT
 					hm.start_time AS start_time,
@@ -640,7 +656,7 @@ def get_all_coupons(
 				"""
 
 			params = {
-				"vendor_name": user_doc.get("guest_of"),
+				"vendor_name": user_doc.get("email"),
 				"user_timezone": user_timezone,
 				"start_date": start_date,
 				"end_date": end_date,
@@ -662,7 +678,7 @@ def get_all_coupons(
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
-		elif user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		elif primary_role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
 			params = {
 				"user_timezone": user_timezone,
 				"start_date": start_date,
@@ -699,7 +715,7 @@ def get_all_coupons(
 				WHERE
 					DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
 					AND hc.employee_id = %(user_name)s
-					AND hc.guest_of IS NULL
+					AND hc.email IS NULL
 				LIMIT %(start)s, %(limit)s;
 			""",
 				params,
@@ -727,7 +743,7 @@ def get_all_coupons(
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
-		elif user_doc.get("role") == "Hotpot Admin":
+		elif primary_role == "Hotpot Admin":
 			query = """
 				(
 				SELECT *
@@ -959,7 +975,8 @@ def generate_coupon():
 					if not for_guest and not is_birthday and not is_joining_day:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
 
-						coupon_weight = meal_weight * (100 - get_discount(user_doc, vendor)) * 0.01
+						coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
+
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
 
@@ -1241,7 +1258,7 @@ def get_guest_coupon(date):
 			INNER JOIN
 				`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 			WHERE
-				hc.guest_of = %s
+				hc.email = %s
 				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 		"""
 
@@ -1492,7 +1509,7 @@ def generate_coupon_admin():
 					coupon_weight = 0
 					if not for_guest and not is_birthday and not is_joining_day:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
-						coupon_weight = meal_weight * (100 - get_discount(user_doc, vendor)) * 0.01
+						coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
 
