@@ -3,8 +3,9 @@ from datetime import datetime, timedelta
 
 import frappe
 import pytz
-from hotpot.utils.role_utils import has_any_of_role, has_role
+
 from hotpot.utils.meal_utils import get_discount
+from hotpot.utils.role_utils import has_any_of_role, has_role
 from hotpot.utils.send_fcm import *
 from hotpot.utils.utc_time import *
 
@@ -457,7 +458,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 			vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
-			
+
 			meal["meal_weight"] = meal["meal_weight"] * (100 - (get_discount(user_data, vendor) or 0)) * 0.01
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 			meal["total_coupons"] = 0
