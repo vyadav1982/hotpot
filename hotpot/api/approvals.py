@@ -5,6 +5,7 @@ from frappe.utils.file_manager import save_file
 
 from hotpot.utils.email import *
 from hotpot.utils.guest_coupon_generate import *
+from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 from hotpot.utils.utc_time import *
 
 from ..api.users import *
@@ -55,7 +56,7 @@ def get_approvals():
 			"is_active",
 		]
 
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date", "coupon_count"]
 
 		approvals = frappe.db.get_list(
@@ -123,7 +124,7 @@ def create_approval():
 		data = json.loads(frappe.request.data or "{}")
 		required_fields = ["request_type", "description", "meal_id"]
 
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			required_fields += [
 				"guest_name",
 				"guest_mobile_no",
@@ -136,22 +137,22 @@ def create_approval():
 		missing_fields = [field for field in required_fields if not data.get(field)]
 		if missing_fields:
 			return set_response(400, False, f"Missing required fields: {', '.join(missing_fields)}")
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			if data.get("guest_mobile_no") and not data.get("guest_mobile_no").strip().isdigit():
 				return set_response(400, False, "Mobile number should contain only digits")
 			if data.get("guest_mobile_no") and len(data.get("guest_mobile_no").strip()) != 10:
 				return set_response(400, False, "Mobile number should contain 10 digits")
 
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			mobile_no = data.get("country_code") + "- " + data.get("guest_mobile_no")
 		existing_approval = None
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			existing_approval = frappe.get_all(
 				"Hotpot Approvals",
 				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
 				limit=1,
 			)
-		if existing_approval and user_data.get("role") != "Hotpot Admin":
+		if existing_approval and get_dominant_role_for_current_user() != "Hotpot Admin":
 			return set_response(400, False, "Pending approval already exists for this mobile number.")
 
 		date = get_utc_datetime_obj(f"{data.get('date')} {get_local_time_now()}") if "date" in data else None
@@ -166,7 +167,7 @@ def create_approval():
 			"approval_status": "Pending",
 			"is_active": 1,
 		}
-		if user_data.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			approval_data.update(
 				{
 					"purpose_of_visiting": data.get("purpose_of_visiting"),
@@ -179,7 +180,7 @@ def create_approval():
 
 		approval = frappe.get_doc(approval_data)
 		meal_doc = frappe.get_doc("Hotpot Meal", data.get("meal_id"))
-		if user_data.get("role") in ["Hotpot Vendor", "Hotpot Server"]:
+		if has_any_of_role(["Hotpot Vendor", "Hotpot Server"]):
 			if not meal_doc:
 				return set_response(404, False, "Meal not found")
 
@@ -197,19 +198,19 @@ def create_approval():
 		)
 		if not isinstance(approval_list, list):
 			approval_list = []
-		if user_data.get("role") in ["Hotpot Vendor", "Hotpot Server"]:
+		if has_any_of_role(["Hotpot Vendor", "Hotpot Server"]):
 			meal_doc.approval_id = approval.name
 			meal_doc.save()
 
 		approval_list.append(approval.name)
-		if user_data.get("role") != "Hotpot Admin":
+		if get_dominant_role_for_current_user() != "Hotpot Admin":
 			send_approval_request_email(
 				"sashikant12rao@gmail.com", user_data, data, approval.name, meal_doc.meal_title
 			)
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()
-		if user_data.get("role") == "Hotpot Admin":
+		if get_dominant_role_for_current_user() == "Hotpot Admin":
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval.name)
 			approval_doc.approval_status = "Approved"
 			approval_doc.is_active = 0

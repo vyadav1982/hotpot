@@ -2,6 +2,7 @@ import json
 
 import frappe
 
+from hotpot.utils.role_utils import get_dominant_role_for_current_user
 from hotpot.utils.utc_time import *
 
 from ..api.users import *
@@ -25,7 +26,7 @@ def create_banner():
 		if not user_data:
 			set_response(401, False, "User Not found")
 			return
-		if user_data.get("role") == "Hotpot User":
+		if get_dominant_role_for_current_user() == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 
@@ -103,7 +104,7 @@ def get_active_banners():
 			"start_date": ["<=", today],
 			"end_date": [">=", today],
 		}
-		if not user_data.get("role") == "Hotpot User":
+		if not get_dominant_role_for_current_user() == "Hotpot User":
 			filters["created_by"] = user_data.get("name")
 		banners = frappe.get_all(
 			"Hotpot Banner",
@@ -135,7 +136,7 @@ def update_banner(banner_id, **kwargs):
 		if not user_data:
 			set_response(401, False, "User Not found")
 			return
-		if user_data.get("role") == "Hotpot User":
+		if get_dominant_role_for_current_user() == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 
@@ -170,7 +171,7 @@ def delete_banner(banner_id):
 		if not user_data:
 			set_response(401, False, "User Not found")
 			return
-		if user_data.get("role") == "Hotpot User":
+		if get_dominant_role_for_current_user() == "Hotpot User":
 			set_response(403, False, "Not Permitted to acess this resouce")
 			return
 

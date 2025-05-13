@@ -6,6 +6,7 @@ import frappe
 from frappe.utils import now_datetime
 
 from hotpot.utils.email import *
+from hotpot.utils.role_utils import has_any_of_role, has_role
 from hotpot.utils.utc_time import *
 
 
@@ -64,7 +65,7 @@ def get_coupons_history(page=1, limit=10):
 			set_response(401, False, "User Not found")
 			return
 
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		employee_id = user_doc.get("employee_id")
@@ -262,7 +263,7 @@ def get_all_vendor():
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		user_list = frappe.db.get_list(
@@ -382,7 +383,7 @@ def get_dashboard_data():
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-		if user_doc.get("role") not in ["Hotpot Finance", "Hotpot Admin", "Hotpot HR"]:
+		if not has_any_of_role(["Hotpot Finance", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
@@ -608,7 +609,7 @@ def bulk_insert_employee():
 	if not user_doc:
 		set_response(401, False, "User Not found")
 		return
-	if user_doc.get("role") not in ["Hotpot Admin"]:
+	if not has_role(["Hotpot Admin"]):
 		set_response(403, False, "Not Permitted to access this resource")
 		return
 	bliss_doc = frappe.get_doc("Hotpot Locations", {"location": "Bliss HQ"})
@@ -714,7 +715,7 @@ def get_hotpot_history(start_date, end_date):
 	if not user_doc:
 		set_response(401, False, "User Not found")
 		return
-	if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+	if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 		set_response(403, False, "Not Permitted to access this resource")
 		return
 

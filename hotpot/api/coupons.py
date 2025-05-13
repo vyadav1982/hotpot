@@ -6,6 +6,7 @@ import frappe
 import pytz
 
 from hotpot.utils.meal_utils import get_discount
+from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role, has_role
 from hotpot.utils.utc_time import *
 
 from ..api.users import *
@@ -23,7 +24,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			set_response(401, False, "User Not found")
 			return
 
-		if not user and user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if not user and has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
@@ -35,7 +36,7 @@ def get_coupon_count(start_date, end_date, user=False):
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 
-		if user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			coupon_query = """
 				SELECT hc.coupon_status,
 					COUNT(hc.name) AS coupon_count
@@ -129,7 +130,7 @@ def get_report(start_date, end_date):
 			set_response(401, False, "User Not found")
 			return
 
-		if user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
@@ -188,7 +189,7 @@ def cancel_coupon():
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 
@@ -295,7 +296,7 @@ def get_redeemed_coupon():
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
+		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		data = json.loads(frappe.request.data or "{}")
@@ -366,7 +367,7 @@ def scan_coupon():
 		if not user_doc:
 			set_response(401, False, "User Not Found")
 			return
-		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
+		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
@@ -471,7 +472,7 @@ def get_scanned_coupons(
 			set_response(401, False, "User Not found")
 			return
 
-		if not (user_doc.get("role") == "Hotpot Server" or user_doc.get("role") == "Hotpot Vendor"):
+		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		start_date = f"{start_date} 00:00:00"
@@ -568,6 +569,7 @@ def update_coupon_status():
 		set_response(500, False, f"Server error: {str(e)}")
 		return
 
+
 def check_hotpot_role(hotpot_roles):
 	if not hotpot_roles:
 		return None
@@ -581,6 +583,7 @@ def check_hotpot_role(hotpot_roles):
 			return role
 
 	return normalized_roles[0]
+
 
 @frappe.whitelist()
 def get_all_coupons(
@@ -794,14 +797,14 @@ def generate_coupon():
 		if not user_doc:
 			set_response(401, False, "User Not Found")
 			return
-		role = user_doc.get("role")
-		if role not in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]:
+
+		if not has_any_of_role(["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 		required_fields = ["meal_id", "date"]
 		for_guest = data.get("guest", False)
-		if for_guest and role in ["Hotpot User", "Hotpot HR"]:
+		if for_guest and has_any_of_role(["Hotpot User", "Hotpot HR"]):
 			required_fields.append("approval_id")
 		missing = [field for field in required_fields if not data.get(field)]
 		if missing:
@@ -810,7 +813,7 @@ def generate_coupon():
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
 		qty = data.get("qty", 1)
-		if user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
@@ -829,7 +832,7 @@ def generate_coupon():
 				from_date = start_date.date()
 
 				if (
-					role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]
+					has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"])
 					and for_guest
 					and hotpot_config.get("can_generate_for_guest") == 0
 				):
@@ -841,14 +844,16 @@ def generate_coupon():
 				dob = user_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
-				if role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"] and dob:
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and dob:
 					is_birthday = (
 						hotpot_config.get("free_birthday_meal") == 1
 						and dob.month == start.month
 						and dob.day == start.day
 					)
 				is_joining_day = False
-				if role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"] and user_doc.get("joining_date"):
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and user_doc.get(
+					"joining_date"
+				):
 					is_joining_day = (
 						hotpot_config.get("free_joining_day_meal") == 1
 						and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
@@ -1092,7 +1097,7 @@ def search_coupon(start_date, end_date, identifier):
 		if not vendor_doc:
 			return set_response(401, False, "User Not found")
 
-		if vendor_doc.get("role") not in ["Hotpot Server", "Hotpot Vendor"]:
+		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			return set_response(403, False, "Not Permitted to access this resource")
 		# date = get_utc_datetime_obj(date)
 
@@ -1142,7 +1147,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=1000):
 		if not user_doc:
 			return set_response(401, False, "User Not found")
 
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin"]:
+		if not has_any_of_role(["Hotpot User", "Hotpot Admin"]):
 			return set_response(403, False, "Not Permitted to access this resource")
 
 		if not date:
@@ -1211,7 +1216,7 @@ def get_guest_coupon(date):
 			set_response(401, False, "User Not found")
 			return
 
-		if user_doc.get("role") not in ["Hotpot User", "Hotpot Admin"]:
+		if not has_any_of_role(["Hotpot User", "Hotpot Admin"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 
@@ -1292,14 +1297,14 @@ def generate_coupon_admin():
 		if not user_doc:
 			set_response(401, False, "User Not Found")
 			return
-		role = user_doc.get("role")
-		if role not in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]:
+
+		if not has_any_of_role(["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 		required_fields = ["meal_id", "date", "email"]
 		for_guest = data.get("guest", False)
-		if for_guest and role == "Hotpot User":
+		if for_guest and get_dominant_role_for_current_user() == "Hotpot User":
 			required_fields.append("approval_id")
 		if not data.get("email"):
 			return set_response(400, False, "Email cannot be empty")
@@ -1310,7 +1315,7 @@ def generate_coupon_admin():
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
 		emails = data.get("email")
-		if user_doc.get("role") in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
+		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
@@ -1340,7 +1345,11 @@ def generate_coupon_admin():
 				start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
 				from_date = start_date.date()
 
-				if role == "Hotpot User" and for_guest and hotpot_config.get("can_generate_for_guest") == 0:
+				if (
+					get_dominant_role_for_current_user() == "Hotpot User"
+					and for_guest
+					and hotpot_config.get("can_generate_for_guest") == 0
+				):
 					return set_response(400, False, "Not allowed to generate coupon for guest")
 
 				approval_id = data.get("approval_id", None)
@@ -1349,14 +1358,14 @@ def generate_coupon_admin():
 				dob = user_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
-				if role == "Hotpot User" and dob:
+				if get_dominant_role_for_current_user() == "Hotpot User" and dob:
 					is_birthday = (
 						hotpot_config.get("free_birthday_meal") == 1
 						and dob.month == start.month
 						and dob.day == start.day
 					)
 				is_joining_day = False
-				if role == "Hotpot User" and user_doc.get("joining_date"):
+				if get_dominant_role_for_current_user() == "Hotpot User" and user_doc.get("joining_date"):
 					is_joining_day = (
 						hotpot_config.get("free_joining_day_meal") == 1
 						and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
@@ -1542,9 +1551,9 @@ def generate_coupon_admin():
 				# Update meal buffer count if buffer time
 				if is_buffer_time and buffer_used > 0:
 					meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
-				if for_guest and role == "Hotpot User":
+				if for_guest and get_dominant_role_for_current_user() == "Hotpot User":
 					approval_doc.is_active = 0
-				if role == "Hotpot User":
+				if get_dominant_role_for_current_user() == "Hotpot User":
 					meal_docs[meal_id] = meal_doc
 				else:
 					meal_doc.save()
@@ -1591,7 +1600,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 			date_obj = get_local_datetime_obj(date)
 			date = date_obj.strftime("%Y-%m-%d")
 
-		if  any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
+		if any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
 			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
@@ -1626,7 +1635,9 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 					)
 
 				is_joining_day = False
-				if any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]) and user_doc.get("joining_date"):
+				if any(
+					role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
+				) and user_doc.get("joining_date"):
 					is_joining_day = (
 						hotpot_config.get("free_joining_day_meal") == 1
 						and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
@@ -1706,7 +1717,9 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 
 				try:
 					history_doc = frappe.new_doc("Hotpot Coupons History")
-					if for_guest and any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
+					if for_guest and any(
+						role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
+					):
 						history_doc.update(
 							{
 								"employee_id": user_doc.get("name"),
@@ -1747,7 +1760,12 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 							**({"joining_day": 1} if is_joining_day and not for_guest else {}),
 							**(
 								{"approval_id": approval_id}
-								if (for_guest and any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]))
+								if (
+									for_guest
+									and any(
+										role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
+									)
+								)
 								else {}
 							),
 						},

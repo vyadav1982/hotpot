@@ -7,6 +7,7 @@ import frappe
 from frappe.model.document import Document
 
 from hotpot.utils.email import *
+from hotpot.utils.role_utils import has_role
 
 
 class HotpotUser(Document):
@@ -103,11 +104,11 @@ class HotpotUser(Document):
 				if user_name:
 					user_doc = frappe.get_doc("Hotpot User", user_name)
 
-					if user_doc.get("role") == "Hotpot Vendor":
+					if has_role("Hotpot Vendor"):
 						user_doc.guest_of = user_doc.name
 						user_doc.save(ignore_permissions=True)
 						frappe.db.commit()
-					if user_doc.get("role") == "Hotpot User":
+					if has_role("Hotpot User"):
 						transaction_doc = frappe.new_doc("Hotpot Transaction History")
 						transaction_doc.update(
 							{
