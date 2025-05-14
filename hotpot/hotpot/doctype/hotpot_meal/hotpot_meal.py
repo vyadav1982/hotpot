@@ -9,8 +9,6 @@ from hotpot.utils.utc_time import *
 
 class HotpotMeal(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -39,11 +37,11 @@ class HotpotMeal(Document):
 		meal_weight: DF.Int
 		menu_items: DF.Table[MealMenuItems]
 		ratings: DF.Table[HotpotMealRating]
+		remaining_coupon_count: DF.Int
 		repeat_days: DF.Data | None
 		repeat_type: DF.Literal["once", "daily", "specific_days"]
 		start_time: DF.Datetime
 		vendor_id: DF.Link
-	# ruff: noqa
 	# end: auto-generated types
 
 	def validate(self):

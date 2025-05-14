@@ -1416,7 +1416,7 @@ def generate_coupon_admin():
 				user_coupon_count = user_doc.coupon_count
 				meal_weight = meal_doc.get("meal_weight")
 				meal_buffer_count = meal_doc.buffer_coupon_count
-
+				remaining_coupon_count = meal_doc.remaining_coupon_count
 				if (
 					get_local_datetime_obj(start_date).date()
 					< get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date()
