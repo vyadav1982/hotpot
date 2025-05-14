@@ -28,7 +28,7 @@ mrxaudit.LoadEmployeeBalance = class LoadEmployeeBalance {
 	// 	if (this.form.fields_dict.coupon_count) {
 	// 		this.form.replace_field("coupon_count", {
 	// 			fieldname: "coupon_count",
-	// 			label: __("Coupon Count"),
+	// 			label: __("Wallet Balance"),
 	// 			fieldtype: "Read Only",
 	// 			hidden: true,
 	// 		});
@@ -75,7 +75,7 @@ mrxaudit.LoadEmployeeBalance = class LoadEmployeeBalance {
 											this.form.add_fields([
 												{
 													fieldname: "coupon_count",
-													label: __("Coupon Count"),
+													label: __("Wallet Balance"),
 													fieldtype: "Read Only",
 													default: r.message.coupon_count || 0,
 												},
@@ -95,7 +95,7 @@ mrxaudit.LoadEmployeeBalance = class LoadEmployeeBalance {
 										} else {
 											this.form.replace_field("coupon_count", {
 												fieldname: "coupon_count",
-												label: __("Coupon Count"),
+												label: __("Wallet Balance"),
 												fieldtype: "Read Only",
 												hidden: false, // Hide the field instead of removing it
 											});
@@ -156,7 +156,7 @@ mrxaudit.LoadEmployeeBalance = class LoadEmployeeBalance {
 						if (this.form.fields_dict.coupon_count) {
 							this.form.replace_field("coupon_count", {
 								fieldname: "coupon_count",
-								label: __("Coupon Count"),
+								label: __("Wallet Balance"),
 								fieldtype: "Read Only",
 								hidden: true, // Hide the field instead of removing it
 							});

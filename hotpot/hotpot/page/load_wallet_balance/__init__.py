@@ -13,7 +13,6 @@ def load_balance(**args):
 		frappe.throw("Loading amount is required")
 
 	employee = frappe.get_doc("Hotpot User", employee_id)
-	print(employee.__dict__)
 	if not employee:
 		frappe.throw("Employee Id is not Valid")
 

@@ -787,6 +787,7 @@ def get_all_coupons(
 @frappe.whitelist(allow_guest=True)
 def generate_coupon():
 	try:
+		role = get_dominant_role_for_current_user()
 		if frappe.request.method != "POST":
 			set_response(405, False, "Only POST method is allowed")
 			return
