@@ -33,6 +33,7 @@
   "buffer_count_enabled",
   "column_break_bgjf",
   "buffer_coupon_count",
+  "remaining_coupon_count",
   "menu_items_tab",
   "menu_items",
   "ratings_tab",
@@ -225,11 +226,17 @@
    "fieldname": "max_meal_count",
    "fieldtype": "Int",
    "label": "Max Meal Count"
+  },
+  {
+   "default": "0",
+   "fieldname": "remaining_coupon_count",
+   "fieldtype": "Int",
+   "label": "Remaining Coupon Coupon"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-10 08:30:28.562967",
+ "modified": "2025-05-14 14:54:12.758660",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
@@ -249,7 +256,6 @@
    "write": 1
   }
  ],
- "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

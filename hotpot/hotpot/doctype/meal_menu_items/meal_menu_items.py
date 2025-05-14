@@ -7,8 +7,6 @@ from frappe.model.document import Document
 
 class MealMenuItems(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -20,7 +18,8 @@ class MealMenuItems(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-	# ruff: noqa
+		rating: DF.Data | None
+		review: DF.Data | None
 	# end: auto-generated types
 
 	pass
