@@ -49,7 +49,7 @@ class HotpotUser(Document):
 
 	def autoname(self):
 		if self.is_employee:
-			self.name = self.employee
+			self.name = self.employee_id
 		else:
 			self.name = self.email
 
@@ -157,6 +157,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.tag_id = doc.attendance_device_id
 		hp_user.user = doc.user_id
 		hp_user.location = doc.branch
+		hp_user.employee = doc.employee_number
 		hp_user.insert(ignore_permissions=True)
 	frappe.db.commit()
 
