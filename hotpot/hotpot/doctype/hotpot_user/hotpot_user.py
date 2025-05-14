@@ -158,6 +158,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.user = doc.user_id
 		hp_user.location = doc.branch
 		hp_user.insert(ignore_permissions=True)
+	frappe.db.commit()
 
 
 def remove_employee_from_hotpot(doc, method):
@@ -166,3 +167,4 @@ def remove_employee_from_hotpot(doc, method):
 		hp_user.is_deleted = 1
 		hp_user.is_active = 0
 		hp_user.save(ignore_permissions=True)
+		frappe.db.commit()
