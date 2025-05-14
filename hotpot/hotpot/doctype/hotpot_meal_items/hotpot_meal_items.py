@@ -4,6 +4,7 @@
 import frappe
 from frappe.model.document import Document
 
+
 def is_frappe_ui_request():
 	try:
 		referer = frappe.get_request_header("Referer")
@@ -33,12 +34,14 @@ class HotpotMealItems(Document):
 		is_active: DF.Check
 		is_deleted: DF.Check
 		item_name: DF.Data | None
-		vendor_id: DF.Link | None
+		vendor_id: DF.Link
 	# end: auto-generated types
 
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			roles = frappe.get_roles()
+			if "Administrator" in roles:
+				return
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 				self.vendor_id = vendor_id

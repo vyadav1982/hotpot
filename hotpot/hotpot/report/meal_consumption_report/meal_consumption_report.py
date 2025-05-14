@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+
 from hotpot.utils.utc_time import *
 
 
@@ -10,6 +11,7 @@ def get_star_rating(rating):
 	if not rating:
 		return "-"
 	return "⭐" * round(rating)
+
 
 def execute(filters=None):
 	if not filters:
@@ -46,7 +48,7 @@ def execute(filters=None):
 			hm.meal_date AS meal_date,
 			MAX(hm.meal_weight)  AS meal_weight,
 			vendor.employee_id AS vendor_id,
-			vendor.employee_name AS vendor_name,
+			vendor.full_name AS vendor_name,
 			COUNT(hc.name) AS coupon_count,
 			(MAX(hm.meal_weight) * COUNT(hc.name)) AS total_weight,
 			IFNULL(AVG(hr.rating), 0) AS avg_rating,
@@ -63,8 +65,7 @@ def execute(filters=None):
 			hc.coupon_status !=2 AND hc.coupon_status != 1 AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-	params = [user_timezone,start_date, end_date]
-
+	params = [user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += "		AND hm.vendor_id = %s"
@@ -72,17 +73,14 @@ def execute(filters=None):
 
 	query += """
 		GROUP BY
-			hm.name, hm.meal_title, vendor.employee_id, vendor.employee_name
+			hm.name, hm.meal_title, vendor.employee_id, vendor.full_name
 		ORDER BY
 			hc.coupon_date DESC;
 	"""
 
 	data = frappe.db.sql(query, params, as_dict=True)
 	for row in data:
-		row["avg_rating"] = get_star_rating(row["avg_rating"]) 
-		row["total_weight"] = f"₹{row['total_weight']:.2f}" 
-
+		row["avg_rating"] = get_star_rating(row["avg_rating"])
+		row["total_weight"] = f"₹{row['total_weight']:.2f}"
 
 	return columns, data
-
-

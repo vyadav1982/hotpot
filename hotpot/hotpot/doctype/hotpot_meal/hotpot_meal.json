@@ -7,25 +7,38 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "category",
-  "meal_title",
-  "meal_items",
-  "start_time",
-  "end_time",
-  "buffer_coupon_count",
   "vendor_id",
-  "coupons",
+  "meal_title",
+  "max_meal_count",
+  "column_break_pgiv",
+  "category",
+  "is_special",
   "is_active",
   "is_deleted",
+  "section_break_ufcg",
   "meal_date",
-  "ratings",
+  "column_break_smxi",
+  "start_time",
+  "end_time",
+  "section_break_tszv",
   "meal_weight",
-  "is_special",
   "lead_time",
   "cancellation_time",
+  "column_break_hjew",
   "repeat_type",
   "repeat_days",
-  "approval_id"
+  "approval_id",
+  "meal_items",
+  "section_break_wdxv",
+  "buffer_count_enabled",
+  "column_break_bgjf",
+  "buffer_coupon_count",
+  "menu_items_tab",
+  "menu_items",
+  "ratings_tab",
+  "ratings",
+  "coupons_tab",
+  "coupons"
  ],
  "fields": [
   {
@@ -45,14 +58,18 @@
   {
    "fieldname": "start_time",
    "fieldtype": "Datetime",
-   "label": "Start Time"
+   "label": "Start Time",
+   "reqd": 1
   },
   {
    "fieldname": "end_time",
    "fieldtype": "Datetime",
-   "label": "End Time"
+   "label": "End Time",
+   "reqd": 1
   },
   {
+   "default": "0",
+   "depends_on": "eval:doc.buffer_count_enabled === 1",
    "fieldname": "buffer_coupon_count",
    "fieldtype": "Int",
    "label": "Buffer Coupon Count"
@@ -79,8 +96,9 @@
    "fieldname": "vendor_id",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Vendor Id",
-   "options": "Hotpot User"
+   "label": "Vendor",
+   "options": "Hotpot User",
+   "reqd": 1
   },
   {
    "fieldname": "ratings",
@@ -91,7 +109,7 @@
   {
    "fieldname": "meal_weight",
    "fieldtype": "Int",
-   "label": "Meal Weight",
+   "label": "Meal Rate",
    "non_negative": 1
   },
   {
@@ -146,11 +164,72 @@
    "label": "Category",
    "options": "Hotpot Meal Category",
    "reqd": 1
+  },
+  {
+   "fieldname": "menu_items_tab",
+   "fieldtype": "Tab Break",
+   "label": "Menu Items"
+  },
+  {
+   "fieldname": "menu_items",
+   "fieldtype": "Table",
+   "label": "Menu Items",
+   "options": "Meal Menu Items"
+  },
+  {
+   "fieldname": "section_break_wdxv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "buffer_count_enabled",
+   "fieldtype": "Check",
+   "label": "Buffer Count Enabled"
+  },
+  {
+   "fieldname": "section_break_tszv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_pgiv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_ufcg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_smxi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ratings_tab",
+   "fieldtype": "Tab Break",
+   "label": "Ratings"
+  },
+  {
+   "fieldname": "coupons_tab",
+   "fieldtype": "Tab Break",
+   "label": "Coupons"
+  },
+  {
+   "fieldname": "column_break_hjew",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_bgjf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "max_meal_count",
+   "fieldtype": "Int",
+   "label": "Max Meal Count"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-07 14:06:06.369201",
+ "modified": "2025-05-10 08:30:28.562967",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
@@ -170,6 +249,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

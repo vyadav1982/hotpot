@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "hash",
+ "autoname": "format:MEAL-{#####}",
  "creation": "2025-01-27 11:15:09.070314",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -27,8 +27,10 @@
   {
    "fieldname": "vendor_id",
    "fieldtype": "Link",
-   "label": "Vendor Id",
+   "in_list_view": 1,
+   "label": "Vendor",
    "options": "Hotpot User",
+   "reqd": 1,
    "search_index": 1
   },
   {
@@ -41,11 +43,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-05 21:07:02.926064",
+ "modified": "2025-05-13 15:16:39.344658",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
- "naming_rule": "Random",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -61,7 +63,9 @@
    "write": 1
   }
  ],
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "item_name"
 }

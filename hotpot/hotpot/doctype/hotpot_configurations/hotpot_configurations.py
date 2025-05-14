@@ -7,6 +7,8 @@ from frappe.model.document import Document
 
 class HotpotConfigurations(Document):
 	# begin: auto-generated types
+	# ruff: noqa
+
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -16,8 +18,10 @@ class HotpotConfigurations(Document):
 
 		allow_meal_on_sunday: DF.Check
 		can_generate_for_guest: DF.Check
+		discount: DF.Percent
 		free_birthday_meal: DF.Check
 		free_joining_day_meal: DF.Check
-		hourly_difference_between_meal: DF.Float
+	# ruff: noqa
 	# end: auto-generated types
+
 	pass

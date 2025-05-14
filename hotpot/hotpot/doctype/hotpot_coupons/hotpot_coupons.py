@@ -18,6 +18,7 @@ class HotpotCoupons(Document):
 		birthday_coupon: DF.Check
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
+		coupon_weight: DF.Float
 		email: DF.Data | None
 		employee_code: DF.Data | None
 		employee_id: DF.Data | None
@@ -28,6 +29,7 @@ class HotpotCoupons(Document):
 		parentfield: DF.Data
 		parenttype: DF.Data
 		served_by: DF.Data | None
-		title: DF.Data | None
+		title: DF.SmallText | None
 	# end: auto-generated types
+
 	pass

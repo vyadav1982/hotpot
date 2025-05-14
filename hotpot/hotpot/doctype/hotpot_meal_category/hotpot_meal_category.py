@@ -3,8 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
-from hotpot.utils.utc_time import *
 
+from hotpot.utils.utc_time import *
 
 
 def is_frappe_ui_request():
@@ -41,7 +41,7 @@ class HotpotMealCategory(Document):
 		start_time: DF.Datetime
 		type: DF.Link
 	# end: auto-generated types
-	
+
 	def validate(self):
 		"""Validate that start and end times are on the same day and start is before end."""
 
@@ -59,11 +59,7 @@ class HotpotMealCategory(Document):
 			if start >= end:
 				frappe.throw("Start time must be before End time.")
 
-	
-
 	def before_insert(self):
 		if is_frappe_ui_request():
 			self.start_time = get_utc_datetime_obj(self.start_time)
 			self.end_time = get_utc_datetime_obj(self.end_time)
-			
-		
