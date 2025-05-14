@@ -31,7 +31,7 @@ def load_balance(**args):
 			"doctype": "Hotpot Transaction History",
 			"employee_id": employee_id,
 			"amount": loading_amount,
-			"type": "Debit",
+			"type": "Credit",
 			"title": "Balance Loaded",
 			"message": f"Balance loaded successfully. New balance: {employee_balance}",
 		}
