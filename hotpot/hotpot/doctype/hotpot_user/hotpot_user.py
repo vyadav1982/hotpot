@@ -53,102 +53,23 @@ class HotpotUser(Document):
 		else:
 			self.name = self.email
 
-	def after_insert(self):
-		try:
-			if self.is_guest:
-				return
-
-			user = frappe.db.exists("User", {"email": self.email})
-			if not user or user.enabled == 0:
-				names = self.full_name.split(" ", 1)
-				new_user = frappe.new_doc("User")
-				user_type = "System User" if not self.is_guest else "Website User"
-				new_user.update(
-					{
-						"email": self.email,
-						"first_name": names[0],
-						"username": self.employee_id,
-						"last_name": names[1] if len(names) > 1 else "",
-						"enabled": 1,
-						"document_follow_notify": 0,
-						"follow_liked_documents": 0,
-						"send_welcome_email": 0,
-						"user_type": user_type,
-						"search_bar": 0,
-						"notifications": 0,
-						"list_sidebar": 0,
-						"bulk_action": 0,
-						"view_switcher": 0,
-						"form_sidebar": 0,
-						"timeline": 0,
-						"dashboard": 0,
-						"roles": [{"role": "Hotpot User"}],
-						"default_app": "hotpot",
-					}
-				)
-
-				try:
-					new_user.append_roles("Hotpot User")
-					new_user.flags.ignore_permissions = True
-					new_user.flags.ignore_if_duplicate = True
-					new_user.insert(ignore_permissions=True)
-					new_user.reload()
-				except Exception as e:
-					print("🔥 Error during user insert:", e)
-					frappe.log_error(frappe.get_traceback(), "User Creation Failed")
-				try:
-					user_name = frappe.get_value("Hotpot User", {"email": self.email}, "name")
-				except Exception as e:
-					print(e)
-				user_doc = None
-				if user_name:
-					user_doc = frappe.get_doc("Hotpot User", user_name)
-
-					if has_role("Hotpot Vendor"):
-						user_doc.guest_of = user_doc.name
-						user_doc.save(ignore_permissions=True)
-						frappe.db.commit()
-					if has_role("Hotpot User"):
-						transaction_doc = frappe.new_doc("Hotpot Transaction History")
-						transaction_doc.update(
-							{
-								"employee_id": user_doc.get("name"),
-								"type": "Credit",
-								"message": f"{self.coupon_count} tokens have been credited to your wallet",
-								"title": "Token added by Admin",
-								"amount": self.coupon_count,
-							}
-						)
-						transaction_doc.insert()
-				password = frappe.generate_hash(length=8)
-				set_user_password(frappe.local.site, self.email, password, user_doc)
-				frappe.db.commit()
-			else:
-				return {"status": "error", "message": "Duplicate user"}
-
-		except frappe.ValidationError as e:
-			frappe.log_error(f"User creation error: {e}")
-			return {"status": "error", "message": "Failed to create user in Frappe"}
-
-		except Exception:
-			frappe.log_error(frappe.get_traceback(), "Unexpected error during user creation")
-			return {"status": "error", "message": "An unexpected error occurred."}
-
 	def on_update(self):
 		try:
-			frappe_user = frappe.get_doc("User", {"email": self.email})
-			if frappe_user:
-				names = self.full_name.split(" ", 1) if self.full_name else ["", ""]
-				frappe_user.enabled = 1 if self.is_active == 1 and self.is_deleted == 0 else 0
-				frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
-				frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
-				frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
+			# frappe_user = frappe.get_doc("User", {"email": self.email})
+			# if frappe_user:
+			# 	names = self.full_name.split(" ", 1) if self.full_name else ["", ""]
+			# 	frappe_user.enabled = 1 if self.is_active == 1 and self.is_deleted == 0 else 0
+			# 	frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
+			# 	frappe_user.last_name = names[1] if len(names) > 1 else frappe_user.last_name
+			# 	frappe_user.username = self.employee_id if self.employee_id else frappe_user.username
 
-				frappe_user.save()
+			# 	frappe_user.save()
 
-				frappe_user.flags.ignore_permissions = True
-				frappe_user.save()
-				frappe.db.commit()
+			# 	frappe_user.flags.ignore_permissions = True
+			# 	frappe_user.flags.update_from_hotpot = True
+			# 	frappe_user.save()
+			# 	frappe.db.commit()
+			print("No Need for Updating user in Frappe")
 
 		except frappe.DoesNotExistError:
 			frappe.log_error(f"User with email {self.email} does not exist.")
