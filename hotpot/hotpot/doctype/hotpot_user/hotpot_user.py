@@ -157,20 +157,6 @@ class HotpotUser(Document):
 			frappe.log_error(frappe.get_traceback(), "Unexpected error during user update")
 			return {"status": "error", "message": "An unexpected error occurred during user update."}
 
-	def on_trash(self):
-		try:
-			frappe_user = frappe.get_doc("User", {"email": self.email})
-			if frappe_user:
-				frappe_user.enabled = 0
-				frappe_user.save(ignore_permissions=True)
-				frappe.db.commit()
-		except frappe.DoesNotExistError:
-			frappe.log_error(f"User with email {self.email} does not exist.")
-			return {"status": "error", "message": f"User {self.email} not found in Frappe"}
-		except Exception:
-			frappe.log_error(frappe.get_traceback(), "Unexpected error during user deletion")
-			return {"status": "error", "message": "An unexpected error occurred during user deletion."}
-
 
 def send_password_email(to_email, user_doc, password):
 	email_subject = f"Congrats, {user_doc.full_name}! You’re Now Part of the Hotpot Club 🍽️"
@@ -212,7 +198,13 @@ def update_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", doc.name):
 		hp_user = frappe.get_doc("Hotpot User", doc.name)
 		hp_user.employee_id = doc.employee_number
-		hp_user.full_name = doc.full_name
+		# get full name from employee using first name middle name and last name
+		parts = [
+			(doc.first_name or "").strip(),
+			(doc.middle_name or "").strip(),
+			(doc.last_name or "").strip(),
+		]
+		hp_user.full_name = " ".join(part for part in parts if part)
 		hp_user.mobile_no = doc.cell_number if doc.cell_number else hp_user.mobile_no
 		hp_user.email = doc.company_email if doc.company_email else hp_user.email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
@@ -227,7 +219,13 @@ def update_employee_to_hotpot(doc, method):
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
-		hp_user.full_name = doc.full_name
+		# get full name from employee using first name middle name and last name
+		parts = [
+			(doc.first_name or "").strip(),
+			(doc.middle_name or "").strip(),
+			(doc.last_name or "").strip(),
+		]
+		hp_user.full_name = " ".join(part for part in parts if part)
 		hp_user.mobile_no = doc.cell_number
 		hp_user.email = doc.company_email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
