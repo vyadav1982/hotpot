@@ -14,7 +14,7 @@
  "is_hidden": 0,
  "label": "Hotpot HR",
  "links": [],
- "modified": "2025-05-15 12:50:28.143675",
+ "modified": "2025-05-15 13:07:57.840250",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot HR",
@@ -31,14 +31,7 @@
  "sequence_id": 3.0,
  "shortcuts": [
   {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "Load Balance in Employee Wallet",
-   "link_to": "load-wallet-balance",
-   "type": "Page"
-  },
-  {
-   "color": "Grey",
+   "color": "Pink",
    "doc_view": "List",
    "label": "Hotpot Meal Types",
    "link_to": "Hotpot Meal Types",
@@ -46,12 +39,11 @@
    "type": "DocType"
   },
   {
-   "color": "Yellow",
+   "color": "Grey",
    "doc_view": "List",
-   "label": "Hotpot Meal Items",
-   "link_to": "Hotpot Meal Items",
-   "stats_filter": "[[\"Hotpot Meal Items\",\"is_active\",\"=\",1,false],[\"Hotpot Meal Items\",\"is_deleted\",\"=\",0,false]]",
-   "type": "DocType"
+   "label": "Load Balance in Employee Wallet",
+   "link_to": "load-wallet-balance",
+   "type": "Page"
   },
   {
    "color": "Grey",
@@ -69,6 +61,14 @@
    "type": "Report"
   },
   {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Hotpot Meal Items",
+   "link_to": "Hotpot Meal Items",
+   "stats_filter": "[[\"Hotpot Meal Items\",\"is_active\",\"=\",1,false],[\"Hotpot Meal Items\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Red",
    "doc_view": "List",
    "label": "Hotpot Vendor",
@@ -77,7 +77,7 @@
    "type": "DocType"
   },
   {
-   "color": "Orange",
+   "color": "Yellow",
    "doc_view": "List",
    "label": "Hotpot Meal Category",
    "link_to": "Hotpot Meal Category",

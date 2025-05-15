@@ -14,7 +14,7 @@
  "is_hidden": 0,
  "label": "Hotpot",
  "links": [],
- "modified": "2025-05-15 12:50:07.600749",
+ "modified": "2025-05-15 13:06:56.187927",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot",
@@ -54,6 +54,14 @@
    "type": "Report"
   },
   {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Hotpot Users",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_server\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
    "color": "Yellow",
    "doc_view": "List",
    "label": "Hotpot Vendor",
@@ -68,14 +76,6 @@
    "link_to": "Birthday Coupons Report",
    "report_ref_doctype": "Hotpot Meal",
    "type": "Report"
-  },
-  {
-   "color": "Red",
-   "doc_view": "List",
-   "label": "Hotpot Users",
-   "link_to": "Hotpot User",
-   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false]]",
-   "type": "DocType"
   },
   {
    "color": "Grey",
