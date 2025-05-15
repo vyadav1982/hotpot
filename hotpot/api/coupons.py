@@ -1028,9 +1028,11 @@ def generate_coupon():
 					set_response(500, False, f"Failed to create coupon: {str(e)}")
 					return
 
+
+				remaining_coupon_count = meal_doc.remaining_coupon_count
 				# Update meal buffer count if buffer time
 				if is_buffer_time and buffer_used > 0:
-					meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
+					meal_doc.remaining_coupon_count = max(0, remaining_coupon_count - buffer_used)
 				if for_guest and role in ["Hotpot User", "Hotpot HR"]:
 					approval_doc.is_active = 0
 				if role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
@@ -1416,7 +1418,6 @@ def generate_coupon_admin():
 				user_coupon_count = user_doc.coupon_count
 				meal_weight = meal_doc.get("meal_weight")
 				meal_buffer_count = meal_doc.buffer_coupon_count
-				remaining_coupon_count = meal_doc.remaining_coupon_count
 				if (
 					get_local_datetime_obj(start_date).date()
 					< get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date()
@@ -1467,7 +1468,6 @@ def generate_coupon_admin():
 					get_local_datetime_obj(start_date).date(),
 				)
 				exists = frappe.db.sql(query, params)
-
 				if not for_guest and exists:
 					set_response(
 						409,
