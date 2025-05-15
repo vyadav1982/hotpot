@@ -4,7 +4,7 @@
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2025-05-13 15:17:48.963275",
+ "modified": "2025-05-15 12:24:00.128364",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "load-wallet-balance",
@@ -21,6 +21,6 @@
  "script": null,
  "standard": "Yes",
  "style": null,
- "system_page": 0,
+ "system_page": 1,
  "title": "Load Balance in Employee Wallet"
 }
