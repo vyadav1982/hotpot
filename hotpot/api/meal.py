@@ -153,13 +153,14 @@ def create_meal():
 				"category": category,
 			}
 		)
-		for item_id in meal_item_ids:
-			meal_doc.append(
-			"menu_items",
-			{
-				"meal_item": item_id,
-			},
-		)
+		if meal_item_ids:
+			for item_id in meal_item_ids :
+				meal_doc.append(
+				"menu_items",
+				{
+					"meal_item": item_id,
+				},
+			)
 
 		meal_doc.insert()
 		frappe.db.commit()
