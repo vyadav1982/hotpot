@@ -7,14 +7,9 @@ frappe.pages["load-wallet-balance"].on_page_load = function (wrapper) {
 
 	page.set_title_sub("Load Balance in Employee Wallet");
 
-	//page.set_secondary_action("Refresh", () => page.refresh(), "refresh");
 	page.start = 0;
 
 	page.form = new LoadEmployeeBalance(page);
-
-	// page.refresh = function () {
-	// 	page.form.clear();
-	// };
 };
 
 class LoadEmployeeBalance {
@@ -23,17 +18,6 @@ class LoadEmployeeBalance {
 		this.make_form();
 	}
 
-	// clear() {
-	// 	this.form.clear();
-	// 	if (this.form.fields_dict.coupon_count) {
-	// 		this.form.replace_field("coupon_count", {
-	// 			fieldname: "coupon_count",
-	// 			label: __("Wallet Balance"),
-	// 			fieldtype: "Read Only",
-	// 			hidden: true,
-	// 		});
-	// 	}
-	// }
 
 	make_form() {
 		this.form = new frappe.ui.FieldGroup({
@@ -48,6 +32,7 @@ class LoadEmployeeBalance {
 							filters: {
 								is_employee: 1,
 							},
+							ignore_user_permissions: true,
 						};
 					},
 					onchange: () => {
