@@ -72,6 +72,7 @@ class HotpotMeal(Document):
 
 	def before_insert(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
+			vendor = None
 			if self.start_time:
 				if isinstance(self.start_time, datetime):
 					self.start_time = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -87,12 +88,28 @@ class HotpotMeal(Document):
 				self.is_active = 1
 				self.lead_time = category_doc.lead_time
 				self.cancellation_time = category_doc.cancellation_time
-				self.is_special = category_doc.is_special
 				self.meal_weight = category_doc.meal_rate
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 				self.vendor_id = vendor_id
+			vendor = self.vendor_id
+			if self.meal_items:
+				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
+				for item_name in item_list:
+					menu_item = frappe.get_value(
+						"Hotpot Meal Items",
+						{
+							"vendor_id": vendor,
+							"item_name": item_name
+						},
+						"name"
+					)
+					if menu_item:
+						self.append("menu_items", {
+							"meal_item": menu_item
+						})
+
 
 
 def is_frappe_ui_request():
