@@ -49,7 +49,6 @@ class CustomDataImport(DataImport):
 				"E Mail",
 				"Mobile no.",
 				"Employee Name",
-				"Role",
 				"Tag Id",
 				"Date of Joining",
 				"Date Of Birth",
@@ -273,7 +272,7 @@ class CustomDataImport(DataImport):
 				try:
 					vendor_doc = frappe.db.get_value(
 						"Hotpot User",
-						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "role": "Hotpot Vendor"},
+						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "is_vendor": 1},
 						"*",
 						as_dict=True,
 					)
@@ -381,7 +380,7 @@ class CustomDataImport(DataImport):
 				try:
 					vendor_doc = frappe.db.get_value(
 						"Hotpot User",
-						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "role": "Hotpot Vendor"},
+						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "is_vendor":1},
 						"*",
 						as_dict=True,
 					)
