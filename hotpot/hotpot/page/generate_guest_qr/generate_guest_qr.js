@@ -416,6 +416,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			if (vendors.length === 0) {
 				vendorSelect.innerHTML = '<option value="">No vendors found</option>';
 				vendorSelect.disabled = true;
+				mealSelect.disabled = true;
 				return;
 			}
 	
