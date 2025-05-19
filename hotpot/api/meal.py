@@ -577,7 +577,7 @@ def add_meal_items():
 		item_name = item_name.strip().lower()
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
-			vendor_id = user_data.get("guest_of")
+			vendor_id = user_data.get("email")
 		else:
 			vendor_id = data.get("vendor_id")
 		existing_meal_item = frappe.get_list(
