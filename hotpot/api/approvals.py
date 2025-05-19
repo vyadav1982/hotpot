@@ -7,6 +7,7 @@ from hotpot.utils.email import *
 from hotpot.utils.guest_coupon_generate import *
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 from hotpot.utils.utc_time import *
+from hotpot.utils.role_utils import *
 
 from ..api.users import *
 
@@ -44,6 +45,7 @@ def get_approvals():
 		if not user_data:
 			set_response(401, False, "User not found")
 			return
+		role = get_dominant_role_for_current_user()
 
 		fields = [
 			"name",
@@ -59,12 +61,18 @@ def get_approvals():
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date", "coupon_count"]
-
-		approvals = frappe.db.get_list(
-			"Hotpot Approvals",
-			fields=fields,
-			filters=[["requested_by", "=", user_data.get("name")]],
-		)
+		
+		if role == "Hotpot HR" or role == "Hotpot Admin":
+			approvals = frappe.db.get_list(
+				"Hotpot Approvals",
+				fields=fields,
+			)
+		else:
+			approvals = frappe.db.get_list(
+				"Hotpot Approvals",
+				fields=fields,
+				filters={"requested_by": user_data.get("name")},
+			)
 
 		if not approvals:
 			set_response(200, False, "No approvals found")
@@ -96,6 +104,12 @@ def get_approvals():
 
 		# Append filtered meal details for each approval
 		for approval in approvals:
+			request_by = approval.get("requested_by")
+			if request_by:
+				user = frappe.get_doc("Hotpot User", request_by)
+				approval["employee_name"] = user.get("full_name")
+				approval["email"] = user.get("email")
+				approval["employee_id"] = user.get("employee_id")
 			meal_id = approval.get("meal_id")
 			if meal_id:
 				try:
