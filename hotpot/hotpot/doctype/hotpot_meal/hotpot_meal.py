@@ -88,7 +88,6 @@ class HotpotMeal(Document):
 				self.is_active = 1
 				self.lead_time = category_doc.lead_time
 				self.cancellation_time = category_doc.cancellation_time
-				self.is_special = category_doc.is_special
 				self.meal_weight = category_doc.meal_rate
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
