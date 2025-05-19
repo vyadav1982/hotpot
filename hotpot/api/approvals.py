@@ -54,6 +54,7 @@ def get_approvals():
 			"attachments",
 			"approval_remarks",
 			"is_active",
+			"creation",
 		]
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
