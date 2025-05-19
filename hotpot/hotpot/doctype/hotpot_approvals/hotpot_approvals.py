@@ -117,9 +117,9 @@ class HotpotApprovals(Document):
 								{
 									"employee_id": user_doc.get("name"),
 									"type": "Credit",
-									"message": f"{meal_doc.meal_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
+									"message": f"{coupon.coupon_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
 									"title": "Meal Cost Refund",
-									"amount": meal_doc.meal_weight,
+									"amount": coupon.coupon_weight,
 								}
 							)
 							transaction_doc.insert()
@@ -127,7 +127,7 @@ class HotpotApprovals(Document):
 								send_notification_by_token(
 									user_doc.fcm_token,
 									"Refund Incoming! 💸",
-									f"You've been credited {meal_doc.meal_weight} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
+									f"You've been credited {coupon.coupon_weight} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
 								)
 
 					coupon.coupon_status = 2
