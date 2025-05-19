@@ -48,6 +48,7 @@ def get_approvals():
 		role = get_dominant_role_for_current_user()
 
 		fields = [
+			"requested_by",
 			"name",
 			"request_type",
 			"meal_id",
@@ -107,7 +108,6 @@ def get_approvals():
 			request_by = approval.get("requested_by")
 			if request_by:
 				user = frappe.get_doc("Hotpot User", request_by)
-				approval["user_details"] = user
 				approval["employee_name"] = user.get("full_name")
 				approval["email"] = user.get("email")
 				approval["employee_id"] = user.get("employee_id")
