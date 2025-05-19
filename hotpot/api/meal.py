@@ -116,8 +116,7 @@ def create_meal():
 		repeat_type = data.get("repeat_type", "once")
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
-		meal_item_ids = data.get("meal_item_ids",None)
-		
+		meal_item_ids = data.get("meal_item_ids", None)
 
 		required_fields = [
 			"meal_title",
@@ -153,13 +152,14 @@ def create_meal():
 				"category": category,
 			}
 		)
-		for item_id in meal_item_ids:
-			meal_doc.append(
-			"menu_items",
-			{
-				"meal_item": item_id,
-			},
-		)
+		if meal_item_ids:
+			for item_id in meal_item_ids:
+				meal_doc.append(
+					"menu_items",
+					{
+						"meal_item": item_id,
+					},
+				)
 
 		meal_doc.insert()
 		frappe.db.commit()
@@ -576,7 +576,7 @@ def add_meal_items():
 		item_name = item_name.strip().lower()
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
-			vendor_id = user_data.get("guest_of")
+			vendor_id = user_data.get("email")
 		else:
 			vendor_id = data.get("vendor_id")
 		existing_meal_item = frappe.get_list(

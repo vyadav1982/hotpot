@@ -265,9 +265,9 @@ def cancel_coupon():
 				{
 					"employee_id": user_doc.get("name"),
 					"type": "Credit",
-					"message": f"{meal_doc.meal_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
+					"message": f"{coupon_found.coupon_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
 					"title": "Meal Cost Refund",
-					"amount": meal_doc.meal_weight,
+					"amount": coupon_found.coupon_weight,
 				}
 			)
 			transaction_doc.insert()
@@ -1014,8 +1014,8 @@ def generate_coupon():
 						{
 							"employee_id": user_doc.get("name"),
 							"type": "Debit",
-							"message": f"{meal_weight} tokens debited for '{meal_title}' meal from you wallet.",
-							"amount": meal_weight,
+							"message": f"{coupon_weight} tokens debited for '{meal_title}' meal from you wallet.",
+							"amount": coupon_weight,
 							"title": "Meal Cost Deduction",
 						}
 					)
