@@ -10,14 +10,14 @@ frappe.pages["load-wallet-balance"].on_page_load = function (wrapper) {
 	//page.set_secondary_action("Refresh", () => page.refresh(), "refresh");
 	page.start = 0;
 
-	page.form = new mrxaudit.LoadEmployeeBalance(page);
+	page.form = new LoadEmployeeBalance(page);
 
 	// page.refresh = function () {
 	// 	page.form.clear();
 	// };
 };
 
-mrxaudit.LoadEmployeeBalance = class LoadEmployeeBalance {
+class LoadEmployeeBalance {
 	constructor(page) {
 		this.page = page;
 		this.make_form();
