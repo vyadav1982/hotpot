@@ -26,13 +26,19 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
         <script type="module" src="generate_guest_qr.js"></script>
         <div class="container">
             <div class="row justify-content-center">
-                <div class="form-group col-md-5">
+			 	<div class="form-group col-md-4">
+                    <label for="locationSelect">Location Name:</label>
+                    <select id="locationSelect" class="form-control">
+                        <option value="">Select Location</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
                     <label for="vendorSelect">Vendor Name:</label>
                     <select id="vendorSelect" class="form-control">
                         <option value="">Select Vendor</option>
                     </select>
                 </div>
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-4">
                     <label for="datePicker">Date:</label>
                     <input type="date" id="datePicker" class="form-control" value="${
 						new Date().toISOString().split("T")[0]
@@ -41,13 +47,13 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
             </div>
 
             <div class="row justify-content-center">
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-6">
                     <label for="mealSelect">Meal:</label>
                     <select id="mealSelect" class="form-control" disabled>
                         <option value="">Select Meal</option>
                     </select>
                 </div>
-                <div class="form-group col-md-5">
+                <div class="form-group col-md-6">
                     <label for="quantity">Quantity:</label>
                     <div class="input-group">
                         <button class="btn btn-outline-secondary" id="decreaseQty">-</button>
@@ -120,7 +126,18 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 		const datePicker = document.getElementById("datePicker");
 		datePicker.value = today;
 		datePicker.min = today;
-		fetchVendors();
+		fetchLocations();
+
+		$("#locationSelect").on("change", function () {
+			const location = $(this).val();
+			if (location) {
+				console.log('if')
+				fetchVendors(location);
+			} else {
+				$("#vendorSelect").html('<option value="">Select Vendor</option>');
+			}
+		});
+		// fetchVendors();
 		fetchUser();
 	});
 
@@ -366,21 +383,43 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 		});
 	}
 
-	async function fetchVendors() {
+	async function fetchVendors(locationName) {
 		try {
 			let vendorSelect = document.getElementById("vendorSelect");
 			vendorSelect.innerHTML = '<option value="">Loading...</option>';
 
-			let response = await frappe.call({
-				method: "hotpot.api.users.get_all_vendor",
-				type: "GET",
-			});
+			const filters = JSON.stringify([
+				["is_active", "=", 1],
+				["location", "=", locationName],
+				["is_vendor", "=", 1]
+			]);
+	
+			const fields = JSON.stringify(["name", "full_name"]);
+	
+			const response = await fetch(
+				`/api/v2/document/Hotpot User?filters=${encodeURIComponent(filters)}&fields=${encodeURIComponent(fields)}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
 			if (response.status === false) {
 				alert(response.message);
 				return;
 			}
+			let vlist = await response.json() || [];
+			let vendors = vlist.data;
+			vendorSelect.innerHTML = '';
 
-			let vendors = response.data || [];
+			if (vendors.length === 0) {
+				vendorSelect.innerHTML = '<option value="">No vendors found</option>';
+				vendorSelect.disabled = true;
+				return;
+			}
+	
+			vendorSelect.disabled = false;
 			vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
 
 			let fragment = document.createDocumentFragment();
@@ -396,12 +435,46 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			alert("Failed to load vendors. Please try again.");
 		}
 	}
+
+	// Fetch user location from a Frappe DocType
+	async function fetchLocations() {
+		try {
+			const response = await frappe.call({
+				method: "frappe.client.get_list",
+				type: "GET",
+				args: {
+					doctype: "Company Locations",
+					fields: ["name"],
+					limit_page_length: 10
+				}
+			});
+
+			if (response.status === false) {
+				alert(response.message);
+				return;
+			}
+
+			const locations = response.message || response.data;
+			const $locationSelect = $("#locationSelect");
+			$locationSelect.html('<option value="">Select Location</option>');
+	
+			locations.forEach(location => {
+				$locationSelect.append(
+					`<option value="${location.name}">${location.name}</option>`
+				);
+			});
+		} catch (error) {
+			console.error("Error fetching user location:", error);
+			alert("Failed to retrieve user location.");
+		}
+	}
 	async function fetchUser() {
 		try {
 			let response = await frappe.call({
 				method: "hotpot.api.users.get_hotpot_user_by_email",
 				type: "GET",
 			});
+			console.log(response)
 			if (response.message) {
 				userId = response.message.name;
 			} else {

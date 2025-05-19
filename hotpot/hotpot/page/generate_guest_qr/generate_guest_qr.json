@@ -4,7 +4,7 @@
  "docstatus": 0,
  "doctype": "Page",
  "idx": 0,
- "modified": "2025-04-01 18:11:12.784628",
+ "modified": "2025-05-19 16:15:18.297538",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "generate-guest-qr",
@@ -13,6 +13,9 @@
  "roles": [
   {
    "role": "Hotpot Admin"
+  },
+  {
+   "role": "Hotpot HR"
   }
  ],
  "script": null,

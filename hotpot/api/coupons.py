@@ -1293,7 +1293,7 @@ def generate_coupon_admin():
 		if frappe.request.method != "POST":
 			set_response(405, False, "Only POST method is allowed")
 			return
-
+		role = get_dominant_role_for_current_user()
 		data = json.loads(frappe.request.data or "{}")
 		tagId = data.get("tag_id")
 		user_doc = get_hotpot_user_by_tag_id(tagId) if tagId else get_hotpot_user_by_email()
