@@ -260,7 +260,7 @@ def cancel_coupon():
 		user_doc = frappe.get_doc("Hotpot User", coupon_found.employee_id)
 		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of:
 			user_doc.coupon_count = user_doc.coupon_count + coupon_found.coupon_weight
-			 _doc = frappe.new_doc("Hotpot Transaction History")
+			transaction_doc = frappe.new_doc("Hotpot Transaction History")
 			transaction_doc.update(
 				{
 					"employee_id": user_doc.get("name"),
