@@ -107,6 +107,7 @@ def get_approvals():
 			request_by = approval.get("requested_by")
 			if request_by:
 				user = frappe.get_doc("Hotpot User", request_by)
+				approval["user_details"] = user
 				approval["employee_name"] = user.get("full_name")
 				approval["email"] = user.get("email")
 				approval["employee_id"] = user.get("employee_id")
