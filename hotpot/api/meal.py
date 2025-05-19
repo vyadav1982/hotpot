@@ -116,8 +116,7 @@ def create_meal():
 		repeat_type = data.get("repeat_type", "once")
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
-		meal_item_ids = data.get("meal_item_ids",None)
-		
+		meal_item_ids = data.get("meal_item_ids", None)
 
 		required_fields = [
 			"meal_title",
@@ -154,13 +153,13 @@ def create_meal():
 			}
 		)
 		if meal_item_ids:
-			for item_id in meal_item_ids :
+			for item_id in meal_item_ids:
 				meal_doc.append(
-				"menu_items",
-				{
-					"meal_item": item_id,
-				},
-			)
+					"menu_items",
+					{
+						"meal_item": item_id,
+					},
+				)
 
 		meal_doc.insert()
 		frappe.db.commit()
