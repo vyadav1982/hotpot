@@ -27,7 +27,7 @@ def create_banner():
 			set_response(401, False, "User Not found")
 			return
 		if get_dominant_role_for_current_user() == "Hotpot User":
-			set_response(403, False, "Not Permitted to acess this resouce")
+			set_response(403, False, "Not Permitted to acess this resource")
 			return
 
 		data = json.loads(frappe.request.data or "{}")
@@ -137,7 +137,7 @@ def update_banner(banner_id, **kwargs):
 			set_response(401, False, "User Not found")
 			return
 		if get_dominant_role_for_current_user() == "Hotpot User":
-			set_response(403, False, "Not Permitted to acess this resouce")
+			set_response(403, False, "Not Permitted to acess this resource")
 			return
 
 		banner = frappe.get_doc("Banner", banner_id)
@@ -172,7 +172,7 @@ def delete_banner(banner_id):
 			set_response(401, False, "User Not found")
 			return
 		if get_dominant_role_for_current_user() == "Hotpot User":
-			set_response(403, False, "Not Permitted to acess this resouce")
+			set_response(403, False, "Not Permitted to acess this resource")
 			return
 
 		banner = frappe.get_doc("Hotpot Banner", banner_id)
