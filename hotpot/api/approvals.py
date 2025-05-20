@@ -62,7 +62,7 @@ def get_approvals():
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			fields += ["guest_name", "guest_mobile_no", "purpose_of_visiting", "date", "coupon_count"]
-		
+
 		if role == "Hotpot HR" or role == "Hotpot Admin":
 			approvals = frappe.db.get_list(
 				"Hotpot Approvals",
@@ -172,7 +172,6 @@ def create_approval():
 			return set_response(400, False, "Pending approval already exists for this mobile number.")
 
 		date = get_utc_datetime_obj(f"{data.get('date')} {get_local_time_now()}") if "date" in data else None
-
 		approval_data = {
 			"doctype": "Hotpot Approvals",
 			"request_type": data["request_type"],
