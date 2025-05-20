@@ -380,7 +380,7 @@ class CustomDataImport(DataImport):
 				try:
 					vendor_doc = frappe.db.get_value(
 						"Hotpot User",
-						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "is_vendor":1},
+						{"name": vendor_id, "is_active": 1, "is_deleted": 0, "is_vendor": 1},
 						"*",
 						as_dict=True,
 					)

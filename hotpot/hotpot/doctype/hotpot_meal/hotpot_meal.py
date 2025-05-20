@@ -98,18 +98,10 @@ class HotpotMeal(Document):
 				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
 				for item_name in item_list:
 					menu_item = frappe.get_value(
-						"Hotpot Meal Items",
-						{
-							"vendor_id": vendor,
-							"item_name": item_name
-						},
-						"name"
+						"Hotpot Meal Items", {"vendor_id": vendor, "item_name": item_name}, "name"
 					)
 					if menu_item:
-						self.append("menu_items", {
-							"meal_item": menu_item
-						})
-
+						self.append("menu_items", {"meal_item": menu_item})
 
 
 def is_frappe_ui_request():
