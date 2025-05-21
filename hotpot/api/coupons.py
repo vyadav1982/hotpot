@@ -634,6 +634,7 @@ def get_all_coupons(
 				SELECT
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
+					hm.meal_items,
 					U.full_name AS vendor_name,
 					U2.full_name,
 					mt.type,
@@ -702,6 +703,7 @@ def get_all_coupons(
 					hc.coupon_date,
 					hc.served_by,
 					hm.vendor_id,
+					hm.meal_items,
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
 					hm.name AS meal_id,
@@ -1247,6 +1249,7 @@ def get_guest_coupon(date):
 				hc.title AS title,
 				hc.coupon_status,
 				hc.coupon_date,
+				hm.meal_items,
 				hc.served_by,
 				hm.vendor_id,
 				hm.start_time AS start_time,
