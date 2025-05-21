@@ -17,7 +17,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Meal Item",
-   "options": "Hotpot Meal Menu Items",
+   "options": "Hotpot Meal Items",
    "reqd": 1
   },
   {
@@ -51,7 +51,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 13:04:17.357712",
+ "modified": "2025-05-21 17:09:27.889047",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Menu Items Rating",
@@ -70,7 +70,6 @@
    "write": 1
   }
  ],
- "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

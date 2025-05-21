@@ -38,7 +38,6 @@ def give_feedback():
 			set_response(403, False, "Not Permitted to acess this resource")
 			return
 		data = json.loads(frappe.request.data or "{}")
-
 		meal_doc = frappe.get_doc("Hotpot Meal", data["meal"])
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
@@ -47,39 +46,34 @@ def give_feedback():
 		ratings = data.get("ratings", [])
 		employee_id = user_data.get("name")
 		meal = data.get("meal")
-
 		already_rated_items = []
 		for rating_entry in ratings:
 			item_id = rating_entry.get("id")
 			existing_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
-				filters={
-					"meal_item": item_id,
-					"employee": employee_id,
-					"meal": meal
-				},
-				pluck="meal_item"
+				filters={"meal_item": item_id, "employee": employee_id, "meal": meal},
+				pluck="meal_item",
 			)
 			if existing_ratings:
 				already_rated_items.append(item_id)
 
 		if already_rated_items:
-			set_response(400, False, f"You've already rated item(s): {', '.join(already_rated_items)} in this meal.")
+			set_response(
+				400, False, f"You've already rated item(s): {', '.join(already_rated_items)} in this meal."
+			)
 			return
-
 		for rating_entry in ratings:
-			rating_doc = frappe.get_doc({
-				"doctype": "Hotpot Meal Menu Items Rating",
-				"employee": employee_id,
-				"meal": meal,
-				"meal_item": rating_entry.get("id"),
-				"rating": rating_entry.get("rating"),
-				"review": rating_entry.get("review")
-			})
-    		rating_doc.insert(ignore_permissions=True)
-
-
-
+			rating_doc = frappe.get_doc(
+				{
+					"doctype": "Hotpot Meal Menu Items Rating",
+					"employee": employee_id,
+					"meal": meal,
+					"meal_item": rating_entry.get("id"),
+					"rating": rating_entry.get("rating"),
+					"review": rating_entry.get("review"),
+				}
+			)
+			rating_doc.insert(ignore_permissions=True)
 		meal_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Ratings submitted successfully!")
@@ -512,28 +506,27 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				if coupon.coupon_status != "2":
 					meal["total_coupons"] += 1
 
-			all_ratings  = frappe.get_all(
+			all_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
 				filters={"meal": meal["name"]},
-				fields=["name", "employee", "meal_item", "rating", "review"]
+				fields=["name", "employee", "meal_item", "rating", "review"],
 			)
 
 			rating_values = [
 				float(r["rating"]) if isinstance(r["rating"], str) else r["rating"]
-				for r in all_ratings if r["rating"] is not None
+				for r in all_ratings
+				if r["rating"] is not None
 			]
 
 			meal["avg_rating"] = round(sum(rating_values) / len(rating_values), 2) if rating_values else 0
 
 			from collections import defaultdict
+
 			item_wise_rating = defaultdict(list)
 			for r in all_ratings:
-				item_wise_rating[r["meal_item"]].append({
-					"id": r["name"],
-					"employee": r["employee"],
-					"rating": r["rating"],
-					"review": r["review"]
-				})
+				item_wise_rating[r["meal_item"]].append(
+					{"id": r["name"], "employee": r["employee"], "rating": r["rating"], "review": r["review"]}
+				)
 
 			meal["item_wise_rating"] = item_wise_rating
 
@@ -543,9 +536,10 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 						"id": r["name"],
 						"meal_item": r["meal_item"],
 						"rating": r["rating"],
-						"review": r["review"]
+						"review": r["review"],
 					}
-					for r in all_ratings if r["employee"] == user_data.name
+					for r in all_ratings
+					if r["employee"] == user_data.name
 				]
 			# else:
 			# 	meal["rating"] = [

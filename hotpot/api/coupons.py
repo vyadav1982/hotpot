@@ -686,15 +686,11 @@ def get_all_coupons(
 					item_doc = frappe.get_value(
 						"Hotpot Meal Items",
 						{"vendor_id": coupon["vendor_id"], "item_name": item},
-						["name","item_name"]
+						["name", "item_name"],
 					)
 					if item_doc:
-						item_listing.append({
-							"id": item_doc[0],
-							"title": item_doc[1]
-						})
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
-
 
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
@@ -774,13 +770,10 @@ def get_all_coupons(
 					item_doc = frappe.get_value(
 						"Hotpot Meal Items",
 						{"vendor_id": coupon["vendor_id"], "item_name": item},
-						["name", "item_name"]
+						["name", "item_name"],
 					)
 					if item_doc:
-						item_listing.append({
-							"id": item_doc[0],
-							"title": item_doc[1]
-						})
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
@@ -821,13 +814,10 @@ def get_all_coupons(
 					item_doc = frappe.get_value(
 						"Hotpot Meal Items",
 						{"vendor_id": coupon["vendor_id"], "item_name": item},
-						["name", "item_name"]
+						["name", "item_name"],
 					)
 					if item_doc:
-						item_listing.append({
-							"id": item_doc[0],
-							"title": item_doc[1]
-						})
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
 
 			set_response(200, True, "Coupons fetched successfully", ans)
@@ -1341,21 +1331,18 @@ def get_guest_coupon(date):
 			set_response(200, True, "No guest coupon", [])
 			return
 		for coupon in coupons_data:
-				meal_items_list = coupon["meal_items"].split(",")
-				item_listing = []
-				for item in meal_items_list:
-					item = item.strip()
-					item_doc = frappe.get_value(
-						"Hotpot Meal Items",
-						{"vendor_id": coupon["vendor_id"], "item_name": item},
-						["name","item_name"]
-					)
-					if item_doc:
-						item_listing.append({
-							"id": item_doc[0],
-							"title": item_doc[1]
-						})
-				coupon["item_listing"] = item_listing
+			meal_items_list = coupon["meal_items"].split(",")
+			item_listing = []
+			for item in meal_items_list:
+				item = item.strip()
+				item_doc = frappe.get_value(
+					"Hotpot Meal Items",
+					{"vendor_id": coupon["vendor_id"], "item_name": item},
+					["name", "item_name"],
+				)
+				if item_doc:
+					item_listing.append({"id": item_doc[0], "title": item_doc[1]})
+			coupon["item_listing"] = item_listing
 		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
 		return
 
