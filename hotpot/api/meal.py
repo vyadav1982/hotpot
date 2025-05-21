@@ -39,25 +39,49 @@ def give_feedback():
 			return
 		data = json.loads(frappe.request.data or "{}")
 
-		meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
+		meal_doc = frappe.get_doc("Hotpot Meal", data["meal"])
 		if not meal_doc:
-			set_response(404, False, "Meal Not found")
+			set_response(404, False, "Meal not found")
 			return
-		if any(entry.get("employee_id") == user_data.get("name") for entry in meal_doc.get("ratings", [])):
-			set_response(400, False, "You've already rated this meal! No double-dipping! 🍽️❌")
+
+		meal_items = data.get("meal_items", [])
+		ratings = data.get("ratings", [])
+		reviews = data.get("reviews", [])
+		employee_id = user_data.get("name")
+
+		already_rated_items = []
+		for item_id in meal_items:
+			existing_ratings = frappe.get_all(
+				"Hotpot Meal Menu Items Rating",
+				filters={
+					"meal_item": item_id,
+					"employee": employee_id,
+					"meal": data["meal"]
+				},
+				pluck="meal_item"
+			)
+			if existing_ratings:
+				already_rated_items.append(item_id)
+
+		if already_rated_items:
+			set_response(400, False, f"You've already rated item(s): {', '.join(already_rated_items)} in this meal.")
 			return
-		meal_doc.append(
-			"ratings",
-			{
-				"employee_id": user_data.get("name"),
-				"feedback": data["feedback"],
-				"meal_id": meal_doc.get("name"),
-				"rating": data["rating"],
-			},
-		)
+
+		for idx, item_id in enumerate(meal_items):
+			rating_doc = frappe.get_doc({
+				"doctype": "Hotpot Meal Menu Items Rating",
+				"employee": employee_id,
+				"meal": data["meal"],
+				"meal_item": item_id, 
+				"rating": ratings[idx],
+				"review": reviews[idx]
+			})
+			rating_doc.insert(ignore_permissions=True)
+
+
 		meal_doc.save()
 		frappe.db.commit()
-		set_response(200, True, "feedback updated successfully.")
+		set_response(200, True, "Ratings submitted successfully!")
 		return
 
 	except Exception as e:
