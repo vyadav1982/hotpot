@@ -44,19 +44,19 @@ def give_feedback():
 			set_response(404, False, "Meal not found")
 			return
 
-		meal_items = data.get("meal_items", [])
 		ratings = data.get("ratings", [])
-		reviews = data.get("reviews", [])
 		employee_id = user_data.get("name")
+		meal = data.get("meal")
 
 		already_rated_items = []
-		for item_id in meal_items:
+		for rating_entry in ratings:
+			item_id = rating_entry.get("id")
 			existing_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
 				filters={
 					"meal_item": item_id,
 					"employee": employee_id,
-					"meal": data["meal"]
+					"meal": meal
 				},
 				pluck="meal_item"
 			)
@@ -67,16 +67,17 @@ def give_feedback():
 			set_response(400, False, f"You've already rated item(s): {', '.join(already_rated_items)} in this meal.")
 			return
 
-		for idx, item_id in enumerate(meal_items):
+		for rating_entry in ratings:
 			rating_doc = frappe.get_doc({
 				"doctype": "Hotpot Meal Menu Items Rating",
 				"employee": employee_id,
-				"meal": data["meal"],
-				"meal_item": item_id, 
-				"rating": ratings[idx],
-				"review": reviews[idx]
+				"meal": meal,
+				"meal_item": rating_entry.get("id"),
+				"rating": rating_entry.get("rating"),
+				"review": rating_entry.get("review")
 			})
-			rating_doc.insert(ignore_permissions=True)
+    		rating_doc.insert(ignore_permissions=True)
+
 
 
 		meal_doc.save()
