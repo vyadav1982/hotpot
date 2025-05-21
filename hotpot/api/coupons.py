@@ -678,6 +678,20 @@ def get_all_coupons(
 				)
 			)
 
+			for coupon in ans:
+				meal_items_list = coupon["meal_items"].split(",")
+				meal_items_id = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name","item_name"]
+					)
+					if item_doc:
+						meal_items_id.append(item_doc)
+				coupon["meal_items_id"] = meal_items_id
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -748,6 +762,19 @@ def get_all_coupons(
 			if not coupons:
 				set_response(200, True, "No Coupon found", [])
 				return
+			for coupon in coupons:
+				meal_items_list = coupon["meal_items"].split(",")
+				meal_items_id = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name", "item_name"]
+					)
+					if item_doc:
+						meal_items_id.append(item_doc)
+				coupon["meal_items_id"] = meal_items_id
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
@@ -779,6 +806,20 @@ def get_all_coupons(
 					x["coupon_status"] != 1,
 				)
 			)
+			for coupon in ans:
+				meal_items_list = coupon["meal_items"].split(",")
+				meal_items_id = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name", "item_name"]
+					)
+					if item_doc:
+						meal_items_id.append(item_doc)
+				coupon["meal_items_id"] = meal_items_id
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 	except Exception as e:
@@ -1288,7 +1329,19 @@ def get_guest_coupon(date):
 		if not coupons_data:
 			set_response(200, True, "No guest coupon", [])
 			return
-
+		for coupon in coupons_data:
+				meal_items_list = coupon["meal_items"].split(",")
+				meal_items_id = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name","item_name"]
+					)
+					if item_doc:
+						meal_items_id.append(item_doc)
+				coupon["meal_items_id"] = meal_items_id
 		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
 		return
 
