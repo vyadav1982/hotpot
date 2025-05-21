@@ -1061,6 +1061,7 @@ def generate_coupon():
 								if (for_guest and role in ["Hotpot User", "Hotpot HR"])
 								else {}
 							),
+							"created_at": datetime.utcnow(),
 						},
 					)
 
@@ -1617,6 +1618,7 @@ def generate_coupon_admin():
 							**({"joining_day": 1} if is_joining_day and not for_guest else {}),
 							**({"approval_id": approval_id} if (for_guest and role == "Hotpot User") else {}),
 							"email": email,
+							"created_at": datetime.utcnow(),
 						},
 					)
 
@@ -1846,6 +1848,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 								)
 								else {}
 							),
+							"created_at": datetime.utcnow(),
 						},
 					)
 
