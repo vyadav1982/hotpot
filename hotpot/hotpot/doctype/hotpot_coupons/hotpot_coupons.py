@@ -19,6 +19,7 @@ class HotpotCoupons(Document):
 		coupon_date: DF.Datetime | None
 		coupon_status: DF.Literal["-1", "0", "1", "2"]
 		coupon_weight: DF.Float
+		created_at: DF.Datetime | None
 		email: DF.Data | None
 		employee_code: DF.Data | None
 		employee_id: DF.Data | None
