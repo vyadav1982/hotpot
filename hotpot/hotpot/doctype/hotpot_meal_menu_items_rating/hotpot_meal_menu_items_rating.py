@@ -15,6 +15,7 @@ class HotpotMealMenuItemsRating(Document):
 		from frappe.types import DF
 
 		employee: DF.Link
+		meal: DF.Link
 		meal_item: DF.Link
 		rating: DF.Rating
 		review: DF.SmallText | None

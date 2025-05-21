@@ -6,6 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "meal_item",
+  "meal",
   "employee",
   "rating",
   "review"
@@ -38,12 +39,19 @@
    "fieldname": "review",
    "fieldtype": "Small Text",
    "label": "Review"
+  },
+  {
+   "fieldname": "meal",
+   "fieldtype": "Link",
+   "label": "Meal",
+   "options": "Hotpot Meal",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 11:57:33.956900",
+ "modified": "2025-05-21 13:04:17.357712",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Menu Items Rating",
