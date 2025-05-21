@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class MealMenuItems(Document):
+class HotpotMealMenuItems(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -21,5 +21,4 @@ class MealMenuItems(Document):
 		rating: DF.Data | None
 		review: DF.Data | None
 	# end: auto-generated types
-
 	pass

@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-05-10 07:22:41.863031",
+ "creation": "2025-05-21 11:40:14.403643",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -36,13 +36,14 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-14 15:23:36.870496",
+ "modified": "2025-05-21 11:42:50.217942",
  "modified_by": "Administrator",
  "module": "Hotpot",
- "name": "Meal Menu Items",
+ "name": "Hotpot Meal Menu Items",
  "owner": "Administrator",
  "permissions": [],
- "sort_field": "creation",
+ "row_format": "Dynamic",
+ "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
 }
