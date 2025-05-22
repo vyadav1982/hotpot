@@ -426,6 +426,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			"lead_time",
 			"cancellation_time",
 			"category",
+			"max_meal_count",
 		]
 
 		# start = (page - 1) * limit
