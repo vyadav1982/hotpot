@@ -784,14 +784,13 @@ def get_all_coupons(
 					filters={"coupon": coupon["name"]},
 					fields=["meal_item", "rating", "review"],
 				)
-				print(all_ratings)
 				item_listing = coupon.get("item_listing",[])
 				for item in item_listing:	
 					if(all_ratings and item["id"] == all_ratings[0]["meal_item"]):
-						items_ratings.append({
+						items_rating.append({
 							"item_id": item["id"],
 							"item_name": item["title"],
-							"rating": all_ratings[0]["rating"],
+							"rating": all_ratings[0]["rating"]*5,
 							"review": all_ratings[0]["review"]
 						})
 				coupon["items_rating"] = items_rating
@@ -1416,7 +1415,6 @@ def generate_coupon_admin():
 		if not isinstance(emails, list):
 			emails = [emails]
 		for email in emails:
-			print(email)
 			if not is_valid_email(email):
 				return set_response(400, False, "Enter a valid email")
 		qty = int(qty)

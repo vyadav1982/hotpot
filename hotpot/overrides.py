@@ -57,6 +57,7 @@ class CustomDataImport(DataImport):
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date"]
 			meal_item_fields = ["Item Name"]
+			holiday_field = ["Date","Title"]
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" not in roles:
 				meal_fields.append("Vendor Id")
@@ -68,6 +69,8 @@ class CustomDataImport(DataImport):
 				expected_fields = meal_fields
 			elif self.reference_doctype == "Hotpot Meal Items":
 				expected_fields = meal_item_fields
+			elif self.reference_doctype == "Hotpot Holidays":
+				expected_fields = holiday_field
 			else:
 				frappe.throw(
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
