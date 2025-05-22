@@ -46,12 +46,20 @@ def give_feedback():
 		ratings = data.get("ratings", [])
 		employee_id = user_data.get("name")
 		meal = data.get("meal")
+		coupon = data.get("coupon")
+		coupon_doc = frappe.get_doc("Hotpot Coupons", coupon)
+		if not coupon_doc:
+			set_response(404, False, "Coupon not found")
+			return
+		if coupon_doc.coupon_status != "0":
+			set_response(400,False,"You can only rate after using the coupon.")
+			return 
 		already_rated_items = []
 		for rating_entry in ratings:
 			item_id = rating_entry.get("id")
 			existing_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
-				filters={"meal_item": item_id, "employee": employee_id, "meal": meal},
+				filters={"meal_item": item_id, "employee": employee_id, "meal": meal,"coupon":coupon},
 				pluck="meal_item",
 			)
 			if existing_ratings:
@@ -71,6 +79,7 @@ def give_feedback():
 					"meal_item": rating_entry.get("id"),
 					"rating": int(rating_entry.get("rating")) / 5,
 					"review": rating_entry.get("review"),
+					"coupon": coupon,
 				}
 			)
 			rating_doc.insert(ignore_permissions=True)
