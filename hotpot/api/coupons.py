@@ -692,6 +692,7 @@ def get_all_coupons(
 						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
 
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -744,20 +745,20 @@ def get_all_coupons(
 				as_dict=True,
 			)
 
-			for coupon in coupons:
-				rating = frappe.db.sql(
-					"""
-					SELECT
-						rating, feedback
-					FROM `tabHotpot Meal Rating`
-					WHERE parent = %(meal_id)s AND employee_id = %(employee_id)s
-				""",
-					{"meal_id": coupon["meal_id"], "employee_id": user_doc.get("name")},
-					as_dict=True,
-				)
+			# for coupon in coupons:
+			# 	rating = frappe.db.sql(
+			# 		"""
+			# 		SELECT
+			# 			rating, feedback
+			# 		FROM `tabHotpot Meal Rating`
+			# 		WHERE parent = %(meal_id)s AND employee_id = %(employee_id)s
+			# 	""",
+			# 		{"meal_id": coupon["meal_id"], "employee_id": user_doc.get("name")},
+			# 		as_dict=True,
+			# 	)
 
-				coupon["rating"] = rating[0]["rating"] if rating else None
-				coupon["feedback"] = rating[0]["feedback"] if rating else None
+			# 	coupon["rating"] = rating[0]["rating"] if rating else None
+			# 	coupon["feedback"] = rating[0]["feedback"] if rating else None
 
 			if not coupons:
 				set_response(200, True, "No Coupon found", [])
@@ -775,6 +776,26 @@ def get_all_coupons(
 					if item_doc:
 						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
+
+			for coupon in coupons:
+				items_rating = []
+				all_ratings = frappe.get_all(
+					"Hotpot Meal Menu Items Rating",
+					filters={"coupon": coupon["name"]},
+					fields=["meal_item", "rating", "review"],
+				)
+				print(all_ratings)
+				item_listing = coupon.get("item_listing",[])
+				for item in item_listing:	
+					if(all_ratings and item["id"] == all_ratings[0]["meal_item"]):
+						items_ratings.append({
+							"item_id": item["id"],
+							"item_name": item["title"],
+							"rating": all_ratings[0]["rating"],
+							"review": all_ratings[0]["review"]
+						})
+				coupon["items_rating"] = items_rating
+
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
