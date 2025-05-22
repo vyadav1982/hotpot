@@ -13,11 +13,11 @@ def get_all_vendor(doctype, txt, searchfield, start, page_len, filters):
 	users = frappe.get_all(
 		"Hotpot User",
 		filters=filters,
-		fields=["employee_id", "full_name"],
-		or_filters=[["employee_id", "like", f"%{txt}%"], ["full_name", "like", f"%{txt}%"]],
+		fields=["name", "full_name"],
+		or_filters=[["name", "like", f"%{txt}%"], ["full_name", "like", f"%{txt}%"]],
 	)
 
-	return [[u["employee_id"], u["full_name"]] for u in users]
+	return [[u["name"], u["full_name"]] for u in users]
 
 
 @frappe.whitelist()
