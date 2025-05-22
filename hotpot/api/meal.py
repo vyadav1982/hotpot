@@ -103,6 +103,7 @@ def create_meal():
 		meal_date = data.get("meal_date")
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
+		category = data.get("category")
 
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
@@ -110,7 +111,8 @@ def create_meal():
 		else:
 			vendor_id = data.get("vendor_id")
 
-		output = check_valid_meal(meal_date, start_time, end_time, vendor_id)
+		# for checking if there is any existing meal in the category
+		output = check_valid_meal(meal_date, vendor_id, category)
 		if output.get("status") == "error":
 			return set_response(500, False, output.get("message"))
 
@@ -796,6 +798,7 @@ def update_meal_admin():
 		return
 
 
+# getting all existing meals
 @frappe.whitelist()
 def get_meals_internal(date, vendor_id=None):
 	try:
@@ -812,6 +815,7 @@ def get_meals_internal(date, vendor_id=None):
 
 		base_fields = [
 			"name",
+			"category",
 			"meal_title",
 			"day",
 			"meal_items",
@@ -829,7 +833,7 @@ def get_meals_internal(date, vendor_id=None):
 			"cancellation_time",
 		]
 		if has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
-			filters = [["vendor_id", "=", user_data.get("guest_of")], ["is_deleted", "=", 0]]
+			filters = [["vendor_id", "=", user_data.get("email")], ["is_deleted", "=", 0]]
 
 			meals = frappe.db.get_list(
 				"Hotpot Meal",
@@ -930,7 +934,15 @@ def get_meals_internal(date, vendor_id=None):
 		return
 
 
+# getting all meals and checking for existing category
 @frappe.whitelist()
-def check_valid_meal(meal_date, start_time, end_time, vendor_id):
-	#### TODO
+def check_valid_meal(meal_date, vendor_id, category):
+	current_meals = get_meals_internal(meal_date, vendor_id)
+	for meal in current_meals:
+		if meal.category == category:
+			return {
+				"status": "error",
+				"message": f"Meal timing conflicts with '{meal.meal_title}'. There is already a meal in {category}",
+			}
+
 	return {"status": "success", "message": "Valid meal timing. No conflict found."}
