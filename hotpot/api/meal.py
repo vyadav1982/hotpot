@@ -38,26 +38,45 @@ def give_feedback():
 			set_response(403, False, "Not Permitted to acess this resource")
 			return
 		data = json.loads(frappe.request.data or "{}")
-
-		meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
+		meal_doc = frappe.get_doc("Hotpot Meal", data["meal"])
 		if not meal_doc:
-			set_response(404, False, "Meal Not found")
+			set_response(404, False, "Meal not found")
 			return
-		if any(entry.get("employee_id") == user_data.get("name") for entry in meal_doc.get("ratings", [])):
-			set_response(400, False, "You've already rated this meal! No double-dipping! 🍽️❌")
+
+		ratings = data.get("ratings", [])
+		employee_id = user_data.get("name")
+		meal = data.get("meal")
+		already_rated_items = []
+		for rating_entry in ratings:
+			item_id = rating_entry.get("id")
+			existing_ratings = frappe.get_all(
+				"Hotpot Meal Menu Items Rating",
+				filters={"meal_item": item_id, "employee": employee_id, "meal": meal},
+				pluck="meal_item",
+			)
+			if existing_ratings:
+				already_rated_items.append(item_id)
+
+		if already_rated_items:
+			set_response(
+				400, False, f"You've already rated item(s): {', '.join(already_rated_items)} in this meal."
+			)
 			return
-		meal_doc.append(
-			"ratings",
-			{
-				"employee_id": user_data.get("name"),
-				"feedback": data["feedback"],
-				"meal_id": meal_doc.get("name"),
-				"rating": data["rating"],
-			},
-		)
+		for rating_entry in ratings:
+			rating_doc = frappe.get_doc(
+				{
+					"doctype": "Hotpot Meal Menu Items Rating",
+					"employee": employee_id,
+					"meal": meal,
+					"meal_item": rating_entry.get("id"),
+					"rating": rating_entry.get("rating"),
+					"review": rating_entry.get("review"),
+				}
+			)
+			rating_doc.insert(ignore_permissions=True)
 		meal_doc.save()
 		frappe.db.commit()
-		set_response(200, True, "feedback updated successfully.")
+		set_response(200, True, "Ratings submitted successfully!")
 		return
 
 	except Exception as e:
@@ -84,6 +103,7 @@ def create_meal():
 		meal_date = data.get("meal_date")
 		start_time = data.get("start_time")
 		end_time = data.get("end_time")
+		category = data.get("category")
 
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
@@ -91,7 +111,8 @@ def create_meal():
 		else:
 			vendor_id = data.get("vendor_id")
 
-		output = check_valid_meal(meal_date, start_time, end_time, vendor_id)
+		# for checking if there is any existing meal in the category
+		output = check_valid_meal(meal_date, vendor_id, category)
 		if output.get("status") == "error":
 			return set_response(500, False, output.get("message"))
 
@@ -405,6 +426,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			"lead_time",
 			"cancellation_time",
 			"category",
+			"max_meal_count",
 		]
 
 		# start = (page - 1) * limit
@@ -487,23 +509,45 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				if coupon.coupon_status != "2":
 					meal["total_coupons"] += 1
 
-			ratings = [
-				float(r.rating) if isinstance(r.rating, str) else r.rating
-				for r in meal_doc.ratings
-				if r.rating is not None
+			all_ratings = frappe.get_all(
+				"Hotpot Meal Menu Items Rating",
+				filters={"meal": meal["name"]},
+				fields=["name", "employee", "meal_item", "rating", "review"],
+			)
+
+			rating_values = [
+				float(r["rating"]) if isinstance(r["rating"], str) else r["rating"]
+				for r in all_ratings
+				if r["rating"] is not None
 			]
-			meal["avg_rating"] = round(sum(ratings) / len(ratings), 2) if ratings else 0
+
+			meal["avg_rating"] = round(sum(rating_values) / len(rating_values), 2) if rating_values else 0
+
+			from collections import defaultdict
+
+			item_wise_rating = defaultdict(list)
+			for r in all_ratings:
+				item_wise_rating[r["meal_item"]].append(
+					{"id": r["name"], "employee": r["employee"], "rating": r["rating"], "review": r["review"]}
+				)
+
+			meal["item_wise_rating"] = item_wise_rating
 
 			if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 				meal["rating"] = [
-					{"id": r.name, "rating": r.rating, "feedback": r.feedback}
-					for r in meal_doc.ratings
-					if r.employee_id == user_data.name
+					{
+						"id": r["name"],
+						"meal_item": r["meal_item"],
+						"rating": r["rating"],
+						"review": r["review"],
+					}
+					for r in all_ratings
+					if r["employee"] == user_data.name
 				]
-			else:
-				meal["rating"] = [
-					{"id": r.name, "rating": r.rating, "feedback": r.feedback} for r in meal_doc.ratings
-				]
+			# else:
+			# 	meal["rating"] = [
+			# 		{"id": r.name, "rating": r.rating, "feedback": r.feedback} for r in meal_doc.ratings
+			# 	]
 			meal["meal_id"] = meal_doc.name
 			cat_type = (
 				frappe.get_doc("Hotpot Meal Category", meal["category"]) if meal.get("category") else None
@@ -755,6 +799,7 @@ def update_meal_admin():
 		return
 
 
+# getting all existing meals
 @frappe.whitelist()
 def get_meals_internal(date, vendor_id=None):
 	try:
@@ -771,6 +816,7 @@ def get_meals_internal(date, vendor_id=None):
 
 		base_fields = [
 			"name",
+			"category",
 			"meal_title",
 			"day",
 			"meal_items",
@@ -788,7 +834,7 @@ def get_meals_internal(date, vendor_id=None):
 			"cancellation_time",
 		]
 		if has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
-			filters = [["vendor_id", "=", user_data.get("guest_of")], ["is_deleted", "=", 0]]
+			filters = [["vendor_id", "=", user_data.get("email")], ["is_deleted", "=", 0]]
 
 			meals = frappe.db.get_list(
 				"Hotpot Meal",
@@ -889,7 +935,15 @@ def get_meals_internal(date, vendor_id=None):
 		return
 
 
+# getting all meals and checking for existing category
 @frappe.whitelist()
-def check_valid_meal(meal_date, start_time, end_time, vendor_id):
-	#### TODO
+def check_valid_meal(meal_date, vendor_id, category):
+	current_meals = get_meals_internal(meal_date, vendor_id)
+	for meal in current_meals:
+		if meal.category == category:
+			return {
+				"status": "error",
+				"message": f"Meal timing conflicts with '{meal.meal_title}'. There is already a meal in {category}",
+			}
+
 	return {"status": "success", "message": "Valid meal timing. No conflict found."}

@@ -167,17 +167,6 @@
    "reqd": 1
   },
   {
-   "fieldname": "menu_items_tab",
-   "fieldtype": "Tab Break",
-   "label": "Menu Items"
-  },
-  {
-   "fieldname": "menu_items",
-   "fieldtype": "Table",
-   "label": "Menu Items",
-   "options": "Meal Menu Items"
-  },
-  {
    "fieldname": "section_break_wdxv",
    "fieldtype": "Section Break"
   },
@@ -232,11 +221,22 @@
    "fieldname": "remaining_coupon_count",
    "fieldtype": "Int",
    "label": "Remaining Coupon Coupon"
+  },
+  {
+   "fieldname": "menu_items_tab",
+   "fieldtype": "Tab Break",
+   "label": "Menu Items"
+  },
+  {
+   "fieldname": "menu_items",
+   "fieldtype": "Table",
+   "label": "Menu Items",
+   "options": "Hotpot Meal Menu Items"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-14 14:54:12.758660",
+ "modified": "2025-05-21 11:44:49.673108",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
@@ -256,6 +256,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

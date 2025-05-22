@@ -36,7 +36,7 @@ def set_response(http_status_code, status, message, data=None):
 
 
 @frappe.whitelist()
-def get_approvals(start=None,end=None):
+def get_approvals(start=None, end=None):
 	try:
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
@@ -73,10 +73,10 @@ def get_approvals(start=None,end=None):
 			approvals = frappe.db.get_list(
 				"Hotpot Approvals",
 				fields=fields,
-				filters = filters,
+				filters=filters,
 			)
 		else:
-			filters["requested_by"] = ["=",user_data.get("name")]
+			filters["requested_by"] = ["=", user_data.get("name")]
 			if start and end:
 				filters["creation"] = [">=", start]
 				filters["creation"] = ["between", [start, end]]

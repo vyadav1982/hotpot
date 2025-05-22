@@ -678,6 +678,20 @@ def get_all_coupons(
 				)
 			)
 
+			for coupon in ans:
+				meal_items_list = coupon["meal_items"].split(",")
+				item_listing = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name", "item_name"],
+					)
+					if item_doc:
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
+				coupon["item_listing"] = item_listing
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -748,6 +762,19 @@ def get_all_coupons(
 			if not coupons:
 				set_response(200, True, "No Coupon found", [])
 				return
+			for coupon in coupons:
+				meal_items_list = coupon["meal_items"].split(",")
+				item_listing = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name", "item_name"],
+					)
+					if item_doc:
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
+				coupon["item_listing"] = item_listing
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
@@ -779,6 +806,20 @@ def get_all_coupons(
 					x["coupon_status"] != 1,
 				)
 			)
+			for coupon in ans:
+				meal_items_list = coupon["meal_items"].split(",")
+				item_listing = []
+				for item in meal_items_list:
+					item = item.strip()
+					item_doc = frappe.get_value(
+						"Hotpot Meal Items",
+						{"vendor_id": coupon["vendor_id"], "item_name": item},
+						["name", "item_name"],
+					)
+					if item_doc:
+						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
+				coupon["item_listing"] = item_listing
+
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 	except Exception as e:
@@ -1010,6 +1051,7 @@ def generate_coupon():
 								if (for_guest and role in ["Hotpot User", "Hotpot HR"])
 								else {}
 							),
+							"created_at": datetime.utcnow(),
 						},
 					)
 
@@ -1288,7 +1330,19 @@ def get_guest_coupon(date):
 		if not coupons_data:
 			set_response(200, True, "No guest coupon", [])
 			return
-
+		for coupon in coupons_data:
+			meal_items_list = coupon["meal_items"].split(",")
+			item_listing = []
+			for item in meal_items_list:
+				item = item.strip()
+				item_doc = frappe.get_value(
+					"Hotpot Meal Items",
+					{"vendor_id": coupon["vendor_id"], "item_name": item},
+					["name", "item_name"],
+				)
+				if item_doc:
+					item_listing.append({"id": item_doc[0], "title": item_doc[1]})
+			coupon["item_listing"] = item_listing
 		set_response(200, True, "Guest coupons detailed fetched successfully", coupons_data)
 		return
 
@@ -1551,6 +1605,7 @@ def generate_coupon_admin():
 							**({"joining_day": 1} if is_joining_day and not for_guest else {}),
 							**({"approval_id": approval_id} if (for_guest and role == "Hotpot User") else {}),
 							"email": email,
+							"created_at": datetime.utcnow(),
 						},
 					)
 
@@ -1780,6 +1835,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 								)
 								else {}
 							),
+							"created_at": datetime.utcnow(),
 						},
 					)
 

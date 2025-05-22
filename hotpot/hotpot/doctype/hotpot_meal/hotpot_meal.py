@@ -16,8 +16,8 @@ class HotpotMeal(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
+		from hotpot.hotpot.doctype.hotpot_meal_menu_items.hotpot_meal_menu_items import HotpotMealMenuItems
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
-		from hotpot.hotpot.doctype.meal_menu_items.meal_menu_items import MealMenuItems
 
 		approval_id: DF.Link | None
 		buffer_count_enabled: DF.Check
@@ -35,7 +35,7 @@ class HotpotMeal(Document):
 		meal_items: DF.Data
 		meal_title: DF.Data
 		meal_weight: DF.Int
-		menu_items: DF.Table[MealMenuItems]
+		menu_items: DF.Table[HotpotMealMenuItems]
 		ratings: DF.Table[HotpotMealRating]
 		remaining_coupon_count: DF.Int
 		repeat_days: DF.Data | None

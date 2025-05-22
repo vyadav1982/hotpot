@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class MealMenuItems(Document):
+class HotpotMealMenuItemsRating(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,12 +14,10 @@ class MealMenuItems(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		employee: DF.Link
+		meal: DF.Link
 		meal_item: DF.Link
-		parent: DF.Data
-		parentfield: DF.Data
-		parenttype: DF.Data
-		rating: DF.Data | None
-		review: DF.Data | None
+		rating: DF.Rating
+		review: DF.SmallText | None
 	# end: auto-generated types
-
 	pass

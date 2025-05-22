@@ -3,7 +3,7 @@ import frappe
 
 @frappe.whitelist()
 def get_all_vendor(doctype, txt, searchfield, start, page_len, filters):
-	filters = {"role": "Hotpot Vendor"}
+	filters = {"is_vendor": 1}
 
 	roles = frappe.get_roles()
 	if "Hotpot HR" in roles and "Administrator" not in roles:
