@@ -138,6 +138,7 @@ def create_meal():
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
 		meal_item_ids = data.get("meal_item_ids", None)
+		max_meal_count = data.get("max_meal_count",0)
 
 		required_fields = [
 			"meal_title",
@@ -171,6 +172,7 @@ def create_meal():
 				"repeat_type": repeat_type,
 				"repeat_days": repeat_days,
 				"category": category,
+				"max_meal_count": max_meal_count,
 			}
 		)
 		if meal_item_ids:
