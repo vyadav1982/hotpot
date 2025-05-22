@@ -69,7 +69,7 @@ def give_feedback():
 					"employee": employee_id,
 					"meal": meal,
 					"meal_item": rating_entry.get("id"),
-					"rating": rating_entry.get("rating"),
+					"rating": int(rating_entry.get("rating")) / 5,
 					"review": rating_entry.get("review"),
 				}
 			)
