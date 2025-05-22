@@ -14,6 +14,7 @@ class HotpotMealMenuItemsRating(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		coupon: DF.Link
 		employee: DF.Link
 		meal: DF.Link
 		meal_item: DF.Link

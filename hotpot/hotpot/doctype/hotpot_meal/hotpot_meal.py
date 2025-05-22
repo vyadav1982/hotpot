@@ -89,6 +89,7 @@ class HotpotMeal(Document):
 				self.lead_time = category_doc.lead_time
 				self.cancellation_time = category_doc.cancellation_time
 				self.meal_weight = category_doc.meal_rate
+				self.max_meal_count = category_doc.max_meal_count
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")

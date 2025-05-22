@@ -18,7 +18,9 @@ def execute(filters=None):
 
 	columns = [
 		{"label": "Employee Code", "fieldname": "employee_code", "fieldtype": "Data", "width": 120},
+		{"label": "Meal", "fieldname": "meal", "fieldtype": "Data", "width": 120},
 		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 180},
+		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
 		{"label": "Coupon Type", "fieldname": "coupon_type", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Float", "width": 150},
@@ -30,6 +32,8 @@ def execute(filters=None):
 	query = """
 		SELECT
 			hc.employee_code,
+			hc.coupon_date AS coupon_date,
+			hm.meal_title AS meal,
 			CASE WHEN hc.guest_of IS NOT NULL THEN hc.email ELSE NULL END AS email,
 			CASE
 				WHEN hc.guest_of IS NOT NULL THEN 'Guest'

@@ -46,12 +46,20 @@ def give_feedback():
 		ratings = data.get("ratings", [])
 		employee_id = user_data.get("name")
 		meal = data.get("meal")
+		coupon = data.get("coupon")
+		coupon_doc = frappe.get_doc("Hotpot Coupons", coupon)
+		if not coupon_doc:
+			set_response(404, False, "Coupon not found")
+			return
+		if coupon_doc.coupon_status != "0":
+			set_response(400,False,"You can only rate after using the coupon.")
+			return 
 		already_rated_items = []
 		for rating_entry in ratings:
 			item_id = rating_entry.get("id")
 			existing_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
-				filters={"meal_item": item_id, "employee": employee_id, "meal": meal},
+				filters={"meal_item": item_id, "employee": employee_id, "meal": meal,"coupon":coupon},
 				pluck="meal_item",
 			)
 			if existing_ratings:
@@ -69,8 +77,9 @@ def give_feedback():
 					"employee": employee_id,
 					"meal": meal,
 					"meal_item": rating_entry.get("id"),
-					"rating": rating_entry.get("rating"),
+					"rating": int(rating_entry.get("rating")) / 5,
 					"review": rating_entry.get("review"),
+					"coupon": coupon,
 				}
 			)
 			rating_doc.insert(ignore_permissions=True)
@@ -138,6 +147,7 @@ def create_meal():
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
 		meal_item_ids = data.get("meal_item_ids", None)
+		max_meal_count = data.get("max_meal_count",0)
 
 		required_fields = [
 			"meal_title",
@@ -171,6 +181,7 @@ def create_meal():
 				"repeat_type": repeat_type,
 				"repeat_days": repeat_days,
 				"category": category,
+				"max_meal_count": max_meal_count,
 			}
 		)
 		if meal_item_ids:
@@ -521,33 +532,24 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				if r["rating"] is not None
 			]
 
-			meal["avg_rating"] = round(sum(rating_values) / len(rating_values), 2) if rating_values else 0
+			meal["avg_rating"] = (round(sum(rating_values) / len(rating_values), 2))*5 if rating_values else 0
 
-			from collections import defaultdict
+			# if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
+			# 	from collections import defaultdict
 
-			item_wise_rating = defaultdict(list)
-			for r in all_ratings:
-				item_wise_rating[r["meal_item"]].append(
-					{"id": r["name"], "employee": r["employee"], "rating": r["rating"], "review": r["review"]}
-				)
+			# 	item_wise_rating = defaultdict(list)
 
-			meal["item_wise_rating"] = item_wise_rating
+			# 	for r in all_ratings:
+			# 		if r["employee"] == employee:
+			# 			item_wise_rating[r["meal_item"]].append({
+			# 				"id": r["name"],
+			# 				"employee": r["employee"],
+			# 				"rating": r["rating"]*5,
+			# 				"review": r["review"]
+			# 			})
 
-			if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-				meal["rating"] = [
-					{
-						"id": r["name"],
-						"meal_item": r["meal_item"],
-						"rating": r["rating"],
-						"review": r["review"],
-					}
-					for r in all_ratings
-					if r["employee"] == user_data.name
-				]
-			# else:
-			# 	meal["rating"] = [
-			# 		{"id": r.name, "rating": r.rating, "feedback": r.feedback} for r in meal_doc.ratings
-			# 	]
+			# 	meal["item_wise_rating"] = item_wise_rating
+
 			meal["meal_id"] = meal_doc.name
 			cat_type = (
 				frappe.get_doc("Hotpot Meal Category", meal["category"]) if meal.get("category") else None

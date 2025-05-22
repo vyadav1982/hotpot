@@ -9,7 +9,8 @@
   "meal",
   "employee",
   "rating",
-  "review"
+  "review",
+  "coupon"
  ],
  "fields": [
   {
@@ -17,7 +18,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Meal Item",
-   "options": "Hotpot Meal Items",
+   "options": "Hotpot Meal Menu Items",
    "reqd": 1
   },
   {
@@ -46,12 +47,19 @@
    "label": "Meal",
    "options": "Hotpot Meal",
    "reqd": 1
+  },
+  {
+   "fieldname": "coupon",
+   "fieldtype": "Link",
+   "label": "Coupon",
+   "options": "Hotpot Coupons",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-21 17:09:27.889047",
+ "modified": "2025-05-22 12:03:42.065710",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Menu Items Rating",
@@ -70,6 +78,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
