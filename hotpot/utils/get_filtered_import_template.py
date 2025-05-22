@@ -25,6 +25,7 @@ def get_filtered_import_template(doctype):
 	]
 	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date"]
 	meal_item_field = ["Item Name"]
+	holiday_field = ["Date","Title"]
 	roles = frappe.get_roles()
 	if "Hotpot Vendor" not in roles:
 		meal_field.append("Vendor Id")
@@ -36,6 +37,8 @@ def get_filtered_import_template(doctype):
 		fields_to_include = meal_field
 	elif doctype == "Hotpot Meal Items":
 		fields_to_include = meal_item_field
+	elif doctype == "Hotpot Holidays":
+		fields_to_include = holiday_field
 
 	output = BytesIO()
 	wb = openpyxl.Workbook()
