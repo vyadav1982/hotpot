@@ -50,7 +50,8 @@ function formatUtcToLocal(utc_datetime) {
 
     let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    let date = new Date(utc_datetime + "Z");
+    // let date = new Date(utc_datetime + "Z");
+    let date = new Date(utc_datetime.replace(" ", "T"));
 
     let localTime = date.toLocaleTimeString("en-US", {
         timeZone: user_timezone,
