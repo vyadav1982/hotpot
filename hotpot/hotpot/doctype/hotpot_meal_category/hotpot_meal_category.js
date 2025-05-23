@@ -2,80 +2,100 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Hotpot Meal Category", {
-    onload(frm) {
-        updateLocalDescriptions(frm);
-		frm.doc.start_time = frm.doc.start_time;
-		frm.doc.end_time = frm.doc.end_time;
+	onload(frm) {
+		updateLocalDescriptions(frm);
+		if (frm.doc.start_time) {
+			const localStart = formatUtcToLocalObject(frm.doc.start_time);
+			frm.set_value("start_time", localStart);
+		}
+		if (frm.doc.end_time) {
+			const localEnd = formatUtcToLocalObject(frm.doc.end_time);
+			frm.set_value("end_time", localEnd);
+		}
+	},
+	validate(frm) {
+		// Convert back from local to UTC before save
+		if (frm.doc.start_time) {
+			const utcStart = formatLocalToUtcString(frm.doc.start_time);
+			frm.set_value("start_time", utcStart);
+		}
+		if (frm.doc.end_time) {
+			const utcEnd = formatLocalToUtcString(frm.doc.end_time);
+			frm.set_value("end_time", utcEnd);
+		}
+	},
+	refresh(frm) {
+		const userRoles = frappe.user_roles;
+		const isAdmin = userRoles.includes("Administrator");
+		if (!isAdmin) {
+			frm.page.wrapper.find(".comment-box").css({ display: "none" });
+			frm.page.hide_menu();
+		}
+	},
+	start_time(frm) {
+		updateLocalDescriptions(frm);
+	},
 
-		frm.refresh_field("start_time");
-		frm.refresh_field("end_time");
-    },
-    refresh(frm) {
-        const userRoles = frappe.user_roles;
-        const isAdmin = userRoles.includes("Administrator")
-        if (!isAdmin) {
-            frm.page.wrapper.find(".comment-box").css({'display':'none'});
-            frm.page.hide_menu();
-        }
-
-        // code for refreshing the time
-    },
-        start_time(frm) {
-            updateLocalDescriptions(frm);
-        },
-
-        end_time(frm) {
-            updateLocalDescriptions(frm);
-        }
-    });
+	end_time(frm) {
+		updateLocalDescriptions(frm);
+	},
+});
 
 function updateLocalDescriptions(frm) {
-    if (frm.doc.start_time) {
-        const localStartTime = formatUtcToLocal(frm.doc.start_time);
-        frm.set_df_property('start_time', 'description', `Local Time: ${localStartTime}`);
-    } else {
-        frm.set_df_property('start_time', 'description', '');
-    }
+	if (frm.doc.start_time) {
+		const localStartTime = formatUtcToLocal(frm.doc.start_time);
+		frm.set_df_property("start_time", "description", `Local Time: ${localStartTime}`);
+	} else {
+		frm.set_df_property("start_time", "description", "");
+	}
 
-    if (frm.doc.end_time) {
-        const localEndTime = formatUtcToLocal(frm.doc.end_time);
-        frm.set_df_property('end_time', 'description', `Local Time: ${localEndTime}`);
-    } else {
-        frm.set_df_property('end_time', 'description', '');
-    }
+	if (frm.doc.end_time) {
+		const localEndTime = formatUtcToLocal(frm.doc.end_time);
+		frm.set_df_property("end_time", "description", `Local Time: ${localEndTime}`);
+	} else {
+		frm.set_df_property("end_time", "description", "");
+	}
 }
 
 function formatUtcToLocal(utc_datetime) {
-    if (!utc_datetime) return "";
+	if (!utc_datetime) return "";
 
-    let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    let date = new Date(utc_datetime.replace(" ", "T"));
-
-    let localTime = date.toLocaleTimeString("en-US", {
-        timeZone: user_timezone,
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true
-    });
-
-    return localTime;
+	const date = new Date(utc_datetime.replace(" ", "T") + "Z");
+	const localTime = date.toLocaleTimeString("en-US", {
+		hour: "2-digit",
+		minute: "2-digit",
+		hour12: true,
+	});
+	return localTime;
 }
 
 function formatUtcToLocalObject(utc_datetime) {
 	if (!utc_datetime) return "";
 
-	let utcIsoString = utc_datetime.replace(" ", "T") + "Z";
-    console.log('utcIsoString',utcIsoString)
-	let date = new Date(utcIsoString);
+	const date = new Date(utc_datetime.replace(" ", "T") + "Z");
 
-	let dd = String(date.getDate()).padStart(2, "0");
-	let mm = String(date.getMonth() + 1).padStart(2, "0");
-	let yyyy = date.getFullYear();
+	const yyyy = date.getFullYear();
+	const mm = String(date.getMonth() + 1).padStart(2, "0");
+	const dd = String(date.getDate()).padStart(2, "0");
+	const hh = String(date.getHours()).padStart(2, "0");
+	const min = String(date.getMinutes()).padStart(2, "0");
+	const ss = String(date.getSeconds()).padStart(2, "0");
 
-	let hh = String(date.getHours()).padStart(2, "0");
-	let min = String(date.getMinutes()).padStart(2, "0");
-	let ss = String(date.getSeconds()).padStart(2, "0");
+	return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+}
+
+function formatLocalToUtcString(local_datetime) {
+	if (!local_datetime) return "";
+
+	const localDate = new Date(local_datetime.replace(" ", "T"));
+	if (isNaN(localDate)) return "";
+
+	const yyyy = localDate.getUTCFullYear();
+	const mm = String(localDate.getUTCMonth() + 1).padStart(2, "0");
+	const dd = String(localDate.getUTCDate()).padStart(2, "0");
+	const hh = String(localDate.getUTCHours()).padStart(2, "0");
+	const min = String(localDate.getUTCMinutes()).padStart(2, "0");
+	const ss = String(localDate.getUTCSeconds()).padStart(2, "0");
 
 	return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }
