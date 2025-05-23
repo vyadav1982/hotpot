@@ -4,11 +4,8 @@
 frappe.ui.form.on("Hotpot Meal Category", {
     onload(frm) {
         updateLocalDescriptions(frm);
-        const localStartTime = formatUtcToLocalObject(frm.doc.start_time);
-		const localEndTime = formatUtcToLocalObject(frm.doc.end_time);
-		
-		frm.doc.start_time = localStartTime;
-		frm.doc.end_time = localEndTime;
+		frm.doc.start_time = frm.doc.start_time;
+		frm.doc.end_time = frm.doc.end_time;
 
 		frm.refresh_field("start_time");
 		frm.refresh_field("end_time");
@@ -20,6 +17,8 @@ frappe.ui.form.on("Hotpot Meal Category", {
             frm.page.wrapper.find(".comment-box").css({'display':'none'});
             frm.page.hide_menu();
         }
+
+        // code for refreshing the time
     },
         start_time(frm) {
             updateLocalDescriptions(frm);
@@ -51,7 +50,7 @@ function formatUtcToLocal(utc_datetime) {
 
     let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    let date = new Date(utc_datetime + "Z");
+    let date = new Date(utc_datetime.replace(" ", "T"));
 
     let localTime = date.toLocaleTimeString("en-US", {
         timeZone: user_timezone,
@@ -67,7 +66,7 @@ function formatUtcToLocalObject(utc_datetime) {
 	if (!utc_datetime) return "";
 
 	let utcIsoString = utc_datetime.replace(" ", "T") + "Z";
-
+    console.log('utcIsoString',utcIsoString)
 	let date = new Date(utcIsoString);
 
 	let dd = String(date.getDate()).padStart(2, "0");

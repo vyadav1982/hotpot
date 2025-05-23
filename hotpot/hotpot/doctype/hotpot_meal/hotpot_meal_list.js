@@ -119,9 +119,8 @@ function formatRepeatType(value) {
 function formatUtcToLocal(utc_datetime) {
     if (!utc_datetime) return "";
 
-    // let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    // let date = new Date(utc_datetime + "Z");
+    let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    
     let date = new Date(utc_datetime.replace(" ", "T"));
 
     let localTime = date.toLocaleTimeString("en-US", {

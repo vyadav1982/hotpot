@@ -81,14 +81,10 @@ frappe.ui.form.on("Hotpot Meal", {
 		});
 
 		frm.set_df_property("vendor_id", "only_select", true);
-		// updateLocalDescriptions(frm);
-		const localStartTime = formatUtcToLocalObject(frm.doc.start_time);
-		const localEndTime = formatUtcToLocalObject(frm.doc.end_time);
-		const localDate = formatUtcToLocalDate(frm.doc.meal_date);
-
-		frm.doc.start_time = localStartTime;
-		frm.doc.end_time = localEndTime;
-		frm.doc.meal_date = localDate;
+		
+		frm.doc.start_time = frm.doc.start_time;
+		frm.doc.end_time = frm.doc.end_time;
+		frm.doc.meal_date = frm.doc.meal_date;
 
 
 		frm.refresh_field("start_time");
@@ -144,8 +140,7 @@ function formatUtcToLocalDate(utc_datetime) {
 function formatUtcToLocal(utc_datetime) {
 	if (!utc_datetime) return "";
 
-	let user_timezone =
-		frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let user_timezone = frappe.sys_defaults.time_zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 	let date = new Date(utc_datetime + "Z");
 
