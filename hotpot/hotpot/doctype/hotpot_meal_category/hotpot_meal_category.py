@@ -59,6 +59,15 @@ class HotpotMealCategory(Document):
 			if start >= end:
 				frappe.throw("Start time must be before End time.")
 
+	def before_save(self):
+		old_doc = self.get_doc_before_save()
+		if old_doc and old_doc.start_time!=self.start_time :
+			self.validate_dates()
+			self.start_time = get_utc_datetime_obj(self.start_time)
+		if old_doc and old_doc.end_time!=self.end_time :
+			self.validate_dates()
+			self.end_time = get_utc_datetime_obj(self.end_time)
+
 	def before_insert(self):
 		self.validate_dates()
 		if is_frappe_ui_request():
