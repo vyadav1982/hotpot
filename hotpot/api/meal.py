@@ -534,22 +534,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 
 			meal["avg_rating"] = (round(sum(rating_values) / len(rating_values), 2))*5 if rating_values else 0
 
-			# if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-			# 	from collections import defaultdict
-
-			# 	item_wise_rating = defaultdict(list)
-
-			# 	for r in all_ratings:
-			# 		if r["employee"] == employee:
-			# 			item_wise_rating[r["meal_item"]].append({
-			# 				"id": r["name"],
-			# 				"employee": r["employee"],
-			# 				"rating": r["rating"]*5,
-			# 				"review": r["review"]
-			# 			})
-
-			# 	meal["item_wise_rating"] = item_wise_rating
-
 			meal["meal_id"] = meal_doc.name
 			cat_type = (
 				frappe.get_doc("Hotpot Meal Category", meal["category"]) if meal.get("category") else None
