@@ -60,8 +60,8 @@ class CustomDataImport(DataImport):
 			holiday_field = ["Date","Title"]
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" not in roles:
-				meal_fields.append("Vendor Id")
-				meal_item_fields.append("Vendor Id")
+				meal_fields.append("Vendor")
+				meal_item_fields.append("Vendor")
 
 			if self.reference_doctype == "Hotpot User":
 				expected_fields = user_fields
@@ -241,8 +241,8 @@ class CustomDataImport(DataImport):
 				roles = frappe.get_roles()
 				if "Hotpot Vendor" not in roles:
 					vendor_id = (
-						row[header_to_index.get("Vendor Id", -1)].strip()
-						if header_to_index.get("Vendor Id") is not None
+						row[header_to_index.get("Vendor", -1)].strip()
+						if header_to_index.get("Vendor") is not None
 						else ""
 					)
 				else:
@@ -282,11 +282,11 @@ class CustomDataImport(DataImport):
 
 					if not vendor_doc:
 						errors.append(
-							f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted."
+							f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted."
 						)
 						continue
 				except Exception as e:
-					errors.append(f"Row {row_num}: Error fetching Vendor ID '{vendor_id}': {str(e)}")
+					errors.append(f"Row {row_num}: Error fetching Vendor '{vendor_id}': {str(e)}")
 					continue
 
 				entered_items = [item.strip() for item in meal_items_raw.split(",") if item.strip()]
@@ -311,7 +311,7 @@ class CustomDataImport(DataImport):
 					"meal_rate": "Meal Weight",
 				}
 				if "Hotpot Vendor" in roles:
-					field_mapping["vendor_id"] = "Vendor Id"
+					field_mapping["vendor_id"] = "Vendor"
 
 				for doc_field, import_field in field_mapping.items():
 					if import_field not in header_to_index:
@@ -344,7 +344,7 @@ class CustomDataImport(DataImport):
 
 					value = category_doc.get(doc_field)
 					row[field_idx] = value
-					if import_field == "Vendor Id":
+					if import_field == "Vendor":
 						row[field_idx] = vendor_id
 			# print("Updated columns:", preview_data["columns"])
 			# print("Updated row:", row)
@@ -373,8 +373,8 @@ class CustomDataImport(DataImport):
 				vendor_doc = None
 				if "Hotpot Vendor" not in roles:
 					vendor_id = (
-						row[header_to_index.get("Vendor Id", -1)].strip()
-						if header_to_index.get("Vendor Id") is not None
+						row[header_to_index.get("Vendor", -1)].strip()
+						if header_to_index.get("Vendor") is not None
 						else ""
 					)
 				else:
@@ -390,11 +390,11 @@ class CustomDataImport(DataImport):
 
 					if not vendor_doc:
 						errors.append(
-							f"Row {row_num}: Vendor ID '{vendor_id}' not found, inactive, or deleted."
+							f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted."
 						)
 						continue
 				except Exception as e:
-					errors.append(f"Row {row_num}: Error fetching Vendor ID '{vendor_id}': {str(e)}")
+					errors.append(f"Row {row_num}: Error fetching Vendor '{vendor_id}': {str(e)}")
 					continue
 
 				item_name = (
@@ -424,10 +424,10 @@ class CustomDataImport(DataImport):
 
 				field_mapping = {}
 				if "Hotpot Vendor" in roles:
-					field_mapping["vendor_id"] = "Vendor Id"
+					field_mapping["vendor_id"] = "Vendor"
 
 				if "Hotpot Vendor" in roles:
-					import_field = "Vendor Id"
+					import_field = "Vendor"
 					doc_field = "vendor_id"
 
 				for doc_field, import_field in field_mapping.items():
@@ -459,7 +459,7 @@ class CustomDataImport(DataImport):
 					while len(row) <= field_idx:
 						row.append("")
 
-					if import_field == "Vendor Id":
+					if import_field == "Vendor":
 						row[field_idx] = f"{vendor_doc.full_name} ({vendor_doc.employee_id})"
 
 			if errors:

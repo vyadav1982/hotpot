@@ -43,12 +43,11 @@ class HotpotMealCategory(Document):
 		type: DF.Link
 	# end: auto-generated types
 
-	def validate(self):
+	def validate_dates(self):
 		"""Validate that start and end times are on the same day and start is before end."""
-
 		def parse_datetime(dt):
 			if isinstance(dt, str):
-				return datetime.fromisoformat(dt)
+				return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
 			return dt
 
 		if self.start_time and self.end_time:
@@ -61,6 +60,7 @@ class HotpotMealCategory(Document):
 				frappe.throw("Start time must be before End time.")
 
 	def before_insert(self):
+		self.validate_dates()
 		if is_frappe_ui_request():
 			self.start_time = get_utc_datetime_obj(self.start_time)
 			self.end_time = get_utc_datetime_obj(self.end_time)

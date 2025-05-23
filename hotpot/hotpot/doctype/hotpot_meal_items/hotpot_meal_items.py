@@ -38,6 +38,7 @@ class HotpotMealItems(Document):
 	# end: auto-generated types
 
 	def before_insert(self):
+		self.item_name = self.item_name.strip().lower()
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			roles = frappe.get_roles()
 			if "Administrator" in roles:

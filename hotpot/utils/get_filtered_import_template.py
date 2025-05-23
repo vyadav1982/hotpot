@@ -28,8 +28,8 @@ def get_filtered_import_template(doctype):
 	holiday_field = ["Date","Title"]
 	roles = frappe.get_roles()
 	if "Hotpot Vendor" not in roles:
-		meal_field.append("Vendor Id")
-		meal_item_field.append("Vendor Id")
+		meal_field.append("Vendor")
+		meal_item_field.append("Vendor")
 	fields_to_include = []
 	if doctype == "Hotpot User":
 		fields_to_include = user_field
