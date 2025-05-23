@@ -520,19 +520,30 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				if coupon.coupon_status != "2":
 					meal["total_coupons"] += 1
 
-			all_ratings = frappe.get_all(
-				"Hotpot Meal Menu Items Rating",
-				filters={"meal": meal["name"]},
-				fields=["name", "employee", "meal_item", "rating", "review"],
-			)
+			
 
-			rating_values = [
-				float(r["rating"]) if isinstance(r["rating"], str) else r["rating"]
-				for r in all_ratings
-				if r["rating"] is not None
-			]
+			# all_ratings = frappe.get_all(
+			# 	"Hotpot Meal Menu Items Rating",
+			# 	filters={"meal": meal["name"]},
+			# 	fields=["name", "employee", "meal_item", "rating", "review"],
+			# )
 
-			meal["avg_rating"] = (round(sum(rating_values) / len(rating_values), 2))*5 if rating_values else 0
+			# rating_values = [
+			# 	float(r["rating"]) if isinstance(r["rating"], str) else r["rating"]
+			# 	for r in all_ratings
+			# 	if r["rating"] is not None
+			# ]
+
+			total_rating=0
+			total_count=0
+			for meal_item in meal_doc.menu_items:
+				all_ratings = frappe.get_all("Hotpot Meal Menu Items Rating",filters:{"meal_item":meal_items},fields=["rating"])
+				for r in all_ratings:
+					if r["rating"] is not None:
+						total_rating += float(r["rating"])
+						total_count += 1
+
+			meal["avg_rating"] = (round(total_rating / total_count, 2))*5 if total_count else 0
 
 			meal["meal_id"] = meal_doc.name
 			cat_type = (
