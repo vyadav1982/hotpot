@@ -84,12 +84,16 @@ frappe.ui.form.on("Hotpot Meal", {
 		// updateLocalDescriptions(frm);
 		const localStartTime = formatUtcToLocalObject(frm.doc.start_time);
 		const localEndTime = formatUtcToLocalObject(frm.doc.end_time);
+		const localDate = formatUtcToLocalDate(frm.doc.meal_date);
 
 		frm.doc.start_time = localStartTime;
 		frm.doc.end_time = localEndTime;
+		frm.doc.meal_date = localDate;
+
 
 		frm.refresh_field("start_time");
 		frm.refresh_field("end_time");
+		frm.refresh_field("meal_date");
 		},
 
 	start_time(frm) {
