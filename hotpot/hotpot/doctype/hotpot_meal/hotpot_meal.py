@@ -44,7 +44,7 @@ class HotpotMeal(Document):
 		vendor_id: DF.Link
 	# end: auto-generated types
 
-	def validate(self):
+	def validate_dates(self):
 		"""Validate that start and end times are on the same day and start is before end."""
 
 		if not self.is_new():
@@ -71,6 +71,7 @@ class HotpotMeal(Document):
 	# 		frappe.throw("Vendor Id is mandatory.")
 
 	def before_insert(self):
+		self.validate_dates()
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			vendor = None
 			if self.start_time:
