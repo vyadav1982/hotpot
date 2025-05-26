@@ -549,7 +549,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 						total_rating += float(r["rating"])
 						total_count += 1
 
-			meal["avg_rating"] = (round(total_rating / total_count, 2)) * 5 if total_count else 0
+			meal["avg_rating"] = round((total_rating / total_count) * 5, 2) if total_count else 0
 
 			meal["meal_id"] = meal_doc.name
 			cat_type = (
