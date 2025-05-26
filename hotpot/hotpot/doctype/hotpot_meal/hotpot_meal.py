@@ -102,7 +102,8 @@ class HotpotMeal(Document):
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
-				self.vendor_id = vendor_id
+				if self.vendor_id is None:
+					self.vendor_id = vendor_id
 			vendor = self.vendor_id
 			if self.meal_items:
 				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
