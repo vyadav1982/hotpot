@@ -3,7 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
-
+from datetime import datetime, timedelta
 from hotpot.utils.utc_time import *
 
 
@@ -56,9 +56,17 @@ class HotpotMeal(Document):
 		if self.start_time and self.end_time:
 			if isinstance(self.start_time, str):
 				self.start_time = datetime.strptime(self.start_time, "%Y-%m-%d %H:%M:%S")
+			elif isinstance(self.start_time, timedelta):
+				# Convert timedelta to datetime using today's date
+				today = datetime.now().date()
+				self.start_time = datetime.combine(today, (datetime.min + self.start_time).time())
 
 			if isinstance(self.end_time, str):
 				self.end_time = datetime.strptime(self.end_time, "%Y-%m-%d %H:%M:%S")
+			elif isinstance(self.end_time, timedelta):
+				# Convert timedelta to datetime using today's date
+				today = datetime.now().date()
+				self.end_time = datetime.combine(today, (datetime.min + self.end_time).time())
 
 			if self.start_time.date() != self.end_time.date():
 				frappe.throw("Start time and End time must be on the same date.")

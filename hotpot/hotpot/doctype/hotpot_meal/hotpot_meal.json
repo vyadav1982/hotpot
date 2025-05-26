@@ -57,15 +57,19 @@
    "reqd": 1
   },
   {
+   "fetch_from": "category.start_time",
    "fieldname": "start_time",
    "fieldtype": "Datetime",
    "label": "Start Time",
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "fetch_from": "category.end_time",
    "fieldname": "end_time",
    "fieldtype": "Datetime",
    "label": "End Time",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -237,7 +241,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-22 10:21:19.144327",
+ "modified": "2025-05-26 18:45:02.270807",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
