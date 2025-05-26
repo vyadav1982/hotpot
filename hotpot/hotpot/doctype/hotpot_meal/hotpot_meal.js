@@ -45,30 +45,30 @@ frappe.ui.form.on("Hotpot Meal", {
 				frm.toggle_display("ratings", false);
 			}
 
-			// if(isVendor && !frm.doc.__islocal){
-			//     frm.toggle_display("vendor_id",false)
-			//     frm.disable_form()
-			// }
+			if(isVendor && !frm.doc.__islocal){
+			    frm.toggle_display("vendor_id",false)
+			    frm.disable_form()
+			}
 
-			// if (!isHotpotAdmin) {
-			//     frm.toggle_enable("coupons", false);
-			//     frm.toggle_enable("ratings", false);
-			// }
-			// if (!frm.doc.__islocal) {
-			//     // frm.toggle_enable("vendor_id", false);
-			//     // frm.toggle_enable("start_time", false);
-			//     // frm.toggle_enable("end_time", false);
-			//     // frm.toggle_enable("meal_date", false);
-			// }
-			// else{
-			//     frm.toggle_enable("coupons", false);
-			//     frm.toggle_enable("ratings", false);
-			//     frm.toggle_display("start_time",false);
-			//     frm.toggle_display("end_time",false);
-			//     frm.toggle_display("lead_time",false)
-			//     frm.toggle_display("cancellation_time",false)
-			//     frm.toggle_display("meal_weight",false)
-			// }
+			if (!isHotpotAdmin) {
+			    frm.toggle_enable("coupons", false);
+			    frm.toggle_enable("ratings", false);
+			}
+			if (!frm.doc.__islocal) {
+			    frm.toggle_enable("vendor_id", false);
+			    frm.toggle_enable("start_time", false);
+			    frm.toggle_enable("end_time", false);
+			    frm.toggle_enable("meal_date", false);
+			}
+			else{
+			    frm.toggle_enable("coupons", false);
+			    frm.toggle_enable("ratings", false);
+			    frm.toggle_display("start_time",false);
+			    frm.toggle_display("end_time",false);
+			    frm.toggle_display("lead_time",false)
+			    frm.toggle_display("cancellation_time",false)
+			    frm.toggle_display("meal_weight",false)
+			}
 		}
 	},
 	onload(frm) {
@@ -82,15 +82,26 @@ frappe.ui.form.on("Hotpot Meal", {
 
 		frm.set_df_property("vendor_id", "only_select", true);
 		updateLocalDescriptions(frm);
+		const localStartTime = formatUtcToLocalObject(frm.doc.start_time);
+		const localEndTime = formatUtcToLocalObject(frm.doc.end_time);
+
+		console.log(frm.doc.start_time);
+		console.log(localStartTime);
+
+		frm.doc.start_time = localStartTime;
+		frm.doc.end_time = localEndTime;
+
+		frm.refresh_field("start_time");
+		frm.refresh_field("end_time");
 	},
 
-	// start_time(frm) {
-	//     updateLocalDescriptions(frm);
-	// },
+	start_time(frm) {
+	    updateLocalDescriptions(frm);
+	},
 
-	// end_time(frm) {
-	//     updateLocalDescriptions(frm);
-	// }
+	end_time(frm) {
+	    updateLocalDescriptions(frm);
+	}
 });
 function updateLocalDescriptions(frm) {
 	if (frm.doc.start_time) {
@@ -145,4 +156,22 @@ function formatUtcToLocal(utc_datetime) {
 	});
 
 	return localTime;
+}
+
+
+function formatUtcToLocalObject(utc_datetime) {
+	if (!utc_datetime) return "";
+
+	let utcIsoString = utc_datetime.replace(" ", "T") + "Z";
+	let date = new Date(utcIsoString);
+
+	let dd = String(date.getDate()).padStart(2, "0");
+	let mm = String(date.getMonth() + 1).padStart(2, "0");
+	let yyyy = date.getFullYear();
+
+	let hh = String(date.getHours()).padStart(2, "0");
+	let min = String(date.getMinutes()).padStart(2, "0");
+	let ss = String(date.getSeconds()).padStart(2, "0");
+
+	return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
 }

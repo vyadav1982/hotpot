@@ -33,34 +33,55 @@ class HotpotMealCategory(Document):
 		from frappe.types import DF
 
 		cancellation_time: DF.Int
-		end_time: DF.Datetime
+		end_time: DF.Datetime | None
+		end_time_local: DF.Time
 		is_active: DF.Check
 		lead_time: DF.Int
 		max_meal_count: DF.Int
 		meal_rate: DF.Int
 		sequence: DF.Int
-		start_time: DF.Datetime
+		start_time: DF.Datetime | None
+		start_time_local: DF.Time
 		type: DF.Link
 	# end: auto-generated types
 
+
+
 	def validate_dates(self):
-		"""Validate that start and end times are on the same day and start is before end."""
-		def parse_datetime(dt):
+		"""Ensure start_time is before end_time, skip if either is missing."""
+
+		def parse_datetime_safe(dt):
+			if not dt:
+				return None
 			if isinstance(dt, str):
-				return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
-			return dt
+				try:
+					return datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+				except ValueError:
+					frappe.throw(f"Invalid datetime format: {dt}. Expected format: YYYY-MM-DD HH:MM:SS")
+			return dt  # Already a datetime object
 
-		if self.start_time and self.end_time:
-			start = parse_datetime(self.start_time)
-			end = parse_datetime(self.end_time)
+		start = parse_datetime_safe(self.start_time)
+		end = parse_datetime_safe(self.end_time)
 
-			if start.date() != end.date():
-				frappe.throw("Start time and End time must be on the same date.")
-			if start >= end:
-				frappe.throw("Start time must be before End time.")
+		# If either time is missing, don't validate
+		if not start or not end:
+			return
+
+		# Check that start is before end
+		if start >= end:
+			frappe.throw("Start time must be earlier than End time.")
+
+	def before_save(self):
+		old_doc = self.get_doc_before_save()
+		if old_doc and old_doc.start_time != self.start_time:
+			self.validate_dates()
+			self.start_time = get_utc_datetime_obj_v2(self.start_time)
+		if old_doc and old_doc.end_time != self.end_time:
+			self.validate_dates()
+			self.end_time = get_utc_datetime_obj_v2(self.end_time)
 
 	def before_insert(self):
 		self.validate_dates()
 		if is_frappe_ui_request():
-			self.start_time = get_utc_datetime_obj(self.start_time)
-			self.end_time = get_utc_datetime_obj(self.end_time)
+			self.start_time = get_utc_datetime_obj_v2(self.start_time)
+			self.end_time = get_utc_datetime_obj_v2(self.end_time)

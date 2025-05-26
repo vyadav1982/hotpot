@@ -52,14 +52,14 @@ def give_feedback():
 			set_response(404, False, "Coupon not found")
 			return
 		if coupon_doc.coupon_status != "0":
-			set_response(400,False,"You can only rate after using the coupon.")
-			return 
+			set_response(400, False, "You can only rate after using the coupon.")
+			return
 		already_rated_items = []
 		for rating_entry in ratings:
 			item_id = rating_entry.get("id")
 			existing_ratings = frappe.get_all(
 				"Hotpot Meal Menu Items Rating",
-				filters={"meal_item": item_id, "employee": employee_id, "meal": meal,"coupon":coupon},
+				filters={"meal_item": item_id, "employee": employee_id, "meal": meal, "coupon": coupon},
 				pluck="meal_item",
 			)
 			if existing_ratings:
@@ -147,7 +147,7 @@ def create_meal():
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
 		meal_item_ids = data.get("meal_item_ids", None)
-		max_meal_count = data.get("max_meal_count",0)
+		max_meal_count = data.get("max_meal_count", 0)
 
 		required_fields = [
 			"meal_title",
@@ -520,8 +520,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				if coupon.coupon_status != "2":
 					meal["total_coupons"] += 1
 
-			
-
 			# all_ratings = frappe.get_all(
 			# 	"Hotpot Meal Menu Items Rating",
 			# 	filters={"meal": meal["name"]},
@@ -534,16 +532,20 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			# 	if r["rating"] is not None
 			# ]
 
-			total_rating=0
-			total_count=0
+			total_rating = 0
+			total_count = 0
 			for meal_item in meal_doc.menu_items:
-				all_ratings = frappe.get_all("Hotpot Meal Menu Items Rating",filters={"meal_item":meal_item},fields=["rating"])
+				all_ratings = frappe.get_all(
+					"Hotpot Meal Menu Items Rating",
+					filters={"meal_item": meal_item.meal_item},
+					fields=["rating"],
+				)
 				for r in all_ratings:
 					if r["rating"] is not None:
 						total_rating += float(r["rating"])
 						total_count += 1
 
-			meal["avg_rating"] = (round(total_rating / total_count, 2))*5 if total_count else 0
+			meal["avg_rating"] = (round(total_rating / total_count, 2)) * 5 if total_count else 0
 
 			meal["meal_id"] = meal_doc.name
 			cat_type = (

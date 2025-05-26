@@ -8,7 +8,9 @@
  "field_order": [
   "type",
   "start_time",
+  "start_time_local",
   "end_time",
+  "end_time_local",
   "lead_time",
   "cancellation_time",
   "is_active",
@@ -29,16 +31,16 @@
   {
    "fieldname": "start_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "in_list_view": 1,
-   "label": "Start Time",
-   "reqd": 1
+   "label": "Start Time UTC"
   },
   {
    "fieldname": "end_time",
    "fieldtype": "Datetime",
+   "hidden": 1,
    "in_list_view": 1,
-   "label": "End Time",
-   "reqd": 1
+   "label": "End Time UTC"
   },
   {
    "fieldname": "lead_time",
@@ -82,11 +84,23 @@
    "fieldtype": "Int",
    "label": "Max Meal Count",
    "non_negative": 1
+  },
+  {
+   "fieldname": "start_time_local",
+   "fieldtype": "Time",
+   "label": "Start Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_time_local",
+   "fieldtype": "Time",
+   "label": "End Time",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-22 10:21:37.652055",
+ "modified": "2025-05-26 08:39:30.492318",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
