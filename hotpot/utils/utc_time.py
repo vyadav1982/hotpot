@@ -41,6 +41,13 @@ def get_utc_datetime_obj(date_str):
 	return utc_datetime.replace(tzinfo=None)
 
 
+def get_utc_datetime_obj_v2(date_str):
+	if not date_str:
+		return None  # Or return "" if your DB expects a string
+
+	return datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+
+
 def get_local_datetime_obj(utc_input):
 	if isinstance(utc_input, str):
 		try:

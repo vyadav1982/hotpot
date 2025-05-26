@@ -57,7 +57,7 @@ class CustomDataImport(DataImport):
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date"]
 			meal_item_fields = ["Item Name"]
-			holiday_field = ["Date","Title"]
+			holiday_field = ["Date", "Title"]
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" not in roles:
 				meal_fields.append("Vendor")
@@ -281,9 +281,7 @@ class CustomDataImport(DataImport):
 					)
 
 					if not vendor_doc:
-						errors.append(
-							f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted."
-						)
+						errors.append(f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted.")
 						continue
 				except Exception as e:
 					errors.append(f"Row {row_num}: Error fetching Vendor '{vendor_id}': {str(e)}")
@@ -389,9 +387,7 @@ class CustomDataImport(DataImport):
 					)
 
 					if not vendor_doc:
-						errors.append(
-							f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted."
-						)
+						errors.append(f"Row {row_num}: Vendor '{vendor_id}' not found, inactive, or deleted.")
 						continue
 				except Exception as e:
 					errors.append(f"Row {row_num}: Error fetching Vendor '{vendor_id}': {str(e)}")

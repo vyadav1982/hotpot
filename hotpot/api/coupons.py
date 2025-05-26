@@ -693,7 +693,6 @@ def get_all_coupons(
 						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
 
-
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
@@ -785,19 +784,20 @@ def get_all_coupons(
 					filters={"coupon": coupon["name"]},
 					fields=["meal_item", "rating", "review"],
 				)
-				item_listing = coupon.get("item_listing",[])
-				for item in item_listing:	
+				item_listing = coupon.get("item_listing", [])
+				for item in item_listing:
 					for rating in all_ratings:
 						if item["id"] == rating["meal_item"]:
-							items_rating.append({
-								"item_id": item["id"],
-								"item_name": item["title"],
-								"rating": rating["rating"] * 5,
-								"review": rating["review"]
-							})
+							items_rating.append(
+								{
+									"item_id": item["id"],
+									"item_name": item["title"],
+									"rating": rating["rating"] * 5,
+									"review": rating["review"],
+								}
+							)
 
 				coupon["items_rating"] = items_rating
-
 
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
