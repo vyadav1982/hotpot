@@ -45,8 +45,6 @@ class HotpotMealCategory(Document):
 		type: DF.Link
 	# end: auto-generated types
 
-
-
 	def validate_dates(self):
 		"""Ensure start_time is before end_time, skip if either is missing."""
 
