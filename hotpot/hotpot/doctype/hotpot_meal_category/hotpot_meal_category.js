@@ -134,7 +134,7 @@ function updateTimeDescription(frm, fieldname) {
 	if (utcValue) {
 		const localDisplay = formatTimeForDisplay(fieldValue);
 		const utcDisplay = formatTimeForDisplay(utcValue);
-		frm.set_df_property(fieldname, "description", `Local: ${localDisplay}`);
+		frm.set_df_property(fieldname, "description", `12-hour format: ${localDisplay}`);
 	}
 }
 
