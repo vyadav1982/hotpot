@@ -57,15 +57,19 @@
    "reqd": 1
   },
   {
+   "fetch_from": "category.start_time",
    "fieldname": "start_time",
    "fieldtype": "Datetime",
    "label": "Start Time",
+   "read_only": 1,
    "reqd": 1
   },
   {
+   "fetch_from": "category.end_time",
    "fieldname": "end_time",
    "fieldtype": "Datetime",
    "label": "End Time",
+   "read_only": 1,
    "reqd": 1
   },
   {

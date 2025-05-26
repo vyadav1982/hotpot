@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 import frappe
 import pytz
+import traceback
 
 from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.role_utils import has_any_of_role, has_role
@@ -206,7 +207,10 @@ def create_meal():
 
 	except Exception as e:
 		frappe.db.rollback()
-		set_response(500, False, f"Failed to create meal: {str(e)}")
+		error_message = f"Failed to create meal: {str(e)}"
+		trace = traceback.format_exc()
+		frappe.log_error(f"{error_message}\n{trace}", "Meal Creation Error")
+		set_response(500, False, error_message)
 		return
 
 
