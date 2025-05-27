@@ -103,8 +103,7 @@
       "in_list_view": 1,
       "label": "Vendor",
       "options": "Hotpot User",
-      "reqd": 1,
-      "search_index": 1
+      "reqd": 1
     },
     {
       "fieldname": "ratings",
@@ -113,10 +112,12 @@
       "options": "Hotpot Meal Rating"
     },
     {
+      "fetch_from": "category.meal_rate",
       "fieldname": "meal_weight",
       "fieldtype": "Int",
       "label": "Meal Rate",
-      "non_negative": 1
+      "non_negative": 1,
+      "read_only": 1
     },
     {
       "default": "0",
@@ -126,10 +127,12 @@
     },
     {
       "default": "0",
+      "fetch_from": "category.lead_time",
       "fieldname": "lead_time",
       "fieldtype": "Int",
       "label": "Lead Time",
-      "non_negative": 1
+      "non_negative": 1,
+      "read_only": 1
     },
     {
       "default": "once",
@@ -146,10 +149,12 @@
     },
     {
       "default": "0",
+      "fetch_from": "category.cancellation_time",
       "fieldname": "cancellation_time",
       "fieldtype": "Int",
       "label": "Cancellation Time",
-      "non_negative": 1
+      "non_negative": 1,
+      "read_only": 1
     },
     {
       "fieldname": "approval_id",
@@ -226,7 +231,7 @@
       "default": "0",
       "fieldname": "remaining_coupon_count",
       "fieldtype": "Int",
-      "label": "Remaining Coupon Count"
+      "label": "Remaining Coupon Coupon"
     },
     {
       "fieldname": "menu_items_tab",
@@ -242,7 +247,7 @@
   ],
   "index_web_pages_for_search": 1,
   "links": [],
-  "modified": "2025-05-26 18:45:02.270807",
+  "modified": "2025-05-27 05:37:45.400736",
   "modified_by": "Administrator",
   "module": "Hotpot",
   "name": "Hotpot Meal",
