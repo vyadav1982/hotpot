@@ -933,6 +933,15 @@ def generate_coupon():
 					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
+				
+				coupons_gener = 0
+				for c in meal_doc.get("coupons"):
+					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
+						coupons_gener += 1
+				
+				if coupons_gener >= meal_doc.get("max_meal_count"):
+					return set_response(400, False, "Maximum coupons already generated for this meal")
+
 
 				if approval_id:
 					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
@@ -972,7 +981,7 @@ def generate_coupon():
 				meal_title = meal_doc.meal_title
 				user_coupon_count = user_doc.coupon_count
 				meal_weight = meal_doc.get("meal_weight")
-				meal_buffer_count = meal_doc.buffer_coupon_count
+				meal_buffer_count = meal_doc.remaining_coupon_count
 
 				if (
 					get_local_datetime_obj(start_date).date()
@@ -1467,6 +1476,14 @@ def generate_coupon_admin():
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
 
+				coupons_gener = 0
+				for c in meal_doc.get("coupons"):
+					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
+						coupons_gener += 1
+				
+				if coupons_gener >= meal_doc.get("max_meal_count"):
+					return set_response(400, False, "Maximum coupons already generated for this meal")
+
 				if approval_id:
 					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 					if approval_doc.approval_status != "Approved":
@@ -1505,7 +1522,7 @@ def generate_coupon_admin():
 				meal_title = meal_doc.meal_title
 				user_coupon_count = user_doc.coupon_count
 				meal_weight = meal_doc.get("meal_weight")
-				meal_buffer_count = meal_doc.buffer_coupon_count
+				meal_buffer_count = meal_doc.remaining_coupon_count
 				if (
 					get_local_datetime_obj(start_date).date()
 					< get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date()
@@ -1640,7 +1657,7 @@ def generate_coupon_admin():
 
 				# Update meal buffer count if buffer time
 				if is_buffer_time and buffer_used > 0:
-					meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
+					meal_doc.remaining_coupon_count = max(0, meal_buffer_count - buffer_used)
 				if for_guest and get_dominant_role_for_current_user() == "Hotpot User":
 					approval_doc.is_active = 0
 				if get_dominant_role_for_current_user() == "Hotpot User":
@@ -1738,6 +1755,14 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				except frappe.DoesNotExistError:
 					return {"status": "error", "msg": "Meal not found"}
 
+				coupons_gener = 0
+				for c in meal_doc.get("coupons"):
+					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
+						coupons_gener += 1
+				
+				if coupons_gener >= meal_doc.get("max_meal_count"):
+					return {"status": "error","msg":"Maximum coupons already generated for this meal"}
+
 				if approval_id:
 					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
 					if approval_doc.approval_status != "Approved":
@@ -1765,7 +1790,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				meal_title = meal_doc.meal_title
 				user_coupon_count = user_doc.coupon_count
 				meal_weight = meal_doc.get("meal_weight")
-				meal_buffer_count = meal_doc.buffer_coupon_count
+				meal_buffer_count = meal_doc.remaining_coupon_count
 
 				if (
 					get_local_datetime_obj(start_date).date()
@@ -1868,7 +1893,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 					return {"status": "error", "msg": f"Failed to create coupon: {str(e)}"}
 
 				if is_buffer_time and buffer_used > 0:
-					meal_doc.buffer_coupon_count = max(0, meal_buffer_count - buffer_used)
+					meal_doc.remaining_coupon_count = max(0, meal_buffer_count - buffer_used)
 
 				meal_doc.save()
 				frappe.db.commit()
