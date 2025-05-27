@@ -236,7 +236,7 @@ def create_approval():
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()
-		if get_dominant_role_for_current_user() == "Hotpot Admin" get_dominant_role_for_current_user() == "Hotpot HR":
+		if get_dominant_role_for_current_user() == "Hotpot Admin" and get_dominant_role_for_current_user() == "Hotpot HR":
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval.name)
 			approval_doc.approval_status = "Approved"
 			approval_doc.is_active = 0
