@@ -34,9 +34,9 @@ frappe.ui.form.on("Hotpot Meal", {
 				frm.toggle_display("coupons", false);
 				frm.toggle_display("ratings", false);
 			}
-			if (isVendor && frm.doc.__islocal != 1) {
-				frm.disable_form();
-			}
+			// if (isVendor && frm.doc.__islocal != 1) {
+			// 	frm.disable_form();
+			// }
 			if (isVendor && frm.doc.__islocal == 1) {
 				frm.toggle_display("vendor_id", false);
 			}
@@ -47,7 +47,17 @@ frappe.ui.form.on("Hotpot Meal", {
 
 			if(isVendor && !frm.doc.__islocal){
 			    frm.toggle_display("vendor_id",false)
-			    frm.disable_form()
+			    // frm.disable_form()
+				// frm.toggle_enable("meal_title",true)
+				frm.fields_dict && Object.keys(frm.fields_dict).forEach(fieldname => {
+					frm.set_df_property(fieldname, "read_only", 1);
+				});
+
+				["meal_title", "meal_items", "meal_date","buffer_coupon_count","remaining_coupon_count"].forEach(field => {
+					frm.set_df_property(field, "read_only", 0);
+				});
+
+				frm.refresh_fields();
 			}
 
 			if (!isHotpotAdmin) {
@@ -58,7 +68,7 @@ frappe.ui.form.on("Hotpot Meal", {
 			    frm.toggle_enable("vendor_id", false);
 			    frm.toggle_enable("start_time", false);
 			    frm.toggle_enable("end_time", false);
-			    frm.toggle_enable("meal_date", false);
+			    // frm.toggle_enable("meal_date", false);
 			}
 			else{
 			    frm.toggle_enable("coupons", false);

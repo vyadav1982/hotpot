@@ -73,10 +73,18 @@ class HotpotMeal(Document):
 			if self.start_time >= self.end_time:
 				frappe.throw("Start time must be before End time.")
 
-	# def before_save(self):
-	# 	roles = frappe.get_roles()
-	# 	if "Hotpot Vendor" not in roles:
-	# 		frappe.throw("Vendor Id is mandatory.")
+	def before_save(self):
+		if is_frappe_ui_request() or frappe.flags.in_import:
+			if self.meal_items:
+				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
+				for item_name in item_list:
+					menu_item = frappe.get_value(
+						"Hotpot Meal Items", {"vendor_id": self.vendor_id, "item_name": item_name}, "name"
+					)
+					if menu_item:
+						self.append("menu_items", {"meal_item": menu_item})
+					else:
+						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{self.vendor_id}'.")
 
 	def before_insert(self):
 		self.validate_dates()
@@ -113,6 +121,8 @@ class HotpotMeal(Document):
 					)
 					if menu_item:
 						self.append("menu_items", {"meal_item": menu_item})
+					else:
+						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{vendor}'.")
 
 
 def is_frappe_ui_request():
