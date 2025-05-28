@@ -231,7 +231,7 @@
    "default": "0",
    "fieldname": "remaining_coupon_count",
    "fieldtype": "Int",
-   "label": "Remaining Coupon Coupon"
+   "label": "Remaining Coupon Count"
   },
   {
    "fieldname": "menu_items_tab",

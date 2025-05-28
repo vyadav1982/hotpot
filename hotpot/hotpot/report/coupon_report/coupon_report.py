@@ -18,6 +18,7 @@ def execute(filters=None):
 
 	columns = [
 		{"label": "Employee Code", "fieldname": "employee_code", "fieldtype": "Data", "width": 120},
+		{"label": "Vendor", "fieldname": "vendor", "fieldtype": "Data", "width": 120},
 		{"label": "Meal", "fieldname": "meal", "fieldtype": "Data", "width": 120},
 		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 180},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
@@ -31,6 +32,7 @@ def execute(filters=None):
 
 	query = """
 		SELECT
+			hu.full_name AS vendor,
 			hc.employee_code,
 			hc.coupon_date AS coupon_date,
 			hm.meal_title AS meal,
@@ -44,14 +46,16 @@ def execute(filters=None):
 			CASE
 				WHEN hc.coupon_status = '-1' THEN 'Expired'
 				WHEN hc.coupon_status = '0' THEN 'Consumed'
+				WHEN hc.coupon_status = '2' THEN 'Cancelled'
 				ELSE 'Unknown'
 			END AS coupon_status,
 			IFNULL(hm.meal_weight, 0) AS actual_rate,
 			hc.coupon_weight AS discounted_rate
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
+		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
 		WHERE
-			hc.coupon_status NOT IN (1, 2)
+			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
