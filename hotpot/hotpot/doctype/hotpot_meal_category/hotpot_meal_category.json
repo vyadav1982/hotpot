@@ -79,11 +79,10 @@
    "reqd": 1
   },
   {
-   "default": "0",
+   "default": "-1",
    "fieldname": "max_meal_count",
    "fieldtype": "Int",
-   "label": "Max Meal Count",
-   "non_negative": 1
+   "label": "Max Meal Count"
   },
   {
    "fieldname": "start_time_local",
@@ -100,7 +99,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-26 08:39:30.492318",
+ "modified": "2025-05-28 21:10:42.606019",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
