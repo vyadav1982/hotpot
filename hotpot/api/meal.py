@@ -148,7 +148,7 @@ def create_meal():
 		repeat_days = ",".join(data.get("repeat_days", []))
 		category = data.get("category", None)
 		meal_item_ids = data.get("meal_item_ids", None)
-		max_meal_count = data.get("max_meal_count", 0)
+		max_meal_count = data.get("max_meal_count", -1)
 
 		required_fields = [
 			"meal_title",
