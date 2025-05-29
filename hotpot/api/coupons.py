@@ -1488,7 +1488,7 @@ def generate_coupon_admin():
 					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
 						coupons_gener += 1
 
-				if coupons_gener >= meal_doc.get("max_meal_count"):
+				if meal_doc.get("max_meal_count") != -1 and coupons_gener >= meal_doc.get("max_meal_count"):
 					return set_response(400, False, "Maximum coupons already generated for this meal")
 
 				if approval_id:
@@ -1767,7 +1767,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
 						coupons_gener += 1
 
-				if coupons_gener >= meal_doc.get("max_meal_count"):
+				if meal_doc.get("max_meal_count") != -1 and coupons_gener >= meal_doc.get("max_meal_count"):
 					return {"status": "error", "msg": "Maximum coupons already generated for this meal"}
 
 				if approval_id:
