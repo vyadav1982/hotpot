@@ -221,11 +221,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "default": "0",
+   "default": "-1",
    "fieldname": "max_meal_count",
    "fieldtype": "Int",
-   "label": "Max Meal Count",
-   "non_negative": 1
+   "label": "Max Meal Count"
   },
   {
    "default": "0",
@@ -247,7 +246,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-27 05:37:45.400736",
+ "modified": "2025-05-28 21:14:05.666896",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
