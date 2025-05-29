@@ -277,7 +277,7 @@ def cancel_coupon():
 			transaction_doc.insert()
 
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
-		meal_doc.get("max_meal_count") = meal_doc.get("max_meal_count") + 1
+		# meal_doc.get("max_meal_count") = meal_doc.get("max_meal_count") + 1
 		meal_doc.save()
 		frappe.db.sql(query, params)
 		user_doc.save()
@@ -678,10 +678,10 @@ def get_all_coupons(
 				set_response(200, True, "No Coupon found", [])
 				return
 			ans.sort(
-				key=lambda x: (
+				key=lambda x: 
 					get_local_datetime_obj(x["created_at"]).time(),
 					reverse=True
-				)
+				
 			)
 
 			for coupon in ans:
@@ -805,10 +805,10 @@ def get_all_coupons(
 
 				coupon["items_rating"] = items_rating
 			coupons.sort(
-				key=lambda x: (
+				key=lambda x: 
 					get_local_datetime_obj(x["created_at"]).time(),
 					reverse=True
-				)
+				
 			)
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
@@ -835,10 +835,10 @@ def get_all_coupons(
 				set_response(404, False, "No Coupon found")
 				return
 			ans.sort(
-				key=lambda x: (
+				key=lambda x: 
 					get_local_datetime_obj(x["created_at"]).time(),
 					reverse=True
-				)
+				
 			)
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
