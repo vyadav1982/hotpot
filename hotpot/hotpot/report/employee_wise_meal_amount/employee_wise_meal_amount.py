@@ -20,7 +20,12 @@ def execute(filters=None):
 		{"label": "Employee ID", "fieldname": "employee_code", "fieldtype": "Data", "width": 140},
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
-		{"label": "Total Discounted Price", "fieldname": "total_price", "fieldtype": "Currency", "width": 160}
+		{
+			"label": "Total Discounted Price",
+			"fieldname": "total_price",
+			"fieldtype": "Currency",
+			"width": 160,
+		},
 	]
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
@@ -37,12 +42,16 @@ def execute(filters=None):
 			hc.coupon_status IN (0, -1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
-	params = [user_timezone, start_date, end_date,]
+	params = [
+		user_timezone,
+		start_date,
+		end_date,
+	]
 	if employee:
-		query+=" AND hc.employee_code = %s"
+		query += " AND hc.employee_code = %s"
 		params.append(employee)
-	
-	query +="GROUP BY hc.employee_code, hu.full_name ORDER BY total_price DESC"
+
+	query += "GROUP BY hc.employee_code, hu.full_name ORDER BY total_price DESC"
 
 	data = frappe.db.sql(query, params, as_dict=True)
 
