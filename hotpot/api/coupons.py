@@ -277,6 +277,8 @@ def cancel_coupon():
 			transaction_doc.insert()
 
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
+		meal_doc.get("max_meal_count") = meal_doc.get("max_meal_count") + 1
+		meal_doc.save()
 		frappe.db.sql(query, params)
 		user_doc.save()
 		frappe.db.commit()
@@ -677,9 +679,8 @@ def get_all_coupons(
 				return
 			ans.sort(
 				key=lambda x: (
-					get_local_datetime_obj(x["start_time"]).time(),
-					get_local_datetime_obj(x["end_time"]).time(),
-					x["coupon_status"] != 1,
+					get_local_datetime_obj(x["created_at"]).time(),
+					reverse=True
 				)
 			)
 
@@ -717,6 +718,7 @@ def get_all_coupons(
 				SELECT
 					'coupon' AS record_type,
 					hc.name,
+					hc.created_at,
 					hc.title AS title,
 					hc.coupon_status,
 					hc.coupon_date,
@@ -802,7 +804,12 @@ def get_all_coupons(
 							)
 
 				coupon["items_rating"] = items_rating
-
+			coupons.sort(
+				key=lambda x: (
+					get_local_datetime_obj(x["created_at"]).time(),
+					reverse=True
+				)
+			)
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
@@ -829,9 +836,8 @@ def get_all_coupons(
 				return
 			ans.sort(
 				key=lambda x: (
-					get_local_datetime_obj(x["start_time"]).time(),
-					get_local_datetime_obj(x["end_time"]).time(),
-					x["coupon_status"] != 1,
+					get_local_datetime_obj(x["created_at"]).time(),
+					reverse=True
 				)
 			)
 			for coupon in ans:
@@ -1090,6 +1096,7 @@ def generate_coupon():
 							"created_at": datetime.utcnow(),
 						},
 					)
+					meal_doc.get("max_meal_count")
 
 					transaction_doc = frappe.new_doc("Hotpot Transaction History")
 					transaction_doc.update(
