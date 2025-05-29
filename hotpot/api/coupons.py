@@ -941,15 +941,14 @@ def generate_coupon():
 					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
-				
+
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
 					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
 						coupons_gener += 1
-				
-				if coupons_gener >= meal_doc.get("max_meal_count"):
-					return set_response(400, False, "Maximum coupons already generated for this meal")
 
+				if meal_doc.get("max_meal_count") != -1 and coupons_gener >= meal_doc.get("max_meal_count"):
+					return set_response(400, False, "Maximum coupons already generated for this meal")
 
 				if approval_id:
 					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
@@ -1488,7 +1487,7 @@ def generate_coupon_admin():
 				for c in meal_doc.get("coupons"):
 					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
 						coupons_gener += 1
-				
+
 				if coupons_gener >= meal_doc.get("max_meal_count"):
 					return set_response(400, False, "Maximum coupons already generated for this meal")
 
@@ -1767,9 +1766,9 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				for c in meal_doc.get("coupons"):
 					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
 						coupons_gener += 1
-				
+
 				if coupons_gener >= meal_doc.get("max_meal_count"):
-					return {"status": "error","msg":"Maximum coupons already generated for this meal"}
+					return {"status": "error", "msg": "Maximum coupons already generated for this meal"}
 
 				if approval_id:
 					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
