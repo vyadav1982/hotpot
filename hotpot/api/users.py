@@ -278,12 +278,39 @@ def get_all_vendor():
 			return
 		user_list = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["role", "=", "Hotpot Vendor"], ["is_active", "=", 1], ["is_deleted", "=", 0]],
+			filters=[["is_vendor", "=", 1], ["is_active", "=", 1], ["is_deleted", "=", 0]],
 			fields=["name", "full_name"],
 		)
 		if not user_list:
 			set_response(200, False, "No Vendor found")
 			return
+		for vendor in user_list:
+			all_items = frappe.db.get_all(
+				"Hotpot Meal Items",
+				filters={"vendor_id": vendor.name},
+				fields=["name"]
+			)
+
+			total_rating = 0
+			count = 0
+
+			for item in all_items:
+				item_ratings = frappe.db.get_all(
+					"Hotpot Meal Menu Items Rating",
+					filters={"meal_item": item.name},
+					fields=["rating"]
+				)
+
+				for rating_doc in item_ratings:
+					rating = rating_doc.rating
+					total_rating += rating
+					count += 1
+
+			if count > 0:
+				average_rating = round((total_rating / count)*5,1)
+			else:
+				average_rating = 0
+			vendor["average_rating"] = average_rating
 		set_response(200, True, "Vendors fetched successfully", user_list)
 	except Exception as e:
 		frappe.db.rollback()
