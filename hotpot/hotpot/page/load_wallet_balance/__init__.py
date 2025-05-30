@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from hotpot.utils.send_fcm import *
 
 
 @frappe.whitelist(methods=["POST"])
@@ -39,6 +40,16 @@ def load_balance(**args):
 	new_transaction.insert(ignore_permissions=True)
 
 	frappe.db.commit()
+
+	if employee.fcm_token:
+		from hotpot.utils.send_fcm import send_notification_by_token
+		send_notification_by_token(
+			employee.fcm_token,
+			"💰 Wallet Getting Heavier!",
+			f"🎉 Great news! An admin just added ₹{loading_amount} to your wallet. Your new balance is ₹{employee_balance}.",
+		)
+
+
 
 	return {
 		"status": "success",
