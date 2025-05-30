@@ -769,7 +769,7 @@ def get_hotpot_history(start_date, end_date):
 			SELECT
 				CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
 				hc.*,
-				hm.*,
+				hm.*
 			FROM
 				`tabHotpot Coupons` AS hc
 			JOIN
