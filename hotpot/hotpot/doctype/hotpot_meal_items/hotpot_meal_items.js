@@ -20,9 +20,9 @@ frappe.ui.form.on("Hotpot Meal Items", {
 		if (isVendor && !isAdmin) {
 			// frm.disable_form()
 			frm.toggle_display("vendor_id", false);
-			if (frm.doc.is_deleted == 1) {
-				frm.disable_form();
-			}
+			// if (frm.doc.is_deleted == 1) {
+			// 	frm.disable_form();
+			// }
 		}
 	},
 });

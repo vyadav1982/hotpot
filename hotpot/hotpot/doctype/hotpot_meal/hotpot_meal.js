@@ -59,9 +59,9 @@ frappe.ui.form.on("Hotpot Meal", {
 
 				frm.refresh_fields();
 
-				if (frm.doc.is_deleted == 1) {
-					frm.disable_form();
-				}
+				// if (frm.doc.is_deleted == 1) {
+				// 	frm.disable_form();
+				// }
 			}
 
 			if (!isHotpotAdmin) {
