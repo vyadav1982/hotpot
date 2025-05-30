@@ -9,7 +9,9 @@
   "message",
   "title",
   "amount",
-  "employee_id"
+  "employee_id",
+  "meal",
+  "coupon"
  ],
  "fields": [
   {
@@ -39,11 +41,23 @@
    "fieldtype": "Link",
    "label": "Employee Id",
    "options": "Hotpot User"
+  },
+  {
+   "fieldname": "meal",
+   "fieldtype": "Link",
+   "label": "Meal",
+   "options": "Hotpot Meal"
+  },
+  {
+   "fieldname": "coupon",
+   "fieldtype": "Link",
+   "label": "Coupon",
+   "options": "Hotpot Coupons"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-16 13:03:39.968477",
+ "modified": "2025-05-30 10:16:48.191878",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Transaction History",
@@ -62,6 +76,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []
