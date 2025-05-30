@@ -768,10 +768,8 @@ def get_hotpot_history(start_date, end_date):
 		query = """
 			SELECT
 				CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
-				hm.meal_title,
-				hm.meal_weight,
-				hm.start_time,
-				hm.end_time
+				hc.*,
+				hm.*,
 			FROM
 				`tabHotpot Coupons` AS hc
 			JOIN
