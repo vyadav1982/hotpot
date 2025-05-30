@@ -120,6 +120,8 @@ class HotpotApprovals(Document):
 									"message": f"{coupon.coupon_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
 									"title": "Meal Cost Refund",
 									"amount": coupon.coupon_weight,
+									"meal": self.meal_id,
+									"coupon": coupon.get("name"),
 								}
 							)
 							transaction_doc.insert()

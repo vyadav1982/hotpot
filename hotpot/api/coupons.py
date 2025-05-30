@@ -272,6 +272,8 @@ def cancel_coupon():
 					"message": f"{coupon_found.coupon_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
 					"title": "Meal Cost Refund",
 					"amount": coupon_found.coupon_weight,
+					"meal": meal_id,
+					"coupon": coupon_id,
 				}
 			)
 			transaction_doc.insert()
@@ -1106,6 +1108,8 @@ def generate_coupon():
 							"message": f"{coupon_weight} tokens debited for '{meal_title}' meal from you wallet.",
 							"amount": coupon_weight,
 							"title": "Meal Cost Deduction",
+							"meal": meal_id,
+							"coupon": meal_doc.coupons[-1].name
 						}
 					)
 
