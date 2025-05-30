@@ -122,6 +122,8 @@ class HotpotApprovals(Document):
 									"amount": coupon.coupon_weight,
 									"meal": self.meal_id,
 									"coupon": coupon.get("name"),
+									"coupon_status":"2",
+									"category":meal_doc.get("category")
 								}
 							)
 							transaction_doc.insert()

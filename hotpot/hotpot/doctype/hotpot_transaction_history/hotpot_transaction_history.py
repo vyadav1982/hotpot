@@ -15,7 +15,9 @@ class HotpotTransactionHistory(Document):
 		from frappe.types import DF
 
 		amount: DF.Int
+		category: DF.Data | None
 		coupon: DF.Link | None
+		coupon_status: DF.Data | None
 		employee_id: DF.Link | None
 		meal: DF.Link | None
 		message: DF.Data | None

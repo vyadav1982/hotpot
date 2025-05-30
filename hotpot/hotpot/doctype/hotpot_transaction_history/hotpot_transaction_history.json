@@ -11,7 +11,9 @@
   "amount",
   "employee_id",
   "meal",
-  "coupon"
+  "coupon",
+  "coupon_status",
+  "category"
  ],
  "fields": [
   {
@@ -53,11 +55,21 @@
    "fieldtype": "Link",
    "label": "Coupon",
    "options": "Hotpot Coupons"
+  },
+  {
+   "fieldname": "coupon_status",
+   "fieldtype": "Data",
+   "label": "Coupon Status"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "label": "Category"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-30 10:16:48.191878",
+ "modified": "2025-05-30 14:59:50.191023",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Transaction History",

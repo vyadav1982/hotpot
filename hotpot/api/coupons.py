@@ -274,6 +274,8 @@ def cancel_coupon():
 					"amount": coupon_found.coupon_weight,
 					"meal": meal_id,
 					"coupon": coupon_id,
+					"coupon_status":"2",
+					"category": meal_doc.get("category")
 				}
 			)
 			transaction_doc.insert()
@@ -1109,7 +1111,9 @@ def generate_coupon():
 							"amount": coupon_weight,
 							"title": "Meal Cost Deduction",
 							"meal": meal_id,
-							"coupon": meal_doc.coupons[-1].name
+							"coupon": meal_doc.coupons[-1].name,
+							"coupon_status":"1",
+							"category": meal_doc.get("category")
 						}
 					)
 
