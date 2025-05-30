@@ -117,7 +117,7 @@ class HotpotApprovals(Document):
 								{
 									"employee_id": user_doc.get("name"),
 									"type": "Credit",
-									"message": f"{coupon.coupon_weight} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
+									"message": f"{int(coupon.coupon_weight)} tokens credited to your wallet for '{meal_doc.meal_title}' meal deletion.",
 									"title": "Meal Cost Refund",
 									"amount": coupon.coupon_weight,
 									"meal": self.meal_id,
