@@ -5,6 +5,7 @@ import frappe
 from frappe.model.document import Document
 from datetime import datetime, timedelta
 from hotpot.utils.utc_time import *
+from frappe import _
 
 
 class HotpotMeal(Document):
@@ -85,44 +86,52 @@ class HotpotMeal(Document):
 						self.append("menu_items", {"meal_item": menu_item})
 					else:
 						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{self.vendor_id}'.")
+			
 
 	def before_insert(self):
 		self.validate_dates()
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			vendor = None
-			if self.start_time:
-				if isinstance(self.start_time, datetime):
-					self.start_time = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
-				self.start_time = get_utc_datetime_obj(self.start_time)
-			if self.end_time:
-				if isinstance(self.end_time, datetime):
-					self.end_time = self.end_time.strftime("%Y-%m-%d %H:%M:%S")
-				self.end_time = get_utc_datetime_obj(self.end_time)
-			if not self.start_time and not self.end_time:
-				category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
-				self.start_time = category_doc.start_time
-				self.end_time = category_doc.end_time
-				self.is_active = 1
-				self.lead_time = category_doc.lead_time
-				self.cancellation_time = category_doc.cancellation_time
-				self.meal_weight = category_doc.meal_rate
-				self.max_meal_count = category_doc.max_meal_count
+			# if self.start_time:
+			# 	if isinstance(self.start_time, datetime):
+			# 		self.start_time = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
+			# 	self.start_time = get_utc_datetime_obj(self.start_time)
+			# if self.end_time:
+			# 	if isinstance(self.end_time, datetime):
+			# 		self.end_time = self.end_time.strftime("%Y-%m-%d %H:%M:%S")
+			# 	self.end_time = get_utc_datetime_obj(self.end_time)
+			# if not self.start_time and not self.end_time:
+			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+			self.start_time = category_doc.start_time
+			self.end_time = category_doc.end_time
+			self.is_active = 1
+			self.lead_time = category_doc.lead_time
+			self.cancellation_time = category_doc.cancellation_time
+			self.meal_weight = category_doc.meal_rate
+			self.max_meal_count = category_doc.max_meal_count
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 				if self.vendor_id is None:
 					self.vendor_id = vendor_id
 			vendor = self.vendor_id
-			# if self.meal_items:
-			# 	item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
-			# 	for item_name in item_list:
-			# 		menu_item = frappe.get_value(
-			# 			"Hotpot Meal Items", {"vendor_id": vendor, "item_name": item_name}, "name"
-			# 		)
-			# 		if menu_item:
-			# 			self.append("menu_items", {"meal_item": menu_item})
-			# 		else:
-			# 			frappe.throw(f"Meal Item '{item_name}' not found for vendor '{vendor}'.")
+
+		meal_date = get_local_datetime_obj(self.meal_date)
+		current_datetime = get_local_datetime_obj(datetime.utcnow())
+
+		if meal_date.date() == current_datetime.date():
+			local_time = get_local_datetime_obj(datetime.utcnow())
+			
+			lead_time_delta = timedelta(hours=float(self.lead_time))
+			ready_time = local_time + lead_time_delta
+			start_time_local = get_local_datetime_obj(self.start_time)
+			start_time_today = datetime.combine(meal_date.date(), start_time_local.time())
+
+			time_difference = (start_time_today - ready_time).total_seconds()
+
+			if time_difference < 0:
+				frappe.throw(_("Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}.")
+							.format(self.meal_title,meal_date.date(),self.lead_time, ready_time.strftime('%H:%M:%S'), (get_local_datetime_obj(self.start_time)).strftime('%H:%M:%S')))
 
 
 def is_frappe_ui_request():
