@@ -649,6 +649,7 @@ def get_all_coupons(
 					U2.full_name,
 					hm.vendor_id,
 					mt.type,
+					hm.cancellation_time,
 					hc.*
 				FROM
 					`tabHotpot Coupons` AS hc
@@ -732,6 +733,7 @@ def get_all_coupons(
 					hm.start_time AS start_time,
 					hm.end_time AS end_time,
 					hm.name AS meal_id,
+					hm.cancellation_time,
 					mt.type,
 					U.full_name AS vendor_name
 				FROM
@@ -1276,6 +1278,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=1000):
 				U.full_name,
 				hc.coupon_date,
 				hc.coupon_status,
+				hm.cancellation_time,
 				hc.email,
 				hm.start_time,
 				hm.end_time
@@ -1345,6 +1348,7 @@ def get_guest_coupon(date):
 				hm.meal_items,
 				hc.served_by,
 				hm.vendor_id,
+				hm.cancellation_time,
 				hm.start_time AS start_time,
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
