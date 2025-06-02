@@ -13,7 +13,9 @@ from ..api.users import *
 
 
 def send_approval_request_email(to_email, user_data, request_data, doc, meal_name):
-	email_subject = f"Approval Request from {user_data.full_name} ({user_data.name}) for {request_data['request_type']}"
+	email_subject = (
+		f"Approval Request from {user_data.full_name} ({user_data.name}) for {request_data['request_type']}"
+	)
 	context = {
 		"user_data": user_data,
 		"request_data": request_data,
@@ -130,11 +132,7 @@ def get_approvals(start=None, end=None):
 					approval["meal_details"] = meal_data  # Attach only selected fields
 				except frappe.DoesNotExistError:
 					approval["meal_details"] = None  # Handle missing meal data gracefully
-		approvals.sort(
-			key=lambda x: 
-				(x["modified"]).time(),
-				reverse=True	
-		)
+		approvals.sort(key=lambda x: (x["modified"]).time(), reverse=True)
 		set_response(200, True, "Approvals fetched successfully", approvals)
 		return
 

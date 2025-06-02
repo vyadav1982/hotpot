@@ -225,8 +225,7 @@ def cancel_coupon():
 
 		coupon_date = get_local_datetime_obj(coupon_found.coupon_date)
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
-		if(coupon_date.date() == current_datetime.date()):
-
+		if coupon_date.date() == current_datetime.date():
 			current_time = current_datetime.time()
 
 			meal_start_time = get_local_datetime_obj(meal_doc.start_time).time()
@@ -237,7 +236,7 @@ def cancel_coupon():
 
 			diff = (dt_meal_start - dt_current).total_seconds()
 		else:
-			diff = (coupon_date-current_datetime).total_seconds()
+			diff = (coupon_date - current_datetime).total_seconds()
 		diff = int(diff)
 		cancel = diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60
 		if diff < 0:
@@ -274,8 +273,8 @@ def cancel_coupon():
 					"amount": coupon_found.coupon_weight,
 					"meal": meal_id,
 					"coupon": coupon_id,
-					"coupon_status":"2",
-					"category": meal_doc.get("category")
+					"coupon_status": "2",
+					"category": meal_doc.get("category"),
 				}
 			)
 			transaction_doc.insert()
@@ -682,12 +681,7 @@ def get_all_coupons(
 			if not ans:
 				set_response(200, True, "No Coupon found", [])
 				return
-			ans.sort(
-				key=lambda x: 
-					get_local_datetime_obj(x["created_at"]).time(),
-					reverse=True
-				
-			)
+			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
 
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
@@ -810,12 +804,7 @@ def get_all_coupons(
 							)
 
 				coupon["items_rating"] = items_rating
-			coupons.sort(
-				key=lambda x: 
-					get_local_datetime_obj(x["created_at"]).time(),
-					reverse=True
-				
-			)
+			coupons.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
@@ -840,12 +829,7 @@ def get_all_coupons(
 			if not ans:
 				set_response(404, False, "No Coupon found")
 				return
-			ans.sort(
-				key=lambda x: 
-					get_local_datetime_obj(x["created_at"]).time(),
-					reverse=True
-				
-			)
+			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
 				item_listing = []
@@ -1114,8 +1098,8 @@ def generate_coupon():
 							"title": "Meal Cost Deduction",
 							"meal": meal_id,
 							"coupon": meal_doc.coupons[-1].name,
-							"coupon_status":"1",
-							"category": meal_doc.get("category")
+							"coupon_status": "1",
+							"category": meal_doc.get("category"),
 						}
 					)
 

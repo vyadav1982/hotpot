@@ -536,13 +536,11 @@ class CustomDataImport(DataImport):
 				frappe.throw("Column 'Category' not found in the Excel file.")
 
 			for row_num, row in enumerate(sheet.iter_rows(min_row=2), start=2):
-
 				cell = row[meal_col_idx]
 				if cell.value:
 					items = [item.strip().lower() for item in str(cell.value).split(",") if item.strip()]
 					cell.value = ", ".join(items)
 
-				
 				cat_cell = row[category_col_idx]
 				if cat_cell.value:
 					original_val = cat_cell.value
@@ -552,4 +550,3 @@ class CustomDataImport(DataImport):
 
 		except Exception as e:
 			frappe.throw(f"Error processing Excel file: {str(e)}")
-
