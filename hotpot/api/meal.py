@@ -174,6 +174,7 @@ def create_meal():
 				"start_time": start_time,
 				"end_time": end_time,
 				"buffer_coupon_count": buffer_coupon_count,
+				"remaining_coupon_count": buffer_coupon_count,
 				"meal_weight": meal_weight,
 				"is_active": "1",
 				"is_special": is_special,
@@ -518,7 +519,9 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 			vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
 			if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
-				meal["meal_weight"] = meal["meal_weight"] * (100 - (get_discount(user_data, vendor) or 0)) * 0.01
+				meal["meal_weight"] = (
+					meal["meal_weight"] * (100 - (get_discount(user_data, vendor) or 0)) * 0.01
+				)
 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 			meal["total_coupons"] = 0
 			if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):

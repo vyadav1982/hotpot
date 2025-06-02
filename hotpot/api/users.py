@@ -286,9 +286,7 @@ def get_all_vendor():
 			return
 		for vendor in user_list:
 			all_items = frappe.db.get_all(
-				"Hotpot Meal Items",
-				filters={"vendor_id": vendor.name},
-				fields=["name"]
+				"Hotpot Meal Items", filters={"vendor_id": vendor.name}, fields=["name"]
 			)
 
 			total_rating = 0
@@ -296,9 +294,7 @@ def get_all_vendor():
 
 			for item in all_items:
 				item_ratings = frappe.db.get_all(
-					"Hotpot Meal Menu Items Rating",
-					filters={"meal_item": item.name},
-					fields=["rating"]
+					"Hotpot Meal Menu Items Rating", filters={"meal_item": item.name}, fields=["rating"]
 				)
 
 				for rating_doc in item_ratings:
@@ -307,7 +303,7 @@ def get_all_vendor():
 					count += 1
 
 			if count > 0:
-				average_rating = round((total_rating / count)*5,1)
+				average_rating = round((total_rating / count) * 5, 1)
 			else:
 				average_rating = 0
 			vendor["average_rating"] = average_rating

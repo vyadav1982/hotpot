@@ -86,7 +86,6 @@ class HotpotMeal(Document):
 						self.append("menu_items", {"meal_item": menu_item})
 					else:
 						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{self.vendor_id}'.")
-			
 
 	def before_insert(self):
 		self.validate_dates()
@@ -121,7 +120,7 @@ class HotpotMeal(Document):
 
 		if meal_date.date() == current_datetime.date():
 			local_time = get_local_datetime_obj(datetime.utcnow())
-			
+
 			lead_time_delta = timedelta(hours=float(self.lead_time))
 			ready_time = local_time + lead_time_delta
 			start_time_local = get_local_datetime_obj(self.start_time)
@@ -130,8 +129,17 @@ class HotpotMeal(Document):
 			time_difference = (start_time_today - ready_time).total_seconds()
 
 			if time_difference < 0:
-				frappe.throw(_("Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}.")
-							.format(self.meal_title,meal_date.date(),self.lead_time, ready_time.strftime('%H:%M:%S'), (get_local_datetime_obj(self.start_time)).strftime('%H:%M:%S')))
+				frappe.throw(
+					_(
+						"Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}."
+					).format(
+						self.meal_title,
+						meal_date.date(),
+						self.lead_time,
+						ready_time.strftime("%H:%M:%S"),
+						(get_local_datetime_obj(self.start_time)).strftime("%H:%M:%S"),
+					)
+				)
 
 
 def is_frappe_ui_request():
