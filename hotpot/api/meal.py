@@ -297,20 +297,20 @@ def update_meal():
 			"repeat_days",
 			"lead_time",
 		]:
-		if field in data:
-			if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
-				setattr(meal_doc, field, str(",".join(data[field])))
-			elif field == "meal_items_ids" and isinstance(data[field], list):
-				meal_doc.menu_items.clear()
-				for item_id in data[field]:
-					meal_doc.append(
-						"menu_items",
-						{
-							"meal_item": item_id,
-						},
-					)
-			else:
-				setattr(meal_doc, field, data[field])
+			if field in data:
+				if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
+					setattr(meal_doc, field, str(",".join(data[field])))
+				elif field == "meal_items_ids" and isinstance(data[field], list):
+					meal_doc.menu_items.clear()
+					for item_id in data[field]:
+						meal_doc.append(
+							"menu_items",
+							{
+								"meal_item": item_id,
+							},
+						)
+				else:
+					setattr(meal_doc, field, data[field])
 
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
