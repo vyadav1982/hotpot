@@ -174,6 +174,7 @@ def create_meal():
 				"start_time": start_time,
 				"end_time": end_time,
 				"buffer_coupon_count": buffer_coupon_count,
+				"remaining_coupon_count": buffer_coupon_count,
 				"meal_weight": meal_weight,
 				"is_active": "1",
 				"is_special": is_special,
