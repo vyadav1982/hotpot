@@ -258,10 +258,10 @@ def update_meal():
 				set_response(400, False, "Your, Request in still pending.")
 				return
 			if not active_status:
-				set_response(400, False, "You don't have any active requests.")
+				set_response(409, False, "You don't have any active requests.")
 				return
 		else:
-			set_response(400, False, "Approval is required to update the meal.")
+			set_response(409, False, "Approval is required to update the meal.")
 			return
 		if upcoming_coupons and active_status != True:
 			set_response(
@@ -285,6 +285,7 @@ def update_meal():
 			"day",
 			"meal_date",
 			"meal_items",
+			"meal_items_ids",
 			"start_time",
 			"end_time",
 			"buffer_coupon_count",
@@ -296,11 +297,20 @@ def update_meal():
 			"repeat_days",
 			"lead_time",
 		]:
-			if field in data:
-				if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
-					setattr(meal_doc, field, str(",".join(data[field])))  # Explicitly convert to string
-				else:
-					setattr(meal_doc, field, data[field])
+		if field in data:
+			if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
+				setattr(meal_doc, field, str(",".join(data[field])))
+			elif field == "meal_items_ids" and isinstance(data[field], list):
+				meal_doc.menu_items.clear()
+				for item_id in data[field]:
+					meal_doc.append(
+						"menu_items",
+						{
+							"meal_item": item_id,
+						},
+					)
+			else:
+				setattr(meal_doc, field, data[field])
 
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)
