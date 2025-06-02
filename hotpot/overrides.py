@@ -300,6 +300,12 @@ class CustomDataImport(DataImport):
 						f"Row {row_num}: These meal items are not found for vendor '{vendor_id}': {', '.join(missing_items)}"
 					)
 					continue
+				if self.import_file:
+					file_doc = frappe.get_doc("File", {"file_url": self.import_file})
+					file_path = file_doc.get_full_path()
+
+					if os.path.exists(file_path):
+						self.set_items_to_lower(file_path)
 
 				field_mapping = {
 					"start_time": "Start Time",
@@ -512,3 +518,38 @@ class CustomDataImport(DataImport):
 				frappe.throw("<br>".join(errors))
 		except Exception as e:
 			frappe.throw(f"Error processing Excel file: {str(e)}")
+
+	def set_items_to_lower(self, file_path):
+		try:
+			wb = openpyxl.load_workbook(file_path)
+			sheet = wb.active
+
+			headers = [cell.value for cell in sheet[1]]
+			header_to_index = {header.strip(): idx for idx, header in enumerate(headers) if header}
+
+			meal_col_idx = header_to_index.get("Meal Items")
+			if meal_col_idx is None:
+				frappe.throw("Column 'Meal Items' not found in the Excel file.")
+
+			category_col_idx = header_to_index.get("Category")
+			if category_col_idx is None:
+				frappe.throw("Column 'Category' not found in the Excel file.")
+
+			for row_num, row in enumerate(sheet.iter_rows(min_row=2), start=2):
+
+				cell = row[meal_col_idx]
+				if cell.value:
+					items = [item.strip().lower() for item in str(cell.value).split(",") if item.strip()]
+					cell.value = ", ".join(items)
+
+				
+				cat_cell = row[category_col_idx]
+				if cat_cell.value:
+					original_val = cat_cell.value
+					cat_cell.value = str(cat_cell.value).strip().lower()
+
+			wb.save(file_path)
+
+		except Exception as e:
+			frappe.throw(f"Error processing Excel file: {str(e)}")
+

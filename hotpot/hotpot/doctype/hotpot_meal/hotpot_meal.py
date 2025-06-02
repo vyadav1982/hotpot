@@ -113,16 +113,16 @@ class HotpotMeal(Document):
 				if self.vendor_id is None:
 					self.vendor_id = vendor_id
 			vendor = self.vendor_id
-			if self.meal_items:
-				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
-				for item_name in item_list:
-					menu_item = frappe.get_value(
-						"Hotpot Meal Items", {"vendor_id": vendor, "item_name": item_name}, "name"
-					)
-					if menu_item:
-						self.append("menu_items", {"meal_item": menu_item})
-					else:
-						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{vendor}'.")
+			# if self.meal_items:
+			# 	item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
+			# 	for item_name in item_list:
+			# 		menu_item = frappe.get_value(
+			# 			"Hotpot Meal Items", {"vendor_id": vendor, "item_name": item_name}, "name"
+			# 		)
+			# 		if menu_item:
+			# 			self.append("menu_items", {"meal_item": menu_item})
+			# 		else:
+			# 			frappe.throw(f"Meal Item '{item_name}' not found for vendor '{vendor}'.")
 
 
 def is_frappe_ui_request():

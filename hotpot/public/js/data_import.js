@@ -29,11 +29,6 @@ frappe.ui.form.on('Data Import', {
             }
             
             if (frm.doc.reference_doctype) {
-                if(frm.doc.reference_doctype == "Hotpot Meal"){
-                    let msg = __('ℹ️ Please note: the category field is case-sensitive.');
-                    frm.dashboard.clear_headline();
-                    frm.dashboard.set_headline_alert(msg);
-                }
                 frm.page.clear_menu()
                 frm.page.hide_menu()
                 frm.page.add_inner_button(__("Download Template", null, "Button in list view menu"), function () {
