@@ -58,6 +58,7 @@ def get_approvals(start=None, end=None):
 			"approval_remarks",
 			"is_active",
 			"creation",
+			"modified",
 		]
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
@@ -129,7 +130,11 @@ def get_approvals(start=None, end=None):
 					approval["meal_details"] = meal_data  # Attach only selected fields
 				except frappe.DoesNotExistError:
 					approval["meal_details"] = None  # Handle missing meal data gracefully
-
+		approvals.sort(
+			key=lambda x: 
+				(x["modified"]).time(),
+				reverse=True	
+		)
 		set_response(200, True, "Approvals fetched successfully", approvals)
 		return
 
