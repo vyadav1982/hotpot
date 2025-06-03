@@ -119,7 +119,6 @@ def update_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", doc.name):
 		hp_user = frappe.get_doc("Hotpot User", doc.name)
 		hp_user.employee_id = doc.employee_number
-		# get full name from employee using first name middle name and last name
 		parts = [
 			(doc.first_name or "").strip(),
 			(doc.middle_name or "").strip(),
@@ -137,10 +136,11 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.user = doc.user_id
 		hp_user.location = doc.branch if doc.branch else hp_user.location
 		hp_user.save(ignore_permissions=True)
+		password = frappe.generate_hash(length=8)
+		set_user_password(frappe.local.site, doc.user_id, password, hp_user)
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
-		# get full name from employee using first name middle name and last name
 		parts = [
 			(doc.first_name or "").strip(),
 			(doc.middle_name or "").strip(),
