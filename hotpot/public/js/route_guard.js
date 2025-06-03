@@ -1,6 +1,8 @@
 const allowed_routes_by_role = {
 	"Hotpot Admin": [
 		"hotpot",
+		"user",
+		"employee",
 		"hotpot-meal",
 		"hotpot-user",
 		"hotpot-meal-items",
