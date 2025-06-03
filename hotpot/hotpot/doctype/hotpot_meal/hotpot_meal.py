@@ -108,6 +108,7 @@ class HotpotMeal(Document):
 			self.start_time = category_doc.start_time
 			self.end_time = category_doc.end_time
 			self.is_active = 1
+			self.remaining_coupon_count = self.buffer_coupon_count
 			self.lead_time = category_doc.lead_time
 			self.cancellation_time = category_doc.cancellation_time
 			self.meal_weight = category_doc.meal_rate
