@@ -19,6 +19,7 @@ def execute(filters=None):
 	columns = [
 		{"label": "Employee ID", "fieldname": "employee_code", "fieldtype": "Data", "width": 140},
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
+		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
 		{
 			"label": "Total Discounted Price",
@@ -34,10 +35,12 @@ def execute(filters=None):
 		SELECT
 			hc.employee_code,
 			hu.full_name,
+			hm.category,
 			COUNT(*) AS total_coupons,
 			SUM(IFNULL(hc.coupon_weight, 0)) AS total_price
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot User` hu ON hc.employee_code = hu.employee
+		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		WHERE
 			hc.coupon_status IN (0, -1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s

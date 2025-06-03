@@ -1,6 +1,17 @@
 const allowed_routes_by_role = {
 	"Hotpot Admin": [
 		"hotpot",
+		"user",
+		"employee",
+		"employee-health-insurance",
+		"designation",
+		"branch",
+		"employee-grade",
+		"department",
+		"employement-type",
+		"job-applicant",
+		"holiday-list",
+		"cost-center",
 		"hotpot-meal",
 		"hotpot-user",
 		"hotpot-meal-items",
