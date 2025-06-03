@@ -445,6 +445,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			"start_time",
 			"end_time",
 			"buffer_coupon_count",
+			"remaining_coupon_count",
 			"meal_weight",
 			"meal_date",
 			"is_special",
