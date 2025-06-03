@@ -89,21 +89,26 @@ class HotpotMeal(Document):
 
 	def before_insert(self):
 		self.validate_dates()
+		existing = frappe.db.exists(
+			"Hotpot Meal",
+			{
+				"meal_date": self.meal_date,
+				"category": self.category,
+			}
+		)
+		if existing:
+			frappe.throw(
+				_("A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed.")
+				.format(self.category, self.meal_date)
+			)
 		if is_frappe_ui_request() or frappe.flags.in_import:
+
 			vendor = None
-			# if self.start_time:
-			# 	if isinstance(self.start_time, datetime):
-			# 		self.start_time = self.start_time.strftime("%Y-%m-%d %H:%M:%S")
-			# 	self.start_time = get_utc_datetime_obj(self.start_time)
-			# if self.end_time:
-			# 	if isinstance(self.end_time, datetime):
-			# 		self.end_time = self.end_time.strftime("%Y-%m-%d %H:%M:%S")
-			# 	self.end_time = get_utc_datetime_obj(self.end_time)
-			# if not self.start_time and not self.end_time:
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.start_time = category_doc.start_time
 			self.end_time = category_doc.end_time
 			self.is_active = 1
+			self.remaining_coupon_count = self.buffer_coupon_count
 			self.lead_time = category_doc.lead_time
 			self.cancellation_time = category_doc.cancellation_time
 			self.meal_weight = category_doc.meal_rate

@@ -55,7 +55,7 @@ class CustomDataImport(DataImport):
 				"Coupon Count",
 				"Location",
 			]
-			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date"]
+			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date","Buffer Coupon Count"]
 			meal_item_fields = ["Item Name"]
 			holiday_field = ["Date", "Title"]
 			roles = frappe.get_roles()
@@ -258,7 +258,14 @@ class CustomDataImport(DataImport):
 					if header_to_index.get("Meal Items") is not None
 					else ""
 				)
-				# print("category", category)
+				buffer_count = (
+					row[header_to_index.get("Buffer Coupon Count",0)]
+					if header_to_index.get("Buffer Coupon Count") is not None
+					else ""
+				)
+				if buffer_count < 0 :
+					errors.append(f"Row {row_num}: Buffer Coupon Count cannot be negative.")
+					continue
 				try:
 					category_doc = frappe.db.get_value(
 						"Hotpot Meal Category", {"name": category, "is_active": 1}, "*", as_dict=True
