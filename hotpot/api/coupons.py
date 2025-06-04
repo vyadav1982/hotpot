@@ -74,8 +74,8 @@ def get_coupon_count(start_date, end_date, user=False):
 
 		feedback_query = """
 			SELECT COUNT(hr.name) AS total_feedback
-			FROM `tabHotpot Meal Rating` AS hr
-			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hr.parent
+			FROM `tabHotpot Meal Menu Items Rating` AS hr
+			JOIN `tabHotpot Meal` AS hm ON hr.meal = hm.name
 			WHERE hm.vendor_id = %(vendor_name)s
 			AND DATE(CONVERT_TZ(hr.creation, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s;
 		"""
