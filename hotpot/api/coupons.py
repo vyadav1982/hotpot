@@ -15,18 +15,20 @@ from ..api.users import *
 @frappe.whitelist()
 def get_coupon_count(start_date, end_date, user=False):
 	try:
+		# Ensure only GET requests are allowed
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
-
+		# Get current user document
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-
+		# Permission check for user roles
 		if not user and has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		# Prepare date range in local timezone
 		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
@@ -35,7 +37,7 @@ def get_coupon_count(start_date, end_date, user=False):
 		end_date = get_local_datetime_obj(end_date).date()
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
-
+		# If user is Hotpot User/Admin/HR, fetch coupon status count for employee
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			coupon_query = """
 				SELECT hc.coupon_status,
@@ -60,7 +62,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			)
 			set_response(200, True, "Coupon data fetched successfully", coupon_data)
 			return
-
+		# For vendors, fetch day-wise coupon count
 		coupon_query = """
 			SELECT DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) AS coupon_date,
 				COUNT(hc.name) AS coupon_count
@@ -71,7 +73,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			GROUP BY DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s))
 			ORDER BY DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) ASC;
 		"""
-
+		# Prepare feedback query for vendor
 		feedback_query = """
 			SELECT 
 				hi.name,
@@ -86,11 +88,11 @@ def get_coupon_count(start_date, end_date, user=False):
 				BETWEEN %(start_date)s AND %(end_date)s
 			GROUP BY hi.name,hr.employee;
 		"""
-
+		# Get all meal items for vendor
 		all_items = frappe.db.get_all(
 			"Hotpot Meal Items", filters={"vendor_id": user_doc.get("email")}, fields=["name"]
 		)
-
+		# Calculate average rating for all items
 		total_rating = 0
 		count = 0
 
@@ -110,9 +112,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			average_rating = 0
 		rating = average_rating
 
-		# params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
-
-		# day_wise_data = frappe.db.sql(coupon_query, params, as_dict=True)
+		# Fetch day-wise coupon consumption for vendor
 		day_wise_data = frappe.db.sql(
 			coupon_query,
 			{
@@ -123,7 +123,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			},
 			as_dict=True,
 		)
-		# total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
+		# Fetch feedbacks for vendor
 		feedbacks = frappe.db.sql(
 			feedback_query,
 			{
@@ -133,7 +133,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			},
 			as_dict=True,
 		)
-
+		# Prepare response data
 		response = {"total_feedback": count, "day_wise_consumption": day_wise_data, "average_rating":rating, "feedbacks":feedbacks}
 
 		if not response:
@@ -150,18 +150,20 @@ def get_coupon_count(start_date, end_date, user=False):
 @frappe.whitelist()
 def get_report(start_date, end_date):
 	try:
+		# Check if request method is GET
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
-
+		# Get current user document
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
-
+		# Check permission for user roles
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		# Prepare date range in local timezone
 		start_date = f"{start_date} 00:00:00"
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = f"{end_date} 23:59:59"
@@ -170,6 +172,7 @@ def get_report(start_date, end_date):
 		end_date = get_local_datetime_obj(end_date).date()
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
+		# Prepare SQL query for report
 		coupon_query = """
 			SELECT
 				hm.meal_title AS meal_name,
@@ -189,6 +192,7 @@ def get_report(start_date, end_date):
 			GROUP BY hm.name, coupon_date
 			ORDER BY coupon_date ASC;
 		"""
+		# Execute query to get report data
 		data = frappe.db.sql(
 			coupon_query,
 			{
@@ -210,26 +214,32 @@ def get_report(start_date, end_date):
 @frappe.whitelist()
 def cancel_coupon():
 	try:
+		# Check if request method is PUT
 		if frappe.request.method != "PUT":
 			set_response(405, False, "Only PUT method is allowed")
 			return
-
+		# Get current user document
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
+
+		# Check permission for user roles
 		if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 
+		# Parse request data
 		data = json.loads(frappe.request.data or "{}")
 		meal_id = data.get("meal_id")
 		coupon_id = data.get("coupon_id")
 
+		# Validate required fields
 		if not meal_id or not coupon_id:
 			set_response(400, False, "Required neccessary field")
 			return
 
+		# Get meal document
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
@@ -239,12 +249,14 @@ def cancel_coupon():
 			return
 		coupons = meal_doc.get("coupons")
 
+		# Find the coupon to cancel
 		coupon_found = None
 		for coupon in coupons:
 			if coupon.name == coupon_id:
 				coupon_found = coupon
 				break
 
+		# Validate coupon status
 		if not coupon_found:
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
@@ -252,6 +264,7 @@ def cancel_coupon():
 			set_response(400, False, "Cannot cancel a redeemed or expired coupon")
 			return
 
+		# Calculate time difference for cancellation eligibility
 		coupon_date = get_local_datetime_obj(coupon_found.coupon_date)
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 		if coupon_date.date() == current_datetime.date():
@@ -269,20 +282,18 @@ def cancel_coupon():
 		diff = int(diff)
 		cancel = diff < 0 or diff <= (meal_doc.cancellation_time) * 60 * 60
 		if diff < 0:
-			# set_response(400, False, "Nice try! But instead of canceling, why not enjoy the meal? Sorry, your coupon is staying right where it is! 😜🍽️")
 			set_response(400, False, "Cannot cancel a coupon during meal time.")
 			return
 
 		if cancel:
-			# set_response(400, False, f"Oops! You’re too late! Coupons turn into pumpkins {meal_doc.cancellation_time} hours before the meal starts. No take-backs now! 🎃⏳🍽️")
 			set_response(400, False, "Cannot cancel a coupon during cancellation time.")
 			return
 
 		if coupon_found.coupon_status == "2":
 			set_response(409, False, "Coupon already Cancelled")
-			# set_response(409, False, "Too late! Coupon’s already gone! ❌")
 			return
 
+		# Update coupon status and refund tokens if applicable
 		query = """
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
@@ -308,14 +319,13 @@ def cancel_coupon():
 			)
 			transaction_doc.insert()
 
+		# Save changes and commit transaction
 		params = {"meal_id": meal_id, "coupon_id": coupon_id}
-		# meal_doc.get("max_meal_count") = meal_doc.get("max_meal_count") + 1
 		meal_doc.save()
 		frappe.db.sql(query, params)
 		user_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Coupon cancelled successfully")
-		# set_response(200, True, "Poof! Gone. 🎩🐇")
 		return
 
 	except Exception as e:
@@ -325,102 +335,134 @@ def cancel_coupon():
 
 @frappe.whitelist()
 def get_redeemed_coupon():
-	try:
-		if frappe.request.method != "GET":
-			set_response(405, False, "Only GET method is allowed")
-			return
+    try:
+        # Ensure only GET requests are allowed
+        if frappe.request.method != "GET":
+            set_response(405, False, "Only GET method is allowed")
+            return
 
-		user_doc = get_hotpot_user_by_email()
-		if not user_doc:
-			set_response(401, False, "User Not found")
-			return
-		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
-			set_response(403, False, "Not Permitted to access this resource")
-			return
-		data = json.loads(frappe.request.data or "{}")
-		user_id = data.get("user_id")
-		coupon_id = data.get("coupon_id")
-		if not user_id or not coupon_id:
-			set_response(400, False, "Missing required field")
-			return
-		query = """
-			Select * from
-				`tabHotpot Coupons` AS hc
-			where hc.name = %(coupon_id)s
-		"""
-		params = {"coupon_id": coupon_id}
-		coupon_data = frappe.db.sql(query, params, as_dict=True)
+        # Get current user document
+        user_doc = get_hotpot_user_by_email()
+        if not user_doc:
+            set_response(401, False, "User Not found")
+            return
 
-		if not coupon_data:
-			set_response(404, False, "Coupon Not Found")
-			return
-		query = """
-			Select full_name, employee_id from `tabHotpot User` AS hu where hu.name = %(user_id)s
-		"""
-		params = {"user_id": user_id}
-		user_data = frappe.db.sql(query, params, as_dict=True)
-		if not user_data:
-			set_response(404, False, "User Not Found")
-			return
-		merged_data = {**coupon_data[0], **user_data[0]}
+        # Check if user has required roles to access this resource
+        if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
+            set_response(403, False, "Not Permitted to access this resource")
+            return
 
-		set_response(200, True, "Redeemed coupons detailed fetched successfully", merged_data)
-		return
+        # Parse request data to get user_id and coupon_id
+        data = json.loads(frappe.request.data or "{}")
+        user_id = data.get("user_id")
+        coupon_id = data.get("coupon_id")
 
-	except Exception as e:
-		set_response(500, False, "ERROR: " + str(e))
-		return
+        # Validate required fields
+        if not user_id or not coupon_id:
+            set_response(400, False, "Required fields missing")
+            return
+
+        # Fetch coupon data from database
+        query = """
+            Select * from
+                `tabHotpot Coupons` AS hc
+            where hc.name = %(coupon_id)s
+        """
+        params = {"coupon_id": coupon_id}
+        coupon_data = frappe.db.sql(query, params, as_dict=True)
+
+        # If coupon not found, return error
+        if not coupon_data:
+            set_response(404, False, "Coupon not found")
+            return
+
+        # Fetch user data from database
+        query = """
+            Select full_name, employee_id from `tabHotpot User` AS hu where hu.name = %(user_id)s
+        """
+        params = {"user_id": user_id}
+        user_data = frappe.db.sql(query, params, as_dict=True)
+        if not user_data:
+            set_response(404, False, "User not found")
+            return
+
+        # Merge coupon and user data for response
+        merged_data = {**coupon_data[0], **user_data[0]}
+
+        # Return the merged data as response
+        set_response(200, True, "Redeemed coupons detailed fetched successfully", merged_data)
+        return
+
+    except Exception as e:
+        # Handle any unexpected errors
+        set_response(500, False, "ERROR: " + str(e))
+        return
 
 
 @frappe.whitelist()
 def scan_coupon():
 	try:
+		# Ensure the request is a PUT request (required for updating coupon status)
 		if frappe.request.method != "PUT":
 			set_response(405, False, "Only PUT method is allowed")
 			return
 
+		# Parse JSON request data
 		data = json.loads(frappe.request.data or "{}")
 		meal_id = data.get("meal_id")
 		coupon_id = data.get("coupon_id")
 		user_id = data.get("user_id")
 		vendor_id = data.get("vendor_id")
+
+		# Check for missing required fields
 		if not meal_id or not user_id or not vendor_id:
 			set_response(400, False, "Missing required field")
 			return
 
+		# Get currently logged-in user
 		user_doc = get_hotpot_user_by_email()
 		emp_doc = None
-		# try:
-		# 	emp_doc = frappe.get_doc("Hotpot User", user_id)
-		# except frappe.DoesNotExistError:
-		# 	emp_doc = get_hotpot_user_by_tag_id(user_id)
+
+		# Try to fetch employee document by ID, fallback to tag ID (for kisok)
 		if frappe.db.exists("Hotpot User", user_id):
 			emp_doc = frappe.get_doc("Hotpot User", user_id)
 		else:
 			emp_doc = get_hotpot_user_by_tag_id(user_id)
 
+		# Validate employee and user documents
 		if not emp_doc:
 			set_response(404, False, "Employee not found")
 			return
 		if not user_doc:
 			set_response(401, False, "User Not Found")
 			return
+
+		# Ensure the user has proper role permissions
 		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+
+		# Fetch meal document using provided meal_id
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		if not meal_doc:
 			set_response(404, False, "Meal Not Found")
 			return
+
+		# Check if the requesting vendor is allowed to scan this meal's coupons
 		if not vendor_id == meal_doc.get("vendor_id"):
 			set_response(403, False, "You are not authorised to scan this coupon.")
 			return
+
+		# Get all coupons associated with the meal
 		coupons = meal_doc.get("coupons")
 		coupon_found = None
+
+		# If no coupons are found, return an error
 		if not coupons:
 			set_response(400, False, "ERROR: No Coupons found for this meal.")
 			return
 
+		# If coupon_id is not provided, find a coupon for the current employee for today
 		if not coupon_id:
 			for coupon in coupons:
 				if (
@@ -431,95 +473,105 @@ def scan_coupon():
 					coupon_found = coupon
 					break
 		else:
+			# If coupon_id is provided, find it directly
 			for coupon in coupons:
 				if coupon.name == coupon_id:
 					coupon_found = coupon
 					break
 
+		# If the coupon is not found, return an error
 		if not coupon_found:
 			set_response(400, False, "ERROR: Coupon Not Found")
 			return
 
+		# Get the current local datetime
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 		current_time = current_datetime.time()
 		local_date = current_datetime.date()
 
-		# print(coupon_found, meal_id, current_time_num)
-
+		# Check if the coupon is valid for today's date
 		if get_local_datetime_obj(coupon_found.get("coupon_date")).date() != local_date:
 			set_response(400, False, "NOTICE: Coupon Not Valid for Today")
 			return
 
+		# Validate if meal start time has arrived
 		start_time = get_local_datetime_obj(meal_doc.get("start_time")).time()
-		if start_time:
-			if current_time < start_time:
-				set_response(400, False, "NOTICE: Too Early to Serve")
-				return
+		if start_time and current_time < start_time:
+			set_response(400, False, "NOTICE: Too Early to Serve")
+			return
 
+		# Validate if meal serving period hasn't passed
 		end_time = get_local_datetime_obj(meal_doc.get("end_time")).time()
-		if end_time:
-			if current_time > end_time:
-				set_response(400, False, "ERROR: Meal Serving Time Passed")
-				return
+		if end_time and current_time > end_time:
+			set_response(400, False, "ERROR: Meal Serving Time Passed")
+			return
 
+		# Check if the coupon is already consumed
 		if int(coupon_found.get("coupon_status")) == 0:
 			set_response(400, False, "ERROR: Coupon Already Consumed")
 			return
 
+		# Mark the coupon as used and record who served it
 		coupon_found.coupon_status = 0
 		coupon_found.served_by = user_doc.get("name")
+
+		# Save changes to the meal document (which includes updated coupon status)
 		meal_doc.save()
 		frappe.db.commit()
 
-		data = []
-		data.append(
-			{
-				"meal_title": meal_doc.get("meal_title"),
-				"meal_date": meal_doc.get("meal_date"),
-				"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
-				"employee_id": emp_doc.get("employee_id"),
-				"full_name": emp_doc.get("full_name"),
-				"coupon_id": coupon_found.get("name"),
-				"coupon_status": coupon_found.get("coupon_status"),
-				"coupon_date": coupon_found.get("coupon_date"),
-				"coupon_title": coupon_found.get("title"),
-			}
-		)
+		# Build and return success response
+		data = [{
+			"meal_title": meal_doc.get("meal_title"),
+			"meal_date": meal_doc.get("meal_date"),
+			"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
+			"employee_id": emp_doc.get("employee_id"),
+			"full_name": emp_doc.get("full_name"),
+			"coupon_id": coupon_found.get("name"),
+			"coupon_status": coupon_found.get("coupon_status"),
+			"coupon_date": coupon_found.get("coupon_date"),
+			"coupon_title": coupon_found.get("title"),
+		}]
 
 		set_response(200, True, "SUCCESS: Meal Ready to Be Served", data)
 
 	except Exception as e:
+		# Catch unexpected errors and respond gracefully
 		set_response(500, False, "ERROR: " + str(e))
 		return
 
 
+
 @frappe.whitelist()
-def get_scanned_coupons(
-	start_date,
-	end_date,
-	page=1,
-	limit=10,
-):
+def get_scanned_coupons(start_date, end_date, page=1, limit=10):
 	try:
+		# Ensure only GET method is allowed
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
 
+		# Get current logged-in Hotpot user
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
 
+		# Ensure user has the correct role
 		if not has_any_of_role(["Hotpot Server", "Hotpot Vendor"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
-		start_date = f"{start_date} 00:00:00"
-		start_date = get_utc_datetime_obj(start_date)
-		end_date = f"{end_date} 23:59:59"
-		end_date = get_utc_datetime_obj(end_date)
+
+		# Convert provided start and end dates to UTC datetime format
+		start_date = get_utc_datetime_obj(f"{start_date} 00:00:00")
+		end_date = get_utc_datetime_obj(f"{end_date} 23:59:59")
+
+		# Convert UTC to local dates
 		start_date = get_local_datetime_obj(start_date).date()
 		end_date = get_local_datetime_obj(end_date).date()
+
+		# Get user's timezone, fallback to IST if not set
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
+
+		# SQL query to fetch all scanned coupons in date range
 		query = """
 			SELECT
 				hm.meal_title,
@@ -535,33 +587,29 @@ def get_scanned_coupons(
 				hc.served_by,
 				U.full_name AS vendor_name,
 				mt.type
-			FROM
-				`tabHotpot Coupons` AS hc
-			INNER JOIN
-				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-			INNER JOIN
-				`tabHotpot User` as U on hm.vendor_id = U.name
-			INNER JOIN
-				`tabHotpot User` as U2 on hc.employee_id = U2.name
-			INNER JOIN
-				`tabHotpot Meal Category` AS mc ON mc.name = hm.category
-			INNER JOIN
-				`tabHotpot Meal Types` AS mt ON mt.name = mc.type
-			WHERE
-				hc.coupon_status = 0
-				and hm.vendor_id = %(vendor_id)s
-				and DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
-			ORDER BY
-				hc.modified DESC
-			;
+			FROM `tabHotpot Coupons` AS hc
+			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
+			INNER JOIN `tabHotpot User` AS U ON hm.vendor_id = U.name
+			INNER JOIN `tabHotpot User` AS U2 ON hc.employee_id = U2.name
+			INNER JOIN `tabHotpot Meal Category` AS mc ON mc.name = hm.category
+			INNER JOIN `tabHotpot Meal Types` AS mt ON mt.name = mc.type
+			WHERE hc.coupon_status = 0
+				AND hm.vendor_id = %(vendor_id)s
+				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
+			ORDER BY hc.modified DESC;
 		"""
+
+		# Prepare parameters for query
 		params = {
 			"user_timezone": user_timezone,
 			"start_date": start_date,
 			"end_date": end_date,
 			"vendor_id": user_doc.get("guest_of"),
 		}
+
+		# Execute query and return results
 		data = frappe.db.sql(query, params, as_dict=True)
+
 		if not data:
 			set_response(200, False, "No Scanned Coupons Found")
 			return
@@ -570,20 +618,26 @@ def get_scanned_coupons(
 		return
 
 	except Exception as e:
+		# Catch unexpected errors and return server response
 		set_response(500, False, "ERROR: " + str(e))
 		return
+
 
 
 @frappe.whitelist()
 def update_coupon_status():
 	try:
+		# Get current user
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
+
+		# Get user's timezone and current local time
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 
+		# Update coupon_status to "-1" for all unused (status = 1) coupons that are expired
 		query = """
 			UPDATE `tabHotpot Coupons` AS hc
 			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
@@ -597,30 +651,40 @@ def update_coupon_status():
 				)
 			);
 		"""
+
+		# Execute SQL with parameters
 		params = (user_tz, now_local, user_tz, now_local, user_tz, now_local)
 		frappe.db.sql(query, params)
 		frappe.db.commit()
 		return
+
 	except Exception as e:
+		# Rollback in case of failure and log error
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Failed to update status")
 		set_response(500, False, f"Server error: {str(e)}")
 		return
 
 
+
 def check_hotpot_role(hotpot_roles):
 	if not hotpot_roles:
 		return None
 
+	# Normalize duplicate or malformed role names
 	normalized_roles = [r.replace("Hotpot Hotpot", "Hotpot").strip() for r in hotpot_roles]
 
+	# Define role priority (highest to lowest)
 	priority = ["Hotpot Admin", "Hotpot HR", "Hotpot User"]
 
+	# Return the highest-priority matching role
 	for role in priority:
 		if role in normalized_roles:
 			return role
 
+	# If no priority match, return first available role
 	return normalized_roles[0]
+
 
 
 @frappe.whitelist()
@@ -632,41 +696,51 @@ def get_all_coupons(
 	limit=10,
 ):
 	try:
+		# Allow only GET requests
 		if frappe.request.method != "GET":
 			set_response(405, False, "Only GET method is allowed")
 			return
 
+		# Fetch current user info
 		user_doc = get_hotpot_user_by_email()
 		if not user_doc:
 			set_response(401, False, "User Not found")
 			return
 
+		# Basic field validation
 		if not page or not limit or not end_date or not start_date:
 			set_response(400, False, "Please provide all fields")
 			return
 
+		# Update old coupons to mark expired ones as -1 (invalid)
 		update_coupon_status()
 
+		# Parse date boundaries into UTC datetime
 		start_date = f"{start_date} 00:00:00"
 		end_date = f"{end_date} 23:59:59"
 		start_date = get_utc_datetime_obj(start_date)
 		end_date = get_utc_datetime_obj(end_date)
 
+		# If searching a specific coupon
 		if identifier:
 			search_coupon(start_date, end_date, identifier)
 			return
+
+		# Convert UTC to local dates for filtering
 		start_date = get_local_datetime_obj(start_date).date()
 		end_date = get_local_datetime_obj(end_date).date()
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
-
 		page = int(page)
 		limit = int(limit)
-		start = (page - 1) * limit
+		start = (page - 1) * limit  # Pagination start index
 
+		# Determine the primary hotpot role of the current user
 		roles = frappe.get_roles(frappe.session.user)
 		hotpot_roles = [role for role in roles if role.startswith("Hotpot")]
 		primary_role = check_hotpot_role(hotpot_roles)
+
+		# If user is vendor/server, fetch coupons assigned to their meals
 		if primary_role == "Hotpot Server" or primary_role == "Hotpot Vendor":
 			query = """
 				SELECT
@@ -696,7 +770,8 @@ def get_all_coupons(
 					AND (hc.guest_of IS NULL OR hc.guest_of = '')
 					AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
 				LIMIT %(start)s, %(limit)s;
-				"""
+			"""
+			# This query gets all valid (non-guest) coupons between selected dates for the vendor, adjusting timezones.
 
 			params = {
 				"vendor_name": user_doc.get("email"),
@@ -707,11 +782,16 @@ def get_all_coupons(
 				"limit": limit,
 			}
 			ans = frappe.db.sql(query, params, as_dict=True)
+
+			# If no results found
 			if not ans:
 				set_response(200, True, "No Coupon found", [])
 				return
+
+			# Sort coupons by creation time
 			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
 
+			# Enrich coupons with meal item details
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
 				item_listing = []
@@ -729,10 +809,12 @@ def get_all_coupons(
 			set_response(200, True, "Coupons fetched successfully", ans)
 			return
 
+		# For Employee/Admin/HR: fetch their own coupons in selected date range
 		elif primary_role in ["Hotpot User", "Hotpot Admin", "Hotpot HR"]:
 			tz = pytz.timezone(user_timezone.zone)
 			start_datetime = tz.localize(datetime.combine(start_date, time.min)).astimezone(pytz.utc)
 			end_datetime = tz.localize(datetime.combine(end_date, time.max)).astimezone(pytz.utc)
+
 			params = {
 				"user_timezone": user_timezone,
 				"start_datetime": start_datetime,
@@ -741,6 +823,7 @@ def get_all_coupons(
 				"start": start,
 				"limit": limit,
 			}
+
 			coupons = frappe.db.sql(
 				"""
 				SELECT
@@ -780,24 +863,12 @@ def get_all_coupons(
 				as_dict=True,
 			)
 
-			# for coupon in coupons:
-			# 	rating = frappe.db.sql(
-			# 		"""
-			# 		SELECT
-			# 			rating, feedback
-			# 		FROM `tabHotpot Meal Rating`
-			# 		WHERE parent = %(meal_id)s AND employee_id = %(employee_id)s
-			# 	""",
-			# 		{"meal_id": coupon["meal_id"], "employee_id": user_doc.get("name")},
-			# 		as_dict=True,
-			# 	)
-
-			# 	coupon["rating"] = rating[0]["rating"] if rating else None
-			# 	coupon["feedback"] = rating[0]["feedback"] if rating else None
-
+			# If no coupons found
 			if not coupons:
 				set_response(200, True, "No Coupon found", [])
 				return
+
+			# Attach meal item titles to each coupon
 			for coupon in coupons:
 				meal_items_list = coupon["meal_items"].split(",")
 				item_listing = []
@@ -812,6 +883,7 @@ def get_all_coupons(
 						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
 				coupon["item_listing"] = item_listing
 
+			# Attach individual item ratings if given
 			for coupon in coupons:
 				items_rating = []
 				all_ratings = frappe.get_all(
@@ -827,60 +899,22 @@ def get_all_coupons(
 								{
 									"item_id": item["id"],
 									"item_name": item["title"],
-									"rating": rating["rating"] * 5,
+									"rating": rating["rating"] * 5,  # scale rating to 5-star
 									"review": rating["review"],
 								}
 							)
-
 				coupon["items_rating"] = items_rating
+
+			# Sort coupons by creation time
 			coupons.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
-		elif primary_role == "Hotpot Admin":
-			query = """
-				(
-				SELECT *
-				FROM `tabHotpot Coupons`
-				WHERE DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
-				ORDER BY creation DESC
-				LIMIT  %(start)s, %(limit)s;
-				)
-			"""
-			params = {
-				"user_timezone": user_timezone,
-				"start_date": start_date,
-				"end_date": end_date,
-				"start": start,
-				"limit": limit,
-			}
-			ans = frappe.db.sql(query, params, as_dict=True)
-			if not ans:
-				set_response(404, False, "No Coupon found")
-				return
-			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
-			for coupon in ans:
-				meal_items_list = coupon["meal_items"].split(",")
-				item_listing = []
-				for item in meal_items_list:
-					item = item.strip()
-					item_doc = frappe.get_value(
-						"Hotpot Meal Items",
-						{"vendor_id": coupon["vendor_id"], "item_name": item},
-						["name", "item_name"],
-					)
-					if item_doc:
-						item_listing.append({"id": item_doc[0], "title": item_doc[1]})
-				coupon["item_listing"] = item_listing
-
-			set_response(200, True, "Coupons fetched successfully", ans)
-			return
 	except Exception as e:
 		frappe.db.rollback()
 		frappe.log_error(frappe.get_traceback(), "Coupon Generation Error")
 		set_response(500, False, f"Server error: {str(e)}")
 		return
-
 
 @frappe.whitelist(allow_guest=True)
 def generate_coupon():
