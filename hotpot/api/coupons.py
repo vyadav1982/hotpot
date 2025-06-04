@@ -73,12 +73,42 @@ def get_coupon_count(start_date, end_date, user=False):
 		"""
 
 		feedback_query = """
-			SELECT COUNT(hr.name) AS total_feedback
+			SELECT 
+				hi.name,
+				hi.item_name,
+				COUNT(hi.name) AS total_feedback,
+				AVG(hr.rating)*5 AS avg_rating,
+				GROUP_CONCAT(hr.review SEPARATOR '; ') AS all_reviews
 			FROM `tabHotpot Meal Menu Items Rating` AS hr
-			JOIN `tabHotpot Meal` AS hm ON hr.meal = hm.name
-			WHERE hm.vendor_id = %(vendor_name)s
-			AND DATE(CONVERT_TZ(hr.creation, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s;
+			INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
+			WHERE hi.vendor_id = %(vendor_name)s
+			AND DATE(hr.creation) 
+				BETWEEN %(start_date)s AND %(end_date)s
+			GROUP BY hi.name,hr.employee;
 		"""
+
+		all_items = frappe.db.get_all(
+			"Hotpot Meal Items", filters={"vendor_id": user_doc.get("email")}, fields=["name"]
+		)
+
+		total_rating = 0
+		count = 0
+
+		for item in all_items:
+			item_ratings = frappe.db.get_all(
+				"Hotpot Meal Menu Items Rating", filters={"meal_item": item.name}, fields=["rating"]
+			)
+
+			for rating_doc in item_ratings:
+				rating = rating_doc.rating
+				total_rating += rating
+				count += 1
+
+		if count > 0:
+			average_rating = round((total_rating / count) * 5, 1)
+		else:
+			average_rating = 0
+		rating = average_rating
 
 		# params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
 
@@ -94,18 +124,17 @@ def get_coupon_count(start_date, end_date, user=False):
 			as_dict=True,
 		)
 		# total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
-		total_feedback = frappe.db.sql(
+		feedbacks = frappe.db.sql(
 			feedback_query,
 			{
 				"vendor_name": user_doc.get("email"),
 				"start_date": start_date,
 				"end_date": end_date,
-				"user_timezone": user_timezone,
 			},
 			as_dict=True,
-		)[0].get("total_feedback", 0)
+		)
 
-		response = {"total_feedback": total_feedback, "day_wise_consumption": day_wise_data}
+		response = {"total_feedback": count, "day_wise_consumption": day_wise_data, "average_rating":rating, "feedbacks":feedbacks}
 
 		if not response:
 			set_response(200, True, "No Data Available")
