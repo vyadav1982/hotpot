@@ -22,9 +22,12 @@ const allowed_routes_by_role = {
 		"query-report/birthday-coupons-report",
 		"query-report/joining-day-coupons-report",
 		"query-report/meal-consumption-report",
+		'query-report/coupon-report',
+		'query-report/employee-wise-meal-amount',
 		"hotpot-approvals",
 		"hotpot-configurations",
 		"generate-guest-qr",
+		'load-wallet-balance',
 		"data-import",
 	],
 	"Hotpot HR": [
@@ -35,7 +38,10 @@ const allowed_routes_by_role = {
 		"query-report/birthday-coupons-report",
 		"query-report/joining-day-coupons-report",
 		"query-report/meal-consumption-report",
+		'query-report/coupon-report',
+		'query-report/employee-wise-meal-amount',
 		"hotpot-approvals",
+		'load-wallet-balance',
 	],
 	"Hotpot Finance": [
 		"hotpot-finance",
@@ -43,6 +49,8 @@ const allowed_routes_by_role = {
 		"query-report/birthday-coupons-report",
 		"query-report/joining-day-coupons-report",
 		"query-report/meal-consumption-report",
+		'query-report/coupon-report',
+		'query-report/employee-wise-meal-amount',
 	],
 	"Hotpot Vendor": [
 		"hotpot-vendor",
