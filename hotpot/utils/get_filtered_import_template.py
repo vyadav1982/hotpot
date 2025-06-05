@@ -23,7 +23,7 @@ def get_filtered_import_template(doctype):
 		"Coupon Count",
 		"Location",
 	]
-	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date","Buffer Coupon Count"]
+	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 	meal_item_field = ["Item Name"]
 	holiday_field = ["Date", "Title"]
 	roles = frappe.get_roles()

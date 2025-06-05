@@ -134,7 +134,12 @@ def get_coupon_count(start_date, end_date, user=False):
 			as_dict=True,
 		)
 
-		response = {"total_feedback": count, "day_wise_consumption": day_wise_data, "average_rating":rating, "feedbacks":feedbacks}
+		response = {
+			"total_feedback": count,
+			"day_wise_consumption": day_wise_data,
+			"average_rating": rating,
+			"feedbacks": feedbacks,
+		}
 
 		if not response:
 			set_response(200, True, "No Data Available")
