@@ -84,7 +84,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			WHERE hi.vendor_id = %(vendor_name)s
 			AND DATE(hr.creation) 
 				BETWEEN %(start_date)s AND %(end_date)s
-			GROUP BY hi.name,hr.employee;
+			GROUP BY hi.name;
 		"""
 
 		all_items = frappe.db.get_all(
@@ -134,7 +134,12 @@ def get_coupon_count(start_date, end_date, user=False):
 			as_dict=True,
 		)
 
-		response = {"total_feedback": count, "day_wise_consumption": day_wise_data, "average_rating":rating, "feedbacks":feedbacks}
+		response = {
+			"total_feedback": count,
+			"day_wise_consumption": day_wise_data,
+			"average_rating": rating,
+			"feedbacks": feedbacks,
+		}
 
 		if not response:
 			set_response(200, True, "No Data Available")

@@ -94,15 +94,15 @@ class HotpotMeal(Document):
 			{
 				"meal_date": self.meal_date,
 				"category": self.category,
-			}
+			},
 		)
 		if existing:
 			frappe.throw(
-				_("A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed.")
-				.format(self.category, self.meal_date)
+				_(
+					"A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed."
+				).format(self.category, self.meal_date)
 			)
 		if is_frappe_ui_request() or frappe.flags.in_import:
-
 			vendor = None
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.start_time = category_doc.start_time

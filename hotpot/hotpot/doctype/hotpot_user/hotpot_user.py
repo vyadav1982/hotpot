@@ -148,7 +148,7 @@ def update_employee_to_hotpot(doc, method):
 		]
 		hp_user.full_name = " ".join(part for part in parts if part)
 		hp_user.mobile_no = doc.cell_number
-		hp_user.email =  doc.user_id
+		hp_user.email = doc.user_id
 		hp_user.is_active = 1 if doc.status == "Active" else 0
 		hp_user.is_deleted = 0 if doc.status == "Active" else 1
 		hp_user.is_guest = 0
