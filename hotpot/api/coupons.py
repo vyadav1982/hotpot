@@ -86,7 +86,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			WHERE hi.vendor_id = %(vendor_name)s
 			AND DATE(hr.creation) 
 				BETWEEN %(start_date)s AND %(end_date)s
-			GROUP BY hi.name,hr.employee;
+			GROUP BY hi.name;
 		"""
 		# Get all meal items for vendor
 		all_items = frappe.db.get_all(
