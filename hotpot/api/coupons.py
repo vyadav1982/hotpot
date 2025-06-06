@@ -133,6 +133,8 @@ def get_coupon_count(start_date, end_date, user=False):
 			},
 			as_dict=True,
 		)
+		for row in feedbacks:
+			row["all_reviews"] = [r["review"] for r in json.loads(row["all_reviews"])]
 
 		response = {
 			"total_feedback": count,
