@@ -77,7 +77,7 @@ def get_coupon_count(start_date, end_date, user=False):
 				hi.name,
 				hi.item_name,
 				COUNT(hi.name) AS total_feedback,
-				AVG(hr.rating)*5 AS avg_rating,
+				ROUND(AVG(hr.rating) * 5, 1) AS avg_rating,
 				JSON_ARRAYAGG(JSON_OBJECT('review', hr.review)) AS all_reviews
 			FROM `tabHotpot Meal Menu Items Rating` AS hr
 			INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
@@ -110,9 +110,6 @@ def get_coupon_count(start_date, end_date, user=False):
 			average_rating = 0
 		rating = average_rating
 
-		# params = {"vendor_name": user_doc.get("guest_of"), "start_date": start_date, "end_date": end_date}
-
-		# day_wise_data = frappe.db.sql(coupon_query, params, as_dict=True)
 		day_wise_data = frappe.db.sql(
 			coupon_query,
 			{
@@ -123,7 +120,6 @@ def get_coupon_count(start_date, end_date, user=False):
 			},
 			as_dict=True,
 		)
-		# total_feedback = frappe.db.sql(feedback_query, params, as_dict=True)[0].get("total_feedback", 0)
 		feedbacks = frappe.db.sql(
 			feedback_query,
 			{
