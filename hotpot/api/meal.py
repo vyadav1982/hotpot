@@ -695,7 +695,7 @@ def update_meal_items():
 			return set_response(409, False, f"Meal item '{item_name}' does not exist")
 
 		vendor_id = (
-			user_data.get("guest_of") if user_data["role"] == "Hotpot Vendor" else data.get("vendor_id")
+			user_data.get("email") if user_data["role"] == "Hotpot Vendor" else data.get("vendor_id")
 		)
 		if not frappe.db.get_value("Hotpot Meal Items", {"name": item_id, "vendor_id": vendor_id}):
 			set_response(409, False, f"Meal item '{item_name}' does not exist for the vendor")
