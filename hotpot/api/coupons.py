@@ -562,7 +562,7 @@ def get_scanned_coupons(
 			"user_timezone": user_timezone,
 			"start_date": start_date,
 			"end_date": end_date,
-			"vendor_id": user_doc.get("guest_of"),
+			"vendor_id": user_doc.get("email"),
 		}
 		data = frappe.db.sql(query, params, as_dict=True)
 		if not data:
