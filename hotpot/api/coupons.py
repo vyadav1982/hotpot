@@ -78,7 +78,7 @@ def get_coupon_count(start_date, end_date, user=False):
 				hi.item_name,
 				COUNT(hi.name) AS total_feedback,
 				AVG(hr.rating)*5 AS avg_rating,
-				GROUP_CONCAT(hr.review SEPARATOR '; ') AS all_reviews
+				JSON_ARRAYAGG(JSON_OBJECT('review', hr.review)) AS all_reviews
 			FROM `tabHotpot Meal Menu Items Rating` AS hr
 			INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
 			WHERE hi.vendor_id = %(vendor_name)s
