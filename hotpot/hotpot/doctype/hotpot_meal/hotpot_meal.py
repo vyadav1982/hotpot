@@ -139,12 +139,14 @@ class HotpotMeal(Document):
 						"Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}."
 					).format(
 						self.meal_title,
-						meal_date.date(),
+						meal_date.strftime("%d %b").lstrip("0"),
 						self.lead_time,
-						ready_time.strftime("%H:%M:%S"),
-						(get_local_datetime_obj(self.start_time)).strftime("%H:%M:%S"),
+						ready_time.strftime("%I:%M %p"),
+						(get_local_datetime_obj(self.start_time)).strftime("%I:%M %p"),
 					)
 				)
+
+
 
 
 def is_frappe_ui_request():
