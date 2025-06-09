@@ -97,7 +97,7 @@ def set_user_password(site, user, password, user_doc, logout_all_sessions=False)
 		raise ValueError("Password cannot be empty.")
 	try:
 		if not frappe.db.exists("User", user):
-			frappe.throw(f"User {user} does not exist")
+			# frappe.throw(f"User {user} does not exist")
 			return
 
 		update_password(user=user, pwd=password, logout_all_sessions=logout_all_sessions)

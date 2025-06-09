@@ -71,6 +71,8 @@ class CustomDataImport(DataImport):
 				expected_fields = meal_item_fields
 			elif self.reference_doctype == "Hotpot Holidays":
 				expected_fields = holiday_field
+			elif self.reference_doctype=="Employee":
+				return preview_data
 			else:
 				frappe.throw(
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
