@@ -276,11 +276,22 @@ def get_all_vendor():
 		if not has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			set_response(403, False, "Not Permitted to access this resource")
 			return
+		location = frappe.form_dict.get("location")
+
+		filters = [
+			["is_vendor", "=", 1],
+			["is_active", "=", 1],
+			["is_deleted", "=", 0]
+		]
+
+		if location:
+			filters.append(["location", "=", location])
 		user_list = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["is_vendor", "=", 1], ["is_active", "=", 1], ["is_deleted", "=", 0]],
+			filters=filters,
 			fields=["name", "full_name"],
 		)
+
 		if not user_list:
 			set_response(200, False, "No Vendor found")
 			return
