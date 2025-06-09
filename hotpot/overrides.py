@@ -71,28 +71,27 @@ class CustomDataImport(DataImport):
 				expected_fields = meal_item_fields
 			elif self.reference_doctype == "Hotpot Holidays":
 				expected_fields = holiday_field
-			elif self.reference_doctype=="Employee":
-				return preview_data
-			else:
+			elif self.reference_doctype != "Employee":
 				frappe.throw(
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
 				)
 
-			# Check for missing/extra fields
-			missing = [col for col in expected_fields if col not in column_headers]
-			extra = [
-				col
-				for col in column_headers
-				if col and col not in expected_fields and not col.startswith("Sr.")
-			]
+			if self.reference_doctype!="Employee":
+				# Check for missing/extra fields
+				missing = [col for col in expected_fields if col not in column_headers]
+				extra = [
+					col
+					for col in column_headers
+					if col and col not in expected_fields and not col.startswith("Sr.")
+				]
 
-			if missing or extra:
-				error_msg = []
-				if missing:
-					error_msg.append(f"Missing columns: {', '.join(missing)}")
-				if extra:
-					error_msg.append(f"Extra columns: {', '.join(extra)}")
-				frappe.throw("<br>".join(error_msg))
+				if missing or extra:
+					error_msg = []
+					if missing:
+						error_msg.append(f"Missing columns: {', '.join(missing)}")
+					if extra:
+						error_msg.append(f"Extra columns: {', '.join(extra)}")
+					frappe.throw("<br>".join(error_msg))
 
 			# Create a mapping from header titles to column indices
 			header_to_index = {}
@@ -100,6 +99,11 @@ class CustomDataImport(DataImport):
 				if isinstance(col, dict) and "header_title" in col:
 					header_to_index[col["header_title"]] = i
 
+
+			if self.reference_doctype=="Employee":
+				print(header_to_index)
+				self.create_user(preview_data,header_to_index)
+				return
 			# Validate data rows
 			if isinstance(preview_data["data"], list):
 				for row_idx, row in enumerate(preview_data["data"]):
@@ -117,6 +121,7 @@ class CustomDataImport(DataImport):
 					self.validate_hotpot_meal(preview_data, header_to_index)
 				elif self.reference_doctype == "Hotpot Meal Items":
 					self.validate_hotpot_meal_items(preview_data, header_to_index)
+				
 
 			return preview_data
 
@@ -482,6 +487,34 @@ class CustomDataImport(DataImport):
 				frappe.throw(f"Unexpected error during validation: {str(e)}")
 			else:
 				raise
+	def create_user(self, preview_data, header_to_index):
+
+		for row_num, row in enumerate(preview_data["data"], start=2):
+			email = row[header_to_index.get("User ID")].strip()
+			first_name = row[header_to_index.get("First Name")].strip()
+
+			if not email:
+				frappe.throw("Email is required to create a user.")
+
+			# Check if user already exists
+			if not frappe.db.exists("User", email):
+				user = frappe.get_doc({
+					"doctype": "User",
+					"email": email,
+					"first_name": first_name,
+					"enabled": 1,
+					"send_welcome_email": 1,
+					"role_profile_name": "",
+					"roles": [
+						{"role": "Hotpot User"}
+					]
+				})
+				user.flags.ignore_permissions = True  # Optional: if running as admin
+				user.insert(ignore_if_duplicate=True)
+				frappe.db.commit()
+			else:
+				frappe.msgprint(f"User '{email}' already exists.")
+
 
 	def modify_excel_file(self, file_path):
 		try:
