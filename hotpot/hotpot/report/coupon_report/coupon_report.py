@@ -54,7 +54,7 @@ def execute(filters=None):
 			END AS coupon_status,
 			IFNULL(hm.meal_weight, 0) AS actual_rate,
 			hc.coupon_weight AS discounted_rate,
-			hu_user.name AS employee_name
+			hu_user.full_name AS employee_name
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
