@@ -21,6 +21,7 @@ def execute(filters=None):
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
 		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
+		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Float", "width": 150},
 		{
 			"label": "Total Discounted Price",
 			"fieldname": "total_price",
@@ -37,7 +38,8 @@ def execute(filters=None):
 			hu.full_name,
 			hm.category,
 			COUNT(*) AS total_coupons,
-			SUM(IFNULL(hc.coupon_weight, 0)) AS total_price
+			SUM(IFNULL(hc.coupon_weight, 0)) AS total_price,
+			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot User` hu ON hc.employee_code = hu.employee
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
