@@ -23,7 +23,7 @@ def execute(filters=None):
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
 		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Float", "width": 150},
 		{
-			"label": "Total Discounted Price",
+			"label": "Discounted Price",
 			"fieldname": "total_price",
 			"fieldtype": "Currency",
 			"width": 160,
