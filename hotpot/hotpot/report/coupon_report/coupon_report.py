@@ -18,6 +18,7 @@ def execute(filters=None):
 
 	columns = [
 		{"label": "Employee Code", "fieldname": "employee_code", "fieldtype": "Data", "width": 120},
+		{"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Data", "width": 120},
 		{"label": "Vendor", "fieldname": "vendor", "fieldtype": "Data", "width": 120},
 		{"label": "Meal", "fieldname": "meal", "fieldtype": "Data", "width": 120},
 		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 120},
@@ -52,10 +53,12 @@ def execute(filters=None):
 				ELSE 'Unknown'
 			END AS coupon_status,
 			IFNULL(hm.meal_weight, 0) AS actual_rate,
-			hc.coupon_weight AS discounted_rate
+			hc.coupon_weight AS discounted_rate,
+			hu_user.name AS employee_name
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
+		LEFT JOIN `tabHotpot User` hu_user ON hc.owner = hu_user.email
 		WHERE
 			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
