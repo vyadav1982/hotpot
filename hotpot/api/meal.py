@@ -424,11 +424,11 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
+			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1,"location":user_data.get("location")}) or (
 				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 			):
-				return set_response(200, False, "Oops! Today is off.")
+				return set_response(200, False,"Oops! Today is a day off in your location.")
 
 		local_time = get_local_time_now()
 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
