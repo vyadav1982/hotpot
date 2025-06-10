@@ -19,7 +19,8 @@
   "joining_day",
   "email",
   "coupon_weight",
-  "created_at"
+  "created_at",
+  "location"
  ],
  "fields": [
   {
@@ -103,12 +104,18 @@
    "fieldname": "created_at",
    "fieldtype": "Datetime",
    "label": "Created At"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Branch"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-05-21 16:24:06.330057",
+ "modified": "2025-06-10 13:57:51.255464",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
