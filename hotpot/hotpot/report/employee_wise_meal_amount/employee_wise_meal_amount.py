@@ -56,7 +56,7 @@ def execute(filters=None):
 		query += " AND hc.employee_code = %s"
 		params.append(employee)
 
-	query += "GROUP BY hc.employee_code, hu.full_name ORDER BY total_price DESC"
+	query += "GROUP BY hc.employee_code,hm.category  ORDER BY total_price DESC"
 
 	data = frappe.db.sql(query, params, as_dict=True)
 
