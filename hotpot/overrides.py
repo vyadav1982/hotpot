@@ -11,6 +11,7 @@ from hotpot.utils.utc_time import *
 
 
 class CustomDataImport(DataImport):
+
 	def start_import(self):
 		if self.import_file:
 			file_doc = frappe.get_doc("File", {"file_url": self.import_file})
@@ -19,6 +20,15 @@ class CustomDataImport(DataImport):
 			if os.path.exists(file_path):
 				if self.reference_doctype == "Hotpot User":
 					self.modify_excel_file(file_path)
+				if self.reference_doctype == "Employee":
+					preview = super().get_preview_from_template(self.import_file, self.google_sheets_url)
+					if preview:
+						header_to_index = {}
+						for i, col in enumerate(preview["columns"]):
+							if isinstance(col, dict) and "header_title" in col:
+								header_to_index[col["header_title"]] = i
+						self.create_user(preview,header_to_index)
+
 
 		return super().start_import()
 
@@ -100,10 +110,11 @@ class CustomDataImport(DataImport):
 					header_to_index[col["header_title"]] = i
 
 
-			if self.reference_doctype=="Employee":
-				print(header_to_index)
-				self.create_user(preview_data,header_to_index)
-				return
+			# if self.reference_doctype=="Employee":
+			# 	print(header_to_index)
+			# 	self.create_user(preview_data,header_to_index)
+			# 	return
+
 			# Validate data rows
 			if isinstance(preview_data["data"], list):
 				for row_idx, row in enumerate(preview_data["data"]):
@@ -488,7 +499,6 @@ class CustomDataImport(DataImport):
 			else:
 				raise
 	def create_user(self, preview_data, header_to_index):
-
 		for row_num, row in enumerate(preview_data["data"], start=2):
 			email = row[header_to_index.get("User ID")].strip()
 			first_name = row[header_to_index.get("First Name")].strip()
@@ -512,7 +522,7 @@ class CustomDataImport(DataImport):
 				user.flags.ignore_permissions = True
 				user.insert(ignore_if_duplicate=True)
 				frappe.db.commit()
-			else:
+			# else:
 				# frappe.msgprint(f"User '{email}' already exists.")
 
 
