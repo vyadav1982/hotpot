@@ -293,7 +293,7 @@ def cancel_coupon():
 			WHERE hm.name=%(meal_id)s AND hc.name=%(coupon_id)s
 			"""
 		user_doc = frappe.get_doc("Hotpot User", coupon_found.employee_id)
-		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of:
+		if not coupon_found.birthday_coupon and not coupon_found.joining_day and not coupon_found.guest_of and not coupon_found.location!=user_doc.get("location"):
 			user_doc.coupon_count = user_doc.coupon_count + coupon_found.coupon_weight
 			transaction_doc = frappe.new_doc("Hotpot Transaction History")
 			transaction_doc.update(
@@ -1489,12 +1489,7 @@ def generate_coupon_admin():
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
 		emails = data.get("email")
-		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
-				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
-				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
-			):
-				return set_response(200, False, "Oops! Today is off.")
+		
 		qty = data.get("qty", 1)
 		if not isinstance(meal_ids, list):
 			meal_ids = [meal_ids]
@@ -1548,6 +1543,25 @@ def generate_coupon_admin():
 					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
+
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
+					vendor_doc = None
+					vendor_id = meal_doc.get("vendor_id")
+					if vendor_id:
+						vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
+
+					filters = {
+						"date": date,
+						"is_active": 1
+					}
+					if vendor_doc:
+						filters["location"] = vendor_doc.get("location")
+
+					if frappe.db.exists("Hotpot Holidays", filters) or (
+						datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
+						and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+					):
+						return set_response(200, False, "Oops! Today is a day off in your location.")
 
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
@@ -1780,12 +1794,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 			date_obj = get_local_datetime_obj(date)
 			date = date_obj.strftime("%Y-%m-%d")
 
-		if any(role in roles for role in ["Hotpot Admin", "Hotpot HR", "Hotpot User"]):
-			if frappe.db.exists("Hotpot Holidays", {"date": date, "is_active": 1}) or (
-				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
-				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
-			):
-				return {"status": "error", "msg": "Oops! Today is off."}
+		
 
 		total_coupons_consumed = 0
 
@@ -1827,6 +1836,25 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 				except frappe.DoesNotExistError:
 					return {"status": "error", "msg": "Meal not found"}
+
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
+					vendor_doc = None
+					vendor_id = meal_doc.get("vendor_id")
+					if vendor_id:
+						vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
+
+					filters = {
+						"date": date,
+						"is_active": 1
+					}
+					if vendor_doc:
+						filters["location"] = vendor_doc.get("location")
+
+					if frappe.db.exists("Hotpot Holidays", filters) or (
+						datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
+						and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+					):
+						return set_response{"status":"error","msg": "Oops! Today is a day off in your location."}
 
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
