@@ -74,6 +74,7 @@ class HotpotApprovals(Document):
 							"Guest Coupon Request Failed ⚠️",
 							f"😢 Couldn't generate your guest coupons. Reason: {res.get('msg')}",
 						)
+					self.approval_remarks = res.get("msg")
 
 				else:
 					frappe.msgprint(_("Coupon generation failed"))

@@ -1854,7 +1854,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 						datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 						and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 					):
-						return set_response{"status":"error","msg": "Oops! Today is a day off in your location."}
+						return {"status":"error","msg": "Oops! Today is a day off in your location."}
 
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
