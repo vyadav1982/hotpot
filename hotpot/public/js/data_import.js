@@ -21,14 +21,14 @@ frappe.ui.form.on('Data Import', {
                     frm.set_query('reference_doctype', function () {
                         return {
                             filters: {
-                                name: ['in', ['Hotpot User', 'Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays"]]
+                                name: ['in', ['Hotpot User', 'Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays","Employee"]]
                             }
                         };
                     });
                 }
             }
             
-            if (frm.doc.reference_doctype) {
+            if (frm.doc.reference_doctype && frm.doc.reference_doctype!="Employee") {
                 frm.page.clear_menu()
                 frm.page.hide_menu()
                 frm.page.add_inner_button(__("Download Template", null, "Button in list view menu"), function () {
@@ -61,7 +61,9 @@ frappe.ui.form.on('Data Import', {
             }
             frm.set_df_property("mute_emails", "hidden", 1);
             frm.set_df_property("google_sheets_url", "hidden", 1);
-            frm.set_df_property("download_template", "hidden", 1)
+            if(frm.doc.reference_doctype && frm.doc.reference_doctype!="Employee"){
+                frm.set_df_property("download_template", "hidden", 1)
+            }
             frm.set_df_property("html_5", "hidden", 1)
             frm.set_df_property("import_type", "options", "Insert New Records");
         }
