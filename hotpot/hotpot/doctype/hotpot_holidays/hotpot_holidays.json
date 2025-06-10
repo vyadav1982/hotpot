@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "hash",
  "creation": "2025-04-14 14:52:34.650932",
@@ -8,7 +9,8 @@
  "field_order": [
   "title",
   "date",
-  "is_active"
+  "is_active",
+  "location"
  ],
  "fields": [
   {
@@ -28,11 +30,17 @@
    "fieldtype": "Check",
    "label": "Is Active",
    "search_index": 1
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Branch"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-24 11:28:01.609632",
+ "modified": "2025-06-10 12:43:08.185202",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Holidays",
@@ -52,9 +60,11 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "title"
+ "title_field": "title",
+ "track_changes": 1
 }

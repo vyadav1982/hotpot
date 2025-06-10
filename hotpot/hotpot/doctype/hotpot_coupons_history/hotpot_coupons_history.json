@@ -39,7 +39,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 12:01:40.272130",
+ "modified": "2025-06-10 12:52:02.340376",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons History",
@@ -58,7 +58,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }
