@@ -509,11 +509,11 @@ class CustomDataImport(DataImport):
 						{"role": "Hotpot User"}
 					]
 				})
-				user.flags.ignore_permissions = True  # Optional: if running as admin
+				user.flags.ignore_permissions = True
 				user.insert(ignore_if_duplicate=True)
 				frappe.db.commit()
 			else:
-				frappe.msgprint(f"User '{email}' already exists.")
+				# frappe.msgprint(f"User '{email}' already exists.")
 
 
 	def modify_excel_file(self, file_path):
