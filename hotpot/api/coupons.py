@@ -969,12 +969,32 @@ def generate_coupon():
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
 
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
+					vendor_doc = None
+					vendor_id = meal_doc.get("vendor_id")
+					if vendor_id:
+						vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
+
+					filters = {
+						"date": date,
+						"is_active": 1
+					}
+					if vendor_doc:
+						filters["location"] = vendor_doc.get("location")
+
+					if frappe.db.exists("Hotpot Holidays", filters) or (
+						datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
+						and not int(hotpot_config.get("allow_meal_on_sunday", 0))
+					):
+						return set_response(200, False, "Oops! Today is a day off in your location.")
+
+
 				vendor_doc = None
 				if (
 					has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"])
 					and hotpot_config.get("allow_free_meal_for_outer_location") == 1
 				):
-					vendor_doc = frappe.db.get("Hotpot User",meal_doc.get("vendor_id"))
+					vendor_doc = frappe.get_doc("Hotpot User",meal_doc.get("vendor_id"))
 					if(vendor_doc.get("location") != user_doc.get("location")):
 						is_secondary_loc = True
 
