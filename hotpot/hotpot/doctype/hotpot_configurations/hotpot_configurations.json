@@ -9,6 +9,7 @@
   "free_joining_day_meal",
   "can_generate_for_guest",
   "allow_meal_on_sunday",
+  "allow_free_meal_for_outer_location",
   "discount"
  ],
  "fields": [
@@ -42,12 +43,18 @@
    "fieldtype": "Percent",
    "label": "Discount",
    "precision": "0"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_free_meal_for_outer_location",
+   "fieldtype": "Check",
+   "label": "Allow Free Meal for Outer location"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-10 12:50:51.385877",
+ "modified": "2025-06-10 13:47:10.317870",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",

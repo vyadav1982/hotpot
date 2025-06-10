@@ -26,6 +26,7 @@ class HotpotCoupons(Document):
 		guest_employee_code: DF.Data | None
 		guest_of: DF.Link | None
 		joining_day: DF.Check
+		location: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data

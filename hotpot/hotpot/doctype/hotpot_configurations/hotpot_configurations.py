@@ -14,6 +14,7 @@ class HotpotConfigurations(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		allow_free_meal_for_outer_location: DF.Check
 		allow_meal_on_sunday: DF.Check
 		can_generate_for_guest: DF.Check
 		discount: DF.Percent

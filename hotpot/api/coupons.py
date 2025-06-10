@@ -932,6 +932,7 @@ def generate_coupon():
 				local_time_now = get_local_time_now()
 				start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
 				from_date = start_date.date()
+				is_secondary_loc = False
 
 				if (
 					has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"])
@@ -939,6 +940,7 @@ def generate_coupon():
 					and hotpot_config.get("can_generate_for_guest") == 0
 				):
 					return set_response(400, False, "Not allowed to generate coupon for guest")
+				
 
 				approval_id = data.get("approval_id", None)
 				approval_doc = None
@@ -960,11 +962,21 @@ def generate_coupon():
 						hotpot_config.get("free_joining_day_meal") == 1
 						and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
 					)
+				
 
 				try:
 					meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
+
+				vendor_doc = None
+				if (
+					has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"])
+					and hotpot_config.get("allow_free_meal_for_outer_location") == 1
+				):
+					vendor_doc = frappe.db.get("Hotpot User",meal_doc.get("vendor_id"))
+					if(vendor_doc.get("location") != user_doc.get("location")):
+						is_secondary_loc = True
 
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
@@ -1088,13 +1100,20 @@ def generate_coupon():
 
 				try:
 					coupon_weight = 0
-					if not for_guest and not is_birthday and not is_joining_day:
+					if not for_guest and not is_birthday and not is_joining_day and not is_secondary_loc:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
 
 						coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
 
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
+
+					location_value = None
+					if is_secondary_loc:
+						location_value = vendor_doc.get("location") if vendor_doc else None
+					else:
+						location_value = user_doc.get("location")
+
 
 					# Append created coupon in meal
 					meal_doc.append(
@@ -1116,6 +1135,7 @@ def generate_coupon():
 								else {}
 							),
 							"created_at": datetime.utcnow(),
+							"location": location_value,
 						},
 					)
 					meal_doc.get("max_meal_count")
