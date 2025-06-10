@@ -42,7 +42,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-28 13:00:54.119666",
+ "modified": "2025-06-10 12:49:53.675454",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
@@ -67,5 +67,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "item_name"
+ "title_field": "item_name",
+ "track_changes": 1
 }

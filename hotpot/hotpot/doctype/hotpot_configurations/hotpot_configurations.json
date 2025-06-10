@@ -47,7 +47,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-05-10 07:48:13.776632",
+ "modified": "2025-06-10 12:50:51.385877",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",
@@ -67,5 +67,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

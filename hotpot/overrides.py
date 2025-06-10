@@ -67,7 +67,7 @@ class CustomDataImport(DataImport):
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 			meal_item_fields = ["Item Name"]
-			holiday_field = ["Date", "Title"]
+			holiday_field = ["Date", "Title","Location"]
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" not in roles:
 				meal_fields.append("Vendor")

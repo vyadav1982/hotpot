@@ -16,6 +16,7 @@ class HotpotHolidays(Document):
 
 		date: DF.Date | None
 		is_active: DF.Check
+		location: DF.Link | None
 		title: DF.Data | None
 	# end: auto-generated types
 	pass

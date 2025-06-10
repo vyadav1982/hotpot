@@ -59,7 +59,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-22 13:27:18.369204",
+ "modified": "2025-06-10 12:50:09.211992",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Menu Items Rating",
@@ -81,5 +81,6 @@
  "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

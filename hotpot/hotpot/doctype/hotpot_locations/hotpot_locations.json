@@ -37,7 +37,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-04-14 15:24:25.265499",
+ "modified": "2025-06-10 12:52:16.673987",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Locations",
@@ -56,7 +56,9 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

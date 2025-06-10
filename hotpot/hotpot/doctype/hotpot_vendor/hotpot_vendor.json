@@ -50,7 +50,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-10 06:25:24.272750",
+ "modified": "2025-06-10 12:51:28.400031",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Vendor",
@@ -72,5 +72,6 @@
  "row_format": "Dynamic",
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

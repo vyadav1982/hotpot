@@ -99,7 +99,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-28 21:10:42.606019",
+ "modified": "2025-06-10 12:49:36.501390",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
@@ -125,5 +125,6 @@
  "sort_order": "DESC",
  "states": [],
  "title_field": "type",
+ "track_changes": 1,
  "translated_doctype": 1
 }
