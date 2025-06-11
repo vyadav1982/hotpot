@@ -213,6 +213,10 @@ frappe.ui.form.on("Hotpot Meal", {
 													callback: function (response) {
 														if (!response.exc) {
 															frappe.msgprint(`Request Created with reason: ${values.reason}. To edit the fields, please wait for approval.`);
+															const approval_id = response.message.name;
+															const meal_id = frm.doc.name;
+															const draft_payload = {};
+
 
 															const editable_fields = [
 																"meal_title",
@@ -221,6 +225,27 @@ frappe.ui.form.on("Hotpot Meal", {
 																"buffer_coupon_count",
 																"remaining_coupon_count"
 															];
+															editable_fields.forEach(field => {
+																draft_payload[field] = frm.doc[field];
+															});
+															frappe.call({
+																method: "frappe.client.insert",
+																args: {
+																	doc: {
+																		doctype: "Hotpot Draft Meal",
+																		meal: meal_id,
+																		approval: approval_id,
+																		new_values: JSON.stringify(draft_payload)
+																	}
+																},
+																callback: function (r) {
+																	if (!r.exc) {
+																		frappe.msgprint("Draft meal created successfully.");
+																	} else {
+																		frappe.msgprint("Failed to create draft meal.");
+																	}
+																}
+															});
 															editable_fields.forEach(field => {
 																frm.set_df_property(field, "read_only", 1);
 															});
