@@ -23,7 +23,7 @@ class HotpotApprovals(Document):
 		attachments: DF.Attach | None
 		coupon_count: DF.Int
 		date: DF.Datetime | None
-		descrption: DF.SmallText | None
+		description: DF.SmallText | None
 		guest_mobile_no: DF.Phone | None
 		guest_name: DF.Data | None
 		is_active: DF.Check
