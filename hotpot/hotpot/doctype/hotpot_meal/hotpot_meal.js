@@ -66,7 +66,6 @@ frappe.ui.form.on("Hotpot Meal", {
 				if (frm.doc.coupons && frm.doc.coupons.length > 0) {
 					for (let i = 0; i < frm.doc.coupons.length; i++) {
 						const coupon = frm.doc.coupons[i];
-						console.log(coupon.coupon_status)
 						if (coupon.coupon_status == 1 || coupon.coupon_status == 0) {
 							coupons = true;
 							break;
@@ -74,14 +73,12 @@ frappe.ui.form.on("Hotpot Meal", {
 					}
 				}
 
-				console.log(coupons)
 				if (!coupons) {
 					editable_fields.forEach(field => {
 						frm.set_df_property(field, "read_only", 0);
 					});
 					return;
 				}
-				console.log("hello")
 				const approval_id = frm.doc.approval_id;
 
 				if (approval_id) {
@@ -111,7 +108,7 @@ frappe.ui.form.on("Hotpot Meal", {
 													value: 0
 												},
 												callback: function () {
-													console.log("Approval doc deactivated.");
+													// console.log("Approval doc deactivated.");
 												}
 											});
 											frappe.call({
@@ -123,7 +120,7 @@ frappe.ui.form.on("Hotpot Meal", {
 													value: ""
 												},
 												callback: function () {
-													console.log("Approval id removed.");
+													// console.log("Approval id removed.");
 												}
 											});
 										}
@@ -194,7 +191,6 @@ frappe.ui.form.on("Hotpot Meal", {
 												}
 											],
 											(values) => {
-												console.log(values.reason)
 												const new_approval = {
 													request_type: "Meal Edit",
 													requested_by: frappe.session.user,
@@ -307,9 +303,6 @@ frappe.ui.form.on("Hotpot Meal", {
 		updateLocalDescriptions(frm);
 		const localStartTime = formatUtcToLocalObject(frm.doc.start_time);
 		const localEndTime = formatUtcToLocalObject(frm.doc.end_time);
-
-		console.log(frm.doc.start_time);
-		console.log(localStartTime);
 
 		frm.doc.start_time = localStartTime;
 		frm.doc.end_time = localEndTime;

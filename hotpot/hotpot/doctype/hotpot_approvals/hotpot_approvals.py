@@ -101,7 +101,6 @@ class HotpotApprovals(Document):
 				frappe.db.commit()
 				return
 			except Exception as e:
-				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while generating coupon."))
 
@@ -161,7 +160,6 @@ class HotpotApprovals(Document):
 				frappe.msgprint(_("Meal deleted successfully!."), indicator="green")
 
 			except Exception as e:
-				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while deleting meal."))
 
@@ -194,14 +192,11 @@ class HotpotApprovals(Document):
 		elif self.is_active == 1 and self.request_type == "Meal Edit" and self.approval_status == "Approved":
 			meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 			user_doc = frappe.get_doc("Hotpot User", self.requested_by)
-			print(self.meal_id)
-			print(self.name)
 
 			draft_name = frappe.db.get_value("Hotpot Draft Meal", {
 				"meal": self.meal_id,
 				"approval": self.name
 			})
-			print(draft_name)
 
 			if not draft_name:
 				frappe.throw("Draft Meal not found.")
