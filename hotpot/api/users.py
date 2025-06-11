@@ -278,11 +278,7 @@ def get_all_vendor():
 			return
 		location = frappe.form_dict.get("location")
 
-		filters = [
-			["is_vendor", "=", 1],
-			["is_active", "=", 1],
-			["is_deleted", "=", 0]
-		]
+		filters = [["is_vendor", "=", 1], ["is_active", "=", 1], ["is_deleted", "=", 0]]
 
 		if location:
 			filters.append(["location", "=", location])
@@ -751,7 +747,7 @@ def bulk_insert_employee():
 
 
 @frappe.whitelist()
-def get_hotpot_history(start_date, end_date):
+def get_hotpot_history(start_date, end_date, category=None):
 	if frappe.request.method != "GET":
 		set_response(405, False, "Only GET method is allowed")
 		return
@@ -773,10 +769,10 @@ def get_hotpot_history(start_date, end_date):
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
 	try:
 		query = """
-			SELECT
-				CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
-				hc.*,
-				hm.*
+		 	SELECT
+		 		CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
+		 		hc.*,
+		 		hm.*
 			FROM
 				`tabHotpot Coupons` AS hc
 			JOIN
@@ -784,19 +780,26 @@ def get_hotpot_history(start_date, end_date):
 				ON hc.parent = hm.name
 			WHERE
 				hc.employee_id = %(user_name)s
-				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
-			ORDER BY
-				hc.modified DESC
+
 		"""
+		if category:
+			query += " AND hm.category = %(category)s"
+
+		query += " ORDER BY hc.modified DESC"
+
+		params = {
+			"user_name": user_doc.get("name"),
+			"timezone": user_timezone,
+			"start_date": start_date,
+			"end_date": end_date,
+		}
+
+		if category:
+			params["category"] = category
 
 		data = frappe.db.sql(
 			query,
-			{
-				"user_name": user_doc.get("name"),
-				"timezone": user_timezone,
-				"start_date": start_date,
-				"end_date": end_date,
-			},
+			params,
 			as_dict=True,
 		)
 		set_response(200, True, "Coupon data fetched successfully", data)

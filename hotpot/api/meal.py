@@ -428,10 +428,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			if vendor_id:
 				vendor_doc = frappe.db.get("Hotpot User", vendor_id)
 
-			filters = {
-				"date": date,
-				"is_active": 1
-			}
+			filters = {"date": date, "is_active": 1}
 			if vendor_doc:
 				filters["location"] = vendor_doc.get("location")
 
@@ -440,7 +437,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
 			):
 				return set_response(200, False, "Oops! Today is a day off in your location.")
-
 
 		local_time = get_local_time_now()
 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
@@ -706,9 +702,7 @@ def update_meal_items():
 		if not frappe.db.exists("Hotpot Meal Items", item_id):
 			return set_response(409, False, f"Meal item '{item_name}' does not exist")
 
-		vendor_id = (
-			user_data.get("email") if user_data["role"] == "Hotpot Vendor" else data.get("vendor_id")
-		)
+		vendor_id = user_data.get("email") if user_data["role"] == "Hotpot Vendor" else data.get("vendor_id")
 		if not frappe.db.get_value("Hotpot Meal Items", {"name": item_id, "vendor_id": vendor_id}):
 			set_response(409, False, f"Meal item '{item_name}' does not exist for the vendor")
 			return

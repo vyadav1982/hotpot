@@ -147,8 +147,6 @@ class HotpotMeal(Document):
 				)
 
 
-
-
 def is_frappe_ui_request():
 	try:
 		referer = frappe.get_request_header("Referer")

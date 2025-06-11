@@ -11,7 +11,6 @@ from hotpot.utils.utc_time import *
 
 
 class CustomDataImport(DataImport):
-
 	def start_import(self):
 		if self.import_file:
 			file_doc = frappe.get_doc("File", {"file_url": self.import_file})
@@ -27,8 +26,7 @@ class CustomDataImport(DataImport):
 						for i, col in enumerate(preview["columns"]):
 							if isinstance(col, dict) and "header_title" in col:
 								header_to_index[col["header_title"]] = i
-						self.create_user(preview,header_to_index)
-
+						self.create_user(preview, header_to_index)
 
 		return super().start_import()
 
@@ -67,7 +65,7 @@ class CustomDataImport(DataImport):
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 			meal_item_fields = ["Item Name"]
-			holiday_field = ["Date", "Title","Location"]
+			holiday_field = ["Date", "Title", "Location"]
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" not in roles:
 				meal_fields.append("Vendor")
@@ -86,7 +84,7 @@ class CustomDataImport(DataImport):
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
 				)
 
-			if self.reference_doctype!="Employee":
+			if self.reference_doctype != "Employee":
 				# Check for missing/extra fields
 				missing = [col for col in expected_fields if col not in column_headers]
 				extra = [
@@ -108,7 +106,6 @@ class CustomDataImport(DataImport):
 			for i, col in enumerate(preview_data["columns"]):
 				if isinstance(col, dict) and "header_title" in col:
 					header_to_index[col["header_title"]] = i
-
 
 			# if self.reference_doctype=="Employee":
 			# 	print(header_to_index)
@@ -132,7 +129,6 @@ class CustomDataImport(DataImport):
 					self.validate_hotpot_meal(preview_data, header_to_index)
 				elif self.reference_doctype == "Hotpot Meal Items":
 					self.validate_hotpot_meal_items(preview_data, header_to_index)
-				
 
 			return preview_data
 
@@ -498,6 +494,7 @@ class CustomDataImport(DataImport):
 				frappe.throw(f"Unexpected error during validation: {str(e)}")
 			else:
 				raise
+
 	def create_user(self, preview_data, header_to_index):
 		for row_num, row in enumerate(preview_data["data"], start=2):
 			email = row[header_to_index.get("User ID")].strip()
@@ -508,23 +505,22 @@ class CustomDataImport(DataImport):
 
 			# Check if user already exists
 			if not frappe.db.exists("User", email):
-				user = frappe.get_doc({
-					"doctype": "User",
-					"email": email,
-					"first_name": first_name,
-					"enabled": 1,
-					"send_welcome_email": 1,
-					"role_profile_name": "",
-					"roles": [
-						{"role": "Hotpot User"}
-					]
-				})
+				user = frappe.get_doc(
+					{
+						"doctype": "User",
+						"email": email,
+						"first_name": first_name,
+						"enabled": 1,
+						"send_welcome_email": 1,
+						"role_profile_name": "",
+						"roles": [{"role": "Hotpot User"}],
+					}
+				)
 				user.flags.ignore_permissions = True
 				user.insert(ignore_if_duplicate=True)
 				frappe.db.commit()
 			# else:
-				# frappe.msgprint(f"User '{email}' already exists.")
-
+			# frappe.msgprint(f"User '{email}' already exists.")
 
 	def modify_excel_file(self, file_path):
 		try:
