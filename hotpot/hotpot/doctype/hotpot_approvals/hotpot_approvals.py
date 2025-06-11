@@ -206,25 +206,32 @@ class HotpotApprovals(Document):
 
 			for field, value in draft_values.items():
 				if hasattr(meal_doc, field):
-					setattr(meal_doc, field, value)
+					try:
+						if field == "meal_items" and isinstance(value, list):
+							value = ", ".join([str(i).strip() for i in value if i])
+						setattr(meal_doc, field, value)
+					except Exception as e:
+						frappe.throw(f"Error setting value for '{field}': {e}")
+				else:
+					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
 
 			meal_doc.save()
 
-			if user_doc.fcm_token:
-				send_notification_by_token(
-					user_doc.fcm_token,
-					"Meal Edit Approved ✏️",
-					f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
-				)
+			# if user_doc.fcm_token:
+				# send_notification_by_token(
+				# 	user_doc.fcm_token,
+				# 	"Meal Edit Approved ✏️",
+				# 	f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
+				# )
 			coupons = meal_doc.coupons
 			for coupon in coupons:
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
-				if user_doc.fcm_token:
-					send_notification_by_token(
-						user_doc.fcm_token,
-						"Meal Plot Twist!",
-						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
-					)
+				# if user_doc.fcm_token:
+					# send_notification_by_token(
+					# 	user_doc.fcm_token,
+					# 	"Meal Plot Twist!",
+					# 	f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+					# )
 			self.is_active=0
 
 
