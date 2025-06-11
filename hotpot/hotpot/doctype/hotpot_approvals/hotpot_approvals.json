@@ -81,7 +81,7 @@
    "search_index": 1
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "is Active"
@@ -102,7 +102,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-11 09:58:41.562506",
+ "modified": "2025-06-11 10:09:21.380688",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
