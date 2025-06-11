@@ -90,12 +90,22 @@ class HotpotMeal(Document):
 					f"A meal with category '{self.category}' already exists on {self.meal_date}."
 				)
 		if is_frappe_ui_request() or frappe.flags.in_import:
-			self.menu_items=[]
+			self.menu_items = []
 			if self.meal_items:
-				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
+				if isinstance(self.meal_items, str):
+					raw_items = self.meal_items.split(",")
+				elif isinstance(self.meal_items, list):
+					raw_items = self.meal_items
+				else:
+					frappe.throw("meal_items must be a comma-separated string or a list of item names.")
+
+				item_list = list({item.strip().lower() for item in raw_items if isinstance(item, str) and item.strip()})
+
 				for item_name in item_list:
 					menu_item = frappe.get_value(
-						"Hotpot Meal Items", {"vendor_id": self.vendor_id, "item_name": item_name}, "name"
+						"Hotpot Meal Items",
+						{"vendor_id": self.vendor_id, "item_name": item_name},
+						"name"
 					)
 					if menu_item:
 						self.append("menu_items", {"meal_item": menu_item})
