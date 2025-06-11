@@ -970,7 +970,7 @@ def get_meals_internal(date, vendor_id=None):
 def check_valid_meal(meal_date, vendor_id, category):
 	current_meals = get_meals_internal(meal_date, vendor_id)
 	for meal in current_meals:
-		if meal.category == category:
+		if meal.category == category and meal.meal_date==meal_date and meal.vendor_id==vendor_id:
 			return {
 				"status": "error",
 				"message": f"Meal timing conflicts with '{meal.meal_title}'. There is already a meal in {category}",
