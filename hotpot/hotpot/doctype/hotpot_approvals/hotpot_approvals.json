@@ -12,7 +12,7 @@
   "purpose_of_visiting",
   "date",
   "meal_id",
-  "descrption",
+  "description",
   "attachments",
   "approval_status",
   "approval_remarks",
@@ -31,11 +31,6 @@
    "fieldtype": "Link",
    "label": "Requested By",
    "options": "Hotpot User"
-  },
-  {
-   "fieldname": "descrption",
-   "fieldtype": "Small Text",
-   "label": "Descrption"
   },
   {
    "fieldname": "attachments",
@@ -98,11 +93,16 @@
    "fieldtype": "Int",
    "label": "Coupon Count",
    "non_negative": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 12:50:36.170823",
+ "modified": "2025-06-11 09:58:41.562506",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
