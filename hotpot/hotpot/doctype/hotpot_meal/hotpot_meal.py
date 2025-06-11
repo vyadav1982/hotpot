@@ -76,6 +76,7 @@ class HotpotMeal(Document):
 
 	def before_save(self):
 		if is_frappe_ui_request() or frappe.flags.in_import:
+			self.menu_items=[]
 			if self.meal_items:
 				item_list = [item.strip().lower() for item in self.meal_items.split(",") if item.strip()]
 				for item_name in item_list:
