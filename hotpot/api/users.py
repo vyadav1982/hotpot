@@ -278,11 +278,7 @@ def get_all_vendor():
 			return
 		location = frappe.form_dict.get("location")
 
-		filters = [
-			["is_vendor", "=", 1],
-			["is_active", "=", 1],
-			["is_deleted", "=", 0]
-		]
+		filters = [["is_vendor", "=", 1], ["is_active", "=", 1], ["is_deleted", "=", 0]]
 
 		if location:
 			filters.append(["location", "=", location])
@@ -751,7 +747,7 @@ def bulk_insert_employee():
 
 
 @frappe.whitelist()
-def get_hotpot_history(start_date, end_date,category=None):
+def get_hotpot_history(start_date, end_date, category=None):
 	if frappe.request.method != "GET":
 		set_response(405, False, "Only GET method is allowed")
 		return
@@ -792,10 +788,10 @@ def get_hotpot_history(start_date, end_date,category=None):
 		query += " ORDER BY hc.modified DESC"
 
 		params = {
-				"user_name": user_doc.get("name"),
-				"timezone": user_timezone,
-				"start_date": start_date,
-				"end_date": end_date,
+			"user_name": user_doc.get("name"),
+			"timezone": user_timezone,
+			"start_date": start_date,
+			"end_date": end_date,
 		}
 
 		if category:
