@@ -7,6 +7,7 @@ from frappe.model.document import Document
 
 from hotpot.utils.guest_coupon_generate import *
 from hotpot.utils.send_fcm import *
+from hotpot.utils.email import *
 
 
 class HotpotApprovals(Document):
@@ -32,6 +33,22 @@ class HotpotApprovals(Document):
 		request_type: DF.Literal["Guest Coupon Generation", "Meal Edit", "Meal Delete"]
 		requested_by: DF.Link | None
 	# end: auto-generated types
+
+
+	def after_insert(self):
+		if is_frappe_ui_request() and self.meal_id:
+			meal_id = self.meal_id
+			meal_doc = frappe.get_doc("Hotpot Meal",meal_id)
+			user_data = frappe.get_doc("Hotpot User",self.requested_by)
+			approval_doc = frappe.get_doc("Hotpot Approvals",self.name)
+			meal_doc.approval_id = self.name
+			meal_doc.save()
+			frappe.db.commit()
+			send_approval_request_email(
+				"sashikant12rao@gmail.com", user_data, approval_doc, self.name, meal_doc.meal_title
+			)
+
+ 
 
 	def on_update(self):
 		if (
@@ -182,3 +199,33 @@ class HotpotApprovals(Document):
 					"Meal Edit Approved ✏️",
 					f"Good news! ✅ Your request was approved — you can now edit your {meal_doc.meal_title} meal.",
 				)
+
+
+def is_frappe_ui_request():
+	try:
+		referer = frappe.get_request_header("Referer")
+		csrf_token = frappe.get_request_header("X-Frappe-CSRF-Token")
+		user_agent = frappe.get_request_header("User-Agent")
+
+		if referer and "app" in referer:
+			return True
+		if csrf_token:
+			return True
+		if user_agent and "frappe" in user_agent.lower():
+			return True
+	except Exception:
+		pass
+	return False
+
+
+def send_approval_request_email(to_email, user_data, request_data, doc, meal_name):
+	email_subject = (
+		f"Approval Request from {user_data.full_name} ({user_data.name}) for {request_data.get('request_type')}"
+	)
+	context = {
+		"user_data": user_data,
+		"request_data": request_data,
+		"meal_name": meal_name,
+		"get_approval_link": "https://hotpot.bytepanda.in/app/hotpot-approvals/view/list?approval_status=Pending",
+	}
+	send_email("approval_email", to_email, context, email_subject)
