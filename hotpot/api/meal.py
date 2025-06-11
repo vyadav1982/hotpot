@@ -648,7 +648,7 @@ def add_meal_items():
 		item_name = data.get("item_name")
 		item_name = item_name.strip().lower()
 		if not re.fullmatch(r'^[a-zA-Z ]+$', item_name):
-    		set_response(409,False,f"Item name must only contain letters.")
+			set_response(409,False,f"Item name must only contain letters.")
 			return
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
