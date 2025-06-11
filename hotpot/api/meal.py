@@ -970,10 +970,74 @@ def get_meals_internal(date, vendor_id=None):
 def check_valid_meal(meal_date, vendor_id, category):
 	current_meals = get_meals_internal(meal_date, vendor_id)
 	for meal in current_meals:
-		if meal.category == category:
+		if meal.category == category and meal.meal_date==meal_date and meal.vendor_id==vendor_id:
 			return {
 				"status": "error",
 				"message": f"Meal timing conflicts with '{meal.meal_title}'. There is already a meal in {category}",
 			}
 
 	return {"status": "success", "message": "Valid meal timing. No conflict found."}
+
+@frappe.whitelist()
+def save_draft_meal():
+	try:
+		if frappe.request.method != "POST":
+			set_response(405, False, "Only POST method is allowed")
+			return
+
+		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+
+		required_fields = [
+			"meal_id",
+			"approval_id",
+			"old_doc",
+		]
+		if missing := [field for field in required_fields if not data.get(field)]:
+			set_response(400, False, f"Missing required fields: {', '.join(missing)}")
+			return
+
+		old_doc = data.get("old_doc")
+
+		if isinstance(old_doc, str):
+			try:
+				old_doc = json.loads(old_doc)
+			except json.JSONDecodeError:
+				set_response(400, False, "Invalid JSON format for Old doc")
+				return
+
+		elif not isinstance(old_doc, dict):
+			set_response(400, False, "Old doc must be a dict or valid JSON string")
+			return
+
+		meal_draft_doc = frappe.get_doc(
+			{
+				"doctype": "Hotpot Draft Meal",
+				"meal": data.get("meal_id"),
+				"approval": data.get("approval_id"),
+				"new_values": json.dumps(old_doc),
+			}
+		)
+
+		meal_draft_doc.insert()
+		frappe.db.commit()
+
+		set_response(
+			201,
+			True,
+			"Draft meal created successfully",
+			{"meal_id": meal_draft_doc.name},
+		)
+		return
+
+	except Exception as e:
+		frappe.db.rollback()
+		error_message = f"Failed to create draft meal: {str(e)}"
+		trace = traceback.format_exc()
+		frappe.log_error(f"{error_message}\n{trace}", "Draft Meal Creation Error")
+		set_response(500, False, error_message)
+		return

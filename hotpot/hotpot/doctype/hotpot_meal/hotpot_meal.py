@@ -75,6 +75,20 @@ class HotpotMeal(Document):
 				frappe.throw("Start time must be before End time.")
 
 	def before_save(self):
+		if self.meal_date and self.category:
+			duplicate_exists = frappe.db.exists(
+				"Hotpot Meal",
+				{
+					"meal_date": self.meal_date,
+					"category": self.category,
+					"name": ["!=", self.name],
+					"vendor_id": self.vendor_id
+				}
+			)
+			if duplicate_exists:
+				frappe.throw(
+					f"A meal with category '{self.category}' already exists on {self.meal_date}."
+				)
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items=[]
 			if self.meal_items:
@@ -95,6 +109,7 @@ class HotpotMeal(Document):
 			{
 				"meal_date": self.meal_date,
 				"category": self.category,
+				"vendor_id": self.vendor_id
 			},
 		)
 		if existing:

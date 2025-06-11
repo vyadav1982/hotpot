@@ -8,7 +8,7 @@ from frappe.model.document import Document
 from hotpot.utils.guest_coupon_generate import *
 from hotpot.utils.send_fcm import *
 from hotpot.utils.email import *
-
+import json
 
 class HotpotApprovals(Document):
 	# begin: auto-generated types
@@ -25,6 +25,7 @@ class HotpotApprovals(Document):
 		coupon_count: DF.Int
 		date: DF.Datetime | None
 		description: DF.SmallText | None
+		draft_meal: DF.Link | None
 		guest_mobile_no: DF.Phone | None
 		guest_name: DF.Data | None
 		is_active: DF.Check
@@ -100,7 +101,6 @@ class HotpotApprovals(Document):
 				frappe.db.commit()
 				return
 			except Exception as e:
-				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while generating coupon."))
 
@@ -160,7 +160,6 @@ class HotpotApprovals(Document):
 				frappe.msgprint(_("Meal deleted successfully!."), indicator="green")
 
 			except Exception as e:
-				print(e)
 				frappe.log_error(str(e), "on_update error")
 				frappe.msgprint(_("An error occurred while deleting meal."))
 
@@ -193,12 +192,40 @@ class HotpotApprovals(Document):
 		elif self.is_active == 1 and self.request_type == "Meal Edit" and self.approval_status == "Approved":
 			meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 			user_doc = frappe.get_doc("Hotpot User", self.requested_by)
+
+			draft_name = frappe.db.get_value("Hotpot Draft Meal", {
+				"meal": self.meal_id,
+				"approval": self.name
+			})
+
+			if not draft_name:
+				frappe.throw("Draft Meal not found.")
+
+			draft_doc = frappe.get_doc("Hotpot Draft Meal", draft_name)
+			draft_values = json.loads(draft_doc.new_values)
+
+			for field, value in draft_values.items():
+				if hasattr(meal_doc, field):
+					setattr(meal_doc, field, value)
+
+			meal_doc.save()
+
 			if user_doc.fcm_token:
 				send_notification_by_token(
 					user_doc.fcm_token,
 					"Meal Edit Approved ✏️",
-					f"Good news! ✅ Your request was approved — you can now edit your {meal_doc.meal_title} meal.",
+					f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
 				)
+			coupons = meal_doc.coupons
+			for coupon in coupons:
+				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
+				if user_doc.fcm_token:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Meal Plot Twist!",
+						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+					)
+			self.is_active=0
 
 
 def is_frappe_ui_request():

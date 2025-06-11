@@ -17,7 +17,8 @@
   "approval_status",
   "approval_remarks",
   "is_active",
-  "coupon_count"
+  "coupon_count",
+  "draft_meal"
  ],
  "fields": [
   {
@@ -98,11 +99,18 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
+  },
+  {
+   "depends_on": "eval:doc.request_type == \"Meal Edit\";",
+   "fieldname": "draft_meal",
+   "fieldtype": "Link",
+   "label": "Draft Meal",
+   "options": "Hotpot Draft Meal"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-11 10:09:21.380688",
+ "modified": "2025-06-11 13:31:29.548612",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
