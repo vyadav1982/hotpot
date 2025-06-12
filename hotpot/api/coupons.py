@@ -718,7 +718,7 @@ def get_all_coupons(
 			if not ans:
 				set_response(200, True, "No Coupon found", [])
 				return
-			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
+			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]), reverse=True)
 
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
@@ -841,7 +841,7 @@ def get_all_coupons(
 							)
 
 				coupon["items_rating"] = items_rating
-			coupons.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
+			coupons.sort(key=lambda x: get_local_datetime_obj(x["created_at"]), reverse=True)
 			set_response(200, True, "Coupons fetched successfully", coupons)
 			return
 
@@ -866,7 +866,7 @@ def get_all_coupons(
 			if not ans:
 				set_response(404, False, "No Coupon found")
 				return
-			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]).time(), reverse=True)
+			ans.sort(key=lambda x: get_local_datetime_obj(x["created_at"]), reverse=True)
 			for coupon in ans:
 				meal_items_list = coupon["meal_items"].split(",")
 				item_listing = []
