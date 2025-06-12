@@ -262,9 +262,9 @@ def update_meal():
 			if not active_status:
 				set_response(409, False, "You don't have any active requests.")
 				return
-		else:
-			set_response(409, False, "Approval is required to update the meal.")
-			return
+		# else:
+		# 	set_response(409, False, "Approval is required to update the meal.")
+		# 	return
 		if upcoming_coupons and active_status != True:
 			set_response(
 				409,
