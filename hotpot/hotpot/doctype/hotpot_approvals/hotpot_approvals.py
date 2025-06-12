@@ -180,6 +180,7 @@ class HotpotApprovals(Document):
 		elif self.is_active == 1 and self.request_type == "Meal Edit" and self.approval_status == "Rejected":
 			meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 			user_doc = frappe.get_doc("Hotpot User", self.requested_by)
+			meal_doc.approval_id=""
 			self.is_active = 0
 			if user_doc.fcm_token:
 				send_notification_by_token(
@@ -188,6 +189,7 @@ class HotpotApprovals(Document):
 					f"Oops! 😢 Your {meal_doc.meal_title} meal edit request was rejected by the admin. Maybe next time!",
 				)
 			self.save()
+			meal_doc.save()
 			frappe.db.commit()
 		elif self.is_active == 1 and self.request_type == "Meal Edit" and self.approval_status == "Approved":
 			meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
@@ -208,30 +210,49 @@ class HotpotApprovals(Document):
 				if hasattr(meal_doc, field):
 					try:
 						if field == "meal_items" and isinstance(value, list):
-							value = ", ".join([str(i).strip() for i in value if i])
-						setattr(meal_doc, field, value)
+							cleaned_items = [str(i).strip().lower() for i in value if i]
+							value = ", ".join(cleaned_items)
+							setattr(meal_doc, field, value)
+
+							meal_doc.menu_items = []
+							for item_name in cleaned_items:
+								meal_item_name = frappe.get_value(
+									"Hotpot Meal Items",
+									{"vendor_id": meal_doc.vendor_id, "item_name": item_name},
+									"name"
+								)
+								if not meal_item_name:
+									frappe.throw(f"Meal Item '{item_name}' not found for vendor '{meal_doc.vendor_id}'.")
+								
+								meal_doc.append("menu_items", {
+									"meal_item": meal_item_name
+								})
+						else:
+							setattr(meal_doc, field, value)
+
 					except Exception as e:
 						frappe.throw(f"Error setting value for '{field}': {e}")
 				else:
 					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
 
+			meal_doc.approval_id=""
 			meal_doc.save()
 
-			# if user_doc.fcm_token:
-				# send_notification_by_token(
-				# 	user_doc.fcm_token,
-				# 	"Meal Edit Approved ✏️",
-				# 	f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
-				# )
+			if user_doc.fcm_token:
+				send_notification_by_token(
+					user_doc.fcm_token,
+					"Meal Edit Approved ✏️",
+					f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
+				)
 			coupons = meal_doc.coupons
 			for coupon in coupons:
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
-				# if user_doc.fcm_token:
-					# send_notification_by_token(
-					# 	user_doc.fcm_token,
-					# 	"Meal Plot Twist!",
-					# 	f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
-					# )
+				if user_doc.fcm_token:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Meal Plot Twist!",
+						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+					)
 			self.is_active=0
 
 
