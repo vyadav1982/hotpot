@@ -257,14 +257,14 @@ def update_meal():
 			if approval_doc.approval_status == "Approved" and approval_doc.is_active == 0:
 				active_status = False
 			if not status:
-				set_response(400, False, "Your, Request in still pending.")
+				set_response(400, False, "Your, Request is still pending.")
 				return
 			if not active_status:
 				set_response(409, False, "You don't have any active requests.")
 				return
-		# else:
-		# 	set_response(409, False, "Approval is required to update the meal.")
-		# 	return
+		elif upcoming_coupons:
+			set_response(409, False, "Approval is required to update the meal.")
+			return
 		if upcoming_coupons and active_status != True:
 			set_response(
 				409,
