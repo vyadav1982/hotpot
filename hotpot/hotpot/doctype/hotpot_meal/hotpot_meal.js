@@ -236,7 +236,7 @@ frappe.ui.form.on("Hotpot Meal", {
 																},
 																callback: function (r) {
 																	if (!r.exc) {
-																		frappe.msgprint("Draft meal created successfully.");
+																		// frappe.msgprint("Draft meal created successfully.");
 																	} else {
 																		frappe.msgprint("Failed to create draft meal.");
 																	}

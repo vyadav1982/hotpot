@@ -13,6 +13,7 @@ const allowed_routes_by_role = {
 		"holiday-list",
 		"cost-center",
 		"hotpot-meal",
+		"hotpot-draft-meal",
 		"hotpot-user",
 		"hotpot-meal-items",
 		"hotpot-holidays",
@@ -41,6 +42,7 @@ const allowed_routes_by_role = {
 		'query-report/coupon-report',
 		'query-report/employee-wise-meal-amount',
 		"hotpot-approvals",
+		"hotpot-draft-meal",
 		'load-wallet-balance',
 	],
 	"Hotpot Finance": [
