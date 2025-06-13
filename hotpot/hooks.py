@@ -218,7 +218,12 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
+	"cron":{
+		"0 9 * * *":[
+			"hotpot.tasks.hotpot_tasks.load_balance"
+		]
+	}
 # 	"all": [
 # 		"hotpot.tasks.all"
 # 	],
@@ -234,7 +239,7 @@ doc_events = {
 # 	"monthly": [
 # 		"hotpot.tasks.monthly"
 # 	],
-# }
+}
 
 # Testing
 # -------
