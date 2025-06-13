@@ -307,7 +307,7 @@ def cancel_coupon():
 				{
 					"employee_id": user_doc.get("name"),
 					"type": "Credit",
-					"message": f"{int(coupon_found.coupon_weight)} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation.",
+					"message": f"{int(coupon_found.coupon_weight)} tokens credited to your wallet for '{meal_doc.meal_title}' meal cancellation for {(coupon_found.coupon_date).strftime('%d %b %Y')}.",
 					"title": "Meal Cost Refund",
 					"amount": coupon_found.coupon_weight,
 					"meal": meal_id,
@@ -594,10 +594,11 @@ def update_coupon_status():
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 
-		query = """
-			UPDATE `tabHotpot Coupons` AS hc
-			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-			SET hc.coupon_status = "-1"
+
+		expired_coupons = frappe.db.sql("""
+			SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight,hc.coupon_date, hm.name AS meal_id, hm.meal_weight AS meal_amount,hm.category
+			FROM `tabHotpot Coupons` hc
+			INNER JOIN `tabHotpot Meal` hm ON hm.name = hc.parent
 			WHERE hc.coupon_status = "1"
 			AND (
 				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
@@ -605,10 +606,36 @@ def update_coupon_status():
 					DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
 					AND TIME(CONVERT_TZ(hm.end_time, '+00:00', %s)) <= TIME(%s)
 				)
-			);
-		"""
-		params = (user_tz, now_local, user_tz, now_local, user_tz, now_local)
-		frappe.db.sql(query, params)
+			)
+		""", (user_tz, now_local, user_tz, now_local, user_tz, now_local), as_dict=True)
+
+		if not expired_coupons:
+			return
+
+		for row in expired_coupons:
+			frappe.db.set_value("Hotpot Coupons", row.coupon_id, "coupon_status", "-1")
+			penalty = float(row.meal_amount or 0) - float(row.coupon_amount or 0)
+			penalty = max(penalty, 0)
+			if penalty > 0:
+				transaction_doc = frappe.new_doc("Hotpot Transaction History")
+				transaction_doc.update(
+					{
+						"employee_id": row.employee_id,
+						"type": "Debit",
+						"message": f"{int(penalty)} tokens debited for '{meal_title}' for {(row.coupon_date).strftime('%d %b %Y')} meal from you wallet as penalty.",
+						"amount": penalty,
+						"title": "Expiration Penalty Deduction",
+						"meal": row.meal_id,
+						"coupon": row.coupon_id,
+						"coupon_status": "-1",
+						"category": row.category,
+					}
+				)
+				user = frappe.get_doc("Hotpot User",row.employee_id)
+				if user_doc.get("coupon_count") is not None:
+					user_doc.tokens = max(0, user_doc.coupon_count - int(penalty))
+					user_doc.save(ignore_permissions=True)
+
 		frappe.db.commit()
 		return
 	except Exception as e:
