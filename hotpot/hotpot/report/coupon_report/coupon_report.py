@@ -36,7 +36,7 @@ def execute(filters=None):
 		SELECT
 			hu.full_name AS vendor,
 			hc.employee_code,
-			hc.coupon_date AS coupon_date,
+			DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) as coupon_date,
 			hm.meal_title AS meal,
 			hm.category,
 			CASE WHEN hc.guest_of IS NOT NULL THEN hc.email ELSE NULL END AS email,
@@ -64,7 +64,7 @@ def execute(filters=None):
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-	params = [user_timezone, start_date, end_date]
+	params = [user_timezone,user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += " AND hm.vendor_id = %s"
