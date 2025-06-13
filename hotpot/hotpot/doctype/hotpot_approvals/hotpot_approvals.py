@@ -59,12 +59,16 @@ class HotpotApprovals(Document):
 		):
 			user_doc = frappe.get_doc("Hotpot User", self.requested_by)
 			self.is_active = 0
-			if user_doc.fcm_token:
-				send_notification_by_token(
-					user_doc.fcm_token,
-					"Guest Coupon Request ❌",
-					"Oops! 😢 Your guest coupon request was rejected by the admin. Maybe next time!",
-				)
+			try:
+				if user_doc.fcm_token:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Guest Coupon Request ❌",
+						"Oops! 😢 Your guest coupon request was rejected by the admin. Maybe next time!",
+					)
+			except Exception as e:
+				frappe.log_error(frappe.get_traceback(), f"Failed to send notification to user {user_doc.name}")
+
 			self.save()
 			frappe.db.commit()
 
@@ -80,18 +84,25 @@ class HotpotApprovals(Document):
 					indicator_color = "green" if res.get("status") == "success" else "red"
 					frappe.msgprint(_(res.get("msg")), indicator=indicator_color)
 					if res.get("status") == "success" and user_doc.fcm_token:
-						send_notification_by_token(
-							user_doc.fcm_token,
-							"Guest Coupon Request ✅",
-							"Hurray! 😁 Your guest coupons have been successfully generated. Enjoy the treat!",
-						)
+						try:
+							send_notification_by_token(
+								user_doc.fcm_token,
+								"Guest Coupon Request ✅",
+								"Hurray! 😁 Your guest coupons have been successfully generated. Enjoy the treat!",
+							)
+						except Exception as e:
+							frappe.log_error(frappe.get_traceback(), f"FCM success notification failed for {user_doc.name}")
 
 					elif user_doc.fcm_token:
-						send_notification_by_token(
-							user_doc.fcm_token,
-							"Guest Coupon Request Failed ⚠️",
-							f"😢 Couldn't generate your guest coupons. Reason: {res.get('msg')}",
-						)
+						try:
+							send_notification_by_token(
+								user_doc.fcm_token,
+								"Guest Coupon Request Failed ⚠️",
+								f"😢 Couldn't generate your guest coupons. Reason: {res.get('msg')}",
+							)
+						except Exception as e:
+							frappe.log_error(frappe.get_traceback(), f"FCM failure notification failed for {user_doc.name}")
+
 					self.approval_remarks = res.get("msg")
 
 				else:
@@ -113,21 +124,29 @@ class HotpotApprovals(Document):
 				coupons = meal_doc.coupons
 				user_doc = frappe.get_doc("Hotpot User", self.requested_by)
 				if user_doc.fcm_token:
-					send_notification_by_token(
-						user_doc.fcm_token,
-						"Meal Deleted Successfully ✅",
-						f"Woohoo! 🎉 Your request was approved by the admin and the {meal_doc.meal_title} meal has been deleted.",
-					)
+					try:
+						send_notification_by_token(
+							user_doc.fcm_token,
+							"Meal Deleted Successfully ✅",
+							f"Woohoo! 🎉 Your request was approved by the admin and the {meal_doc.meal_title} meal has been deleted.",
+						)
+					except Exception as e:
+						frappe.log_error(frappe.get_traceback(), f"Failed to send meal deletion notification to user {user_doc.name}")
+
 
 				for coupon in coupons:
 					if coupon.coupon_status == "1":
 						user_doc = frappe.get_doc("Hotpot User", coupon.get("employee_id"))
 						if user_doc.fcm_token:
-							send_notification_by_token(
-								user_doc.fcm_token,
-								"Meal Vanished! 🥲",
-								f"Oops! '{meal_doc.meal_title}' has been deleted by your vendor. It's gone... but never forgotten.",
-							)
+							try:
+								send_notification_by_token(
+									user_doc.fcm_token,
+									"Meal Vanished! 🥲",
+									f"Oops! '{meal_doc.meal_title}' has been deleted by your vendor. It's gone... but never forgotten.",
+								)
+							except Exception:
+								frappe.log_error(frappe.get_traceback(), f"Failed to send 'meal deleted' notification to {user_doc.name}")
+
 						if not coupon.birthday_coupon and not coupon.joining_day and not coupon.guest_of:
 							user_doc.coupon_count = user_doc.coupon_count + meal_doc.meal_weight
 							transaction_doc = frappe.new_doc("Hotpot Transaction History")
@@ -146,11 +165,15 @@ class HotpotApprovals(Document):
 							)
 							transaction_doc.insert()
 							if user_doc.fcm_token:
-								send_notification_by_token(
-									user_doc.fcm_token,
-									"Refund Incoming! 💸",
-									f"You've been credited {coupon.coupon_weight} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
-								)
+								try:
+									send_notification_by_token(
+										user_doc.fcm_token,
+										"Refund Incoming! 💸",
+										f"You've been credited {coupon.coupon_weight} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
+									)
+								except Exception:
+									frappe.log_error(frappe.get_traceback(), f"Failed to send refund notification to {user_doc.name}")
+
 
 					coupon.coupon_status = 2
 				self.is_active = 0
@@ -170,11 +193,15 @@ class HotpotApprovals(Document):
 			user_doc = frappe.get_doc("Hotpot User", self.requested_by)
 			self.is_active = 0
 			if user_doc.fcm_token:
-				send_notification_by_token(
-					user_doc.fcm_token,
-					"Meal Deletion Request ❌",
-					f"Oops! 😢 Your {meal_doc.meal_title} meal delete request was rejected by the admin. Maybe next time!",
-				)
+				try:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Meal Deletion Request ❌",
+						f"Oops! 😢 Your {meal_doc.meal_title} meal delete request was rejected by the admin. Maybe next time!",
+					)
+				except Exception:
+					frappe.log_error(frappe.get_traceback(), f"Failed to send rejection notification to user {user_doc.name}")
+
 			self.save()
 			frappe.db.commit()
 		elif self.is_active == 1 and self.request_type == "Meal Edit" and self.approval_status == "Rejected":
@@ -183,11 +210,15 @@ class HotpotApprovals(Document):
 			meal_doc.approval_id=""
 			self.is_active = 0
 			if user_doc.fcm_token:
-				send_notification_by_token(
-					user_doc.fcm_token,
-					"Meal Edit Request ❌",
-					f"Oops! 😢 Your {meal_doc.meal_title} meal edit request was rejected by the admin. Maybe next time!",
-				)
+				try:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Meal Edit Request ❌",
+						f"Oops! 😢 Your {meal_doc.meal_title} meal edit request was rejected by the admin. Maybe next time!",
+					)
+				except Exception:
+					frappe.log_error(frappe.get_traceback(), f"Failed to send meal edit rejection notification to user {user_doc.name}")
+
 			self.save()
 			meal_doc.save()
 			frappe.db.commit()
@@ -239,20 +270,28 @@ class HotpotApprovals(Document):
 			meal_doc.save()
 
 			if user_doc.fcm_token:
-				send_notification_by_token(
-					user_doc.fcm_token,
-					"Meal Edit Approved ✏️",
-					f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
-				)
+				try:
+					send_notification_by_token(
+						user_doc.fcm_token,
+						"Meal Edit Approved ✏️",
+						f"Good news! ✅ Your request was approved — changes will now reflect on your {meal_doc.meal_title} meal.",
+					)
+				except Exception:
+					frappe.log_error(frappe.get_traceback(), f"Failed to send meal edit approval notification to user {user_doc.name}")
+
 			coupons = meal_doc.coupons
 			for coupon in coupons:
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
 				if user_doc.fcm_token:
-					send_notification_by_token(
-						user_doc.fcm_token,
-						"Meal Plot Twist!",
-						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
-					)
+					try:
+						send_notification_by_token(
+							user_doc.fcm_token,
+							"Meal Plot Twist!",
+							f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+						)
+					except Exception:
+						frappe.log_error(frappe.get_traceback(), f"Failed to send plot twist notification to user {user_doc.name}")
+
 			self.is_active=0
 
 
