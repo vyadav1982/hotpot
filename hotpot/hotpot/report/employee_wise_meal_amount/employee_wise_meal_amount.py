@@ -19,16 +19,13 @@ def execute(filters=None):
 	columns = [
 		{"label": "Employee ID", "fieldname": "employee_code", "fieldtype": "Data", "width": 140},
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
-		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
 		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Float", "width": 150},
-		{
-			"label": "Discounted Price",
-			"fieldname": "total_price",
-			"fieldtype": "Currency",
-			"width": 160,
-		},
+		{"label": "Discounted Price", "fieldname": "total_price", "fieldtype": "Currency", "width": 160},
+		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 140},
+		{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency", "width": 160},
 	]
+
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
 
@@ -36,10 +33,22 @@ def execute(filters=None):
 		SELECT
 			hc.employee_code,
 			hu.full_name,
-			hm.category,
 			COUNT(*) AS total_coupons,
+			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price,
 			SUM(IFNULL(hc.coupon_weight, 0)) AS total_price,
-			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price
+			SUM(
+				CASE
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0) - IFNULL(hc.coupon_weight, 0)
+					ELSE 0
+				END
+			) AS penalty,
+			SUM(IFNULL(hc.coupon_weight, 0)) + 
+			SUM(
+				CASE
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0) - IFNULL(hc.coupon_weight, 0)
+					ELSE 0
+				END
+			) AS total_amount
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot User` hu ON hc.employee_code = hu.employee
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
@@ -47,6 +56,7 @@ def execute(filters=None):
 			hc.coupon_status IN (0, -1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
+
 	params = [
 		user_timezone,
 		start_date,
@@ -56,7 +66,7 @@ def execute(filters=None):
 		query += " AND hc.employee_code = %s"
 		params.append(employee)
 
-	query += "GROUP BY hc.employee_code,hm.category  ORDER BY total_price DESC"
+	query += "GROUP BY hc.employee_code  ORDER BY total_price DESC"
 
 	data = frappe.db.sql(query, params, as_dict=True)
 
