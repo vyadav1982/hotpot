@@ -780,6 +780,7 @@ def get_hotpot_history(start_date, end_date, category=None):
 				ON hc.parent = hm.name
 			WHERE
 				hc.employee_id = %(user_name)s
+				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
 
 		"""
 		if category:
