@@ -58,7 +58,7 @@ def execute(filters=None):
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
-		LEFT JOIN `tabHotpot User` hu_user ON hc.owner = hu_user.email
+		LEFT JOIN `tabHotpot User` hu_user ON hc.employee_id = hu_user.employee_id
 		WHERE
 			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s

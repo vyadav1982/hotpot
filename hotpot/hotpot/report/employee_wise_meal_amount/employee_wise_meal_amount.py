@@ -55,6 +55,9 @@ def execute(filters=None):
 		WHERE
 			hc.coupon_status IN (0, -1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			AND hc.guest_of IS NULL
+			AND (hc.birthday_coupon IS NULL OR hc.birthday_coupon = 0)
+			AND (hc.joining_day IS NULL OR hc.joining_day = 0)
 	"""
 
 	params = [
