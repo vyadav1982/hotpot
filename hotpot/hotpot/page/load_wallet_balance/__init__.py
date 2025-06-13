@@ -44,11 +44,15 @@ def load_balance(**args):
 	if employee.fcm_token:
 		from hotpot.utils.send_fcm import send_notification_by_token
 
-		send_notification_by_token(
-			employee.fcm_token,
-			"💰 Wallet Getting Heavier!",
-			f"🎉 Great news! An admin just added ₹{loading_amount} to your wallet. Your new balance is ₹{employee_balance}.",
-		)
+		if employee.fcm_token:
+			try:
+				send_notification_by_token(
+					employee.fcm_token,
+					"💰 Wallet Getting Heavier!",
+					f"🎉 Great news! An admin just added ₹{loading_amount} to your wallet. Your new balance is ₹{employee_balance}.",
+				)
+			except Exception:
+				frappe.log_error(frappe.get_traceback(), f"Failed to send wallet credit notification to user {employee.name}")
 
 	return {
 		"status": "success",
