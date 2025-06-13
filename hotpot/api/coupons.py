@@ -8,6 +8,8 @@ import pytz
 from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role, has_role
 from hotpot.utils.utc_time import *
+from frappe.utils import getdate
+
 
 from ..api.users import *
 
@@ -944,22 +946,24 @@ def generate_coupon():
 				approval_id = data.get("approval_id", None)
 				approval_doc = None
 
-				dob = user_doc.get("date_of_birth")
+				employee_doc = frappe.get_doc("Employee",user_doc.name)
+				dob = employee_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and dob:
+					dob_date = getdate(dob)
 					is_birthday = (
 						hotpot_config.get("free_birthday_meal") == 1
-						and dob.month == start.month
-						and dob.day == start.day
+						and dob_date.month == start_date.month
+						and dob_date.day == start_date.day
 					)
+
 				is_joining_day = False
-				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and user_doc.get(
-					"joining_date"
-				):
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and employee_doc.get("joining_date"):
+					joining_date = getdate(employee_doc.get("date_of_joining"))
 					is_joining_day = (
 						hotpot_config.get("free_joining_day_meal") == 1
-						and user_doc.get("date_of_joining") == get_local_datetime_obj(start_date).date()
+						and joining_date == start_date
 					)
 
 				try:
@@ -1158,7 +1162,7 @@ def generate_coupon():
 						{
 							"employee_id": user_doc.get("name"),
 							"type": "Debit",
-							"message": f"{int(coupon_weight)} tokens debited for '{meal_title}' meal from you wallet.",
+							"message": f"{int(coupon_weight)} tokens debited for '{meal_title}' for {from_date.strftime('%d %b %Y')} meal from you wallet.",
 							"amount": coupon_weight,
 							"title": "Meal Cost Deduction",
 							"meal": meal_id,
