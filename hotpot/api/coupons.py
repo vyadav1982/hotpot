@@ -980,7 +980,7 @@ def generate_coupon():
 				dob = employee_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
-				local_today = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date()
+				local_today = get_local_datetime_obj(datetime.utcnow()).date()
 
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and dob:
 					dob_date = getdate(dob)
