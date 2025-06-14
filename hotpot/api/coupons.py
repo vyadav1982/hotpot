@@ -980,16 +980,12 @@ def generate_coupon():
 				dob = employee_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
-				local_today = get_local_datetime_obj(datetime.utcnow()).date()
-
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and dob:
 					dob_date = getdate(dob)
 					is_birthday = (
 						hotpot_config.get("free_birthday_meal") == 1
 						and dob_date.month == start_date.month
 						and dob_date.day == start_date.day
-						# allows booking for bday only and not future dates
-						and from_date == local_today
 					)
 
 				is_joining_day = False
