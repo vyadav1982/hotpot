@@ -980,12 +980,16 @@ def generate_coupon():
 				dob = employee_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
+				local_today = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).date()
+
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and dob:
 					dob_date = getdate(dob)
 					is_birthday = (
 						hotpot_config.get("free_birthday_meal") == 1
 						and dob_date.month == start_date.month
 						and dob_date.day == start_date.day
+						# allows booking for bday only and not future dates
+						and from_date == local_today
 					)
 
 				is_joining_day = False
@@ -1055,9 +1059,6 @@ def generate_coupon():
 				current_datetime_local = get_local_datetime_obj(datetime.utcnow())
 				local_date_today = current_datetime_local.date()
 				current_time = current_datetime_local.time()
-
-				# first =((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)>0
-				# second = ((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)<= (meal_doc.lead_time)*60*60
 
 				start_time_str = get_local_datetime_obj(meal_doc.start_time).time().strftime("%H:%M:%S")
 				current_time_str = current_time.strftime("%H:%M:%S")
@@ -1268,8 +1269,8 @@ def generate_coupon():
 		return
 
 
-is_valid_email = lambda email: bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
-
+def is_valid_email(email):
+    return bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
 
 @frappe.whitelist()
 def search_coupon(start_date, end_date, identifier):
