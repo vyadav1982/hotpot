@@ -232,6 +232,9 @@ def get_hotpot_user_by_email():
 			if emp:
 				emp_info = emp.as_dict()
 				user_info.update({"employee_details": emp_info})
+				if emp_info.get("company"):
+					company = frappe.get_doc("Company", emp_info["company"])
+					user_info.update({"company_details": company.as_dict()})
 
 			return user_info
 
