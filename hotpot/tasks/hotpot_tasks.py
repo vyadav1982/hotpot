@@ -16,7 +16,7 @@ def load_balance():
 
 			employees = frappe.get_all(
 				"Hotpot User",
-				filters={"is_employee": 1, "is_active": 1,"employee_id":12345678},
+				filters={"is_employee": 1, "is_active": 1},
 				fields=["name", "employee_id", "fcm_token"]
 			)
 
