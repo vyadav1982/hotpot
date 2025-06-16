@@ -219,27 +219,11 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-	"cron":{
-		"0 9 * * *":[
-			"hotpot.tasks.hotpot_tasks.load_balance"
-		]
-	}
-# 	"all": [
-# 		"hotpot.tasks.all"
-# 	],
-# 	"daily": [
-# 		"hotpot.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"hotpot.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"hotpot.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"hotpot.tasks.monthly"
-# 	],
+    "daily": [
+        "hotpot.tasks.hotpot_tasks.load_balance"
+    ]
 }
+
 
 # Testing
 # -------
