@@ -1,23 +1,58 @@
 import frappe
+from datetime import datetime
+import pytz
+from hotpot.utils.send_fcm import *
 
 def load_balance():
 	try:
-        print("running taks hoorayy!!!!!!!!!")
-        frappe.logger().info(f"it works!!!!!!!!!.")
-        return
-        frappe.
-		employees = frappe.get_all(
-			"Hotpot User",
-			filters={"is_employee": 1},
-			fields=["name", "coupon_count"]
-		)
+		india = pytz.timezone("Asia/Kolkata")
+		now = datetime.now(india)
 
-		for emp in employees:
-			frappe.db.set_value("Hotpot User", emp.name, "coupon_count", 1000)
+		monthly_credit_amount = 1000
 
-		frappe.db.commit()
-		frappe.logger().info(f"Loaded 1000 coupon_count for {len(employees)} employees.")
+		if now.day == 1:
+			frappe.logger().info("Starting load_balance scheduled task...")
+			print("Starting load_balance scheduled task...")
 
-	except Exception as e:
-		frappe.log_error(frappe.get_traceback(), "Load Balance Error")
+			employees = frappe.get_all(
+				"Hotpot User",
+				filters={"is_employee": 1, "is_active": 1,"employee_id":12345678},
+				fields=["name", "employee_id", "fcm_token"]
+			)
+
+			for emp in employees:
+				current_count = frappe.db.get_value("Hotpot User", emp.name, "coupon_count") or 0
+				new_count = current_count + monthly_credit_amount
+
+				frappe.db.set_value("Hotpot User", emp.name, "coupon_count", new_count)
+
+				transaction_doc = frappe.new_doc("Hotpot Transaction History")
+				transaction_doc.update({
+					"employee_id": emp.employee_id,
+					"type": "Credit",
+					"message": f"🎉 You've received your monthly credit of {monthly_credit_amount} tokens on {now.strftime('%d %b %Y')} by the Admin.",
+					"title": "Monthly Credit",
+					"amount": monthly_credit_amount,
+					"meal": None,
+					"coupon": None,
+				})
+				transaction_doc.insert(ignore_permissions=True)
+
+				if emp.fcm_token:
+					from hotpot.utils.send_fcm import send_notification_by_token
+					try:
+						send_notification_by_token(
+							emp.fcm_token,
+							"💰 Wallet Getting Heavier!",
+							f"🎉 Great news! Admin just added ₹{monthly_credit_amount} to your wallet. New balance: ₹{new_count}."
+						)
+					except Exception:
+						frappe.log_error(frappe.get_traceback(), f"Failed to send wallet credit notification to user {emp.name}")
+
+			frappe.db.commit()
+			frappe.logger().info(f"✅ Successfully updated coupon_count for {len(employees)} employee(s).")
+			print(f"✅ Successfully updated coupon_count for {len(employees)} employee(s).")
+
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "❌ Load Balance Error")
 		frappe.db.rollback()
