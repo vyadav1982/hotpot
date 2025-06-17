@@ -163,7 +163,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.insert(ignore_permissions=True)
 		transaction_doc = frappe.new_doc("Hotpot Transaction History")
 		transaction_doc.update({
-			"employee_id": doc.employee_number
+			"employee_id": doc.employee_number,
 			"type": "Credit",
 			"message": f"🎉 You've received your initial credit of {hotpot_config.get("initial_tokens")} tokens on {now.strftime('%d %b %Y')} by the Admin.",
 			"title": "initial Credit",
