@@ -10,7 +10,8 @@
   "can_generate_for_guest",
   "allow_meal_on_sunday",
   "allow_free_meal_for_outer_location",
-  "discount"
+  "discount",
+  "initial_tokens"
  ],
  "fields": [
   {
@@ -49,12 +50,19 @@
    "fieldname": "allow_free_meal_for_outer_location",
    "fieldtype": "Check",
    "label": "Allow Free Meal for Outer location"
+  },
+  {
+   "default": "6000",
+   "fieldname": "initial_tokens",
+   "fieldtype": "Int",
+   "label": "New User Wallet Balance / Monthly Wallet Balance Loading",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-10 13:47:10.317870",
+ "modified": "2025-06-17 12:48:31.275021",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",

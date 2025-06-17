@@ -10,18 +10,18 @@ frappe.listview_settings["Hotpot User"] = {
             listview.page.hide_menu();
             // listview.page.hide_actions_menu();
 
-            listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
-                frappe.set_route("list", "data-import", {
-                    reference_doctype: doctype,
-                });
-            });
-            listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
-                if (!frappe.boot.read_only && listview.can_create) {
-                    frappe.new_doc("Hotpot User");
-                } else {
-                    frappe.msgprint(__("You do not have permission to create a Hotpot User."));
-                }
-            });
+            // listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
+            //     frappe.set_route("list", "data-import", {
+            //         reference_doctype: doctype,
+            //     });
+            // });
+            // listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
+            //     if (!frappe.boot.read_only && listview.can_create) {
+            //         frappe.new_doc("Hotpot User");
+            //     } else {
+            //         frappe.msgprint(__("You do not have permission to create a Hotpot User."));
+            //     }
+            // });
         }
 
         let disableBtn = listview.page.add_inner_button(__("Disable User"), function () {
@@ -63,18 +63,18 @@ frappe.listview_settings["Hotpot User"] = {
             listview.page.clear_actions();
             listview.page.hide_menu();
             // listview.page.hide_actions_menu();
-            listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
-                frappe.set_route("list", "data-import", {
-                    reference_doctype: doctype,
-                });
-            });
-            listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
-                if (!frappe.boot.read_only && listview.can_create) {
-                    frappe.new_doc("Hotpot User");
-                } else {
-                    frappe.msgprint(__("You do not have permission to create a Hotpot User."));
-                }
-            });
+            // listview.page.add_inner_button(__("Import", null, "Button in list view menu"), function () {
+            //     frappe.set_route("list", "data-import", {
+            //         reference_doctype: doctype,
+            //     });
+            // });
+            // listview.page.add_inner_button(__("Add Hotpot User", null, "Button in list view menu"), function () {
+            //     if (!frappe.boot.read_only && listview.can_create) {
+            //         frappe.new_doc("Hotpot User");
+            //     } else {
+            //         frappe.msgprint(__("You do not have permission to create a Hotpot User."));
+            //     }
+            // });
             listview.toggle_actions_menu_button = function (toggle) {
                 return
             }

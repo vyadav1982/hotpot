@@ -20,6 +20,7 @@ class HotpotConfigurations(Document):
 		discount: DF.Percent
 		free_birthday_meal: DF.Check
 		free_joining_day_meal: DF.Check
+		initial_tokens: DF.Int
 	# end: auto-generated types
 
 	pass

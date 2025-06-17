@@ -8,7 +8,8 @@ def load_balance():
 		india = pytz.timezone("Asia/Kolkata")
 		now = datetime.now(india)
 
-		monthly_credit_amount = 1000
+		hotpot_config = frappe.get_single("Hotpot Configurations")
+		monthly_credit_amount = hotpot_config.get("initial_tokens")
 
 		if now.day == 1:
 			frappe.logger().info("Starting load_balance scheduled task...")

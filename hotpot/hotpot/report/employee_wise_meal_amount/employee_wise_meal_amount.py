@@ -21,7 +21,7 @@ def execute(filters=None):
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
 		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Float", "width": 150},
-		{"label": "Discounted Price", "fieldname": "total_price", "fieldtype": "Currency", "width": 160},
+		{"label": "Discounted Rate", "fieldname": "total_price", "fieldtype": "Currency", "width": 160},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 140},
 		{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency", "width": 160},
 	]
@@ -34,21 +34,30 @@ def execute(filters=None):
 			hc.employee_code,
 			hu.full_name,
 			COUNT(*) AS total_coupons,
+
 			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price,
-			SUM(IFNULL(hc.coupon_weight, 0)) AS total_price,
+
+			SUM(
+				CASE 
+					WHEN hc.coupon_status = -1 THEN 0
+					ELSE IFNULL(hc.coupon_weight, 0)
+				END
+			) AS total_price,
+
 			SUM(
 				CASE
-					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0) - IFNULL(hc.coupon_weight, 0)
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
 					ELSE 0
 				END
 			) AS penalty,
-			SUM(IFNULL(hc.coupon_weight, 0)) + 
+
 			SUM(
-				CASE
-					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0) - IFNULL(hc.coupon_weight, 0)
-					ELSE 0
+				CASE 
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
+					ELSE IFNULL(hc.coupon_weight, 0)
 				END
 			) AS total_amount
+
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot User` hu ON hc.employee_code = hu.employee
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
@@ -59,6 +68,7 @@ def execute(filters=None):
 			AND (hc.birthday_coupon IS NULL OR hc.birthday_coupon = 0)
 			AND (hc.joining_day IS NULL OR hc.joining_day = 0)
 	"""
+
 
 	params = [
 		user_timezone,
