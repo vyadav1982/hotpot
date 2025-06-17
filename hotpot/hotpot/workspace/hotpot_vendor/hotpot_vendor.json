@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"DYT75f0FDv\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Vendor Workspace</span>\",\"col\":12}},{\"id\":\"GH1jBx_xHG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Import\",\"col\":3}},{\"id\":\"u_qs9jQhMK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Coupon Report\",\"col\":3}},{\"id\":\"vgWTNUWvvP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Items Import\",\"col\":3}},{\"id\":\"56llBSzWXk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your meals\",\"col\":3}},{\"id\":\"7nME8YdraU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your items\",\"col\":3}}]",
+ "content": "[{\"id\":\"DYT75f0FDv\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Vendor Workspace</span>\",\"col\":12}},{\"id\":\"GH1jBx_xHG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Import\",\"col\":3}},{\"id\":\"vgWTNUWvvP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Items Import\",\"col\":3}},{\"id\":\"56llBSzWXk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your meals\",\"col\":3}},{\"id\":\"7nME8YdraU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your items\",\"col\":3}},{\"id\":\"e8Bp1rn9HP\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"u_qs9jQhMK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Coupon Report\",\"col\":3}}]",
  "creation": "2025-04-30 11:35:14.353843",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot Vendor",
  "links": [],
- "modified": "2025-06-17 13:22:49.483248",
+ "modified": "2025-06-17 13:42:42.069132",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Vendor",

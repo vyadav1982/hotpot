@@ -26,8 +26,8 @@ def execute(filters=None):
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
 		{"label": "Coupon Type", "fieldname": "coupon_type", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
-		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Float", "width": 150},
-		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Float", "width": 160},
+		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 150},
+		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 160},
 	]
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"

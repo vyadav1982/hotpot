@@ -20,7 +20,7 @@ def execute(filters=None):
 		{"label": "Employee ID", "fieldname": "employee_code", "fieldtype": "Data", "width": 140},
 		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 200},
 		{"label": "Total Coupons", "fieldname": "total_coupons", "fieldtype": "Int", "width": 120},
-		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Float", "width": 150},
+		{"label": "Actual Rate", "fieldname": "total_actual_price", "fieldtype": "Currency", "width": 150},
 		{"label": "Discounted Rate", "fieldname": "total_price", "fieldtype": "Currency", "width": 160},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 140},
 		{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency", "width": 160},
