@@ -2,6 +2,8 @@
 # For license information, please see license.txt
 
 import random
+from datetime import datetime
+import pytz
 
 import frappe
 from frappe.model.document import Document
@@ -162,6 +164,8 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.coupon_count = hotpot_config.get("initial_tokens")
 		hp_user.insert(ignore_permissions=True)
 		transaction_doc = frappe.new_doc("Hotpot Transaction History")
+		india = pytz.timezone("Asia/Kolkata")
+		now = datetime.now(india)
 		transaction_doc.update({
 			"employee_id": doc.employee_number,
 			"type": "Credit",
