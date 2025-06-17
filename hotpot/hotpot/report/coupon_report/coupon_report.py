@@ -65,6 +65,11 @@ def execute(filters=None):
 	"""
 
 	params = [user_timezone,user_timezone, start_date, end_date]
+	roles = frappe.get_roles()
+
+
+	if "Hotpot Vendor" in roles and "Administrator" not in roles:
+		vendor_id = frappe.session.user
 
 	if vendor_id:
 		query += " AND hm.vendor_id = %s"
@@ -73,4 +78,12 @@ def execute(filters=None):
 	query += " ORDER BY hc.coupon_date DESC"
 
 	data = frappe.db.sql(query, params, as_dict=True)
+
+	if "Hotpot Vendor" in roles and "Administrator" not in roles:
+		columns = [col for col in columns if col.get("fieldname") != "discounted_rate"]
+
+		for row in data:
+			row.pop("discounted_rate", None)
+
 	return columns, data
+
