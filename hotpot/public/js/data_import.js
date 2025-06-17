@@ -21,7 +21,7 @@ frappe.ui.form.on('Data Import', {
                     frm.set_query('reference_doctype', function () {
                         return {
                             filters: {
-                                name: ['in', ['Hotpot User', 'Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays","Employee"]]
+                                name: ['in', ['Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays","Employee"]]
                             }
                         };
                     });
