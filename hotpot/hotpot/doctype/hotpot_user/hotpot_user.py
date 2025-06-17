@@ -136,8 +136,6 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.user = doc.user_id
 		hp_user.location = doc.branch if doc.branch else hp_user.location
 		hp_user.save(ignore_permissions=True)
-		password = frappe.generate_hash(length=8)
-		set_user_password(frappe.local.site, doc.user_id, password, hp_user)
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
@@ -158,7 +156,22 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.user = doc.user_id
 		hp_user.location = doc.branch
 		hp_user.employee = doc.employee_number
+		password = frappe.generate_hash(length=8)
+		set_user_password(frappe.local.site, doc.user_id, password, hp_user)
+		hotpot_config = frappe.get_single("Hotpot Configurations")
+		hp_user.coupon_count = hotpot_config.get("initial_tokens")
 		hp_user.insert(ignore_permissions=True)
+		transaction_doc = frappe.new_doc("Hotpot Transaction History")
+		transaction_doc.update({
+			"employee_id": doc.employee_number
+			"type": "Credit",
+			"message": f"🎉 You've received your initial credit of {hotpot_config.get("initial_tokens")} tokens on {now.strftime('%d %b %Y')} by the Admin.",
+			"title": "initial Credit",
+			"amount": hotpot_config.get("initial_tokens"),
+			"meal": None,
+			"coupon": None,
+		})
+		transaction_doc.insert(ignore_permissions=True)
 	frappe.db.commit()
 
 
