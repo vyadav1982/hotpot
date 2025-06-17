@@ -44,8 +44,8 @@ def execute(filters=None):
 				WHEN hc.guest_of IS NOT NULL THEN 'Guest'
 				WHEN hc.joining_day = 1 THEN 'Joining Day'
 				WHEN hc.birthday_coupon = 1 THEN 'Birthday'
-				WHEN hc.location IS NOT NULL AND hu.location IS NOT NULL AND hc.location != hu.location THEN 
-					CONCAT('Outer Location (', hc.location, ')')
+				# WHEN hc.location IS NOT NULL AND hu.location IS NOT NULL AND hc.location != hu.location THEN 
+				# 	CONCAT('Outer Location (', hc.location, ')')
 				ELSE 'Normal'
 			END AS coupon_type,
 			CASE
