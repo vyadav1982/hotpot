@@ -61,6 +61,7 @@ const allowed_routes_by_role = {
 		"hotpot-meal",
 		"hotpot-meal-items",
 		"meal-item-list",
+		'query-report/coupon-report',
 	],
 };
 

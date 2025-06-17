@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letterhead": null,
- "modified": "2025-05-21 16:14:07.398564",
+ "modified": "2025-06-17 13:21:52.860328",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Coupon Report",
@@ -28,6 +28,9 @@
   },
   {
    "role": "System Manager"
+  },
+  {
+   "role": "Hotpot Vendor"
   }
  ],
  "timeout": 0
