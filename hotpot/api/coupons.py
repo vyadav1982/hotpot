@@ -1023,7 +1023,10 @@ def generate_coupon():
 					and hotpot_config.get("allow_free_meal_for_outer_location") == 1
 				):
 					vendor_doc = frappe.get_doc("Hotpot User", meal_doc.get("vendor_id"))
-					if vendor_doc.get("location") != user_doc.get("location"):
+					vendor_location = vendor_doc.get("location")
+					user_location = user_doc.get("location")
+
+					if vendor_location and user_location and vendor_location != user_location:
 						is_secondary_loc = True
 
 				coupons_gener = 0
