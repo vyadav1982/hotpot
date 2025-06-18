@@ -31,12 +31,13 @@ def execute(filters=None):
 		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
 		# {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
+		{"label": "Coupon Location", "fieldname": "location", "data": "Data", "width": 120},
+		{"label": "Employee Location", "fieldname": "employee_location", "data": "Data", "width": 120},
 		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
-		{"label": "Coupon Location", "fieldname": "location", "data": "Data", "width": 120},
 	]
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
 
@@ -68,7 +69,8 @@ def execute(filters=None):
 				ELSE 'Unknown'
 			END AS coupon_status,
 
-			hc.location AS location
+			hc.location AS location,
+			employee.location AS employee_location
 
 		FROM
 			`tabHotpot Coupons` AS hc
@@ -79,10 +81,11 @@ def execute(filters=None):
 		LEFT JOIN
 			`tabHotpot User` AS employee ON employee.name = hc.employee_id
 		WHERE
-			hc.joining_day = 1
+			hc.location IS NOT NULL AND employee.location IS NOT NULL AND hc.location != employee.location
 			AND hc.coupon_status != 1
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
+
 
 
 	params = [user_timezone,user_timezone, start_date, end_date]
