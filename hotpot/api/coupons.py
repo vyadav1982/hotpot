@@ -1018,11 +1018,11 @@ def generate_coupon():
 						return set_response(200, False, "Oops! Today is a day off in your location.")
 
 				vendor_doc = None
+				vendor_doc = frappe.get_doc("Hotpot User", meal_doc.get("vendor_id"))
 				if (
 					has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"])
 					and hotpot_config.get("allow_free_meal_for_outer_location") == 1
 				):
-					vendor_doc = frappe.get_doc("Hotpot User", meal_doc.get("vendor_id"))
 					vendor_location = vendor_doc.get("location")
 					user_location = user_doc.get("location")
 
