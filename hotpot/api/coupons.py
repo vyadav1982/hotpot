@@ -1157,10 +1157,7 @@ def generate_coupon():
 						total_coupons_consumed += coupon_weight
 
 					location_value = None
-					if is_secondary_loc:
-						location_value = vendor_doc.get("location") if vendor_doc else None
-					else:
-						location_value = user_doc.get("location")
+					location_value = vendor_doc.get("location") if vendor_doc else None
 
 					# Append created coupon in meal
 					meal_doc.append(
