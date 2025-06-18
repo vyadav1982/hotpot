@@ -28,6 +28,8 @@ def execute(filters=None):
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 150},
 		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 160},
+		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 140},
+
 	]
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
@@ -44,8 +46,8 @@ def execute(filters=None):
 				WHEN hc.guest_of IS NOT NULL THEN 'Guest'
 				WHEN hc.joining_day = 1 THEN 'Joining Day'
 				WHEN hc.birthday_coupon = 1 THEN 'Birthday'
-				# WHEN hc.location IS NOT NULL AND hu.location IS NOT NULL AND hc.location != hu.location THEN 
-				# 	CONCAT('Outer Location (', hc.location, ')')
+				WHEN hc.location IS NOT NULL AND hu_user.location IS NOT NULL AND hc.location != hu_user.location THEN 
+					CONCAT('Outer Location (', hu.location, ')')
 				ELSE 'Normal'
 			END AS coupon_type,
 			CASE
@@ -55,7 +57,14 @@ def execute(filters=None):
 				ELSE 'Unknown'
 			END AS coupon_status,
 			IFNULL(hm.meal_weight, 0) AS actual_rate,
-			hc.coupon_weight AS discounted_rate,
+			CASE
+				WHEN hc.coupon_status = '-1' THEN 0
+				ELSE hc.coupon_weight
+			END AS discounted_rate,
+			CASE
+				WHEN hc.coupon_status = '-1' THEN IFNULL(hm.meal_weight, 0)
+				ELSE 0
+			END AS penalty,
 			hu_user.full_name AS employee_name
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
@@ -64,8 +73,8 @@ def execute(filters=None):
 		WHERE
 			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
-
 	"""
+
 
 	params = [user_timezone,user_timezone, start_date, end_date]
 	roles = frappe.get_roles()
@@ -83,10 +92,12 @@ def execute(filters=None):
 	data = frappe.db.sql(query, params, as_dict=True)
 
 	if "Hotpot Vendor" in roles and "Administrator" not in roles:
-		columns = [col for col in columns if col.get("fieldname") != "discounted_rate"]
+		columns = [col for col in columns if col.get("fieldname") not in ["discounted_rate", "penalty"]]
 
 		for row in data:
 			row.pop("discounted_rate", None)
+			row.pop("penalty", None)
+
 
 	return columns, data
 
