@@ -2007,7 +2007,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 								else {}
 							),
 							"created_at": datetime.utcnow(),
-							location:vendor_doc.get("location"),
+							"location":vendor_doc.get("location"),
 						},
 					)
 
