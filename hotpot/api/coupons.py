@@ -989,11 +989,11 @@ def generate_coupon():
 					)
 
 				is_joining_day = False
-				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and employee_doc.get("joining_date"):
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and employee_doc.get("date_of_joining"):
 					joining_date = getdate(employee_doc.get("date_of_joining"))
 					is_joining_day = (
 						hotpot_config.get("free_joining_day_meal") == 1
-						and joining_date == start_date
+						and joining_date == start_date.date()
 					)
 
 				try:
