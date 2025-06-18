@@ -25,6 +25,7 @@ def execute(filters=None):
 		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 180},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
 		{"label": "Coupon Type", "fieldname": "coupon_type", "fieldtype": "Data", "width": 120},
+		{"label": "Coupon Location", "fieldname": "location", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 150},
 		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 160},
@@ -42,34 +43,42 @@ def execute(filters=None):
 			hm.meal_title AS meal,
 			hm.category,
 			CASE WHEN hc.guest_of IS NOT NULL THEN hc.email ELSE NULL END AS email,
+			
 			CASE
 				WHEN hc.guest_of IS NOT NULL THEN 'Guest'
 				WHEN hc.joining_day = 1 THEN 'Joining Day'
 				WHEN hc.birthday_coupon = 1 THEN 'Birthday'
-				WHEN hc.location IS NOT NULL AND hu_user.location IS NOT NULL AND hc.location != hu_user.location THEN 
-					CONCAT('Outer Location (', hu.location, ')')
+				WHEN hc.location IS NOT NULL AND hu_user.location IS NOT NULL AND hc.location != hu_user.location THEN 'Outer Location'
 				ELSE 'Normal'
 			END AS coupon_type,
+
 			CASE
 				WHEN hc.coupon_status = '-1' THEN 'Expired'
 				WHEN hc.coupon_status = '0' THEN 'Consumed'
 				WHEN hc.coupon_status = '2' THEN 'Cancelled'
 				ELSE 'Unknown'
 			END AS coupon_status,
+
 			IFNULL(hm.meal_weight, 0) AS actual_rate,
+
 			CASE
 				WHEN hc.coupon_status = '-1' THEN 0
 				ELSE hc.coupon_weight
 			END AS discounted_rate,
+
 			CASE
 				WHEN hc.coupon_status = '-1' THEN IFNULL(hm.meal_weight, 0)
 				ELSE 0
 			END AS penalty,
-			hu_user.full_name AS employee_name
+
+			hu_user.full_name AS employee_name,
+
+			hc.location AS location
+
 		FROM `tabHotpot Coupons` hc
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
-		LEFT JOIN `tabHotpot User` hu_user ON hc.employee_id = hu_user.employee_id
+		LEFT JOIN `tabHotpot User` hu_user ON hc.employee_id = hu_user.name
 		WHERE
 			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s

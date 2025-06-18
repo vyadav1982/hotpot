@@ -26,15 +26,18 @@ def execute(filters=None):
 	columns = [
 		# {"label": "Meal Id", "fieldname": "meal_id", "fieldtype": "Data", "width": 120},
 		{"label": "Employee Id", "fieldname": "employee_id", "fieldtype": "Data", "width": 120},
-		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 150},
-		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 200},
-		# {"label": "Vendor Id", "fieldname": "vendor_id", "fieldtype": "Data", "width": 120},
+		{"label": "Employee Name", "fieldname": "full_name", "fieldtype": "Data", "width": 120},
+		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 120},
+		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
-		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 150},
-		{"label": "Guest Email", "fieldname": "email", "fieldtype": "Data", "width": 150},
+		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 120},
+		{"label": "Guest Email", "fieldname": "email", "fieldtype": "Data", "width": 120},
 		{"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
-		{"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 150},
-		# {"label": "Coupon Id", "fieldname": "coupon_id", "fieldtype": "Data", "width": 120},
+		{"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 120},
+		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 120},
+		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 120},
+		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
+		{"label": "Coupon Location", "fieldname": "location", "data": "Currency", "width": 120},
 	]
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
 
@@ -45,12 +48,32 @@ def execute(filters=None):
 			vendor.employee_id AS vendor_id,
 			vendor.full_name AS vendor_name,
 			hc.name AS coupon_id,
-			hc.coupon_date AS coupon_date,
+			DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) AS coupon_date,
 			employee.employee_id AS employee_id,
 			employee.full_name,
 			approval.guest_name AS guest_name,
             hc.email AS email,
-            approval.guest_mobile_no AS guest_mobile_no
+            approval.guest_mobile_no AS guest_mobile_no,
+
+			IFNULL(hm.meal_weight, 0) AS actual_rate,
+			CASE
+				WHEN hc.coupon_status = '-1' THEN 0
+				ELSE hc.coupon_weight
+			END AS discounted_rate,
+			CASE
+				WHEN hc.coupon_status = '-1' THEN IFNULL(hm.meal_weight, 0)
+				ELSE 0
+			END AS penalty,
+
+			CASE
+				WHEN hc.coupon_status = '-1' THEN 'Expired'
+				WHEN hc.coupon_status = '0' THEN 'Consumed'
+				WHEN hc.coupon_status = '2' THEN 'Cancelled'
+				ELSE 'Unknown'
+			END AS coupon_status,
+
+			hc.location AS location
+
 		FROM
 			`tabHotpot Coupons` AS hc
 		INNER JOIN
@@ -63,11 +86,11 @@ def execute(filters=None):
 			`tabHotpot Approvals` AS approval ON approval.name = hc.approval_id
 		WHERE
 			hc.guest_of IS NOT NULL
-            AND hc.coupon_status !=2 AND hc.coupon_status != 1
+            AND hc.coupon_status != 1
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
     """
 
-	params = [user_timezone, start_date, end_date]
+	params = [user_timezone,user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += " AND hm.vendor_id = %s"
@@ -76,7 +99,5 @@ def execute(filters=None):
 	query += " ORDER BY hc.coupon_date DESC;"
 
 	data = frappe.db.sql(query, tuple(params), as_dict=True)
-	for d in data:
-		d["coupon_date"] = get_local_datetime_obj(d["coupon_date"]).date()
 
 	return columns, data
