@@ -1573,8 +1573,8 @@ def generate_coupon_admin():
 				except frappe.DoesNotExistError:
 					return set_response(404, False, "Meal not found")
 
+				vendor_doc = None
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-					vendor_doc = None
 					vendor_id = meal_doc.get("vendor_id")
 					if vendor_id:
 						vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
@@ -1759,6 +1759,7 @@ def generate_coupon_admin():
 							**({"approval_id": approval_id} if (for_guest and role == "Hotpot User") else {}),
 							"email": email,
 							"created_at": datetime.utcnow(),
+							"location":vendor_doc.get("location"),
 						},
 					)
 
@@ -1861,8 +1862,8 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				except frappe.DoesNotExistError:
 					return {"status": "error", "msg": "Meal not found"}
 
+				vendor_doc = None
 				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
-					vendor_doc = None
 					vendor_id = meal_doc.get("vendor_id")
 					if vendor_id:
 						vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
@@ -2006,6 +2007,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 								else {}
 							),
 							"created_at": datetime.utcnow(),
+							location:vendor_doc.get("location"),
 						},
 					)
 
