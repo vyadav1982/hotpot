@@ -212,6 +212,7 @@ doc_events = {
 		"after_insert": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
 		"on_update": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
 		"on_trash": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.remove_employee_from_hotpot",
+		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_employee",
 	},
 }
 
