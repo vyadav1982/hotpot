@@ -19,17 +19,19 @@ def execute(filters=None):
 	columns = [
 		{"label": "Employee Code", "fieldname": "employee_code", "fieldtype": "Data", "width": 120},
 		{"label": "Employee Name", "fieldname": "employee_name", "fieldtype": "Data", "width": 120},
+		{"label": "Department", "fieldname": "department", "fieldtype": "Data", "width": 120},
+		{"label": "Band", "fieldname": "band", "fieldtype": "Data", "width": 120},
 		{"label": "Vendor", "fieldname": "vendor", "fieldtype": "Data", "width": 120},
 		{"label": "Meal", "fieldname": "meal", "fieldtype": "Data", "width": 120},
 		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 120},
-		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 180},
+		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
 		{"label": "Coupon Type", "fieldname": "coupon_type", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Location", "fieldname": "location", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
-		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 150},
-		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 160},
-		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 140},
+		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 120},
+		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 120},
+		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
 
 	]
 
@@ -42,6 +44,8 @@ def execute(filters=None):
 			DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) AS coupon_date,
 			hm.meal_title AS meal,
 			hm.category,
+			emp.department,
+			emp.band,
 			CASE WHEN hc.guest_of IS NOT NULL THEN hc.email ELSE NULL END AS email,
 			
 			CASE
@@ -79,6 +83,7 @@ def execute(filters=None):
 		LEFT JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
 		LEFT JOIN `tabHotpot User` hu ON hm.vendor_id = hu.name
 		LEFT JOIN `tabHotpot User` hu_user ON hc.employee_id = hu_user.name
+		LEFT JOIN `tabEmployee` emp ON hc.employee_id = emp.name
 		WHERE
 			hc.coupon_status NOT IN (1)
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
