@@ -775,12 +775,15 @@ def get_hotpot_history(start_date, end_date, category=None):
 		 	SELECT
 		 		CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s) AS date,
 		 		hc.*,
-		 		hm.*
+		 		hm.*,
+				hu.full_name
 			FROM
 				`tabHotpot Coupons` AS hc
 			JOIN
 				`tabHotpot Meal` AS hm
 				ON hc.parent = hm.name
+			LEFT JOIN
+				`tabHotpot User` AS hu.name = hm.vendor_id
 			WHERE
 				hc.employee_id = %(user_name)s
 				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
@@ -789,7 +792,7 @@ def get_hotpot_history(start_date, end_date, category=None):
 		if category:
 			query += " AND hm.category = %(category)s"
 
-		query += " ORDER BY hc.modified DESC"
+		query += " ORDER BY hm.meal_date DESC"
 
 		params = {
 			"user_name": user_doc.get("name"),
