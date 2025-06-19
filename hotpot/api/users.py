@@ -783,7 +783,7 @@ def get_hotpot_history(start_date, end_date, category=None):
 				`tabHotpot Meal` AS hm
 				ON hc.parent = hm.name
 			LEFT JOIN
-				`tabHotpot User` AS hu.name = hm.vendor_id
+				`tabHotpot User` hu ON hu.name = hm.vendor_id
 			WHERE
 				hc.employee_id = %(user_name)s
 				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
