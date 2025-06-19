@@ -792,7 +792,7 @@ def get_hotpot_history(start_date, end_date, category=None):
 		if category:
 			query += " AND hm.category = %(category)s"
 
-		query += " ORDER BY hm.date DESC"
+		query += " ORDER BY hm.meal_date DESC"
 
 		params = {
 			"user_name": user_doc.get("name"),
