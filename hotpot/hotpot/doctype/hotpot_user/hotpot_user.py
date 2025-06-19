@@ -116,6 +116,9 @@ def add_user_to_hotpot(doc, method):
 	# if not add to hotpot user
 	pass
 
+def validate_employee(doc, method):
+	doc.create_user_permission=0
+
 
 def update_employee_to_hotpot(doc, method):
 	if frappe.db.exists("Hotpot User", doc.name):
