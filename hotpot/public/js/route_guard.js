@@ -148,13 +148,13 @@ function normalizeRoute(route) {
 function isRouteAllowed(route) {
 	if (!route) return true;
 	const user_roles = frappe?.boot?.user?.roles || [];
-	if (
-		user_roles.includes("HR Manager") ||
-		user_roles.includes("HR User") ||
-		user_roles.includes("Employee")
-	) {
-		return true;
-	}
+	// if (
+	// 	user_roles.includes("HR Manager") ||
+	// 	user_roles.includes("HR User") ||
+	// 	user_roles.includes("Employee")
+	// ) {
+	// 	return true;
+	// }
 
 	if (user_roles.includes("Hotpot Vendor") && route == "data-import/new-data-import") {
 		return true;

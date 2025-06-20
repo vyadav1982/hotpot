@@ -42,6 +42,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			]
 		},
@@ -58,6 +59,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			],
 		},
@@ -75,6 +77,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			],
 		},
@@ -214,6 +217,9 @@ doc_events = {
 		"on_trash": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.remove_employee_from_hotpot",
 		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_employee",
 	},
+	"User": {
+		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_user",
+	}
 }
 
 # Scheduled Tasks

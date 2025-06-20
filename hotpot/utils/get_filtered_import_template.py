@@ -12,16 +12,15 @@ def get_filtered_import_template(doctype):
 	"""Generate a template with only allowed fields for import"""
 
 	user_field = [
-		"Employee ID",
-		"E Mail",
-		"Mobile no.",
-		"Employee Name",
-		"Role",
-		"Tag Id",
+		"Company",
+		"Employee Number",
+		"User ID",
+		"First Name",
+		"Gender",
+		"Date of Birth",
 		"Date of Joining",
-		"Date Of Birth",
-		"Coupon Count",
-		"Location",
+		"Branch",
+		"Status",
 	]
 	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 	meal_item_field = ["Item Name"]
@@ -31,7 +30,7 @@ def get_filtered_import_template(doctype):
 		meal_field.append("Vendor")
 		meal_item_field.append("Vendor")
 	fields_to_include = []
-	if doctype == "Hotpot User":
+	if doctype == "Employee":
 		fields_to_include = user_field
 	elif doctype == "Hotpot Meal":
 		fields_to_include = meal_field
