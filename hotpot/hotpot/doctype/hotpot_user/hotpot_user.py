@@ -120,7 +120,6 @@ def validate_employee(doc, method):
 	doc.create_user_permission=0
 
 def validate_user(doc, method):
-	doc.enabled = 1
 	doc.document_follow_notify = 0
 	doc.follow_liked_documents = 0
 	doc.search_bar = 0
