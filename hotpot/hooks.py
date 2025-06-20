@@ -42,6 +42,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			]
 		},
@@ -58,6 +59,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			],
 		},
@@ -75,6 +77,7 @@ fixtures = [
 					"Hotpot Vendor",
 					"Hotpot HR",
 					"Hotpot Finance",
+					"Employee",
 				],
 			],
 		},
