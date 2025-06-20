@@ -21,14 +21,20 @@ frappe.ui.form.on('Data Import', {
                     frm.set_query('reference_doctype', function () {
                         return {
                             filters: {
-                                name: ['in', ['Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays","Employee"]]
+                                name: ['in', ['Employee', 'Hotpot Meal', 'Hotpot Meal Items', "Hotpot Holidays"]]
                             }
                         };
                     });
                 }
             }
+
+            if(frm.doc.reference_doctype && frm.doc.reference_doctype == "Employee") {
+                let msg = __('ℹ️ Please note: All the fields are case-sensitive.');
+                frm.dashboard.clear_headline();
+                frm.dashboard.set_headline_alert(msg);
+            }
             
-            if (frm.doc.reference_doctype && frm.doc.reference_doctype!="Employee") {
+            if (frm.doc.reference_doctype) {
                 frm.page.clear_menu()
                 frm.page.hide_menu()
                 frm.page.add_inner_button(__("Download Template", null, "Button in list view menu"), function () {
@@ -61,7 +67,7 @@ frappe.ui.form.on('Data Import', {
             }
             frm.set_df_property("mute_emails", "hidden", 1);
             frm.set_df_property("google_sheets_url", "hidden", 1);
-            if(frm.doc.reference_doctype && frm.doc.reference_doctype!="Employee"){
+            if(frm.doc.reference_doctype){
                 frm.set_df_property("download_template", "hidden", 1)
             }
             frm.set_df_property("html_5", "hidden", 1)

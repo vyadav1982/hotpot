@@ -53,15 +53,15 @@ class CustomDataImport(DataImport):
 				return preview_data
 
 			user_fields = [
-				"Employee ID",
-				"E Mail",
-				"Mobile no.",
-				"Employee Name",
-				"Tag Id",
+				"Company",
+				"Employee Number",
+				"User ID",
+				"First Name",
+				"Gender",
+				"Date of Birth",
 				"Date of Joining",
-				"Date Of Birth",
-				"Coupon Count",
-				"Location",
+				"Branch",
+				"Status",
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 			meal_item_fields = ["Item Name"]
@@ -71,7 +71,7 @@ class CustomDataImport(DataImport):
 				meal_fields.append("Vendor")
 				meal_item_fields.append("Vendor")
 
-			if self.reference_doctype == "Hotpot User":
+			if self.reference_doctype == "Employee":
 				expected_fields = user_fields
 			elif self.reference_doctype == "Hotpot Meal":
 				expected_fields = meal_fields
@@ -79,27 +79,27 @@ class CustomDataImport(DataImport):
 				expected_fields = meal_item_fields
 			elif self.reference_doctype == "Hotpot Holidays":
 				expected_fields = holiday_field
-			elif self.reference_doctype != "Employee":
+			else:
 				frappe.throw(
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
 				)
 
-			if self.reference_doctype != "Employee":
-				# Check for missing/extra fields
-				missing = [col for col in expected_fields if col not in column_headers]
-				extra = [
-					col
-					for col in column_headers
-					if col and col not in expected_fields and not col.startswith("Sr.")
-				]
+			
+			# Check for missing/extra fields
+			missing = [col for col in expected_fields if col not in column_headers]
+			extra = [
+				col
+				for col in column_headers
+				if col and col not in expected_fields and not col.startswith("Sr.")
+			]
 
-				if missing or extra:
-					error_msg = []
-					if missing:
-						error_msg.append(f"Missing columns: {', '.join(missing)}")
-					if extra:
-						error_msg.append(f"Extra columns: {', '.join(extra)}")
-					frappe.throw("<br>".join(error_msg))
+			if missing or extra:
+				error_msg = []
+				if missing:
+					error_msg.append(f"Missing columns: {', '.join(missing)}")
+				if extra:
+					error_msg.append(f"Extra columns: {', '.join(extra)}")
+				frappe.throw("<br>".join(error_msg))
 
 			# Create a mapping from header titles to column indices
 			header_to_index = {}
