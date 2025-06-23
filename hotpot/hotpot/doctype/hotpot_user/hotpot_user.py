@@ -130,6 +130,7 @@ def validate_user(doc, method):
 	doc.form_sidebar = 0
 	doc.timeline = 0
 	doc.dashboard = 0
+	doc.bulk_actions = 0
 
 
 def update_employee_to_hotpot(doc, method):
