@@ -45,6 +45,7 @@ frappe.query_reports["Coupon Report"] = {
       fieldtype: "Link",
       width: "80",
       options: "Hotpot User",
+      hidden: frappe.user.has_role("Hotpot Vendor") && !frappe.user.has_role("Administrator"),
       get_query: () => {
         return {
           query: "hotpot.hotpot.doctype.hotpot_user.get_all_vendor",
