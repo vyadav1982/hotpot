@@ -37,29 +37,80 @@ def create_employee_custom_fields():
 		}
 	)
 
-def create_property_setters():
+# def create_property_setters():
 
-	make_property_setter(
-		"Employee",
-		"location",
-		"reqd",
-		1, 
-		"Check",
-	)
-	make_property_setter(
-		"Employee",
-		"branch",
-		"hidden",
-		1,
-		"Check",
-	)
-	make_property_setter(
-		"Employee",
-		"department",
-		"reqd",
-		1,
-		"Check",
-	)
+# 	frappe.make_property_setter(
+# 		"Employee",
+# 		"location",
+# 		"reqd",
+# 		1, 
+# 		"Check",
+# 	)
+# 	frappe.make_property_setter(
+# 		"Employee",
+# 		"branch",
+# 		"hidden",
+# 		1,
+# 		"Check",
+# 	)
+# 	frappe.make_property_setter(
+# 		"Employee",
+# 		"branch",
+# 		"reqd",
+# 		0,
+# 		"Check",
+# 	)
+# 	frappe.make_property_setter(
+# 		"Employee",
+# 		"department",
+# 		"reqd",
+# 		1,
+# 		"Check",
+# 	)
+
+
+def create_property_setters():
+	frappe.get_doc({
+		"doctype": "Property Setter",
+		"doc_type": "Employee",
+		"doctype_or_field": "DocField",
+		"field_name": "location",
+		"property": "reqd",
+		"value": 1,
+		"property_type": "Check"
+	}).insert()
+
+	frappe.get_doc({
+		"doctype": "Property Setter",
+		"doc_type": "Employee",
+		"doctype_or_field": "DocField",
+		"field_name": "department",
+		"property": "reqd",
+		"value": 1,
+		"property_type": "Check"
+	}).insert()
+
+	frappe.get_doc({
+		"doctype": "Property Setter",
+		"doc_type": "Employee",
+		"doctype_or_field": "DocField",
+		"field_name": "branch",
+		"property": "hidden",
+		"value": 1,
+		"property_type": "Check"
+	}).insert()
+
+	frappe.get_doc({
+		"doctype": "Property Setter",
+		"doc_type": "Employee",
+		"doctype_or_field": "DocField",
+		"field_name": "branch",
+		"property": "reqd",
+		"value": 0,
+		"property_type": "Check"
+	}).insert()
+
+	frappe.db.commit()
 
 
 def create_meal_custom_fields():
