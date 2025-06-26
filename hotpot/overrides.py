@@ -60,7 +60,7 @@ class CustomDataImport(DataImport):
 				"Gender",
 				"Date of Birth",
 				"Date of Joining",
-				"Location",
+				"Branch",
 				"Status",
 			]
 			meal_fields = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
