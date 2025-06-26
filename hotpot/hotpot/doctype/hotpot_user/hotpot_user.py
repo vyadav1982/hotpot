@@ -119,18 +119,24 @@ def add_user_to_hotpot(doc, method):
 def validate_employee(doc, method):
 	doc.create_user_permission=0
 
+import frappe
+
 def validate_user(doc, method):
-	doc.document_follow_notify = 0
-	doc.follow_liked_documents = 0
-	doc.search_bar = 0
-	doc.notifications = 0
-	doc.list_sidebar = 0
-	doc.bulk_action = 0
-	doc.view_switcher = 0
-	doc.form_sidebar = 0
-	doc.timeline = 0
-	doc.dashboard = 0
-	doc.bulk_actions = 0
+	user_roles = [d.role for d in doc.roles]
+
+	if any(role.startswith("Hotpot ") for role in user_roles):
+		doc.document_follow_notify = 0
+		doc.follow_liked_documents = 0
+		doc.search_bar = 0
+		doc.notifications = 0
+		doc.list_sidebar = 0
+		doc.bulk_action = 0
+		doc.view_switcher = 0
+		doc.form_sidebar = 0
+		doc.timeline = 0
+		doc.dashboard = 0
+		doc.bulk_actions = 0
+
 
 
 def update_employee_to_hotpot(doc, method):
