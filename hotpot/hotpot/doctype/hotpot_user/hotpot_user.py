@@ -124,7 +124,7 @@ import frappe
 def validate_user(doc, method):
 	user_roles = [d.role for d in doc.roles]
 
-	if any(role.startswith("Hotpot ") for role in user_roles) and "Administrator" not in user_roles:
+	if any(role.startswith("Hotpot ") for role in user_roles) and not has_role("Administrator")::
 		doc.document_follow_notify = 0
 		doc.follow_liked_documents = 0
 		doc.search_bar = 0
