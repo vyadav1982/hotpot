@@ -1105,7 +1105,7 @@ def generate_coupon():
 				third = from_date == datetime.utcnow().date()
 				user_tz = get_user_timezone()
 				if first and second and third:
-					set_response(400, False, "Cannot create coupon in meal preparation time")
+					set_response(400, False, "Cannot book meal in meal preparation time")
 					return
 				query = """
 					SELECT 1
@@ -1667,7 +1667,7 @@ def generate_coupon_admin():
 				third = from_date == datetime.utcnow().date()
 				user_tz = get_user_timezone()
 				if first and second and third:
-					set_response(400, False, "Cannot create coupon in meal preparation time")
+					set_response(400, False, "Cannot book meal in meal preparation time")
 					return
 				query = """
 					SELECT 1
