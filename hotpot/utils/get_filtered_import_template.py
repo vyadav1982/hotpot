@@ -19,7 +19,7 @@ def get_filtered_import_template(doctype):
 		"Gender",
 		"Date of Birth",
 		"Date of Joining",
-		"Branch",
+		"Location",
 		"Status",
 	]
 	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
