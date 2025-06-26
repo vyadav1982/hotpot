@@ -35,12 +35,13 @@
    "fieldname": "location",
    "fieldtype": "Link",
    "label": "Location",
-   "options": "Branch"
+   "options": "Company Locations",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 12:43:08.185202",
+ "modified": "2025-06-26 14:22:38.249837",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Holidays",

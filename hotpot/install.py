@@ -25,6 +25,14 @@ def create_employee_custom_fields():
 					"insert_after": "branch",
 				},
 				
+				{
+					"label": ("Location"),
+					"fieldname": "location",
+					"fieldtype": "Link",
+					"options":"Company Locations",
+					"insert_after": "band",
+				},
+				
 			]
 		}
 	)
@@ -32,11 +40,18 @@ def create_employee_custom_fields():
 def create_property_setters():
 
 	make_property_setter(
-		"Employee",           # Doctype Name
-		"branch",               # Fieldname
-		"reqd",               # Property to change
+		"Employee",
+		"location",
+		"reqd",
 		1, 
-		"Check",                  # Property type (Check for boolean)
+		"Check",
+	)
+	make_property_setter(
+		"Employee",
+		"branch",
+		"hidden",
+		1,
+		"Check",
 	)
 	make_property_setter(
 		"Employee",
