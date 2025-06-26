@@ -152,7 +152,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.is_server = 0
 		hp_user.tag_id = doc.attendance_device_id
 		hp_user.user = doc.user_id
-		hp_user.location = doc.location if doc.location else hp_user.location
+		hp_user.location = doc.branch if doc.branch else hp_user.location
 		hp_user.save(ignore_permissions=True)
 	else:
 		hp_user = frappe.new_doc("Hotpot User")
@@ -172,7 +172,7 @@ def update_employee_to_hotpot(doc, method):
 		hp_user.is_server = 0
 		hp_user.tag_id = doc.attendance_device_id
 		hp_user.user = doc.user_id
-		hp_user.location = doc.location
+		hp_user.location = doc.branch
 		hp_user.employee = doc.employee_number
 		password = frappe.generate_hash(length=8)
 		set_user_password(frappe.local.site, doc.user_id, password, hp_user)
