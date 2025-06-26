@@ -1232,7 +1232,7 @@ def generate_coupon():
 		for doc in temp_docs:
 			doc.insert()
 		frappe.db.commit()
-		message = f"Generated coupon for {from_date.strftime('%d %b %Y')}."
+		message = f"Booked meal for {from_date.strftime('%d %b %Y')}."
 		if for_guest and role in ["Hotpot User", "Hotpot HR"]:
 			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
 		elif for_guest and role == "Hotpot Admin":
@@ -1719,7 +1719,7 @@ def generate_coupon_admin():
 							{
 								"employee_id": user_doc.get("name"),
 								"type": "Guest Creation",
-								"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
+								"message": f"Booked meal for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
 								"meal_id": meal_id,
 							}
 						)
@@ -1962,7 +1962,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 							{
 								"employee_id": user_doc.get("name"),
 								"type": "Guest Creation",
-								"message": f"Generated coupon for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
+								"message": f"Booked meal for {approval_doc.guest_name}{(approval_doc.guest_mobile_no)} for meal {meal_title} on {from_date.strftime('%d %b %Y')}",
 								"meal_id": meal_id,
 							}
 						)
