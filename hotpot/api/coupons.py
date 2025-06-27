@@ -1184,6 +1184,7 @@ def generate_coupon():
 					)
 					meal_doc.get("max_meal_count")
 					mcategory = meal_doc.get("category")
+					mcategory_capitalize = mcategory.title()
 					transaction_doc = frappe.new_doc("Hotpot Transaction History")
 					transaction_doc.update(
 						{
@@ -1232,7 +1233,7 @@ def generate_coupon():
 		for doc in temp_docs:
 			doc.insert()
 		frappe.db.commit()
-		message = f"{mcategory} booked for {from_date.strftime('%d %b %Y')}."
+		message = f"{mcategory_capitalize} booked for {from_date.strftime('%d %b %Y')}."
 		if for_guest and role in ["Hotpot User", "Hotpot HR"]:
 			message = f"Welcome, {approval_doc.guest_name}! Your meal coupon for {from_date.strftime('%d %b %Y')} has been generated."
 		elif for_guest and role == "Hotpot Admin":
