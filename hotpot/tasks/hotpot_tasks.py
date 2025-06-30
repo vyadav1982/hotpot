@@ -23,7 +23,7 @@ def load_balance():
 
 			for emp in employees:
 				current_count = frappe.db.get_value("Hotpot User", emp.name, "coupon_count") or 0
-				new_count = current_count + monthly_credit_amount
+				new_count =  monthly_credit_amount
 
 				frappe.db.set_value("Hotpot User", emp.name, "coupon_count", new_count)
 
