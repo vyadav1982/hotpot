@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2025-05-10 09:19:12.750153",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-05-10 09:19:12.750153",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "send-hotpot-notifica",
+ "owner": "Administrator",
+ "page_name": "send-hotpot-notifica",
+ "roles": [
+  {
+   "role": "Hotpot Admin"
+  },
+  {
+   "role": "Hotpot HR"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Send Hotpot Mobile Notification"
+}

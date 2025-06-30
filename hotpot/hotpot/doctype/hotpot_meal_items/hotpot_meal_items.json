@@ -1,14 +1,15 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "hash",
+ "autoname": "format:MEAL-{#####}",
  "creation": "2025-01-27 11:15:09.070314",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "item_name",
   "is_active",
-  "vendor_id"
+  "vendor_id",
+  "is_deleted"
  ],
  "fields": [
   {
@@ -17,25 +18,35 @@
    "label": "Item Name"
   },
   {
-   "default": "0",
+   "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Is Active",
+   "search_index": 1
   },
   {
    "fieldname": "vendor_id",
    "fieldtype": "Link",
-   "label": "Vendor Id",
-   "options": "Hotpot User"
+   "in_list_view": 1,
+   "label": "Vendor",
+   "options": "Hotpot User",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_deleted",
+   "fieldtype": "Check",
+   "label": "Is Deleted",
+   "search_index": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-07 11:48:36.198081",
+ "modified": "2025-06-10 12:49:53.675454",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Items",
- "naming_rule": "Random",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -51,7 +62,11 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "item_name",
+ "track_changes": 1
 }

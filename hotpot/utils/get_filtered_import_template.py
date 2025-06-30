@@ -1,0 +1,71 @@
+import base64
+from io import BytesIO
+
+import frappe
+
+# from frappe.core.doctype.data_import.data_import import get_template
+import openpyxl
+
+
+@frappe.whitelist()
+def get_filtered_import_template(doctype):
+	"""Generate a template with only allowed fields for import"""
+
+	user_field = [
+		"Company",
+		"Employee Number",
+		"User ID",
+		"First Name",
+		"Gender",
+		"Date of Birth",
+		"Date of Joining",
+		"Branch",
+		"Status",
+	]
+	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
+	meal_item_field = ["Item Name"]
+	holiday_field = ["Date", "Title", "Location"]
+	roles = frappe.get_roles()
+	if "Hotpot Vendor" not in roles:
+		meal_field.append("Vendor")
+		meal_item_field.append("Vendor")
+	fields_to_include = []
+	if doctype == "Employee":
+		fields_to_include = user_field
+	elif doctype == "Hotpot Meal":
+		fields_to_include = meal_field
+	elif doctype == "Hotpot Meal Items":
+		fields_to_include = meal_item_field
+	elif doctype == "Hotpot Holidays":
+		fields_to_include = holiday_field
+
+	output = BytesIO()
+	wb = openpyxl.Workbook()
+	ws = wb.active
+	if fields_to_include == []:
+		ws["A1"] = f"You do not have permission to import {doctype}"
+	ws.append(fields_to_include)
+
+	wb.save(output)
+	output.seek(0)
+	excel_base64 = base64.b64encode(output.read()).decode()
+
+	return {"file_content": excel_base64, "filename": f"{doctype} Import Template.xlsx"}
+
+
+@frappe.whitelist()
+def check_if_needs_filtering(doctype):
+	"""Check if a doctype needs its import template to be filtered"""
+	doctypes_needing_filtering = [
+		"User",
+		"Customer",
+		"Employee",
+		# Add your specific doctypes that need filtering
+		"Your DocType Name",
+	]
+
+	# Also check by module
+	meta = frappe.get_meta(doctype)
+	module_needs_filtering = meta.module in ["Your Module Name", "Another Module"]
+
+	return {"needs_filtering": doctype in doctypes_needing_filtering or module_needs_filtering}

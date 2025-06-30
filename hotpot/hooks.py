@@ -10,7 +10,7 @@ app_logo_url = "/assets/hotpot/manifest/icon-512x512.png"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext", "hrms"]
 
 # Each item in the list will be shown as an app in the apps page
 add_to_apps_screen = [
@@ -26,6 +26,10 @@ add_to_apps_screen = [
 extend_bootinfo = "hotpot.boot.boot_session"
 
 fixtures = [
+	# "Module Profile",
+	# "Hotpot Locations",
+	# "Block Module",
+	# {"doctype": "Report", "filters": {"module": ["=", "Hotpot"]}},
 	{
 		"doctype": "Role",
 		"filters": {
@@ -36,6 +40,9 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
+					"Hotpot HR",
+					"Hotpot Finance",
+					"Employee",
 				],
 			]
 		},
@@ -50,6 +57,27 @@ fixtures = [
 					"Hotpot User",
 					"Hotpot Server",
 					"Hotpot Vendor",
+					"Hotpot HR",
+					"Hotpot Finance",
+					"Employee",
+				],
+			],
+		},
+	},
+	{
+		"doctype": "Role Permission for Page and Report",
+		"filters": {
+			"set_role_for": "Report",
+			"role": [
+				"in",
+				[
+					"Hotpot Admin",
+					"Hotpot User",
+					"Hotpot Server",
+					"Hotpot Vendor",
+					"Hotpot HR",
+					"Hotpot Finance",
+					"Employee",
 				],
 			],
 		},
@@ -62,6 +90,12 @@ fixtures = [
 # include js, css files in header of desk.html
 app_include_css = "hotpot.bundle.css"
 app_include_js = "hotpot.bundle.js"
+app_include_js = ["/assets/hotpot/js/navbar_customizations.js", "/assets/hotpot/js/route_guard.js"]
+
+# app_include_js = "/assets/hotpot/js/data_import_list.js"
+
+
+# website_path_resolver = "hotpot.utils.route_protection.protect_routes"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/hotpot/css/hotpot.css"
@@ -78,8 +112,8 @@ app_include_js = "hotpot.bundle.js"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_js = {"Data Import": "public/js/data_import.js"}
+doctype_list_js = {"Data Import": "public/js/data_import_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 
@@ -160,49 +194,43 @@ after_uninstall = "hotpot.uninstall.after_uninstall"
 # }
 #
 # has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
+# 	"Hotpot Meal": "hotpot.hotpot.doctype.hotpot_meal.hotpot_meal.has_permission",
 # }
 
 # DocType Class
 # ---------------
 # Override standard doctype classes
 
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
+override_doctype_class = {
+	"Data Import": "hotpot.overrides.CustomDataImport",
+	"Notification Settings": "hotpot.notification_settings.CustomNotificationSettings",
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Employee": {
+		"after_insert": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
+		"on_update": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.update_employee_to_hotpot",
+		"on_trash": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.remove_employee_from_hotpot",
+		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_employee",
+	},
+	"User": {
+		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_user",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"hotpot.tasks.all"
-# 	],
-# 	"daily": [
-# 		"hotpot.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"hotpot.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"hotpot.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"hotpot.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+    "daily": [
+        "hotpot.tasks.hotpot_tasks.load_balance"
+    ]
+}
+
 
 # Testing
 # -------
@@ -280,7 +308,7 @@ export_python_type_annotations = True
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
-website_route_rules = [
-	{"from_route": "/hotpot/<path:app_path>", "to_route": "hotpot"},
-	{"from_route": "/hotpot_mobile/<path:app_path>", "to_route": "hotpot"},
-]
+# website_route_rules = [
+# 	{"from_route": "/hotpot/<path:app_path>", "to_route": "app"},
+# 	{"from_route": "/hotpot_mobile/<path:app_path>", "to_route": "app"},
+# ]

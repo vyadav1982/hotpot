@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:type",
+ "creation": "2025-04-18 12:42:46.663760",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "type",
+  "start_time",
+  "start_time_local",
+  "end_time",
+  "end_time_local",
+  "lead_time",
+  "cancellation_time",
+  "is_active",
+  "sequence",
+  "meal_rate",
+  "max_meal_count"
+ ],
+ "fields": [
+  {
+   "fieldname": "type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Hotpot Meal Types",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Start Time UTC"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "End Time UTC"
+  },
+  {
+   "fieldname": "lead_time",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Lead Time",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cancellation_time",
+   "fieldtype": "Int",
+   "label": "Cancellation Time",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "meal_rate",
+   "fieldtype": "Int",
+   "label": "Meal Rate",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "default": "-1",
+   "fieldname": "max_meal_count",
+   "fieldtype": "Int",
+   "label": "Max Meal Count"
+  },
+  {
+   "fieldname": "start_time_local",
+   "fieldtype": "Time",
+   "label": "Start Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "end_time_local",
+   "fieldtype": "Time",
+   "label": "End Time",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-06-10 12:49:36.501390",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Meal Category",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "type",
+ "track_changes": 1,
+ "translated_doctype": 1
+}

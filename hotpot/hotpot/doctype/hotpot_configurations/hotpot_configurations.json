@@ -1,0 +1,87 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-02-25 12:52:24.457672",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "free_birthday_meal",
+  "free_joining_day_meal",
+  "can_generate_for_guest",
+  "allow_meal_on_sunday",
+  "allow_free_meal_for_outer_location",
+  "discount",
+  "initial_tokens"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "free_birthday_meal",
+   "fieldtype": "Check",
+   "label": "Free Birthday Meal"
+  },
+  {
+   "default": "0",
+   "fieldname": "free_joining_day_meal",
+   "fieldtype": "Check",
+   "label": "Free Joining Day Meal"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_generate_for_guest",
+   "fieldtype": "Check",
+   "label": "Can Generate for Guest"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_meal_on_sunday",
+   "fieldtype": "Check",
+   "label": "Allow Meal on Sunday"
+  },
+  {
+   "default": "-1",
+   "fieldname": "discount",
+   "fieldtype": "Percent",
+   "label": "Discount",
+   "precision": "0"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_free_meal_for_outer_location",
+   "fieldtype": "Check",
+   "label": "Allow Free Meal for Outer location"
+  },
+  {
+   "default": "6000",
+   "fieldname": "initial_tokens",
+   "fieldtype": "Int",
+   "label": "New User Wallet Balance / Monthly Wallet Balance Loading",
+   "non_negative": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-06-17 12:48:31.275021",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Configurations",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -6,21 +6,23 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "rating",
-  "feedback",
+  "employee_id",
   "meal_id",
-  "employee_id"
+  "meal_item_id",
+  "rating",
+  "feedback"
  ],
  "fields": [
   {
    "fieldname": "rating",
-   "fieldtype": "Data",
+   "fieldtype": "Rating",
    "in_list_view": 1,
-   "label": "Rating"
+   "label": "Rating",
+   "non_negative": 1
   },
   {
    "fieldname": "feedback",
-   "fieldtype": "Data",
+   "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Feedback"
   },
@@ -28,24 +30,32 @@
    "fieldname": "meal_id",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Meal Id"
+   "label": "Meal"
   },
   {
    "fieldname": "employee_id",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Employee Id"
+   "label": "Employee"
+  },
+  {
+   "fieldname": "meal_item_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Meal Item",
+   "options": "Hotpot Meal"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-01-31 14:58:08.723216",
+ "modified": "2025-05-10 09:14:41.391986",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Rating",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2025-04-01 18:10:52.746986",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2025-05-19 16:15:18.297538",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "generate-guest-qr",
+ "owner": "Administrator",
+ "page_name": "generate-guest-qr",
+ "roles": [
+  {
+   "role": "Hotpot Admin"
+  },
+  {
+   "role": "Hotpot HR"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 1,
+ "title": "Generate Guest Coupon"
+}

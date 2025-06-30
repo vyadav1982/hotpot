@@ -7,6 +7,8 @@ from frappe.model.document import Document
 
 class HotpotMealRating(Document):
 	# begin: auto-generated types
+	# ruff: noqa
+
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -15,11 +17,14 @@ class HotpotMealRating(Document):
 		from frappe.types import DF
 
 		employee_id: DF.Data | None
-		feedback: DF.Data | None
+		feedback: DF.SmallText | None
 		meal_id: DF.Data | None
+		meal_item_id: DF.Link | None
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		rating: DF.Data | None
+		rating: DF.Rating
+	# ruff: noqa
 	# end: auto-generated types
+
 	pass

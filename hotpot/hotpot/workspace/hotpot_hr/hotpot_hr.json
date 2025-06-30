@@ -1,0 +1,176 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"7yhRK_EewU\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Meal Management \ud83c\udf5d</span>\",\"col\":12}},{\"id\":\"AadNDhOccF\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Meal Types\",\"col\":3}},{\"id\":\"9ww2iU-8t_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Meal Category\",\"col\":3}},{\"id\":\"WbeXim3Vtm\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Meal Items\",\"col\":3}},{\"id\":\"AROUg0g9SS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Meal\",\"col\":3}},{\"id\":\"YkrRTtSaEM\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"MdJbHyVe6r\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">User Management \ud83e\udd37\ud83c\udffb\u200d\u2642\ufe0f</span>\",\"col\":12}},{\"id\":\"aUDsQS2KUO\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot User\",\"col\":3}},{\"id\":\"gE0QeIiZ68\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Vendor\",\"col\":3}},{\"id\":\"05Rf__qGZx\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EV6h2cR0bU\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports \ud83d\uddc2\ufe0f</b></span>\",\"col\":12}},{\"id\":\"-u6IxIatR_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Guest Meal Report\",\"col\":3}},{\"id\":\"UOoKVWQDzZ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Birthday Meal Report\",\"col\":3}},{\"id\":\"GlbtuEKyZf\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Joining Day Meal Report\",\"col\":3}},{\"id\":\"lkao3MC3np\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Coupon Report\",\"col\":3}},{\"id\":\"bKa18X2a2s\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee Meal Consumption Report\",\"col\":4}},{\"id\":\"qCEOFsOExt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Outer Location Coupon Report\",\"col\":3}},{\"id\":\"C9Y-ZihUbq\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"KkVUId6d75\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Approvals \u2705</b></span>\",\"col\":12}},{\"id\":\"jB6Pq67lcr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Approvals\",\"col\":3}},{\"id\":\"RGxRIva0T0\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected Approvals\",\"col\":3}},{\"id\":\"VluMNc6t2L\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Confirmed Approvals\",\"col\":3}},{\"id\":\"DpG22mz0Fq\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"ufBnPPj0MR\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Settings \u2699\ufe0f</span>\",\"col\":12}},{\"id\":\"lz03tulgb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Hotpot Holidays\",\"col\":3}},{\"id\":\"aiaDWI3qCj\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Load Balance in Employee Wallet\",\"col\":3}},{\"id\":\"AzYQbG3Uhf\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"K_g6_xOZXd\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b></b></span><span class=\\\"h4\\\">Guest QR Generate \ud83d\udcb3</span>\",\"col\":12}},{\"id\":\"kdokX5hMgz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Generate Coupons\",\"col\":3}}]",
+ "creation": "2025-03-28 11:00:41.254560",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "share",
+ "idx": 0,
+ "indicator_color": "",
+ "is_hidden": 0,
+ "label": "Hotpot HR",
+ "links": [],
+ "modified": "2025-06-18 12:19:37.069872",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot HR",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "Hotpot HR"
+  }
+ ],
+ "sequence_id": 3.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Employee Meal Consumption Report",
+   "link_to": "Employee Wise Meal Amount",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Outer Location Coupon Report",
+   "link_to": "Outer Location Coupon Report",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Coupon Report",
+   "link_to": "Coupon Report",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Pink",
+   "doc_view": "List",
+   "label": "Hotpot Meal Types",
+   "link_to": "Hotpot Meal Types",
+   "stats_filter": "[[\"Hotpot Meal Types\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Load Balance in Employee Wallet",
+   "link_to": "load-wallet-balance",
+   "type": "Page"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Generate Coupons",
+   "link_to": "generate-guest-qr",
+   "type": "Page"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Joining Day Meal Report",
+   "link_to": "Joining Day Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Hotpot Meal Items",
+   "link_to": "Hotpot Meal Items",
+   "stats_filter": "[[\"Hotpot Meal Items\",\"is_active\",\"=\",1,false],[\"Hotpot Meal Items\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Hotpot Vendor",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "doc_view": "List",
+   "label": "Hotpot Meal Category",
+   "link_to": "Hotpot Meal Category",
+   "stats_filter": "[[\"Hotpot Meal Category\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Hotpot User",
+   "link_to": "Hotpot User",
+   "stats_filter": "[[\"Hotpot User\",\"is_active\",\"=\",1,false],[\"Hotpot User\",\"is_deleted\",\"=\",0,false],[\"Hotpot User\",\"is_vendor\",\"=\",0,false],[\"Hotpot User\",\"is_server\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Hotpot Meal",
+   "link_to": "Hotpot Meal",
+   "stats_filter": "[[\"Hotpot Meal\",\"is_active\",\"=\",1,false],[\"Hotpot Meal\",\"is_deleted\",\"=\",0,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Birthday Meal Report",
+   "link_to": "Birthday Coupons Report",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Guest Meal Report",
+   "link_to": "Guest Meal Consumption Report",
+   "report_ref_doctype": "Hotpot Meal",
+   "type": "Report"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Pending Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Pending\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Hotpot Holidays",
+   "link_to": "Hotpot Holidays",
+   "stats_filter": "[[\"Hotpot Holidays\",\"is_active\",\"=\",1,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Rejected Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Rejected\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Confirmed Approvals",
+   "link_to": "Hotpot Approvals",
+   "stats_filter": "[[\"Hotpot Approvals\",\"approval_status\",\"=\",\"Approved\",false]]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Hotpot HR"
+}
