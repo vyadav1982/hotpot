@@ -253,7 +253,7 @@ def create_approval():
 			res = generate_guest_coupon(approval_doc)
 			frappe.db.commit()
 			return set_response(200, res.get("status") == "success", res.get("msg"))
-		if data["request_type"] === "Guest Coupon Generation":
+		if data["request_type"] == "Guest Coupon Generation":
 			create_temp_coupons(data,user_data,approval.name)
 
 		return set_response(200, True, "Request created successfully", approval.name)
