@@ -330,6 +330,9 @@ def update_meal():
 						user_doc.fcm_token,
 						"Meal Plot Twist!",
 						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+						date=meal_doc.meal_date,
+						doc_id=meal_doc.name,
+						text="meals"
 					)
 			except Exception as e:
 				frappe.log_error(frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}")

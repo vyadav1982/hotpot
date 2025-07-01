@@ -45,7 +45,9 @@ def load_balance():
 						send_notification_by_token(
 							emp.fcm_token,
 							"💰 Wallet Getting Heavier!",
-							f"🎉 Great news! Admin just added ₹{monthly_credit_amount} to your wallet. New balance: ₹{new_count}."
+							f"🎉 Great news! Admin just added ₹{monthly_credit_amount} to your wallet. New balance: ₹{new_count}.",
+							doc_id=transaction_doc.name,
+							text="transaction"
 						)
 					except Exception:
 						frappe.log_error(frappe.get_traceback(), f"Failed to send wallet credit notification to user {emp.name}")
