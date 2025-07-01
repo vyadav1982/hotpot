@@ -10,7 +10,7 @@ from firebase_config import messaging
 
 def send_notification_by_token(device_token, title, body,date=None, doc_id=None, text=None):
 	data_payload = {
-        "date": date or "",
+        "date": str(date) or "",
         "id": str(doc_id) if doc_id else "",
         "text": text or "approvals"
     }
