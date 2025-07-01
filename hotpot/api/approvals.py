@@ -303,6 +303,8 @@ def create_temp_coupons(data, user_data, approval_id):
 				}
 
 				meal_doc.append("coupons", coupon_data)
+				meal_doc.save()
+			frappe.db.commit()
 
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Temp Coupon Generation Error")
