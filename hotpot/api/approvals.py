@@ -244,7 +244,7 @@ def create_approval():
 		frappe.db.commit()
 		if (
 			get_dominant_role_for_current_user() == "Hotpot Admin"
-			or get_dominant_role_for_current_user() == "Hotpot HR"
+			and get_dominant_role_for_current_user() == "Hotpot HR"
 		):
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval.name)
 			approval_doc.approval_status = "Approved"

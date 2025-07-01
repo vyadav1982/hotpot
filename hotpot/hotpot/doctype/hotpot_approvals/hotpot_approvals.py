@@ -62,7 +62,7 @@ class HotpotApprovals(Document):
 			meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 			for coupon in meal_doc.coupons:
 				if coupon.approval_id == self.name:
-					coupon.coupon_status = "Rejected"
+					coupon.status = "Rejected"
 			meal_doc.save()
 
 			try:
