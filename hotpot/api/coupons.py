@@ -1454,7 +1454,6 @@ def get_guest_coupon(date):
 			WHERE
 				hc.coupon_date BETWEEN %(start_datetime)s AND %(end_datetime)s
 				AND hc.guest_of = %(guestof)s
-				AND hc.status != 'Pending
 		"""
 
 		params = {
