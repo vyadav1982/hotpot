@@ -233,8 +233,8 @@ def create_approval():
 
 		approval_list.append(approval.name)
 		if (
-			get_dominant_role_for_current_user() != "Hotpot Admin"
-			or get_dominant_role_for_current_user() != "Hotpot HR"
+			get_dominant_role_for_current_user() == "Hotpot Admin"
+			or get_dominant_role_for_current_user() == "Hotpot HR"
 		):
 			send_approval_request_email(
 				"sashikant12rao@gmail.com", user_data, data, approval.name, meal_doc.meal_title
@@ -244,7 +244,7 @@ def create_approval():
 		frappe.db.commit()
 		if (
 			get_dominant_role_for_current_user() == "Hotpot Admin"
-			and get_dominant_role_for_current_user() == "Hotpot HR"
+			or get_dominant_role_for_current_user() == "Hotpot HR"
 		):
 			approval_doc = frappe.get_doc("Hotpot Approvals", approval.name)
 			approval_doc.approval_status = "Approved"
