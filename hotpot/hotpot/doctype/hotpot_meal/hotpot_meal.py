@@ -6,6 +6,8 @@ from frappe.model.document import Document
 from datetime import datetime, timedelta
 from hotpot.utils.utc_time import *
 from frappe import _
+from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
+
 
 
 class HotpotMeal(Document):
@@ -75,6 +77,9 @@ class HotpotMeal(Document):
 				frappe.throw("Start time must be before End time.")
 
 	def before_save(self):
+		role = get_dominant_role_for_current_user()
+		if role == "Hotpot User":
+			return
 		if self.meal_date and self.category:
 			duplicate_exists = frappe.db.exists(
 				"Hotpot Meal",
@@ -113,6 +118,9 @@ class HotpotMeal(Document):
 						frappe.throw(f"Meal Item '{item_name}' not found for vendor '{self.vendor_id}'.")
 
 	def before_insert(self):
+		role = get_dominant_role_for_current_user()
+		if role == "Hotpot User":
+			return
 		self.validate_dates()
 		existing = frappe.db.exists(
 			"Hotpot Meal",
