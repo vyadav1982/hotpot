@@ -12,7 +12,7 @@ def send_notification_by_token(device_token, title, body,date=None, doc_id=None,
 	data_payload = {
         "date": str(date) or "",
         "id": str(doc_id) if doc_id else "",
-        "text": text or "approvals"
+        "text": text or ""
     }
 	message = messaging.Message(
 		notification=messaging.Notification(
