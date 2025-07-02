@@ -58,7 +58,13 @@ class HotpotUser(Document):
 	def on_update(self):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
-			if frappe_user:
+			emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
+			if emp_user and emp_user.user_id is None:
+				emp_user.user_id = self.email
+				emp_user.save(ignore_permissions=True)
+				frappe.db.commit()
+
+			if frappe_user and not frappe.flags.in_import:
 				# names = self.full_name.split(" ", 1) if self.full_name else ["", ""]
 				frappe_user.enabled = 1 if self.is_active == 1 and self.is_deleted == 0 else 0
 				# frappe_user.first_name = names[0] if names[0] else frappe_user.first_name
@@ -150,17 +156,19 @@ def update_employee_to_hotpot(doc, method):
 		]
 		hp_user.full_name = " ".join(part for part in parts if part)
 		hp_user.mobile_no = doc.cell_number if doc.cell_number else hp_user.mobile_no
-		hp_user.email = doc.user_id
+		hp_user.email = doc.user_id if doc.user_id else doc.company_email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
 		hp_user.is_deleted = 0 if doc.status == "Active" else 1
 		hp_user.is_guest = 0
 		hp_user.is_vendor = 0
 		hp_user.is_server = 0
 		hp_user.tag_id = doc.attendance_device_id
-		hp_user.user = doc.user_id
+		hp_user.user = doc.company_email
 		hp_user.location = doc.branch if doc.branch else hp_user.location
 		hp_user.save(ignore_permissions=True)
+		frappe.db.commit()
 	else:
+		create_user(doc)
 		hp_user = frappe.new_doc("Hotpot User")
 		hp_user.employee_id = doc.employee_number
 		parts = [
@@ -170,18 +178,18 @@ def update_employee_to_hotpot(doc, method):
 		]
 		hp_user.full_name = " ".join(part for part in parts if part)
 		hp_user.mobile_no = doc.cell_number
-		hp_user.email = doc.user_id
+		hp_user.email = doc.company_email
 		hp_user.is_active = 1 if doc.status == "Active" else 0
 		hp_user.is_deleted = 0 if doc.status == "Active" else 1
 		hp_user.is_guest = 0
 		hp_user.is_vendor = 0
 		hp_user.is_server = 0
 		hp_user.tag_id = doc.attendance_device_id
-		hp_user.user = doc.user_id
+		hp_user.user = doc.company_email
 		hp_user.location = doc.branch
 		hp_user.employee = doc.employee_number
 		password = frappe.generate_hash(length=8)
-		set_user_password(frappe.local.site, doc.user_id, password, hp_user)
+		set_user_password(frappe.local.site, doc.company_email, password, hp_user)
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 		hp_user.coupon_count = hotpot_config.get("initial_tokens")
 		hp_user.insert(ignore_permissions=True)
@@ -198,7 +206,7 @@ def update_employee_to_hotpot(doc, method):
 			"coupon": None,
 		})
 		transaction_doc.insert(ignore_permissions=True)
-	frappe.db.commit()
+		frappe.db.commit()
 
 
 def remove_employee_from_hotpot(doc, method):
@@ -208,3 +216,28 @@ def remove_employee_from_hotpot(doc, method):
 		hp_user.is_active = 0
 		hp_user.save(ignore_permissions=True)
 		frappe.db.commit()
+
+def create_user(doc):
+	try:
+		if not doc.company_email:
+			frappe.throw("Company email is missing.")
+
+		if not frappe.db.exists("User", {"email": doc.company_email}):
+			user = frappe.new_doc("User")
+			user.email = doc.company_email
+			user.first_name = doc.first_name or "First"
+			user.last_name = doc.last_name or ""
+			user.enabled = 1 if doc.status == "Active" else 0
+			user.send_welcome_email = 1
+			user.append("roles", {"role": "Hotpot User"})
+			user.flags.ignore_permissions = True
+			user.insert()
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Error in create_user")
+
+# def update_employee(doc):
+# 	if frappe.db.exists("Employee", doc.name):
+# 		emp = frappe.get_doc("Employee", doc.name)
+# 		emp.user_id = doc.company_email
+# 		emp.save(ignore_permissions=True)
+# 		frappe.db.commit()

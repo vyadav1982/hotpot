@@ -14,7 +14,7 @@ def get_filtered_import_template(doctype):
 	user_field = [
 		"Company",
 		"Employee Number",
-		"User ID",
+		"Company Email",
 		"First Name",
 		"Gender",
 		"Date of Birth",
