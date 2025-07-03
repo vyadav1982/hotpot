@@ -32,12 +32,20 @@ def create_employee_custom_fields():
 def create_property_setters():
 
 	make_property_setter(
-		"Employee",           # Doctype Name
-		"branch",               # Fieldname
-		"reqd",               # Property to change
+		"Employee", 
+		"branch",
+		"reqd",
 		1, 
-		"Check",                  # Property type (Check for boolean)
+		"Check",
 	)
+	make_property_setter(
+		"Employee",
+		"branch",
+		"fieldtype",
+		"Int",
+		"Data"
+	)
+
 	make_property_setter(
 		"Employee",
 		"department",

@@ -34,14 +34,22 @@ def send_email(template_name, to_email, context, subject, qr_code_base64=None):
 			)
 
 		email_body = render_template(f"templates/email/{template_name}.html", context)
-
-		frappe.sendmail(
-			recipients=to_email,
-			subject=subject,
-			content=email_body,
-			attachments=attachments if attachments else None,
-			now=True,
-		)
+		frappe.enqueue(
+                queue="long",
+                method=frappe.sendmail,
+                recipients=to_email,
+				subject=subject,
+                content=email_body,
+				attachments=attachments if attachments else None,
+                now=True,
+            )
+		# frappe.sendmail(
+		# 	recipients=to_email,
+		# 	subject=subject,
+		# 	content=email_body,
+		# 	attachments=attachments if attachments else None,
+		# 	now=True,
+		# )
 		frappe.logger().info(f"Email sent successfully to {to_email}")
 		print("mail send successfully")
 	except Exception as e:

@@ -60,3 +60,4 @@ hotpot/public/hotpot
 hotpot/public/node_modules
 hotpot/www/hotpot.html
 *.env
+hotpot/service_account.json

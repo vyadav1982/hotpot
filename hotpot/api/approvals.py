@@ -233,8 +233,8 @@ def create_approval():
 
 		approval_list.append(approval.name)
 		if (
-			get_dominant_role_for_current_user() != "Hotpot Admin"
-			or get_dominant_role_for_current_user() != "Hotpot HR"
+			get_dominant_role_for_current_user() == "Hotpot Admin"
+			or get_dominant_role_for_current_user() == "Hotpot HR"
 		):
 			send_approval_request_email(
 				"sashikant12rao@gmail.com", user_data, data, approval.name, meal_doc.meal_title
@@ -253,6 +253,8 @@ def create_approval():
 			res = generate_guest_coupon(approval_doc)
 			frappe.db.commit()
 			return set_response(200, res.get("status") == "success", res.get("msg"))
+		if data["request_type"] == "Guest Coupon Generation":
+			create_temp_coupons(data,user_data,approval.name)
 
 		return set_response(200, True, "Request created successfully", approval.name)
 
@@ -260,6 +262,56 @@ def create_approval():
 		frappe.db.rollback()
 		frappe.log_error(f"Error creating approval: {str(e)}")
 		return set_response(500, False, f"Server error: {str(e)}")
+
+def create_temp_coupons(data, user_data, approval_id):
+	if get_dominant_role_for_current_user() in ["Hotpot Admin", "Hotpot HR"]:
+		return
+
+	try:
+		coupon_count = data.get("coupon_count", 0)
+		if not coupon_count or coupon_count <= 0:
+			return
+
+		try:
+			meal_doc = frappe.get_doc("Hotpot Meal", data.get("meal_id"))
+		except frappe.DoesNotExistError:
+			return set_response(404, False, "Meal not found")
+
+		vendor_id = meal_doc.get("vendor_id")
+		date = data.get("date")
+
+		if vendor_id:
+			vendor_doc = frappe.get_doc("Hotpot User", vendor_id)
+			vendor_location = vendor_doc.get("location")
+			local_time_now = get_local_time_now()
+			start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
+
+			for _ in range(coupon_count):
+				coupon_data = {
+					"employee_id": user_data.get("name"),
+					"employee_code": user_data.get("employee_id"),
+					"coupon_date": start_date,
+					"coupon_weight": 0,
+					"title": meal_doc.get("meal_title"),
+					"coupon_status": "1",
+					"guest_employee_code": user_data.get("employee_id"),
+					"guest_of": user_data.get("name"),
+					"approval_id": approval_id,
+					"created_at": datetime.utcnow(),
+					"location": vendor_location,
+					"status":"Pending",
+				}
+
+				meal_doc.append("coupons", coupon_data)
+				meal_doc.save()
+			frappe.db.commit()
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Temp Coupon Generation Error")
+
+		
+		
+	
 
 
 @frappe.whitelist(allow_guest=False)
