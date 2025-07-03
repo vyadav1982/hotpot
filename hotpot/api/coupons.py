@@ -1424,6 +1424,7 @@ def get_guest_coupon(date):
 				hc.name AS coupon_id,
 				hc.parent AS meal_id,
 				hc.status,
+				ap.approval_remarks,
 				hc.title AS title,
 				hc.coupon_status,
 				hc.coupon_date,
