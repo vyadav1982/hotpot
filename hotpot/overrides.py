@@ -26,7 +26,7 @@ class CustomDataImport(DataImport):
 						for i, col in enumerate(preview["columns"]):
 							if isinstance(col, dict) and "header_title" in col:
 								header_to_index[col["header_title"]] = i
-						self.create_user(preview, header_to_index)
+						# self.create_user(preview, header_to_index)
 
 		return super().start_import()
 
@@ -55,7 +55,7 @@ class CustomDataImport(DataImport):
 			user_fields = [
 				"Company",
 				"Employee Number",
-				"User ID",
+				"Company Email",
 				"First Name",
 				"Gender",
 				"Date of Birth",
@@ -497,7 +497,7 @@ class CustomDataImport(DataImport):
 
 	def create_user(self, preview_data, header_to_index):
 		for row_num, row in enumerate(preview_data["data"], start=2):
-			email = row[header_to_index.get("User ID")].strip()
+			email = row[header_to_index.get("Company Email")].strip()
 			first_name = row[header_to_index.get("First Name")].strip()
 
 			if not email:

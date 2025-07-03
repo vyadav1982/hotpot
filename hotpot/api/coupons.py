@@ -1423,6 +1423,7 @@ def get_guest_coupon(date):
 			SELECT
 				hc.name AS coupon_id,
 				hc.parent AS meal_id,
+				hc.status,
 				hc.title AS title,
 				hc.coupon_status,
 				hc.coupon_date,
@@ -2009,6 +2010,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 							),
 							"created_at": datetime.utcnow(),
 							"location":vendor_doc.get("location"),
+							"status":"Approved",
 						},
 					)
 
