@@ -3,6 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
+
 
 from hotpot.utils.utc_time import *
 
@@ -70,6 +72,9 @@ class HotpotMealCategory(Document):
 			frappe.throw("Start time must be earlier than End time.")
 
 	def before_save(self):
+		role = get_dominant_role_for_current_user()
+		if role == "Hotpot User":
+			return
 		old_doc = self.get_doc_before_save()
 		if old_doc and old_doc.start_time != self.start_time:
 			self.validate_dates()
@@ -79,6 +84,9 @@ class HotpotMealCategory(Document):
 			self.end_time = get_utc_datetime_obj_v2(self.end_time)
 
 	def before_insert(self):
+		role = get_dominant_role_for_current_user()
+		if role == "Hotpot User":
+			return
 		self.validate_dates()
 		if is_frappe_ui_request():
 			self.start_time = get_utc_datetime_obj_v2(self.start_time)
