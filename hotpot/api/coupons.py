@@ -1267,7 +1267,7 @@ def generate_coupon():
 
 
 def is_valid_email(email):
-    return bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
+	return bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
 
 @frappe.whitelist()
 def search_coupon(start_date, end_date, identifier):
@@ -1437,6 +1437,7 @@ def get_guest_coupon(date):
 				U.full_name AS vendor_name,
 				ap.guest_name AS guest_name,
 				ap.is_active AS approval_active,
+				ap.approval_remarks,
 				mt.type
 
 			FROM
