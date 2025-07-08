@@ -445,7 +445,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				type: "GET",
 				args: {
 					doctype: "Company Locations",
-					fields: ["name"],
+					fields: ["name","location_name"],
 					limit_page_length: 10
 				}
 			});
@@ -461,7 +461,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 	
 			locations.forEach(location => {
 				$locationSelect.append(
-					`<option value="${location.name}">${location.name}</option>`
+					`<option value="${location.name}">${location.location_name}</option>`
 				);
 			});
 		} catch (error) {
