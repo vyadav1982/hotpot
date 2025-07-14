@@ -124,6 +124,7 @@ def add_user_to_hotpot(doc, method):
 
 def validate_employee(doc, method):
 	doc.create_user_permission=0
+	doc.employee_number = int(float(doc.employee_number))
 
 import frappe
 

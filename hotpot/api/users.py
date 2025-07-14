@@ -159,9 +159,18 @@ def get_hotpot_user_by_tag_id(tag_id):
 			set_response(400, False, "Tag ID is required")
 			return
 
+		emp = frappe.db.get_value(
+			"Employee",
+			{"attendance_device_id": tag_id, "status": "Active"},
+			"name"
+		)
+		if not emp:
+			set_response(404, False, "No active employee found for this tag ID")
+			return
+
 		user = frappe.db.get_list(
 			"Hotpot User",
-			filters=[["tag_id", "=", tag_id], ["is_active", "=", 1]],
+			filters=[["employee_id", "=", emp], ["is_active", "=", 1]],
 			fields=[
 				"name",
 				"full_name",
@@ -182,6 +191,7 @@ def get_hotpot_user_by_tag_id(tag_id):
 		)
 		if user:
 			return user[0]
+		set_response(404, False, "No active Hotpot User found for this employee")
 		return None
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Get Hotpot User by Tag Id Error")
