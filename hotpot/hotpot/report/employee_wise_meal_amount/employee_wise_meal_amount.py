@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+
 from hotpot.utils.utc_time import *
 
 
@@ -27,9 +28,13 @@ def execute(filters=None):
 		{"label": "Discounted Rate", "fieldname": "total_price", "fieldtype": "Currency", "width": 120},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
 		{"label": "Total Amount", "fieldname": "total_amount", "fieldtype": "Currency", "width": 120},
-		{"label": "Meal Cost To Company", "fieldname": "company_amount", "fieldtype": "Currency", "width": 120},
+		{
+			"label": "Meal Cost To Company",
+			"fieldname": "company_amount",
+			"fieldtype": "Currency",
+			"width": 120,
+		},
 	]
-
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
 
@@ -45,7 +50,7 @@ def execute(filters=None):
 			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price,
 
 			SUM(
-				CASE 
+				CASE
 					WHEN hc.coupon_status = -1 THEN 0
 					ELSE IFNULL(hc.coupon_weight, 0)
 				END
@@ -59,15 +64,15 @@ def execute(filters=None):
 			) AS penalty,
 
 			SUM(
-				CASE 
+				CASE
 					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
 					ELSE IFNULL(hc.coupon_weight, 0)
 				END
 			) AS total_amount,
 
-			SUM(IFNULL(hm.meal_weight, 0))  - 
+			SUM(IFNULL(hm.meal_weight, 0))  -
 			SUM(
-				CASE 
+				CASE
 					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
 					ELSE IFNULL(hc.coupon_weight, 0)
 				END
@@ -83,8 +88,6 @@ def execute(filters=None):
 			AND hc.guest_of IS NULL
 			AND hc.coupon_weight > -1
 	"""
-
-
 
 	params = [
 		user_timezone,

@@ -4,12 +4,11 @@ from datetime import datetime, time
 
 import frappe
 import pytz
+from frappe.utils import getdate
 
 from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role, has_role
 from hotpot.utils.utc_time import *
-from frappe.utils import getdate
-
 
 from ..api.users import *
 
@@ -75,7 +74,7 @@ def get_coupon_count(start_date, end_date, user=False):
 		"""
 
 		feedback_query = """
-			SELECT 
+			SELECT
 				hi.name,
 				hi.item_name,
 				COUNT(hi.name) AS total_feedback,
@@ -84,7 +83,7 @@ def get_coupon_count(start_date, end_date, user=False):
 			FROM `tabHotpot Meal Menu Items Rating` AS hr
 			INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
 			WHERE hi.vendor_id = %(vendor_name)s
-			AND DATE(hr.creation) 
+			AND DATE(hr.creation)
 				BETWEEN %(start_date)s AND %(end_date)s
 			GROUP BY hi.name;
 		"""
@@ -594,8 +593,8 @@ def update_coupon_status():
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 
-
-		expired_coupons = frappe.db.sql("""
+		expired_coupons = frappe.db.sql(
+			"""
 			SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight,hc.coupon_date, hm.name AS meal_id, hm.meal_weight AS meal_amount,hm.category,hm.meal_title
 			FROM `tabHotpot Coupons` hc
 			INNER JOIN `tabHotpot Meal` hm ON hm.name = hc.parent
@@ -607,7 +606,10 @@ def update_coupon_status():
 					AND TIME(CONVERT_TZ(hm.end_time, '+00:00', %s)) <= TIME(%s)
 				)
 			)
-		""", (user_tz, now_local, user_tz, now_local, user_tz, now_local), as_dict=True)
+		""",
+			(user_tz, now_local, user_tz, now_local, user_tz, now_local),
+			as_dict=True,
+		)
 		if not expired_coupons:
 			return
 
@@ -976,7 +978,7 @@ def generate_coupon():
 				approval_id = data.get("approval_id", None)
 				approval_doc = None
 
-				employee_doc = frappe.get_doc("Employee",user_doc.name)
+				employee_doc = frappe.get_doc("Employee", user_doc.name)
 				dob = employee_doc.get("date_of_birth")
 				start = get_local_datetime_obj(start_date).date()
 				is_birthday = False
@@ -989,11 +991,12 @@ def generate_coupon():
 					)
 
 				is_joining_day = False
-				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and employee_doc.get("date_of_joining"):
+				if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]) and employee_doc.get(
+					"date_of_joining"
+				):
 					joining_date = getdate(employee_doc.get("date_of_joining"))
 					is_joining_day = (
-						hotpot_config.get("free_joining_day_meal") == 1
-						and joining_date == start_date.date()
+						hotpot_config.get("free_joining_day_meal") == 1 and joining_date == start_date.date()
 					)
 
 				try:
@@ -1268,6 +1271,7 @@ def generate_coupon():
 
 def is_valid_email(email):
 	return bool(re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email))
+
 
 @frappe.whitelist()
 def search_coupon(start_date, end_date, identifier):
@@ -1762,7 +1766,7 @@ def generate_coupon_admin():
 							**({"approval_id": approval_id} if (for_guest and role == "Hotpot User") else {}),
 							"email": email,
 							"created_at": datetime.utcnow(),
-							"location":vendor_doc.get("location"),
+							"location": vendor_doc.get("location"),
 						},
 					)
 
@@ -2010,8 +2014,8 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 								else {}
 							),
 							"created_at": datetime.utcnow(),
-							"location":vendor_doc.get("location"),
-							"status":"Approved",
+							"location": vendor_doc.get("location"),
+							"status": "Approved",
 						},
 					)
 

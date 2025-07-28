@@ -5,9 +5,9 @@ from frappe.utils.file_manager import save_file
 
 from hotpot.utils.email import *
 from hotpot.utils.guest_coupon_generate import *
+from hotpot.utils.role_utils import *
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 from hotpot.utils.utc_time import *
-from hotpot.utils.role_utils import *
 
 from ..api.users import *
 
@@ -254,7 +254,7 @@ def create_approval():
 			frappe.db.commit()
 			return set_response(200, res.get("status") == "success", res.get("msg"))
 		if data["request_type"] == "Guest Coupon Generation":
-			create_temp_coupons(data,user_data,approval.name)
+			create_temp_coupons(data, user_data, approval.name)
 
 		return set_response(200, True, "Request created successfully", approval.name)
 
@@ -262,6 +262,7 @@ def create_approval():
 		frappe.db.rollback()
 		frappe.log_error(f"Error creating approval: {str(e)}")
 		return set_response(500, False, f"Server error: {str(e)}")
+
 
 def create_temp_coupons(data, user_data, approval_id):
 	if get_dominant_role_for_current_user() in ["Hotpot Admin", "Hotpot HR"]:
@@ -299,19 +300,15 @@ def create_temp_coupons(data, user_data, approval_id):
 					"approval_id": approval_id,
 					"created_at": datetime.utcnow(),
 					"location": vendor_location,
-					"status":"Pending",
+					"status": "Pending",
 				}
 
 				meal_doc.append("coupons", coupon_data)
 				meal_doc.save()
 			frappe.db.commit()
 
-	except Exception as e:
+	except Exception:
 		frappe.log_error(frappe.get_traceback(), "Temp Coupon Generation Error")
-
-		
-		
-	
 
 
 @frappe.whitelist(allow_guest=False)

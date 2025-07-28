@@ -1,13 +1,14 @@
 # Copyright (c) 2025, Bytepanda Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-import frappe
-from frappe.model.document import Document
 from datetime import datetime, timedelta
-from hotpot.utils.utc_time import *
-from frappe import _
-from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 
+import frappe
+from frappe import _
+from frappe.model.document import Document
+
+from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
+from hotpot.utils.utc_time import *
 
 
 class HotpotMeal(Document):
@@ -18,6 +19,7 @@ class HotpotMeal(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
 		from hotpot.hotpot.doctype.hotpot_meal_menu_items.hotpot_meal_menu_items import HotpotMealMenuItems
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
@@ -87,13 +89,11 @@ class HotpotMeal(Document):
 					"meal_date": self.meal_date,
 					"category": self.category,
 					"name": ["!=", self.name],
-					"vendor_id": self.vendor_id
-				}
+					"vendor_id": self.vendor_id,
+				},
 			)
 			if duplicate_exists:
-				frappe.throw(
-					f"A meal with category '{self.category}' already exists on {self.meal_date}."
-				)
+				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items = []
 			if self.meal_items:
@@ -104,13 +104,13 @@ class HotpotMeal(Document):
 				else:
 					frappe.throw("meal_items must be a comma-separated string or a list of item names.")
 
-				item_list = list({item.strip().lower() for item in raw_items if isinstance(item, str) and item.strip()})
+				item_list = list(
+					{item.strip().lower() for item in raw_items if isinstance(item, str) and item.strip()}
+				)
 
 				for item_name in item_list:
 					menu_item = frappe.get_value(
-						"Hotpot Meal Items",
-						{"vendor_id": self.vendor_id, "item_name": item_name},
-						"name"
+						"Hotpot Meal Items", {"vendor_id": self.vendor_id, "item_name": item_name}, "name"
 					)
 					if menu_item:
 						self.append("menu_items", {"meal_item": menu_item})
@@ -124,11 +124,7 @@ class HotpotMeal(Document):
 		self.validate_dates()
 		existing = frappe.db.exists(
 			"Hotpot Meal",
-			{
-				"meal_date": self.meal_date,
-				"category": self.category,
-				"vendor_id": self.vendor_id
-			},
+			{"meal_date": self.meal_date, "category": self.category, "vendor_id": self.vendor_id},
 		)
 		if existing:
 			frappe.throw(

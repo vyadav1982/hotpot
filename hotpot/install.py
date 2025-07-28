@@ -1,8 +1,9 @@
 import click
 import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
-from frappe.desk.page.setup_wizard.setup_wizard import add_all_roles_to, make_records
 from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+from frappe.desk.page.setup_wizard.setup_wizard import add_all_roles_to, make_records
+
 
 def after_install():
 	print("Setting up Hotpot...")
@@ -21,30 +22,23 @@ def create_employee_custom_fields():
 					"label": ("Band"),
 					"fieldname": "band",
 					"fieldtype": "Link",
-					"options":"Employee Band",
+					"options": "Employee Band",
 					"insert_after": "branch",
 				},
-				
 			]
 		}
 	)
 
-def create_property_setters():
 
-	make_property_setter(
-		"Employee", 
-		"branch",
-		"reqd",
-		1, 
-		"Check",
-	)
+def create_property_setters():
 	make_property_setter(
 		"Employee",
 		"branch",
-		"fieldtype",
-		"Int",
-		"Data"
+		"reqd",
+		1,
+		"Check",
 	)
+	make_property_setter("Employee", "branch", "fieldtype", "Int", "Data")
 
 	make_property_setter(
 		"Employee",
@@ -56,7 +50,6 @@ def create_property_setters():
 
 
 def create_meal_custom_fields():
-	
 	create_custom_fields(
 		{
 			"Hotpot Meal": [

@@ -1,10 +1,11 @@
 # Copyright (c) 2025, Bytepanda Technologies Pvt. Ltd. and contributors
 # For license information, please see license.txt
 
-import frappe
-from frappe.model.document import Document
-from frappe import _
 import re
+
+import frappe
+from frappe import _
+from frappe.model.document import Document
 
 
 def is_frappe_ui_request():
@@ -39,10 +40,8 @@ class HotpotMealItems(Document):
 		vendor_id: DF.Link | None
 	# end: auto-generated types
 
-
 	def before_insert(self):
 		self.item_name = self.item_name.strip().lower()
-
 
 		self.item_name = re.split(r"[^a-zA-Z ]", self.item_name)[0].strip()
 
@@ -62,5 +61,7 @@ class HotpotMealItems(Document):
 			)
 			if exists:
 				frappe.throw(
-					_("Meal Item '{0}' already exists for vendor '{1}'.").format(self.item_name, self.vendor_id)
+					_("Meal Item '{0}' already exists for vendor '{1}'.").format(
+						self.item_name, self.vendor_id
+					)
 				)

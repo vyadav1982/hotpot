@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+
 from hotpot.utils.utc_time import *
 
 
@@ -32,7 +33,6 @@ def execute(filters=None):
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
-
 	]
 
 	user_timezone = get_user_timezone() or "Asia/Kolkata"
@@ -47,7 +47,7 @@ def execute(filters=None):
 			emp.department,
 			emp.band,
 			CASE WHEN hc.guest_of IS NOT NULL THEN hc.email ELSE NULL END AS email,
-			
+
 			CASE
 				WHEN hc.guest_of IS NOT NULL THEN 'Guest'
 				WHEN hc.joining_day = 1 THEN 'Joining Day'
@@ -89,10 +89,8 @@ def execute(filters=None):
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-
-	params = [user_timezone,user_timezone, start_date, end_date]
+	params = [user_timezone, user_timezone, start_date, end_date]
 	roles = frappe.get_roles()
-
 
 	if "Hotpot Vendor" in roles and "Administrator" not in roles:
 		vendor_id = frappe.session.user
@@ -112,6 +110,4 @@ def execute(filters=None):
 			row.pop("discounted_rate", None)
 			row.pop("penalty", None)
 
-
 	return columns, data
-
