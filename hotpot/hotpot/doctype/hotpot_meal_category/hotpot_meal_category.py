@@ -3,9 +3,8 @@
 
 import frappe
 from frappe.model.document import Document
+
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
-
-
 from hotpot.utils.utc_time import *
 
 

@@ -84,8 +84,7 @@ def execute(filters=None):
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 	"""
 
-
-	params = [user_timezone,user_timezone, start_date, end_date]
+	params = [user_timezone, user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += " AND hm.vendor_id = %s"

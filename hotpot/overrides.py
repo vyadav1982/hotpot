@@ -85,7 +85,6 @@ class CustomDataImport(DataImport):
 					f"Reference DocType '{self.reference_doctype}' is not allowed for custom import."
 				)
 
-			
 			# Check for missing/extra fields
 			missing = [col for col in expected_fields if col not in column_headers]
 			extra = [

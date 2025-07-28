@@ -1,10 +1,10 @@
 import json
+import re
+import traceback
 from datetime import datetime, timedelta
 
 import frappe
 import pytz
-import traceback
-import re
 
 from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.role_utils import has_any_of_role, has_role
@@ -265,7 +265,7 @@ def update_meal():
 		elif upcoming_coupons:
 			set_response(409, False, "Approval is required to update the meal.")
 			return
-		if upcoming_coupons and active_status != True:
+		if upcoming_coupons and not active_status:
 			set_response(
 				409,
 				False,
@@ -332,10 +332,12 @@ def update_meal():
 						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
 						date=meal_doc.meal_date,
 						doc_id=meal_doc.name,
-						text="meals"
+						text="meals",
 					)
-			except Exception as e:
-				frappe.log_error(frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}")
+			except Exception:
+				frappe.log_error(
+					frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
+				)
 
 	except Exception as e:
 		frappe.db.rollback()
@@ -650,8 +652,8 @@ def add_meal_items():
 		data = json.loads(frappe.request.data or "{}")
 		item_name = data.get("item_name")
 		item_name = item_name.strip().lower()
-		if not re.fullmatch(r'^[a-zA-Z ]+$', item_name):
-			set_response(409,False,f"Item name must only contain letters.")
+		if not re.fullmatch(r"^[a-zA-Z ]+$", item_name):
+			set_response(409, False, "Item name must only contain letters.")
 			return
 		vendor_id = None
 		if has_role("Hotpot Vendor"):
@@ -973,13 +975,14 @@ def get_meals_internal(date, vendor_id=None):
 def check_valid_meal(meal_date, vendor_id, category):
 	current_meals = get_meals_internal(meal_date, vendor_id)
 	for meal in current_meals:
-		if meal.category == category and meal.meal_date==meal_date and meal.vendor_id==vendor_id:
+		if meal.category == category and meal.meal_date == meal_date and meal.vendor_id == vendor_id:
 			return {
 				"status": "error",
 				"message": f"Meal timing conflicts with '{meal.meal_title}'. There is already a meal in {category}",
 			}
 
 	return {"status": "success", "message": "Valid meal timing. No conflict found."}
+
 
 @frappe.whitelist()
 def save_draft_meal():

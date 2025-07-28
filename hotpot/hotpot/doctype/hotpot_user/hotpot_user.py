@@ -122,10 +122,13 @@ def add_user_to_hotpot(doc, method):
 	# if not add to hotpot user
 	pass
 
+
 def validate_employee(doc, method):
-	doc.create_user_permission=0
+	doc.create_user_permission = 0
+
 
 import frappe
+
 
 def validate_user(doc, method):
 	user_roles = [d.role for d in doc.roles]
@@ -142,7 +145,6 @@ def validate_user(doc, method):
 		doc.timeline = 0
 		doc.dashboard = 0
 		doc.bulk_actions = 0
-
 
 
 def update_employee_to_hotpot(doc, method):
@@ -196,15 +198,17 @@ def update_employee_to_hotpot(doc, method):
 		transaction_doc = frappe.new_doc("Hotpot Transaction History")
 		india = pytz.timezone("Asia/Kolkata")
 		now = datetime.now(india)
-		transaction_doc.update({
-			"employee_id": doc.employee_number,
-			"type": "Credit",
-			"message": f"🎉 You've received your initial credit of {hotpot_config.get("initial_tokens")} tokens on {now.strftime('%d %b %Y')} by the Admin.",
-			"title": "initial Credit",
-			"amount": hotpot_config.get("initial_tokens"),
-			"meal": None,
-			"coupon": None,
-		})
+		transaction_doc.update(
+			{
+				"employee_id": doc.employee_number,
+				"type": "Credit",
+				"message": f"🎉 You've received your initial credit of {hotpot_config.get('initial_tokens')} tokens on {now.strftime('%d %b %Y')} by the Admin.",
+				"title": "initial Credit",
+				"amount": hotpot_config.get("initial_tokens"),
+				"meal": None,
+				"coupon": None,
+			}
+		)
 		transaction_doc.insert(ignore_permissions=True)
 		frappe.db.commit()
 
@@ -216,6 +220,7 @@ def remove_employee_from_hotpot(doc, method):
 		hp_user.is_active = 0
 		hp_user.save(ignore_permissions=True)
 		frappe.db.commit()
+
 
 def create_user(doc):
 	try:
@@ -234,6 +239,7 @@ def create_user(doc):
 			user.insert()
 	except Exception as e:
 		frappe.log_error(frappe.get_traceback(), "Error in create_user")
+
 
 # def update_employee(doc):
 # 	if frappe.db.exists("Employee", doc.name):

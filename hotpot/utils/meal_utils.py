@@ -1,5 +1,6 @@
-import frappe
 from decimal import Decimal
+
+import frappe
 
 
 def get_discount(user, vendor):

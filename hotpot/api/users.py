@@ -227,7 +227,7 @@ def get_hotpot_user_by_email():
 			user_info["role"] = check_hotpot_role(hotpot_roles)
 
 			emp = None
-			if any(role in user_info["role"] for role in ["Hotpot User", "Hotpot HR","Hotpot Admin"]):
+			if any(role in user_info["role"] for role in ["Hotpot User", "Hotpot HR", "Hotpot Admin"]):
 				emp = frappe.get_doc("Employee", user_info["name"])
 			if emp:
 				emp_info = emp.as_dict()

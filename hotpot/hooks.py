@@ -219,17 +219,13 @@ doc_events = {
 	},
 	"User": {
 		"before_save": "hotpot.hotpot.doctype.hotpot_user.hotpot_user.validate_user",
-	}
+	},
 }
 
 # Scheduled Tasks
 # ---------------
 
-scheduler_events = {
-    "daily": [
-        "hotpot.tasks.hotpot_tasks.load_balance"
-    ]
-}
+scheduler_events = {"daily": ["hotpot.tasks.hotpot_tasks.load_balance"]}
 
 
 # Testing
