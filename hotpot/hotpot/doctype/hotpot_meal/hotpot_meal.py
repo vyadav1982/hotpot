@@ -94,24 +94,18 @@ class HotpotMeal(Document):
 			)
 			if duplicate_exists:
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
-			
-			child_record = frappe.get_list(
-				"Hotpot Category Prices",
-				filters={
-					'parent': self.vendor_id,
-					'parentfield': "category_prices",
-					'category':self.category
-				},
-				fields=['name'],
-			)
-			prices = frappe.get_doc("Hotpot Category Prices", child_record[0].name) if child_record else None
-			if prices:
-				self.meal_weight = prices.discounted_rate
-				self.actual_meal_rate = prices.actual_rate
-			else:
-				category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
-				self.meal_weight = category_doc.meal_rate
-				self.actual_meal_rate = category_doc.meal_rate
+
+			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+			self.meal_weight = category_doc.meal_rate
+			self.actual_meal_rate = category_doc.meal_rate
+
+			for row in vendor.category_prices:
+				if row.category == self.category:
+					self.meal_weight = row.discounted_rate
+					self.actual_meal_rate = row.actual_rate
+					break
+
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items = []
 			if self.meal_items:
@@ -168,19 +162,11 @@ class HotpotMeal(Document):
 				if self.vendor_id is None:
 					self.vendor_id = vendor_id
 					vendor = self.vendor_id
-		child_record = frappe.get_list(
-			"Hotpot Category Prices",
-			filters={
-				'parent': vendor,
-				'parentfield': "category_prices",
-				'category':self.category
-			},
-			fields=['name', 'actual_rate', 'discounted_rate'],
-		)
-		if child_record:
-			self.meal_weight = child_record[0].discounted_rate
-			self.actual_meal_rate = child_record[0].actual_rate
-
+		for row in vendor.category_prices:
+			if row.category == self.category:
+				self.meal_weight = row.discounted_rate
+				self.actual_meal_rate = row.actual_rate
+				break
 		meal_date = get_local_datetime_obj(self.meal_date)
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 
