@@ -46,11 +46,11 @@ def execute(filters=None):
 			hm.name AS meal_id,
 			hm.meal_title AS meal_title,
 			hm.meal_date AS meal_date,
-			MAX(hm.meal_weight)  AS meal_weight,
+			MAX(hm.actual_meal_rate)  AS meal_weight,
 			vendor.employee_id AS vendor_id,
 			vendor.full_name AS vendor_name,
 			COUNT(hc.name) AS coupon_count,
-			(MAX(hm.meal_weight) * COUNT(hc.name)) AS total_weight,
+			(MAX(hm.actual_meal_rate) * COUNT(hc.name)) AS total_weight,
 			IFNULL(AVG(hr.rating), 0) AS avg_rating,
 			JSON_ARRAYAGG(COALESCE(hr.feedback, '')) AS feedback_list
 		FROM

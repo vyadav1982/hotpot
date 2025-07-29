@@ -47,7 +47,7 @@ def execute(filters=None):
 			emp.branch AS location,
 			COUNT(*) AS total_coupons,
 
-			SUM(IFNULL(hm.meal_weight, 0)) AS total_actual_price,
+			SUM(IFNULL(hm.actual_meal_rate, 0)) AS total_actual_price,
 
 			SUM(
 				CASE
@@ -58,22 +58,22 @@ def execute(filters=None):
 
 			SUM(
 				CASE
-					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.actual_meal_rate, 0)
 					ELSE 0
 				END
 			) AS penalty,
 
 			SUM(
 				CASE
-					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.actual_meal_rate, 0)
 					ELSE IFNULL(hc.coupon_weight, 0)
 				END
 			) AS total_amount,
 
-			SUM(IFNULL(hm.meal_weight, 0))  -
+			SUM(IFNULL(hm.actual_meal_rate, 0))  -
 			SUM(
 				CASE
-					WHEN hc.coupon_status = -1 THEN IFNULL(hm.meal_weight, 0)
+					WHEN hc.coupon_status = -1 THEN IFNULL(hm.actual_meal_rate, 0)
 					ELSE IFNULL(hc.coupon_weight, 0)
 				END
 			) AS company_amount
