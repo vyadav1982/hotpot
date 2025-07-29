@@ -11,7 +11,7 @@ def after_install():
 	create_employee_custom_fields()
 	create_property_setters()
 	click.secho("Thank you for installing Hotpot!", fg="green")
-	create_meal_custom_fields()
+	# create_meal_custom_fields()
 
 
 def create_employee_custom_fields():
@@ -38,7 +38,7 @@ def create_property_setters():
 		1,
 		"Check",
 	)
-	make_property_setter("Employee", "branch", "fieldtype", "Int", "Data")
+	# make_property_setter("Employee", "branch", "fieldtype", "Int", "Data")
 
 	make_property_setter(
 		"Employee",
@@ -49,22 +49,22 @@ def create_property_setters():
 	)
 
 
-def create_meal_custom_fields():
-	create_custom_fields(
-		{
-			"Hotpot Meal": [
-				{
-					"label": ("Coupons"),
-					"fieldname": "coupons",
-					"fieldtype": "Data",
-					"insertafter": "vendor_id",
-				},
-				{
-					"label": ("Ratings"),
-					"fieldname": "ratings",
-					"fieldtype": "Data",
-					"insertafter": "vendor_id",
-				},
-			]
-		}
-	)
+# def create_meal_custom_fields():
+# 	create_custom_fields(
+# 		{
+# 			"Hotpot Meal": [
+# 				{
+# 					"label": ("Coupons"),
+# 					"fieldname": "coupons",
+# 					"fieldtype": "Data",
+# 					"insertafter": "vendor_id",
+# 				},
+# 				{
+# 					"label": ("Ratings"),
+# 					"fieldname": "ratings",
+# 					"fieldtype": "Data",
+# 					"insertafter": "vendor_id",
+# 				},
+# 			]
+# 		}
+# 	)
