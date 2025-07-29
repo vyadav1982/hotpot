@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-07-29 10:04:48.570863",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "category",
+  "actual_rate",
+  "discounted_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Category",
+   "link_filters": "[[\"Category\", \"is_active\", \"=\", 1]]",
+   "options": "Hotpot Meal Category",
+   "unique": 1
+  },
+  {
+   "fieldname": "discounted_rate",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Discounted Rate",
+   "non_negative": 1
+  },
+  {
+   "fetch_from": "category.meal_rate",
+   "fieldname": "actual_rate",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Actual Rate",
+   "non_negative": 1,
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-29 11:05:20.635429",
+ "modified_by": "Administrator",
+ "module": "Hotpot",
+ "name": "Hotpot Category Prices",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
