@@ -58,7 +58,9 @@ class HotpotUser(Document):
 	def on_update(self):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
-			emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
+			emp_user = None
+			if self.is_employee:
+				emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
 			if emp_user and emp_user.user_id is None:
 				emp_user.user_id = self.email
 				emp_user.save(ignore_permissions=True)
