@@ -58,6 +58,8 @@ class HotpotUser(Document):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
 			emp_user = None
+			if self.is_vendor:
+				update_meals(self)
 			if self.is_employee:
 				emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
 			if emp_user and emp_user.user_id is None:
@@ -248,3 +250,24 @@ def create_user(doc):
 # 		emp.user_id = doc.company_email
 # 		emp.save(ignore_permissions=True)
 # 		frappe.db.commit()
+
+
+def update_meals(self):
+	if not self.is_vendor:
+		return
+
+	vendor_id = self.name
+	existing_meals = frappe.get_all(
+		"Hotpot Meal",
+		filters={"vendor_id": vendor_id, "is_active": 1},
+		fields=["name", "meal_date", "category"]
+	)
+
+	for meal in existing_meals:
+		try:
+			meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
+			meal_doc.vendor_id = vendor_id
+			meal_doc.save(ignore_permissions=True)
+			frappe.db.commit()
+		except Exception:
+			continue
