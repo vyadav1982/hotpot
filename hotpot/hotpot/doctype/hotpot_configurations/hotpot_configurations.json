@@ -42,6 +42,7 @@
    "default": "-1",
    "fieldname": "discount",
    "fieldtype": "Percent",
+   "hidden": 1,
    "label": "Discount",
    "precision": "0"
   },
@@ -62,7 +63,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-17 12:48:31.275021",
+ "modified": "2025-07-31 15:03:25.598337",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",
