@@ -23,8 +23,10 @@ class HotpotUser(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 		from hotpot.hotpot.doctype.discounted_meal_day.discounted_meal_day import DiscountedMealDay
+		from hotpot.hotpot.doctype.hotpot_category_prices.hotpot_category_prices import HotpotCategoryPrices
 
 		approval_id: DF.JSON | None
+		category_prices: DF.Table[HotpotCategoryPrices]
 		coupon_count: DF.Int
 		discount: DF.Percent
 		discounted_meal_days: DF.Table[DiscountedMealDay]

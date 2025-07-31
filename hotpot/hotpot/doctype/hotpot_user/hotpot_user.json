@@ -37,6 +37,7 @@
   "section_break_wozz",
   "location",
   "fcm_token",
+  "category_prices",
   "column_break_eopt",
   "user",
   "latitude",
@@ -195,7 +196,7 @@
    "options": "Discounted Meal Day"
   },
   {
-   "fetch_from": "employee.user_id",
+   "fetch_from": "employee.company_email",
    "fieldname": "user",
    "fieldtype": "Link",
    "label": "User",
@@ -287,11 +288,17 @@
   {
    "fieldname": "column_break_rogo",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "category_prices",
+   "fieldtype": "Table",
+   "label": "Category Prices",
+   "options": "Hotpot Category Prices"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-24 18:20:26.168069",
+ "modified": "2025-07-31 11:03:48.204958",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",
