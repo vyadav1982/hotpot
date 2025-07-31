@@ -10,6 +10,7 @@ from frappe.model.document import Document
 
 from hotpot.utils.email import *
 from hotpot.utils.role_utils import has_role
+from frappe.core.doctype.version.version import get_diff
 
 
 class HotpotUser(Document):
@@ -256,6 +257,16 @@ def update_meals(self):
 	if not self.is_vendor:
 		return
 
+	old_doc = self.get_doc_before_save()
+
+	old_category_prices = {row.category: row.discounted_rate for row in getattr(old_doc, "category_prices", [])}
+	new_category_prices = {row.category: row.discounted_rate for row in getattr(self, "category_prices", [])}
+
+
+
+	if old_category_prices == new_category_prices:
+		return
+	
 	vendor_id = self.name
 	existing_meals = frappe.get_all(
 		"Hotpot Meal",
@@ -263,11 +274,24 @@ def update_meals(self):
 		fields=["name", "meal_date", "category"]
 	)
 
-	for meal in existing_meals:
+	total_meals = len(existing_meals)
+	updated_meals = 0
+
+	for idx, meal in enumerate(existing_meals, 1):
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
 			meal_doc.vendor_id = vendor_id
 			meal_doc.save(ignore_permissions=True)
 			frappe.db.commit()
+			updated_meals += 1
 		except Exception:
 			continue
+
+		frappe.publish_realtime(
+			"show_progress",
+			{
+				"progress": idx,
+				"total": total_meals,
+				"msg": f"Updating meal {idx}/{total_meals}"
+			}
+		)
