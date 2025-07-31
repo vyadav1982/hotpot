@@ -17,8 +17,7 @@
    "in_list_view": 1,
    "label": "Category",
    "link_filters": "[[\"Category\", \"is_active\", \"=\", 1]]",
-   "options": "Hotpot Meal Category",
-   "unique": 1
+   "options": "Hotpot Meal Category"
   },
   {
    "fieldname": "discounted_rate",
@@ -41,7 +40,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-29 11:05:20.635429",
+ "modified": "2025-07-31 12:34:12.445251",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Category Prices",
