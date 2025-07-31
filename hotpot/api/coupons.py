@@ -1154,7 +1154,8 @@ def generate_coupon():
 					if not for_guest and not is_birthday and not is_joining_day and not is_secondary_loc:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
 
-						coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
+						# coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
+						coupon_weight = meal_weight
 
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
@@ -1745,7 +1746,8 @@ def generate_coupon_admin():
 					coupon_weight = 0
 					if not for_guest and not is_birthday and not is_joining_day:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
-						coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
+						# coupon_weight = meal_weight * (100 - (get_discount(user_doc, vendor) or 0)) * 0.01
+						coupon_weight = meal_weight
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
 
@@ -1987,7 +1989,8 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 					coupon_weight = 0
 					if not for_guest and not is_birthday and not is_joining_day:
 						vendor = frappe.get_doc("Hotpot User", meal_doc.vendor_id)
-						coupon_weight = (100 - get_discount(user_doc, vendor)) * 0.01
+						# coupon_weight = (100 - get_discount(user_doc, vendor)) * 0.01
+						coupon_weight = meal_weight
 						user_coupon_count -= coupon_weight
 						total_coupons_consumed += coupon_weight
 					meal_doc.append(

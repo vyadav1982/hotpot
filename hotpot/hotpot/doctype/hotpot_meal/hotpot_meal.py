@@ -19,11 +19,11 @@ class HotpotMeal(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
-
 		from hotpot.hotpot.doctype.hotpot_coupons.hotpot_coupons import HotpotCoupons
 		from hotpot.hotpot.doctype.hotpot_meal_menu_items.hotpot_meal_menu_items import HotpotMealMenuItems
 		from hotpot.hotpot.doctype.hotpot_meal_rating.hotpot_meal_rating import HotpotMealRating
 
+		actual_meal_rate: DF.Int
 		approval_id: DF.Link | None
 		buffer_count_enabled: DF.Check
 		buffer_coupon_count: DF.Int
@@ -94,6 +94,18 @@ class HotpotMeal(Document):
 			)
 			if duplicate_exists:
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
+
+			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+			self.meal_weight = category_doc.meal_rate
+			self.actual_meal_rate = category_doc.meal_rate
+
+			for row in vendor.category_prices:
+				if row.category == self.category:
+					self.meal_weight = row.discounted_rate
+					self.actual_meal_rate = row.actual_rate
+					break
+
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items = []
 			if self.meal_items:
@@ -132,8 +144,8 @@ class HotpotMeal(Document):
 					"A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed."
 				).format(self.category, self.meal_date)
 			)
+		vendor = None
 		if is_frappe_ui_request() or frappe.flags.in_import:
-			vendor = None
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.start_time = category_doc.start_time
 			self.end_time = category_doc.end_time
@@ -142,14 +154,19 @@ class HotpotMeal(Document):
 			self.lead_time = category_doc.lead_time
 			self.cancellation_time = category_doc.cancellation_time
 			self.meal_weight = category_doc.meal_rate
+			self.actual_meal_rate=category_doc.meal_rate
 			self.max_meal_count = category_doc.max_meal_count
 			roles = frappe.get_roles()
 			if "Hotpot Vendor" in roles:
 				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
 				if self.vendor_id is None:
 					self.vendor_id = vendor_id
-			vendor = self.vendor_id
-
+					vendor = self.vendor_id
+		for row in vendor.category_prices:
+			if row.category == self.category:
+				self.meal_weight = row.discounted_rate
+				self.actual_meal_rate = row.actual_rate
+				break
 		meal_date = get_local_datetime_obj(self.meal_date)
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 

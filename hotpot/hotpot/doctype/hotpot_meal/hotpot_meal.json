@@ -22,6 +22,7 @@
   "end_time",
   "section_break_tszv",
   "meal_weight",
+  "actual_meal_rate",
   "lead_time",
   "cancellation_time",
   "column_break_hjew",
@@ -112,10 +113,9 @@
    "options": "Hotpot Meal Rating"
   },
   {
-   "fetch_from": "category.meal_rate",
    "fieldname": "meal_weight",
    "fieldtype": "Int",
-   "label": "Meal Rate",
+   "label": "Discounted Meal Rate",
    "non_negative": 1,
    "read_only": 1
   },
@@ -173,6 +173,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Category",
+   "link_filters": "[[\"Category\", \"is_active\", \"=\", 1]]",
    "options": "Hotpot Meal Category",
    "reqd": 1
   },
@@ -242,11 +243,18 @@
    "fieldtype": "Table",
    "label": "Menu Items",
    "options": "Hotpot Meal Menu Items"
+  },
+  {
+   "fieldname": "actual_meal_rate",
+   "fieldtype": "Int",
+   "label": "Actual Meal Rate",
+   "non_negative": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-28 21:14:05.666896",
+ "modified": "2025-07-29 11:28:00.976053",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

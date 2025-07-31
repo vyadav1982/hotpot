@@ -10,12 +10,11 @@ from frappe.model.document import Document
 
 from hotpot.utils.email import *
 from hotpot.utils.role_utils import has_role
+from frappe.core.doctype.version.version import get_diff
 
 
 class HotpotUser(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -23,8 +22,10 @@ class HotpotUser(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 		from hotpot.hotpot.doctype.discounted_meal_day.discounted_meal_day import DiscountedMealDay
+		from hotpot.hotpot.doctype.hotpot_category_prices.hotpot_category_prices import HotpotCategoryPrices
 
 		approval_id: DF.JSON | None
+		category_prices: DF.Table[HotpotCategoryPrices]
 		coupon_count: DF.Int
 		discount: DF.Percent
 		discounted_meal_days: DF.Table[DiscountedMealDay]
@@ -46,7 +47,6 @@ class HotpotUser(Document):
 		mobile_no: DF.Phone | None
 		tag_id: DF.Data | None
 		user: DF.Link | None
-	# ruff: noqa
 	# end: auto-generated types
 
 	def autoname(self):
@@ -58,7 +58,11 @@ class HotpotUser(Document):
 	def on_update(self):
 		try:
 			frappe_user = frappe.get_doc("User", {"email": self.email})
-			emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
+			emp_user = None
+			if self.is_vendor:
+				update_meals(self)
+			if self.is_employee:
+				emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
 			if emp_user and emp_user.user_id is None:
 				emp_user.user_id = self.email
 				emp_user.save(ignore_permissions=True)
@@ -247,3 +251,47 @@ def create_user(doc):
 # 		emp.user_id = doc.company_email
 # 		emp.save(ignore_permissions=True)
 # 		frappe.db.commit()
+
+
+def update_meals(self):
+	if not self.is_vendor:
+		return
+
+	old_doc = self.get_doc_before_save()
+
+	old_category_prices = {row.category: row.discounted_rate for row in getattr(old_doc, "category_prices", [])}
+	new_category_prices = {row.category: row.discounted_rate for row in getattr(self, "category_prices", [])}
+
+
+
+	if old_category_prices == new_category_prices:
+		return
+	
+	vendor_id = self.name
+	existing_meals = frappe.get_all(
+		"Hotpot Meal",
+		filters={"vendor_id": vendor_id, "is_active": 1},
+		fields=["name", "meal_date", "category"]
+	)
+
+	total_meals = len(existing_meals)
+	updated_meals = 0
+
+	for idx, meal in enumerate(existing_meals, 1):
+		try:
+			meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
+			meal_doc.vendor_id = vendor_id
+			meal_doc.save(ignore_permissions=True)
+			frappe.db.commit()
+			updated_meals += 1
+		except Exception:
+			continue
+
+		frappe.publish_realtime(
+			"show_progress",
+			{
+				"progress": idx,
+				"total": total_meals,
+				"msg": f"Updating meal {idx}/{total_meals}"
+			}
+		)

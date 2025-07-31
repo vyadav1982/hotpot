@@ -63,7 +63,7 @@ def execute(filters=None):
 				ELSE 'Unknown'
 			END AS coupon_status,
 
-			IFNULL(hm.meal_weight, 0) AS actual_rate,
+			IFNULL(hm.actual_meal_rate, 0) AS actual_rate,
 
 			CASE
 				WHEN hc.coupon_status = '-1' THEN 0
@@ -71,7 +71,7 @@ def execute(filters=None):
 			END AS discounted_rate,
 
 			CASE
-				WHEN hc.coupon_status = '-1' THEN IFNULL(hm.meal_weight, 0)
+				WHEN hc.coupon_status = '-1' THEN IFNULL(hm.actual_meal_rate, 0)
 				ELSE 0
 			END AS penalty,
 
