@@ -261,16 +261,34 @@ def update_meals(self):
 
 	old_category_prices = {row.category: row.discounted_rate for row in getattr(old_doc, "category_prices", [])}
 	new_category_prices = {row.category: row.discounted_rate for row in getattr(self, "category_prices", [])}
+	actual_category_prices = {row.category: row.actual_rate for row in getattr(self, "category_prices", [])}
 
+	changed_categories = [
+		category for category in new_category_prices
+		if old_category_prices.get(category) != new_category_prices[category]
+	]
 
-
-	if old_category_prices == new_category_prices:
+	if not changed_categories:
 		return
-	
+
+	# for category in changed_categories:
+	# 	discounted = new_category_prices[category]
+	# 	actual = actual_category_prices.get(category)
+	# 	if discounted is None or actual is None:
+	# 		continue
+	# 	if discounted < 0:
+	# 		frappe.throw(f"Discounted price for category '{category}' cannot be less than 0.")
+	# 	if discounted > actual:
+	# 		frappe.throw(f"Discounted price for category '{category}' cannot be greater than actual price ({actual}).")
+
 	vendor_id = self.name
 	existing_meals = frappe.get_all(
 		"Hotpot Meal",
-		filters={"vendor_id": vendor_id, "is_active": 1},
+		filters={
+			"vendor_id": vendor_id,
+			"is_active": 1,
+			"category": ["in", changed_categories]
+		},
 		fields=["name", "meal_date", "category"]
 	)
 
@@ -286,12 +304,9 @@ def update_meals(self):
 			updated_meals += 1
 		except Exception:
 			continue
-
-		frappe.publish_realtime(
-			"show_progress",
-			{
-				"progress": idx,
-				"total": total_meals,
-				"msg": f"Updating meal {idx}/{total_meals}"
-			}
+			
+		frappe.publish_progress(
+			float(idx) * 100 / total_meals,
+			title="Updating Meals",
+			description="{:.0f}% Updated".format(float(idx) * 100 / total_meals),
 		)
