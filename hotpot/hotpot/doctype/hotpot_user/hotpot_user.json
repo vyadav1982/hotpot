@@ -102,7 +102,7 @@
   {
    "default": "+91- ",
    "fieldname": "mobile_no",
-   "fieldtype": "Data",
+   "fieldtype": "Phone",
    "in_list_view": 1,
    "label": "Mobile no.",
    "search_index": 1
@@ -290,6 +290,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "depends_on": "eval:!doc.is_employee",
    "fieldname": "category_prices",
    "fieldtype": "Table",
    "label": "Category Prices",
@@ -298,7 +299,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-31 11:03:48.204958",
+ "modified": "2025-07-31 11:20:57.296024",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot User",

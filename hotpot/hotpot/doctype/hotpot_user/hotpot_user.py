@@ -14,8 +14,6 @@ from hotpot.utils.role_utils import has_role
 
 class HotpotUser(Document):
 	# begin: auto-generated types
-	# ruff: noqa
-
 	# This code is auto-generated. Do not modify anything in this block.
 
 	from typing import TYPE_CHECKING
@@ -48,7 +46,6 @@ class HotpotUser(Document):
 		mobile_no: DF.Phone | None
 		tag_id: DF.Data | None
 		user: DF.Link | None
-	# ruff: noqa
 	# end: auto-generated types
 
 	def autoname(self):
