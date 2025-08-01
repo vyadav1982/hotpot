@@ -69,9 +69,7 @@ class HotpotUser(Document):
 			if self.is_employee:
 				emp_user = frappe.get_doc("Employee", {"employee_number": self.employee_id})
 			if emp_user and emp_user.user_id is None:
-				emp_user.user_id = self.email
-				emp_user.save(ignore_permissions=True)
-				frappe.db.commit()
+				frappe.db.set_value("Employee", emp_user.name, "user_id", self.email)
 
 			if frappe_user and not frappe.flags.in_import:
 				# names = self.full_name.split(" ", 1) if self.full_name else ["", ""]
