@@ -9,8 +9,13 @@ import frappe
 from frappe.model.document import Document
 
 from hotpot.utils.email import *
+from hotpot.utils.utc_time import get_local_time_now, get_utc_datetime_obj
 from hotpot.utils.role_utils import has_role
 from frappe.core.doctype.version.version import get_diff
+from frappe.utils import getdate, nowdate
+from hotpot.api.meal import get_meals_internal
+from hotpot.utils.send_fcm import *
+
 
 
 class HotpotUser(Document):
@@ -253,60 +258,153 @@ def create_user(doc):
 # 		frappe.db.commit()
 
 
+
 def update_meals(self):
 	if not self.is_vendor:
 		return
 
 	old_doc = self.get_doc_before_save()
 
-	old_category_prices = {row.category: row.discounted_rate for row in getattr(old_doc, "category_prices", [])}
-	new_category_prices = {row.category: row.discounted_rate for row in getattr(self, "category_prices", [])}
-	actual_category_prices = {row.category: row.actual_rate for row in getattr(self, "category_prices", [])}
+	old_data_map = {
+		row.category: {
+			"applicable_from": getdate(row.applicable_from) if row.applicable_from else None,
+			"discounted_rate": row.discounted_rate
+		}
+		for row in getattr(old_doc, "category_prices", [])
+	}
 
-	changed_categories = [
-		category for category in new_category_prices
-		if old_category_prices.get(category) != new_category_prices[category]
-	]
+	today = getdate(nowdate())
+	changed_categories = []
+
+	for row in self.category_prices:
+		category = row.category
+		new_date = getdate(row.applicable_from) if row.applicable_from else None
+		new_rate = row.discounted_rate
+
+		old_data = old_data_map.get(category, {})
+		old_date = old_data.get("applicable_from")
+		old_rate = old_data.get("discounted_rate")
+
+		date_changed = new_date != old_date
+		rate_changed = new_rate != old_rate
+
+		if (date_changed and new_date == today) or (new_date == today and rate_changed):
+			changed_categories.append(category)
 
 	if not changed_categories:
 		return
 
-	# for category in changed_categories:
-	# 	discounted = new_category_prices[category]
-	# 	actual = actual_category_prices.get(category)
-	# 	if discounted is None or actual is None:
-	# 		continue
-	# 	if discounted < 0:
-	# 		frappe.throw(f"Discounted price for category '{category}' cannot be less than 0.")
-	# 	if discounted > actual:
-	# 		frappe.throw(f"Discounted price for category '{category}' cannot be greater than actual price ({actual}).")
+	local_time_now = get_local_time_now()
+	start_date = get_utc_datetime_obj(f"{today} {local_time_now}")
 
-	vendor_id = self.name
-	existing_meals = frappe.get_all(
-		"Hotpot Meal",
-		filters={
-			"vendor_id": vendor_id,
-			"is_active": 1,
-			"category": ["in", changed_categories]
-		},
-		fields=["name", "meal_date", "category"]
-	)
+	today_str = today.strftime("%Y-%m-%d")
+	todays_meal = get_meals_internal(today_str)
+	todays_categories = set(meal.get("category") for meal in todays_meal)
 
-	total_meals = len(existing_meals)
-	updated_meals = 0
+	categories_to_update = list(set(changed_categories) & todays_categories)
+	if not categories_to_update:
+		return
 
-	for idx, meal in enumerate(existing_meals, 1):
+	categories_sql = ', '.join(f"'{cat}'" for cat in categories_to_update)
+
+	query = f"""
+		SELECT name, category, meal_title, meal_date
+		FROM `tabHotpot Meal`
+		WHERE vendor_id = %s
+		AND is_active = 1
+		AND category IN ({categories_sql})
+		AND meal_date >= %s
+	"""
+	meals = frappe.db.sql(query, (self.name, start_date), as_dict=True)
+
+	discounted_rate_map = {
+		row.category: row.discounted_rate for row in self.category_prices
+	}
+
+	for idx, meal in enumerate(meals, 1):
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
-			meal_doc.vendor_id = vendor_id
+			meal_doc.vendor_id = self.name
+
+
+			coupons = meal_doc.get("coupons")
+			for coupon in coupons:
+				coupon_doc = frappe.get_doc("Hotpot Coupons", coupon.name)
+				prev_weight = coupon_doc.coupon_weight
+				new_weight = discounted_rate_map.get(meal.category)
+				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
+
+				if prev_weight != new_weight:
+					coupon_doc.coupon_weight = new_weight
+
+					transaction_doc = frappe.new_doc("Hotpot Transaction History")
+
+					if prev_weight > new_weight:
+						amount_changed = prev_weight - new_weight
+						user_doc.coupon_count += amount_changed
+						transaction_doc.update({
+							"employee_id": user_doc.get("name"),
+							"type": "Credit",
+							"message": f"{amount_changed} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
+							"title": "Meal Cost Refund",
+							"amount": amount_changed,
+							"meal": meal_doc.get("meal_id"),
+							"coupon": coupon.get("name"),
+							"coupon_status": "1",
+							"category": meal_doc.get("category"),
+						})
+						message = f"Sweet deal! 😄 '{meal_doc.meal_title}' just got cheaper!"
+						message2 = f"Refund alert! 💸 You got back {amount_changed} tokens. Check your wallet!"
+					else:
+						amount_changed = new_weight - prev_weight
+						user_doc.coupon_count -= amount_changed
+						transaction_doc.update({
+							"employee_id": user_doc.get("name"),
+							"type": "Debit",
+							"message": f"{amount_changed} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
+							"title": "Meal Cost Update",
+							"amount": amount_changed,
+							"meal": meal_doc.get("meal_id"),
+							"coupon": coupon.get("name"),
+							"coupon_status": "1",
+							"category": meal_doc.get("category"),
+						})
+						message = f"Price bump! 😕 '{meal_doc.meal_title}' costs a bit more now."
+						message2 = f"{amount_changed} tokens deducted 💰. Check your wallet for updates!"
+
+					transaction_doc.insert()
+					coupon_doc.save(ignore_permissions=True)
+					user_doc.save(ignore_permissions=True)
+
+					if user_doc.fcm_token:
+						try:
+							send_notification_by_token(
+								user_doc.fcm_token,
+								"Meal Update Alert",
+								message,
+								date=meal_doc.meal_date,
+								doc_id=meal_doc.name,
+								text="meals",
+							)
+							send_notification_by_token(
+								user_doc.fcm_token,
+								"Wallet Update 💼",
+								message2,
+								doc_id=transaction_doc.name,
+								text="transactions",
+							)
+						except Exception:
+								frappe.log_error(
+									frappe.get_traceback(),
+									f"Failed to send update notification to {user_doc.name}",
+								)
+
 			meal_doc.save(ignore_permissions=True)
 			frappe.db.commit()
-			updated_meals += 1
+			frappe.publish_progress(
+				float(idx) * 100 / len(meals),
+				title="Updating Meals",
+				description=f"{idx}/{len(meals)} Meals Updated"
+			)
 		except Exception:
-			continue
-			
-		frappe.publish_progress(
-			float(idx) * 100 / total_meals,
-			title="Updating Meals",
-			description="{:.0f}% Updated".format(float(idx) * 100 / total_meals),
-		)
+			frappe.log_error(frappe.get_traceback(), f"Failed to update meal {meal.name}")
