@@ -225,7 +225,13 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-scheduler_events = {"daily": ["hotpot.tasks.hotpot_tasks.load_balance"]}
+scheduler_events = {
+    "daily": [
+        "hotpot.tasks.hotpot_tasks.load_balance",
+        "hotpot.tasks.hotpot_tasks.update_meals"
+    ]
+}
+
 
 
 # Testing

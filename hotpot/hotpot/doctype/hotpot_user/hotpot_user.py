@@ -330,6 +330,8 @@ def update_meals(self):
 			coupons = meal_doc.get("coupons")
 			for coupon in coupons:
 				coupon_doc = frappe.get_doc("Hotpot Coupons", coupon.name)
+				if coupon_doc.coupon_status != "1":
+					continue
 				prev_weight = coupon_doc.coupon_weight
 				new_weight = discounted_rate_map.get(meal.category)
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
@@ -348,7 +350,7 @@ def update_meals(self):
 							"message": f"{amount_changed} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
 							"title": "Meal Cost Refund",
 							"amount": amount_changed,
-							"meal": meal_doc.get("meal_id"),
+							"meal": meal_doc.name,
 							"coupon": coupon.get("name"),
 							"coupon_status": "1",
 							"category": meal_doc.get("category"),
@@ -364,7 +366,7 @@ def update_meals(self):
 							"message": f"{amount_changed} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
 							"title": "Meal Cost Update",
 							"amount": amount_changed,
-							"meal": meal_doc.get("meal_id"),
+							"meal": meal_doc.name,
 							"coupon": coupon.get("name"),
 							"coupon_status": "1",
 							"category": meal_doc.get("category"),
