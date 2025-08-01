@@ -15,7 +15,8 @@ class HotpotCategoryPrices(Document):
 		from frappe.types import DF
 
 		actual_rate: DF.Int
-		category: DF.Link | None
+		applicable_from: DF.Datetime
+		category: DF.Link
 		discounted_rate: DF.Int
 		parent: DF.Data
 		parentfield: DF.Data
