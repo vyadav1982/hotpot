@@ -7,6 +7,11 @@ frappe.listview_settings["Hotpot Meal"] = {
 		const isVendor = roles.includes("Hotpot Vendor");
 		if (isVendor && !isAdmin) {
 			$(".filter-selector").hide();
+			setTimeout(() => {
+				$('.filter-x-button').click();
+				listview.filter_area.add([[ "Hotpot Meal", "vendor_id", "=", frappe.session.user ]]);
+				listview.filter_area.add([[ "Hotpot Meal", "is_deleted", "=", 0 ]]);
+			}, 50);
 		}
 		if (!isAdmin) {
 			listview.page.clear_menu();
