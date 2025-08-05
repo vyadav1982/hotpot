@@ -46,7 +46,7 @@ class HotpotMeal(Document):
 		repeat_days: DF.Data | None
 		repeat_type: DF.Literal["once", "daily", "specific_days"]
 		start_time: DF.Datetime
-		vendor_id: DF.Link
+		vendor_id: DF.Link | None
 	# end: auto-generated types
 
 	def validate_dates(self):
@@ -146,10 +146,6 @@ class HotpotMeal(Document):
 					"A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed."
 				).format(self.category, self.meal_date)
 			)
-		vendor = None
-		vendor = frappe.get_doc("Hotpot User", self.vendor_id)
-		if not vendor:
-			frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.start_time = category_doc.start_time
@@ -161,6 +157,18 @@ class HotpotMeal(Document):
 			self.meal_weight = category_doc.meal_rate
 			self.actual_meal_rate=category_doc.meal_rate
 			self.max_meal_count = category_doc.max_meal_count
+			roles = frappe.get_roles()
+			if "Hotpot Vendor" in roles:
+				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
+				if self.vendor_id is None:
+					self.vendor_id = vendor_id
+					vendor = self.vendor_id
+
+		vendor = None
+		if self.vendor_id:
+			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+		if not vendor:
+			frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
 			
 
 
