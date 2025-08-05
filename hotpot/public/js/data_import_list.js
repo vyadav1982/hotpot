@@ -34,10 +34,6 @@ frappe.listview_settings["Data Import"] = {
         const isVendor = roles.includes("Hotpot Vendor");
         if (isVendor && !isAdmin) {
             $(".filter-selector").hide();
-            setTimeout(() => {
-                $('.filter-x-button').click();
-                listview.filter_area.add([["Data Import", "owner", "=", frappe.session.user]]);
-            }, 50);
         }
         if (!isAdmin) {
             listview.page.clear_menu();
