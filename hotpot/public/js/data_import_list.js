@@ -3,6 +3,14 @@ frappe.listview_settings["Data Import"] = {
         console.log("Data Import List View Loaded");
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
+        const isVendor = roles.includes("Hotpot Vendor");
+        if (isVendor && !isAdmin) {
+            $(".filter-selector").hide();
+            setTimeout(() => {
+                $('.filter-x-button').click();
+                listview.filter_area.add([["Data Import", "owner", "=", frappe.session.user]]);
+            }, 50);
+        }
         const doctype = this.doctype;
         if (!isAdmin) {
             listview.page.clear_menu();
@@ -23,7 +31,11 @@ frappe.listview_settings["Data Import"] = {
         const roles = frappe.user_roles;
         const doctype = this.doctype;
         const isAdmin = roles.includes("Administrator");
-        if(!isAdmin){
+        const isVendor = roles.includes("Hotpot Vendor");
+        if (isVendor && !isAdmin) {
+            $(".filter-selector").hide();
+        }
+        if (!isAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
             listview.page.hide_menu();
