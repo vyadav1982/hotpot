@@ -49,7 +49,7 @@ class HotpotUser(Document):
 		latitude: DF.Float
 		location: DF.Link
 		longitude: DF.Float
-		mobile_no: DF.Phone | None
+		mobile_no: DF.Data | None
 		tag_id: DF.Data | None
 		user: DF.Link | None
 	# end: auto-generated types
