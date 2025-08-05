@@ -96,6 +96,8 @@ class HotpotMeal(Document):
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
 
 			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+			if not vendor:
+				frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.meal_weight = category_doc.meal_rate
 			self.actual_meal_rate = category_doc.meal_rate
@@ -145,6 +147,9 @@ class HotpotMeal(Document):
 				).format(self.category, self.meal_date)
 			)
 		vendor = None
+		vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+		if not vendor:
+			frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
 			self.start_time = category_doc.start_time
@@ -156,12 +161,9 @@ class HotpotMeal(Document):
 			self.meal_weight = category_doc.meal_rate
 			self.actual_meal_rate=category_doc.meal_rate
 			self.max_meal_count = category_doc.max_meal_count
-			roles = frappe.get_roles()
-			if "Hotpot Vendor" in roles:
-				vendor_id = frappe.db.get_value("Hotpot User", {"email": frappe.session.user}, "name")
-				if self.vendor_id is None:
-					self.vendor_id = vendor_id
-					vendor = self.vendor_id
+			
+
+
 		for row in vendor.category_prices:
 			if row.category == self.category:
 				self.meal_weight = row.discounted_rate
