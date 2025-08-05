@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"DYT75f0FDv\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Vendor Workspace</span>\",\"col\":12}},{\"id\":\"GH1jBx_xHG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Import\",\"col\":3}},{\"id\":\"vgWTNUWvvP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Items Import\",\"col\":3}},{\"id\":\"56llBSzWXk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your meals\",\"col\":3}},{\"id\":\"7nME8YdraU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your items\",\"col\":3}},{\"id\":\"e8Bp1rn9HP\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"u_qs9jQhMK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Coupon Report\",\"col\":3}}]",
+ "content": "[{\"id\":\"DYT75f0FDv\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Hotpot Vendor Workspace</span>\",\"col\":12}},{\"id\":\"GH1jBx_xHG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Import\",\"col\":3}},{\"id\":\"vgWTNUWvvP\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Meal Items Import\",\"col\":3}},{\"id\":\"4Q3pP9UjP3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your meals\",\"col\":3}},{\"id\":\"6Vu34AuZwb\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"See your items\",\"col\":3}},{\"id\":\"e8Bp1rn9HP\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"u_qs9jQhMK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Coupon Report\",\"col\":3}}]",
  "creation": "2025-04-30 11:35:14.353843",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,7 @@
  "is_hidden": 0,
  "label": "Hotpot Vendor",
  "links": [],
- "modified": "2025-06-17 13:42:42.069132",
+ "modified": "2025-08-05 14:39:08.305766",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Vendor",
@@ -32,6 +32,24 @@
   {
    "color": "Grey",
    "doc_view": "List",
+   "format": "&nbsp;",
+   "label": "See your meals",
+   "link_to": "Hotpot Meal",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "format": "&nbsp;",
+   "label": "See your items",
+   "link_to": "Hotpot Meal Items",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
    "label": "Coupon Report",
    "link_to": "Coupon Report",
    "report_ref_doctype": "Hotpot Meal",
@@ -40,23 +58,9 @@
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "See your meals",
-   "link_to": "meal-list",
-   "type": "Page"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
    "label": "Meal Import",
    "type": "URL",
    "url": "/app/data-import/new-data-import"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "List",
-   "label": "See your items",
-   "link_to": "meal-item-list",
-   "type": "Page"
   },
   {
    "color": "Grey",
