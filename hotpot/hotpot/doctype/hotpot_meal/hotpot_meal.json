@@ -103,6 +103,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Vendor",
+   "link_filters": "[[\"Hotpot User\", \"is_active\", \"=\", 1],\n[\"Hotpot User\", \"is_vendor\", \"=\", 1]]",
    "options": "Hotpot User",
    "reqd": 1
   },
@@ -254,7 +255,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-07-29 11:28:00.976053",
+ "modified": "2025-08-05 12:35:51.444796",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
