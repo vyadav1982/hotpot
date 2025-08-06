@@ -228,7 +228,7 @@ doc_events = {
 scheduler_events = {
     "daily": [
         "hotpot.tasks.hotpot_tasks.load_balance",
-        "hotpot.tasks.hotpot_tasks.update_meals"
+        "hotpot.tasks.hotpot_tasks.update_meals_future"
     ]
 }
 
