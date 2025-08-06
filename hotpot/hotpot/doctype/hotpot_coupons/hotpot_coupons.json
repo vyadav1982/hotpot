@@ -110,7 +110,7 @@
    "fieldname": "location",
    "fieldtype": "Link",
    "label": "Location",
-   "options": "Branch",
+   "options": "Company Locations",
    "search_index": 1
   },
   {
@@ -124,7 +124,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-07-01 09:54:04.889786",
+ "modified": "2025-08-06 10:06:24.544540",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
