@@ -2,7 +2,7 @@ from datetime import datetime
 
 import frappe
 from frappe.utils import getdate, nowdate
-from hotpot.utils import get_local_time_now, get_utc_datetime_obj
+from hotpot.utils.utc_time import get_local_time_now, get_utc_datetime_obj
 import pytz
 
 from hotpot.utils.send_fcm import *
