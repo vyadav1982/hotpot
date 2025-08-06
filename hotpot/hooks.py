@@ -226,12 +226,14 @@ doc_events = {
 # ---------------
 
 scheduler_events = {
-    "daily": [
-        "hotpot.tasks.hotpot_tasks.load_balance",
-        "hotpot.tasks.hotpot_tasks.update_meals_future"
-    ]
+	"daily": [
+		"hotpot.tasks.hotpot_tasks.load_balance",
+		"hotpot.tasks.hotpot_tasks.update_meals_future",
+		"hotpot.tasks.hotpot_tasks.reset_todays_new_logins"
+	]
 }
 
+on_login = "hotpot.api.users.first_login"
 
 
 # Testing

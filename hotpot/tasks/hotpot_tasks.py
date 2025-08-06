@@ -204,4 +204,14 @@ def update_meals_future():
 		frappe.log_error(frappe.get_traceback(), "[update_meals_future] Fatal error")
 
 
-		
+def reset_todays_new_logins():
+	"""Reset 'Today's New Login' count to 0 using Frappe ORM."""
+	try:
+		config = frappe.get_single("Hotpot Configurations")
+		config.todays_new_login = 0
+		config.save(ignore_permissions=True)
+		frappe.db.commit()
+		frappe.logger().info("✅ Reset today's new login count to 0.")
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "❌ Error resetting today's new logins")
+

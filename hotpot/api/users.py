@@ -828,3 +828,21 @@ def check_hotpot_role(hotpot_roles):
 			return role
 
 	return normalized_roles[0]
+
+
+
+@frappe.whitelist(allow_guest=True)
+def first_login(login_manager):
+	user_id = login_manager.user
+
+	if user_id == "Guest":
+		return
+
+	user = frappe.get_doc("User", user_id)
+
+	if not user.last_login or str(user.last_login).strip() == "":
+		hotpot_config = frappe.get_single("Hotpot Configurations")
+		current_count = hotpot_config.get("todays_new_login") or 0
+		hotpot_config.set("todays_new_login", current_count + 1)
+		hotpot_config.save(ignore_permissions=True)
+		frappe.db.commit()

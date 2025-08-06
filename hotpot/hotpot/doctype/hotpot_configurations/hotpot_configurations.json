@@ -11,7 +11,8 @@
   "allow_meal_on_sunday",
   "allow_free_meal_for_outer_location",
   "discount",
-  "initial_tokens"
+  "initial_tokens",
+  "todays_new_login"
  ],
  "fields": [
   {
@@ -58,12 +59,20 @@
    "fieldtype": "Int",
    "label": "New User Wallet Balance / Monthly Wallet Balance Loading",
    "non_negative": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:frappe.user_roles.includes('Administrator')",
+   "fieldname": "todays_new_login",
+   "fieldtype": "Int",
+   "label": "Today's New Login",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-07-31 15:03:25.598337",
+ "modified": "2025-08-06 14:58:33.562444",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",
