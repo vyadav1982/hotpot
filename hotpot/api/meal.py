@@ -325,7 +325,7 @@ def update_meal():
 		for coupon in coupons:
 			try:
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
-				if user_doc.fcm_token:
+				if user_doc.fcm_token and coupon.coupon_status == "1":
 					send_notification_by_token(
 						user_doc.fcm_token,
 						"Meal Plot Twist!",
@@ -338,6 +338,9 @@ def update_meal():
 				frappe.log_error(
 					frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
 				)
+		
+		set_response(200, True, "Meal updated successfully", {"meal_id": meal_doc.name})
+		return
 
 	except Exception as e:
 		frappe.db.rollback()
