@@ -232,6 +232,7 @@ scheduler_events = {
     ]
 }
 
+on_login = "hotpot.api.users.first_login"
 
 
 # Testing

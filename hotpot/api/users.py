@@ -828,3 +828,16 @@ def check_hotpot_role(hotpot_roles):
 			return role
 
 	return normalized_roles[0]
+
+
+
+def first_login(login_manager):
+	user = frappe.get_doc("User", login_manager.user)
+	if not user.last_login or str(user.last_login).strip() == "":
+		hotpot_config = frappe.get_single("Hotpot Configurations")
+		current_count = hotpot_config.get("todays_new_login")
+		if current_count is None:
+			current_count = 0
+		hotpot_config.set("todays_new_login", current_count + 1)
+		hotpot_config.save()
+		frappe.db.commit()
