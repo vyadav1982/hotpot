@@ -1291,7 +1291,7 @@ def search_coupon(start_date, end_date, identifier):
 		identifier_field = "email" if is_valid_email(identifier) else "employee_id"
 
 		user_doc = frappe.db.sql(
-			f"SELECT name FROM `tabHotpot User` WHERE {identifier_field} = %s AND role = 'Hotpot User' LIMIT 1;",
+			f"SELECT name FROM `tabHotpot User` WHERE {identifier_field} = %s AND is_employee = 1 LIMIT 1;",
 			(identifier,),
 			as_dict=True,
 		)
