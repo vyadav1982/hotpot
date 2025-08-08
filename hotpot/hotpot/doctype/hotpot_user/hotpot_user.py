@@ -331,6 +331,8 @@ def update_meals(self):
 				if coupon_doc.coupon_status != "1":
 					continue
 				prev_weight = coupon_doc.coupon_weight
+				if not prev_weight:
+					continue
 				new_weight = discounted_rate_map.get(meal.category)
 				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
 
