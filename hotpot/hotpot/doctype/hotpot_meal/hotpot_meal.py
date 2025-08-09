@@ -95,18 +95,18 @@ class HotpotMeal(Document):
 			if duplicate_exists:
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
 
-			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
-			if not vendor:
-				frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
-			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
-			self.meal_weight = category_doc.meal_rate
-			self.actual_meal_rate = category_doc.meal_rate
+			# vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+			# if not vendor:
+			# 	frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
+			# category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+			# self.meal_weight = category_doc.meal_rate
+			# self.actual_meal_rate = category_doc.meal_rate
 
-			for row in vendor.category_prices:
-				if row.category == self.category:
-					self.meal_weight = row.discounted_rate
-					self.actual_meal_rate = row.actual_rate
-					break
+			# for row in vendor.category_prices:
+			# 	if row.category == self.category:
+			# 		self.meal_weight = row.discounted_rate
+			# 		self.actual_meal_rate = row.actual_rate
+			# 		break
 
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items = []
@@ -172,11 +172,11 @@ class HotpotMeal(Document):
 			
 
 
-		for row in vendor.category_prices:
-			if row.category == self.category:
-				self.meal_weight = row.discounted_rate
-				self.actual_meal_rate = row.actual_rate
-				break
+		# for row in vendor.category_prices:
+		# 	if row.category == self.category:
+		# 		self.meal_weight = row.discounted_rate
+		# 		self.actual_meal_rate = row.actual_rate
+		# 		break
 		meal_date = get_local_datetime_obj(self.meal_date)
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 
