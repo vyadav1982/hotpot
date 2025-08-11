@@ -240,7 +240,7 @@ def create_user(doc):
 			user.first_name = doc.first_name or "First"
 			user.last_name = doc.last_name or ""
 			user.enabled = 1 if doc.status == "Active" else 0
-			# user.send_welcome_email = 1
+			user.send_welcome_email = 0
 			user.append("roles", {"role": "Hotpot User"})
 			user.flags.ignore_permissions = True
 			user.insert()

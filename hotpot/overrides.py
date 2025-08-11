@@ -516,7 +516,7 @@ class CustomDataImport(DataImport):
 						"email": email,
 						"first_name": first_name,
 						"enabled": 1,
-						"send_welcome_email": 1,
+						"send_welcome_email": 0,
 						"role_profile_name": "",
 						"roles": [{"role": "Hotpot User"}],
 					}
