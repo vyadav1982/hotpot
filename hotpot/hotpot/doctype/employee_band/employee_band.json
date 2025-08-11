@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:band",
  "creation": "2025-06-19 12:54:41.826742",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -11,16 +12,18 @@
   {
    "fieldname": "band",
    "fieldtype": "Data",
-   "label": "Band"
+   "label": "Band",
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-19 12:54:58.803431",
+ "modified": "2025-08-11 13:59:11.471214",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Employee Band",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
