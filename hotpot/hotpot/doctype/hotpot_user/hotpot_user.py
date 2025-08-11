@@ -402,12 +402,12 @@ def update_meals(self):
 									frappe.get_traceback(),
 									f"Failed to send update notification to {user_doc.name}",
 								)
+			frappe.db.commit()
 			for row in self.category_prices:
 				if row.category == meal_doc.category :
-					meal_doc.meal_weight = row.discounted_rate
-					meal_doc.actual_meal_rate = row.actual_rate
+					frappe.set_value("Hotpot Meal",meal_doc.name,'meal_weight',row.discounted_rate)
+					frappe.set_value("Hotpot Meal",meal_doc.name,'actual_meal_rate',row.actual_rate)
 					break
-			meal_doc.save(ignore_permissions=True)
 			frappe.db.commit()
 			frappe.publish_progress(
 				float(idx) * 100 / len(meals),
