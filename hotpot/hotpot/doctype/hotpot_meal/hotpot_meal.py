@@ -9,6 +9,8 @@ from frappe.model.document import Document
 
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 from hotpot.utils.utc_time import *
+from frappe.utils import getdate, nowdate
+
 
 
 class HotpotMeal(Document):
@@ -95,18 +97,13 @@ class HotpotMeal(Document):
 			if duplicate_exists:
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
 
-			vendor = frappe.get_doc("Hotpot User", self.vendor_id)
-			if not vendor:
-				frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
-			category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
-			self.meal_weight = category_doc.meal_rate
-			self.actual_meal_rate = category_doc.meal_rate
-
-			for row in vendor.category_prices:
-				if row.category == self.category:
-					self.meal_weight = row.discounted_rate
-					self.actual_meal_rate = row.actual_rate
-					break
+			# vendor = frappe.get_doc("Hotpot User", self.vendor_id)
+			# if not vendor:
+			# 	frappe.throw(_("Vendor {0} does not exist.").format(self.vendor_id))
+			# category_doc = frappe.get_doc("Hotpot Meal Category", self.category)
+			# self.meal_weight = category_doc.meal_rate
+			# self.actual_meal_rate = category_doc.meal_rate
+			# meal_date = get_local_datetime_obj(self.meal_date)
 
 		if is_frappe_ui_request() or frappe.flags.in_import:
 			self.menu_items = []
@@ -172,13 +169,14 @@ class HotpotMeal(Document):
 			
 
 
+		meal_date = get_local_datetime_obj(self.meal_date)
+		current_datetime = get_local_datetime_obj(datetime.utcnow())
+
 		for row in vendor.category_prices:
-			if row.category == self.category:
+			if row.category == self.category and row.applicable_from and getdate(meal_date) >= getdate(row.applicable_from):
 				self.meal_weight = row.discounted_rate
 				self.actual_meal_rate = row.actual_rate
 				break
-		meal_date = get_local_datetime_obj(self.meal_date)
-		current_datetime = get_local_datetime_obj(datetime.utcnow())
 
 		if meal_date.date() == current_datetime.date():
 			local_time = get_local_datetime_obj(datetime.utcnow())

@@ -9,7 +9,7 @@ import frappe
 from frappe.model.document import Document
 
 from hotpot.utils.email import *
-from hotpot.utils.utc_time import get_local_time_now, get_utc_datetime_obj
+from hotpot.utils.utc_time import *
 from hotpot.utils.role_utils import has_role
 from frappe.core.doctype.version.version import get_diff
 from frappe.utils import getdate, nowdate
@@ -240,7 +240,7 @@ def create_user(doc):
 			user.first_name = doc.first_name or "First"
 			user.last_name = doc.last_name or ""
 			user.enabled = 1 if doc.status == "Active" else 0
-			user.send_welcome_email = 1
+			# user.send_welcome_email = 1
 			user.append("roles", {"role": "Hotpot User"})
 			user.flags.ignore_permissions = True
 			user.insert()
@@ -260,7 +260,6 @@ def create_user(doc):
 def update_meals(self):
 	if not self.is_vendor:
 		return
-
 	old_doc = self.get_doc_before_save()
 
 	old_data_map = {
@@ -295,15 +294,17 @@ def update_meals(self):
 	local_time_now = get_local_time_now()
 	start_date = get_utc_datetime_obj(f"{today} {local_time_now}")
 
-	today_str = today.strftime("%Y-%m-%d")
-	todays_meal = get_meals_internal(today_str)
-	todays_categories = set(meal.get("category") for meal in todays_meal)
+	# today_str = today.strftime("%Y-%m-%d")
+	# todays_meal = get_meals_internal(today_str,self.name)
+	# print()
+	# todays_categories = set(meal.get("category") for meal in todays_meal)
 
-	categories_to_update = list(set(changed_categories) & todays_categories)
-	if not categories_to_update:
-		return
+	# categories_to_update = list(set(changed_categories) & todays_categories)
+	# print("checkpoint111")
+	# if not categories_to_update:
+	# 	return
 
-	categories_sql = ', '.join(f"'{cat}'" for cat in categories_to_update)
+	categories_sql = ', '.join(f"'{cat}'" for cat in changed_categories)
 
 	query = f"""
 		SELECT name, category, meal_title, meal_date
@@ -322,8 +323,9 @@ def update_meals(self):
 	for idx, meal in enumerate(meals, 1):
 		try:
 			meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
-			meal_doc.vendor_id = self.name
-
+			meal_date = get_local_datetime_obj(meal_doc.meal_date)
+			if getdate(meal_date)==today and get_local_datetime_obj(meal_doc.start_time).time() <= get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time():
+				continue
 
 			coupons = meal_doc.get("coupons")
 			for coupon in coupons:
@@ -400,7 +402,11 @@ def update_meals(self):
 									frappe.get_traceback(),
 									f"Failed to send update notification to {user_doc.name}",
 								)
-
+			for row in self.category_prices:
+				if row.category == meal_doc.category :
+					meal_doc.meal_weight = row.discounted_rate
+					meal_doc.actual_meal_rate = row.actual_rate
+					break
 			meal_doc.save(ignore_permissions=True)
 			frappe.db.commit()
 			frappe.publish_progress(
