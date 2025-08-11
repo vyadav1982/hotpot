@@ -23,6 +23,7 @@ def get_filtered_import_template(doctype):
 		"Date of Birth",
 		"Date of Joining",
 		"Branch",
+		"Location",
 		"Attendance Device ID (Biometric/RF tag ID)",
 		"Status",
 		"Mobile"

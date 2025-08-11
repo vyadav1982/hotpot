@@ -64,6 +64,7 @@ class CustomDataImport(DataImport):
 				"Date of Birth",
 				"Date of Joining",
 				"Branch",
+				"Location",
 				"Attendance Device ID (Biometric/RF tag ID)",
 				"Status",
 				"Mobile"
