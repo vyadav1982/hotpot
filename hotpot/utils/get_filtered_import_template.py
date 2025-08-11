@@ -16,12 +16,16 @@ def get_filtered_import_template(doctype):
 		"Employee Number",
 		"Company Email",
 		"First Name",
+		"Last Name",
+		"Department",
+		"Band",
 		"Gender",
 		"Date of Birth",
 		"Date of Joining",
 		"Branch",
 		"Attendance Device ID (Biometric/RF tag ID)",
 		"Status",
+		"Mobile"
 	]
 	meal_field = ["Category", "Meal Title", "Meal Items", "Meal Date", "Buffer Coupon Count"]
 	meal_item_field = ["Item Name"]
