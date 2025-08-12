@@ -216,7 +216,7 @@ class HotpotApprovals(Document):
 									send_notification_by_token(
 										user_doc.fcm_token,
 										"Refund Incoming! 💸",
-										f"You've been credited {coupon.coupon_weight} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
+										f"You've been credited {int(coupon.coupon_weight)} tokens for the deleted meal '{meal_doc.meal_title}'. Your wallet just got heavier!",
 										doc_id=transaction_doc.name,
 										text="transaction",
 									)

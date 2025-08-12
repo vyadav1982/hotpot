@@ -92,7 +92,6 @@ def update_meals_future():
 					if row.applicable_from and getdate(row.applicable_from) == today
 				}
 
-
 				if not categories:
 					continue
 
@@ -115,8 +114,6 @@ def update_meals_future():
 				for meal in meals:
 					try:
 						meal_doc = frappe.get_doc("Hotpot Meal", meal.name)
-						meal_doc.vendor_id = vendor.name
-
 
 						coupons = meal_doc.get("coupons")
 						for coupon in coupons:
@@ -140,7 +137,7 @@ def update_meals_future():
 									transaction_doc.update({
 										"employee_id": user_doc.get("name"),
 										"type": "Credit",
-										"message": f"{amount_changed} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
+										"message": f"{int(amount_changed)} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
 										"title": "Meal Cost Refund",
 										"amount": amount_changed,
 										"meal": meal_doc.name,
@@ -149,14 +146,14 @@ def update_meals_future():
 										"category": meal_doc.get("category"),
 									})
 									message = f"Sweet deal! 😄 '{meal_doc.meal_title}' just got cheaper!"
-									message2 = f"Refund alert! 💸 You got back {amount_changed} tokens. Check your wallet!"
+									message2 = f"Refund alert! 💸 You got back {int(amount_changed)} tokens. Check your wallet!"
 								else:
 									amount_changed = new_weight - prev_weight
 									user_doc.coupon_count -= amount_changed
 									transaction_doc.update({
 										"employee_id": user_doc.get("name"),
 										"type": "Debit",
-										"message": f"{amount_changed} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
+										"message": f"{int(amount_changed)} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
 										"title": "Meal Cost Update",
 										"amount": amount_changed,
 										"meal": meal_doc.name,
@@ -165,7 +162,7 @@ def update_meals_future():
 										"category": meal_doc.get("category"),
 									})
 									message = f"Price bump! 😕 '{meal_doc.meal_title}' costs a bit more now."
-									message2 = f"{amount_changed} tokens deducted 💰. Check your wallet for updates!"
+									message2 = f"{int(amount_changed)} tokens deducted 💰. Check your wallet for updates!"
 
 								transaction_doc.insert()
 								coupon_doc.save(ignore_permissions=True)
@@ -194,7 +191,12 @@ def update_meals_future():
 												f"Failed to send update notification to {user_doc.name}",
 											)
 
-						meal_doc.save(ignore_permissions=True)
+						frappe.db.commit()
+						for row in vendor.category_prices:
+							if row.category == meal_doc.category :
+								frappe.set_value("Hotpot Meal",meal_doc.name,'meal_weight',row.discounted_rate)
+								frappe.set_value("Hotpot Meal",meal_doc.name,'actual_meal_rate',row.actual_rate)
+								break
 						frappe.db.commit()
 					except Exception as e:
 						frappe.log_error(frappe.get_traceback(), f"[update_meals_future] Meal update failed for {meal.name}")

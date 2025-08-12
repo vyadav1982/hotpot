@@ -258,10 +258,14 @@ def create_user(doc):
 
 
 def update_meals(self):
+	# if the user is not a vendor stop here ✋
 	if not self.is_vendor:
 		return
+
+	# get previous details
 	old_doc = self.get_doc_before_save()
 
+	# preparing the old data json 🙆🏻‍♂️
 	old_data_map = {
 		row.category: {
 			"applicable_from": getdate(row.applicable_from) if row.applicable_from else None,
@@ -304,6 +308,7 @@ def update_meals(self):
 	# if not categories_to_update:
 	# 	return
 
+	# getting the meals of the vendor 🍝
 	categories_sql = ', '.join(f"'{cat}'" for cat in changed_categories)
 
 	query = f"""
@@ -343,13 +348,14 @@ def update_meals(self):
 
 					transaction_doc = frappe.new_doc("Hotpot Transaction History")
 
+					#  if the meal price is dropped 🤑
 					if prev_weight > new_weight:
 						amount_changed = prev_weight - new_weight
 						user_doc.coupon_count += amount_changed
 						transaction_doc.update({
 							"employee_id": user_doc.get("name"),
 							"type": "Credit",
-							"message": f"{amount_changed} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
+							"message": f"{int(amount_changed)} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
 							"title": "Meal Cost Refund",
 							"amount": amount_changed,
 							"meal": meal_doc.name,
@@ -358,14 +364,16 @@ def update_meals(self):
 							"category": meal_doc.get("category"),
 						})
 						message = f"Sweet deal! 😄 '{meal_doc.meal_title}' just got cheaper!"
-						message2 = f"Refund alert! 💸 You got back {amount_changed} tokens. Check your wallet!"
+						message2 = f"Refund alert! 💸 You got back {int(amount_changed)} tokens. Check your wallet!"
+
+					#  if the meal price is increased 🥺
 					else:
 						amount_changed = new_weight - prev_weight
 						user_doc.coupon_count -= amount_changed
 						transaction_doc.update({
 							"employee_id": user_doc.get("name"),
 							"type": "Debit",
-							"message": f"{amount_changed} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
+							"message": f"{int(amount_changed)} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
 							"title": "Meal Cost Update",
 							"amount": amount_changed,
 							"meal": meal_doc.name,
@@ -374,12 +382,13 @@ def update_meals(self):
 							"category": meal_doc.get("category"),
 						})
 						message = f"Price bump! 😕 '{meal_doc.meal_title}' costs a bit more now."
-						message2 = f"{amount_changed} tokens deducted 💰. Check your wallet for updates!"
+						message2 = f"{int(amount_changed)} tokens deducted 💰. Check your wallet for updates!"
 
 					transaction_doc.insert()
 					coupon_doc.save(ignore_permissions=True)
 					user_doc.save(ignore_permissions=True)
 
+					# sending fcm notification 📲
 					if user_doc.fcm_token:
 						try:
 							send_notification_by_token(
@@ -402,13 +411,15 @@ def update_meals(self):
 									frappe.get_traceback(),
 									f"Failed to send update notification to {user_doc.name}",
 								)
+			frappe.db.commit()
 			for row in self.category_prices:
 				if row.category == meal_doc.category :
-					meal_doc.meal_weight = row.discounted_rate
-					meal_doc.actual_meal_rate = row.actual_rate
+					frappe.set_value("Hotpot Meal",meal_doc.name,'meal_weight',row.discounted_rate)
+					frappe.set_value("Hotpot Meal",meal_doc.name,'actual_meal_rate',row.actual_rate)
 					break
-			meal_doc.save(ignore_permissions=True)
 			frappe.db.commit()
+
+			# displaying progress bar 🚀
 			frappe.publish_progress(
 				float(idx) * 100 / len(meals),
 				title="Updating Meals",
