@@ -78,7 +78,7 @@ def get_context():
 OTP_PREFIX = "otp:"
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def verify_otp(identifier, submitted_otp):
 	"""
 	Verifies the OTP for both phone numbers and email addresses.
