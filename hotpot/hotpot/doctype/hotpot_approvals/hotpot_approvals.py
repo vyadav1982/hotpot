@@ -47,7 +47,7 @@ class HotpotApprovals(Document):
 			meal_doc.save()
 			frappe.db.commit()
 			send_approval_request_email(
-				"sashikant12rao@gmail.com", user_data, approval_doc, self.name, meal_doc.meal_title
+				"hotpot@blissgvs.com", user_data, approval_doc, self.name, meal_doc.meal_title
 			)
 
 	def on_update(self):

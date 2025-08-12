@@ -32,26 +32,29 @@ def send_email(template_name, to_email, context, subject, qr_code_base64=None):
 					"fcontent": qr_code_base64,
 				}
 			)
-
 		email_body = render_template(f"templates/email/{template_name}.html", context)
-		frappe.enqueue(
-			queue="long",
-			method=frappe.sendmail,
-			recipients=to_email,
-			subject=subject,
-			content=email_body,
-			attachments=attachments if attachments else None,
-			now=True,
-		)
-		# frappe.sendmail(
-		# 	recipients=to_email,
-		# 	subject=subject,
-		# 	content=email_body,
-		# 	attachments=attachments if attachments else None,
-		# 	now=True,
-		# )
-		frappe.logger().info(f"Email sent successfully to {to_email}")
-		print("mail send successfully")
+		try:
+			print("sending email")
+			# frappe.enqueue(
+			# 	queue="long",
+			# 	method=frappe.sendmail,
+			# 	recipients=to_email,
+			# 	subject=subject,
+			# 	content=email_body,
+			# 	attachments=attachments if attachments else None,
+			# 	now=True,
+			# )
+			frappe.sendmail(
+				recipients=to_email,
+				subject=subject,
+				content=email_body,
+				attachments=attachments if attachments else None,
+				now=True,
+			)
+			frappe.logger().info(f"Email sent successfully to {to_email}")
+			print("mail send successfully")
+		except Exception as e:
+			print("------------------------> ",e)
 	except Exception as e:
 		print("---------->", e)
 		frappe.log_error(frappe.get_traceback(), "Email Sending Error")

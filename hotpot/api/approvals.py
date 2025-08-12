@@ -237,7 +237,7 @@ def create_approval():
 			or get_dominant_role_for_current_user() == "Hotpot HR"
 		):
 			send_approval_request_email(
-				"sashikant12rao@gmail.com", user_data, data, approval.name, meal_doc.meal_title
+				"hotpot@blissgvs.com", user_data, data, approval.name, meal_doc.meal_title
 			)
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
