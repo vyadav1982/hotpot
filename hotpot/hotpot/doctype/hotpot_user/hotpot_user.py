@@ -355,7 +355,7 @@ def update_meals(self):
 						transaction_doc.update({
 							"employee_id": user_doc.get("name"),
 							"type": "Credit",
-							"message": f"{amount_changed} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
+							"message": f"{int(amount_changed)} tokens refunded as meal cost for '{meal_doc.meal_title}' dropped. 💸",
 							"title": "Meal Cost Refund",
 							"amount": amount_changed,
 							"meal": meal_doc.name,
@@ -364,7 +364,7 @@ def update_meals(self):
 							"category": meal_doc.get("category"),
 						})
 						message = f"Sweet deal! 😄 '{meal_doc.meal_title}' just got cheaper!"
-						message2 = f"Refund alert! 💸 You got back {amount_changed} tokens. Check your wallet!"
+						message2 = f"Refund alert! 💸 You got back {int(amount_changed)} tokens. Check your wallet!"
 
 					#  if the meal price is increased 🥺
 					else:
@@ -373,7 +373,7 @@ def update_meals(self):
 						transaction_doc.update({
 							"employee_id": user_doc.get("name"),
 							"type": "Debit",
-							"message": f"{amount_changed} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
+							"message": f"{int(amount_changed)} tokens deducted as meal cost for '{meal_doc.meal_title}' increased. 💰",
 							"title": "Meal Cost Update",
 							"amount": amount_changed,
 							"meal": meal_doc.name,
@@ -382,7 +382,7 @@ def update_meals(self):
 							"category": meal_doc.get("category"),
 						})
 						message = f"Price bump! 😕 '{meal_doc.meal_title}' costs a bit more now."
-						message2 = f"{amount_changed} tokens deducted 💰. Check your wallet for updates!"
+						message2 = f"{int(amount_changed)} tokens deducted 💰. Check your wallet for updates!"
 
 					transaction_doc.insert()
 					coupon_doc.save(ignore_permissions=True)
