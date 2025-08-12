@@ -10,7 +10,9 @@
   "title",
   "date",
   "is_active",
-  "location"
+  "location",
+  "holiday_image",
+  "tag_line"
  ],
  "fields": [
   {
@@ -37,11 +39,21 @@
    "label": "Location",
    "options": "Branch",
    "search_index": 1
+  },
+  {
+   "fieldname": "tag_line",
+   "fieldtype": "Data",
+   "label": "Tag Line"
+  },
+  {
+   "fieldname": "holiday_image",
+   "fieldtype": "Attach Image",
+   "label": "Holiday Image"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-26 15:45:17.589584",
+ "modified": "2025-08-12 18:19:23.093319",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Holidays",

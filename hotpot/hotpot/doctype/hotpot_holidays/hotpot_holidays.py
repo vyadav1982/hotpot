@@ -15,8 +15,10 @@ class HotpotHolidays(Document):
 		from frappe.types import DF
 
 		date: DF.Date | None
+		holiday_image: DF.AttachImage | None
 		is_active: DF.Check
 		location: DF.Link | None
+		tag_line: DF.Data | None
 		title: DF.Data | None
 	# end: auto-generated types
 	pass

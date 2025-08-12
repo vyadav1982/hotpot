@@ -210,7 +210,7 @@ def update_employee_to_hotpot(doc, method):
 				"employee_id": doc.employee_number,
 				"type": "Credit",
 				"message": f"🎉 You've received your initial credit of {hotpot_config.get('initial_tokens')} tokens on {now.strftime('%d %b %Y')} by the Admin.",
-				"title": "initial Credit",
+				"title": "Initial Credit",
 				"amount": hotpot_config.get("initial_tokens"),
 				"meal": None,
 				"coupon": None,
