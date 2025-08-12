@@ -78,7 +78,7 @@ def get_context():
 OTP_PREFIX = "otp:"
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def verify_otp(identifier, submitted_otp):
 	"""
 	Verifies the OTP for both phone numbers and email addresses.
@@ -108,7 +108,7 @@ def verify_otp(identifier, submitted_otp):
 	if stored_otp == submitted_otp:
 		# Fetch user data based on email or phone
 		data = frappe.db.get_value(
-			"Hotpot User", {user_field: identifier}, ["name", "email", "password"], as_dict=True
+			"Hotpot User", {user_field: identifier}, ["name", "email"], as_dict=True
 		)
 
 		set_response(200, True, "OTP verified successfully.", data)
