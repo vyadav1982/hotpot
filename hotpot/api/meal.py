@@ -444,7 +444,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 
 			holiday_doc = frappe.db.get_value("Hotpot Holidays", filters, ["name", "title", "tag_line", "holiday_image"], as_dict=True)
 			if holiday_doc:
-				return set_response(200, False, f"Oops! Today is a holiday - {holiday_doc.get('title', 'Holiday')} in your location.",{}, {
+				return set_response(200, False, f"Oops! Today is a holiday - {holiday_doc.get('title', 'Holiday')} in your location.",[], {
 					"type": "holiday",
 					"title": holiday_doc.get('title'),
 					"tagline": holiday_doc.get('tag_line'),
@@ -454,7 +454,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			# Check for Sunday
 			if (datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
 				and not int(hotpot_config.get("allow_meal_on_sunday", 0))):
-				return set_response(200, False, "Oops! Meals are not available on Sundays.", {},{
+				return set_response(200, False, "Oops! Meals are not available on Sundays.", [],{
 					"type": "sunday"
 				})
 
