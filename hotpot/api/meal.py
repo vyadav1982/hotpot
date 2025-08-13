@@ -15,11 +15,12 @@ from ..api.coupons import update_coupon_status
 from ..api.users import *
 
 
-def set_response(http_status_code, status, message, data=None):
+def set_response(http_status_code, status, message, data=None,hdata=None):
 	frappe.local.response["http_status_code"] = http_status_code
 	frappe.response["status"] = status
 	frappe.response["message"] = message
 	frappe.response["data"] = data
+	frappe.response["holiday_data"] = hdata
 
 
 @frappe.whitelist(methods=["POST"])
@@ -441,11 +442,21 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			if vendor_doc:
 				filters["location"] = vendor_doc.get("location")
 
-			if frappe.db.exists("Hotpot Holidays", filters) or (
-				datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
-				and not int(hotpot_config.get("allow_meal_on_sunday", 0))
-			):
-				return set_response(200, False, "Oops! Today is a day off in your location.")
+			holiday_doc = frappe.db.get_value("Hotpot Holidays", filters, ["name", "title", "tag_line", "holiday_image"], as_dict=True)
+			if holiday_doc:
+				return set_response(200, False, f"Oops! Today is a holiday - {holiday_doc.get('title', 'Holiday')} in your location.",[], {
+					"type": "holiday",
+					"title": holiday_doc.get('title'),
+					"tagline": holiday_doc.get('tag_line'),
+					"holidayImage": holiday_doc.get('holiday_image'),
+				})
+
+			# Check for Sunday
+			if (datetime.strptime(date, "%Y-%m-%d").date().weekday() == 6
+				and not int(hotpot_config.get("allow_meal_on_sunday", 0))):
+				return set_response(200, False, "Oops! Meals are not available on Sundays.", [],{
+					"type": "sunday"
+				})
 
 		local_time = get_local_time_now()
 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()

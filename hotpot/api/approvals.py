@@ -192,7 +192,7 @@ def create_approval():
 			"requested_by": user_data.get("name"),
 			"description": data.get("description"),
 			"meal_id": data.get("meal_id"),
-			"attachments": json.dumps(data.get("attachments", [])),
+			"attachments": data.get("attachments"),
 			"approval_status": "Pending",
 			"is_active": 1,
 		}
@@ -326,27 +326,18 @@ def upload_attachment():
 			return {"success": False, "message": "No file uploaded"}
 
 		allowed_extensions = {"jpg", "jpeg", "png", "gif", "bmp", "webp", "svg", "tiff"}
-		allowed_mime_types = {
-			"image/jpeg",
-			"image/png",
-			"image/gif",
-			"image/bmp",
-			"image/webp",
-			"image/svg+xml",
-			"image/tiff",
-		}
+
 
 		filename = uploaded_file.filename.lower()
 		file_ext = filename.rsplit(".", 1)[-1] if "." in filename else ""
-		file_mime_type = uploaded_file.content_type
 
-		if file_ext not in allowed_extensions or file_mime_type not in allowed_mime_types:
+		if file_ext not in allowed_extensions :
 			return {"success": False, "message": "Only image files are allowed"}
 
 		doctype = "Hotpot User"
 		docname = user_data.get("name")
 
-		file_doc = save_file(filename, uploaded_file.read(), doctype, docname, is_private=0)
+		file_doc = save_file(filename, uploaded_file.read(), is_private=0)
 
 		return {
 			"success": True,
