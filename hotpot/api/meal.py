@@ -1061,3 +1061,18 @@ def save_draft_meal():
 		frappe.log_error(f"{error_message}\n{trace}", "Draft Meal Creation Error")
 		set_response(500, False, error_message)
 		return
+
+
+@frappe.whitelist()
+def refresh_fetched_data(docname):
+	print("**********")
+	print(docname)
+	meal_doc = frappe.get_doc("Hotpot Meal",docname)
+	category_doc  = frappe.get_doc("Hotpot Meal Category",meal_doc.category)
+	meal_doc.start_time = category_doc.start_time
+	meal_doc.end_time= category_doc.end_time
+	# meal_doc.lead_time=category_doc.lead_time
+	# meal_doc.cancellation_time=category_doc.cancellation_time
+	# meal_doc.actual_meal_rate=category_doc.meal_rate
+	meal_doc.save(ignore_permissions=True)
+	frappe.db.commit()
