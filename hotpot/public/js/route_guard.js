@@ -45,6 +45,7 @@ const allowed_routes_by_role = {
 		'query-report/outer-location-coupon-report',
 		"hotpot-approvals",
 		"hotpot-draft-meal",
+		"generate-guest-qr",
 		'load-wallet-balance',
 	],
 	"Hotpot Finance": [
