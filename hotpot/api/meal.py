@@ -196,17 +196,24 @@ def create_meal():
 						"meal_item": item_id,
 					},
 				)
+		try:
+			meal_doc.insert()
+			frappe.db.commit()
 
-		meal_doc.insert()
-		frappe.db.commit()
-
-		set_response(
-			201,
-			True,
-			"Meal created successfully",
-			{"meal_id": meal_doc.name},
-		)
-		return
+			set_response(
+				201,
+				True,
+				"Meal created successfully",
+				{"meal_id": meal_doc.name},
+			)
+			return
+		except Exception as e:
+			set_response(
+				406,
+				False,
+				e
+			)
+			return
 
 	except Exception as e:
 		frappe.db.rollback()
