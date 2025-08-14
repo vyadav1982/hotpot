@@ -93,6 +93,7 @@ class HotpotMeal(Document):
 				AND category = %s
 				AND vendor_id = %s
 				AND name != %s
+				AND is_deleted = 0
 				LIMIT 1
 			""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
 
@@ -145,6 +146,7 @@ class HotpotMeal(Document):
 			AND category = %s
 			AND vendor_id = %s
 			AND name != %s
+			AND is_deleted = 0
 			LIMIT 1
 		""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
 

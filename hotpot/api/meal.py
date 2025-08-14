@@ -211,7 +211,7 @@ def create_meal():
 			set_response(
 				406,
 				False,
-				e
+				str(e)
 			)
 			return
 
