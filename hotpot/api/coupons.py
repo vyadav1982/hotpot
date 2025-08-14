@@ -1119,6 +1119,7 @@ def generate_coupon():
 					WHERE `employee_id` = %s
 					AND `parent` = %s
 					AND `coupon_status` != '2'
+					AND `guest_of` is NULL
 					AND DATE(CONVERT_TZ(coupon_date, '+00:00', %s)) = %s
 					LIMIT 1;
 				"""
@@ -1688,6 +1689,7 @@ def generate_coupon_admin():
 					WHERE `employee_id` = %s
 					AND `parent` = %s
 					AND `coupon_status` != '2'
+					AND `guest_of` is NULL
 					AND DATE(CONVERT_TZ(coupon_date, '+00:00', %s)) = %s
 					LIMIT 1;
 				"""

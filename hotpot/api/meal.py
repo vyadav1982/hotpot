@@ -557,7 +557,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
@@ -942,7 +942,7 @@ def get_meals_internal(date, vendor_id=None):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
