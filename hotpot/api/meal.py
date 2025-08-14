@@ -557,7 +557,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
@@ -942,7 +942,7 @@ def get_meals_internal(date, vendor_id=None):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc
+					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
@@ -1061,3 +1061,19 @@ def save_draft_meal():
 		frappe.log_error(f"{error_message}\n{trace}", "Draft Meal Creation Error")
 		set_response(500, False, error_message)
 		return
+
+
+@frappe.whitelist()
+def refresh_fetched_data(docname):
+	print("**********")
+	print(docname)
+	meal_doc = frappe.get_doc("Hotpot Meal",docname)
+	category_doc  = frappe.get_doc("Hotpot Meal Category",meal_doc.category)
+	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time:
+		meal_doc.start_time = category_doc.start_time
+		meal_doc.end_time= category_doc.end_time
+		# meal_doc.lead_time=category_doc.lead_time
+		# meal_doc.cancellation_time=category_doc.cancellation_time
+		# meal_doc.actual_meal_rate=category_doc.meal_rate
+		meal_doc.save(ignore_permissions=True)
+		frappe.db.commit()

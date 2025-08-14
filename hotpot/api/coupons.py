@@ -1063,11 +1063,14 @@ def generate_coupon():
 				current_time = current_datetime_local.time()
 
 				start_time_str = get_local_datetime_obj(meal_doc.start_time).time().strftime("%H:%M:%S")
+				meal_start = get_local_datetime_obj(f"{meal_doc.meal_date.date()} {meal_doc.start_time.time()}")
+				
+
 				current_time_str = current_time.strftime("%H:%M:%S")
 				start_time = datetime.strptime(start_time_str, "%H:%M:%S")
 				current_time_dt = datetime.strptime(current_time_str, "%H:%M:%S")
 
-				time_difference = (start_time - current_time_dt).seconds
+				time_difference = (meal_start-current_datetime_local).seconds
 
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
@@ -1107,7 +1110,7 @@ def generate_coupon():
 				buffer_used = 0
 				third = from_date == datetime.utcnow().date()
 				user_tz = get_user_timezone()
-				if first and second and third:
+				if first and second :
 					set_response(400, False, "Cannot book meal in meal preparation time")
 					return
 				query = """
@@ -1116,6 +1119,7 @@ def generate_coupon():
 					WHERE `employee_id` = %s
 					AND `parent` = %s
 					AND `coupon_status` != '2'
+					AND `guest_of` is NULL
 					AND DATE(CONVERT_TZ(coupon_date, '+00:00', %s)) = %s
 					LIMIT 1;
 				"""
@@ -1634,8 +1638,10 @@ def generate_coupon_admin():
 				current_time_str = current_time.strftime("%H:%M:%S")
 				start_time = datetime.strptime(start_time_str, "%H:%M:%S")
 				current_time_dt = datetime.strptime(current_time_str, "%H:%M:%S")
+				meal_start = get_local_datetime_obj(f"{meal_doc.meal_date.date()} {meal_doc.start_time.time()}")
 
-				time_difference = (start_time - current_time_dt).seconds
+
+				time_difference = (meal_start-current_datetime_local).seconds
 
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
@@ -1674,7 +1680,7 @@ def generate_coupon_admin():
 				buffer_used = 0
 				third = from_date == datetime.utcnow().date()
 				user_tz = get_user_timezone()
-				if first and second and third:
+				if first and second:
 					set_response(400, False, "Cannot book meal in meal preparation time")
 					return
 				query = """
@@ -1683,6 +1689,7 @@ def generate_coupon_admin():
 					WHERE `employee_id` = %s
 					AND `parent` = %s
 					AND `coupon_status` != '2'
+					AND `guest_of` is NULL
 					AND DATE(CONVERT_TZ(coupon_date, '+00:00', %s)) = %s
 					LIMIT 1;
 				"""
@@ -1909,13 +1916,14 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				current_datetime_local = get_local_datetime_obj(datetime.utcnow())
 				local_date_today = current_datetime_local.date()
 				current_time = current_datetime_local.time()
-
 				start_time_str = get_local_datetime_obj(meal_doc.start_time).time().strftime("%H:%M:%S")
 				current_time_str = current_time.strftime("%H:%M:%S")
 				start_time = datetime.strptime(start_time_str, "%H:%M:%S")
 				current_time_dt = datetime.strptime(current_time_str, "%H:%M:%S")
+				meal_start = get_local_datetime_obj(f"{meal_doc.meal_date.date()} {meal_doc.start_time.time()}")
 
-				time_difference = (start_time - current_time_dt).seconds
+
+				time_difference = (meal_start-current_datetime_local).seconds
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
 
@@ -1951,7 +1959,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				buffer_used = 0
 				third = from_date == datetime.utcnow().date()
 
-				if first and second and third:
+				if first and second:
 					return {"status": "error", "msg": "Cannot generate during meal preparation time"}
 
 				if get_local_datetime_obj(start_date).date() == local_date_today and is_buffer_time:

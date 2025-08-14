@@ -186,6 +186,7 @@
    "default": "1",
    "fieldname": "buffer_count_enabled",
    "fieldtype": "Check",
+   "hidden": 1,
    "label": "Buffer Count Enabled"
   },
   {
@@ -255,7 +256,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-05 13:00:00.608635",
+ "modified": "2025-08-13 20:31:14.845384",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
