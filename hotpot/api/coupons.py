@@ -1070,7 +1070,7 @@ def generate_coupon():
 				start_time = datetime.strptime(start_time_str, "%H:%M:%S")
 				current_time_dt = datetime.strptime(current_time_str, "%H:%M:%S")
 
-				time_difference = (meal_start-current_datetime_local).seconds
+				time_difference = (meal_start-current_datetime_local).total_seconds()
 
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
@@ -1631,8 +1631,8 @@ def generate_coupon_admin():
 				local_date_today = current_datetime_local.date()
 				current_time = current_datetime_local.time()
 
-				# first =((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)>0
-				# second = ((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).seconds)<= (meal_doc.lead_time)*60*60
+				# first =((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).total_seconds())>0
+				# second = ((datetime.strptime(get_local_datetime_obj(meal_doc.start_time).time(), "%H:%M:%S") - datetime.strptime(current_time, "%H:%M:%S")).total_seconds())<= (meal_doc.lead_time)*60*60
 
 				start_time_str = get_local_datetime_obj(meal_doc.start_time).time().strftime("%H:%M:%S")
 				current_time_str = current_time.strftime("%H:%M:%S")
@@ -1641,7 +1641,7 @@ def generate_coupon_admin():
 				meal_start = get_local_datetime_obj(f"{meal_doc.meal_date.date()} {meal_doc.start_time.time()}")
 
 
-				time_difference = (meal_start-current_datetime_local).seconds
+				time_difference = (meal_start-current_datetime_local).total_seconds()
 
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
@@ -1923,7 +1923,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				meal_start = get_local_datetime_obj(f"{meal_doc.meal_date.date()} {meal_doc.start_time.time()}")
 
 
-				time_difference = (meal_start-current_datetime_local).seconds
+				time_difference = (meal_start-current_datetime_local).total_seconds()
 				first = time_difference > 0
 				second = time_difference <= (meal_doc.lead_time) * 60 * 60
 
