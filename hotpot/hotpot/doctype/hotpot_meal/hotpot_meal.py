@@ -85,15 +85,19 @@ class HotpotMeal(Document):
 		if role == "Hotpot User":
 			return
 		if self.meal_date and self.category:
-			duplicate_exists = frappe.db.exists(
-				"Hotpot Meal",
-				{
-					"meal_date": self.meal_date,
-					"category": self.category,
-					"name": ["!=", self.name],
-					"vendor_id": self.vendor_id,
-				},
-			)
+			user_timezone = get_user_timezone() or "Asia/Kolkata"
+			duplicate_exists = frappe.db.sql("""
+				SELECT name 
+				FROM `tabHotpot Meal`
+				WHERE DATE(CONVERT_TZ(meal_date, '+00:00', %s)) = %s
+				AND category = %s
+				AND vendor_id = %s
+				AND name != %s
+				LIMIT 1
+			""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
+
+			duplicate_exists = duplicate_exists[0][0] if duplicate_exists else None
+
 			if duplicate_exists:
 				frappe.throw(f"A meal with category '{self.category}' already exists on {self.meal_date}.")
 
@@ -133,11 +137,19 @@ class HotpotMeal(Document):
 		if role == "Hotpot User":
 			return
 		self.validate_dates()
-		existing = frappe.db.exists(
-			"Hotpot Meal",
-			{"meal_date": self.meal_date, "category": self.category, "vendor_id": self.vendor_id},
-		)
-		if existing:
+		user_timezone = get_user_timezone() or "Asia/Kolkata"
+		duplicate_exists = frappe.db.sql("""
+			SELECT name 
+			FROM `tabHotpot Meal`
+			WHERE DATE(CONVERT_TZ(meal_date, '+00:00', %s)) = %s
+			AND category = %s
+			AND vendor_id = %s
+			AND name != %s
+			LIMIT 1
+		""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
+
+		duplicate_exists = duplicate_exists[0][0] if duplicate_exists else None
+		if duplicate_exists:
 			frappe.throw(
 				_(
 					"A meal for category '{0}' already exists on {1}. Only one entry per category per date is allowed."
