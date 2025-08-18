@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 
 import frappe
 import pytz
@@ -459,10 +459,11 @@ def scan_coupon():
 			if current_time < start_time:
 				set_response(400, False, "NOTICE: Too Early to Serve")
 				return
-
+		extra_time = meal_doc.get("surplus_scan_time") or 0
 		end_time = get_local_datetime_obj(meal_doc.get("end_time")).time()
 		if end_time:
-			if current_time > end_time:
+			allowed_end_time = end_time + timedelta(minutes=extra_time)
+			if current_time > allowed_end_time.time():
 				set_response(400, False, "ERROR: Meal Serving Time Passed")
 				return
 
@@ -590,7 +591,7 @@ def update_coupon_status():
 
 		expired_coupons = frappe.db.sql(
 			"""
-			SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight,hc.coupon_date, hm.name AS meal_id, hm.meal_weight AS meal_amount,hm.category,hm.meal_title
+			SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight, hc.coupon_date,hm.name AS meal_id, hm.meal_weight AS meal_amount, hm.category, hm.meal_title, hm.surplus_scan_time
 			FROM `tabHotpot Coupons` hc
 			INNER JOIN `tabHotpot Meal` hm ON hm.name = hc.parent
 			WHERE hc.coupon_status = "1"
@@ -598,13 +599,17 @@ def update_coupon_status():
 				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
 				OR (
 					DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
-					AND TIME(CONVERT_TZ(hm.end_time, '+00:00', %s)) <= TIME(%s)
+					AND TIME(CONVERT_TZ(
+						ADDTIME(hm.end_time, SEC_TO_TIME(hm.surplus_scan_time * 60)), 
+						'+00:00', %s
+					)) <= TIME(%s)
 				)
 			)
-		""",
+			""",
 			(user_tz, now_local, user_tz, now_local, user_tz, now_local),
 			as_dict=True,
 		)
+
 		if not expired_coupons:
 			return
 

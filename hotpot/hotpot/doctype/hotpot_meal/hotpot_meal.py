@@ -48,6 +48,7 @@ class HotpotMeal(Document):
 		repeat_days: DF.Data | None
 		repeat_type: DF.Literal["once", "daily", "specific_days"]
 		start_time: DF.Datetime
+		surplus_scan_time: DF.Int
 		vendor_id: DF.Link | None
 	# end: auto-generated types
 

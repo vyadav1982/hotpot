@@ -16,7 +16,8 @@
   "is_active",
   "sequence",
   "meal_rate",
-  "max_meal_count"
+  "max_meal_count",
+  "extra_scan_time"
  ],
  "fields": [
   {
@@ -95,11 +96,17 @@
    "fieldtype": "Time",
    "label": "End Time",
    "reqd": 1
+  },
+  {
+   "fieldname": "extra_scan_time",
+   "fieldtype": "Int",
+   "label": "Extra Scan Time",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 12:49:36.501390",
+ "modified": "2025-08-18 20:34:59.990076",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal Category",
