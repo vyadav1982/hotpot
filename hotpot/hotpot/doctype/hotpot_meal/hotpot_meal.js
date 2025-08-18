@@ -34,7 +34,7 @@ frappe.ui.form.on("Hotpot Meal", {
 			frm.toggle_display("approval_id", false);
 			frm.toggle_display("menu_items", false);
 			frm.toggle_display("ratings", false);
-			frm.toggle_display("coupons", false);
+			// frm.toggle_display("coupons", false);
 			
 
 			if (frm.doc.__islocal == 1) {
