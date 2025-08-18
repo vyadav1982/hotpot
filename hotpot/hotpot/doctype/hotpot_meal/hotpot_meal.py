@@ -148,7 +148,7 @@ class HotpotMeal(Document):
 			AND name != %s
 			AND is_deleted = 0
 			LIMIT 1
-		""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
+		""", (user_timezone, get_utc_datetime_obj(self.meal_date).date(), self.category, self.vendor_id, self.name))
 
 		duplicate_exists = duplicate_exists[0][0] if duplicate_exists else None
 		if duplicate_exists:
