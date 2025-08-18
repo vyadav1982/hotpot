@@ -84,18 +84,30 @@ class HotpotMeal(Document):
 		role = get_dominant_role_for_current_user()
 		if role == "Hotpot User":
 			return
+		
+		meal_str = self.meal_date
+
+		if not isinstance(meal_str, str):
+			meal_str = str(meal_str)
+
+		try:
+			meal_date_obj = datetime.strptime(meal_str, "%Y-%m-%d %H:%M:%S")
+		except ValueError:
+			meal_date_obj = datetime.strptime(meal_str, "%Y-%m-%d")
+
+		meal_str = meal_date_obj.date().strftime("%Y-%m-%d")
 		if self.meal_date and self.category:
 			user_timezone = get_user_timezone() or "Asia/Kolkata"
 			duplicate_exists = frappe.db.sql("""
 				SELECT name 
 				FROM `tabHotpot Meal`
-				WHERE DATE(CONVERT_TZ(meal_date, '+00:00', %s)) = %s
+				WHERE DATE(meal_date) = %s
 				AND category = %s
 				AND vendor_id = %s
 				AND name != %s
 				AND is_deleted = 0
 				LIMIT 1
-			""", (user_timezone, self.meal_date.date(), self.category, self.vendor_id, self.name))
+			""", (meal_str , self.category, self.vendor_id, self.name))
 
 			duplicate_exists = duplicate_exists[0][0] if duplicate_exists else None
 
@@ -138,17 +150,28 @@ class HotpotMeal(Document):
 		if role == "Hotpot User":
 			return
 		self.validate_dates()
+		meal_str = self.meal_date
+
+		if not isinstance(meal_str, str):
+			meal_str = str(meal_str)
+
+		try:
+			meal_date_obj = datetime.strptime(meal_str, "%Y-%m-%d %H:%M:%S")
+		except ValueError:
+			meal_date_obj = datetime.strptime(meal_str, "%Y-%m-%d")
+
+		meal_str = meal_date_obj.date().strftime("%Y-%m-%d")
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 		duplicate_exists = frappe.db.sql("""
 			SELECT name 
 			FROM `tabHotpot Meal`
-			WHERE DATE(CONVERT_TZ(meal_date, '+00:00', %s)) = %s
+			WHERE DATE(meal_date) = %s
 			AND category = %s
 			AND vendor_id = %s
 			AND name != %s
 			AND is_deleted = 0
 			LIMIT 1
-		""", (user_timezone, get_utc_datetime_obj(self.meal_date).date(), self.category, self.vendor_id, self.name))
+		""", (meal_str, self.category, self.vendor_id, self.name))
 
 		duplicate_exists = duplicate_exists[0][0] if duplicate_exists else None
 		if duplicate_exists:

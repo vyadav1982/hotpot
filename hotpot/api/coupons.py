@@ -1302,18 +1302,19 @@ def search_coupon(start_date, end_date, identifier):
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 		coupon_data = frappe.db.sql(
 			"""
-			SELECT hc.*, hm.*
-			FROM `tabHotpot Coupons` hc
-			JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
-			WHERE employee_id = %s AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %s AND %s
-			ORDER BY coupon_date DESC;
+				SELECT hc.*, hm.*
+				FROM `tabHotpot Coupons` hc
+				JOIN `tabHotpot Meal` hm ON hc.parent = hm.name
+				WHERE employee_id = %s 
+				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+				ORDER BY coupon_date DESC;
 			""",
 			(user_doc[0]["name"], user_timezone, start_date, end_date),
 			as_dict=True,
 		)
 
 		if not coupon_data:
-			return set_response(404, False, "No coupon found for this user on this date")
+			return set_response(404, False, f"No coupon found for {identifier} in range {start_date.strftime("%-d %b %y")} to {end_date.strftime("%-d %b %y")}")
 
 		return set_response(200, True, "Coupon Data fetched successfully", coupon_data)
 
