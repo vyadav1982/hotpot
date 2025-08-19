@@ -1076,7 +1076,7 @@ def refresh_fetched_data(docname):
 	print(docname)
 	meal_doc = frappe.get_doc("Hotpot Meal",docname)
 	category_doc  = frappe.get_doc("Hotpot Meal Category",meal_doc.category)
-	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time:
+	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time or meal_doc.surplus_scan_time != category_doc.extra_scan_time:
 		meal_doc.start_time = category_doc.start_time
 		meal_doc.end_time= category_doc.end_time
 		meal_doc.surplus_scan_time=category_doc.extra_scan_time
