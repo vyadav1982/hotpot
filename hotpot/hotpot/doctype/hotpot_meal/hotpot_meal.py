@@ -85,6 +85,10 @@ class HotpotMeal(Document):
 		role = get_dominant_role_for_current_user()
 		if role == "Hotpot User":
 			return
+
+		old_doc = self.get_doc_before_save()
+		if old_doc.buffer_coupon_count!=self.buffer_coupon_count:
+			self.remaining_coupon_count=self.buffer_coupon_count
 		
 		meal_str = self.meal_date
 
