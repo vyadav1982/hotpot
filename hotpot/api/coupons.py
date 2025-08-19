@@ -589,29 +589,32 @@ def update_coupon_status():
 		user_tz = get_user_timezone()
 		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 
-		expired_coupons = frappe.db.sql(
-			"""
-			SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight, hc.coupon_date,hm.name AS meal_id, hm.meal_weight AS meal_amount, hm.category, hm.meal_title, hm.surplus_scan_time
-			FROM `tabHotpot Coupons` hc
-			INNER JOIN `tabHotpot Meal` hm ON hm.name = hc.parent
-			WHERE hc.coupon_status = "1"
-			AND (
-				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
-				OR (
-					DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
-					AND TIME(CONVERT_TZ(
-						ADDTIME(hm.end_time, SEC_TO_TIME(hm.surplus_scan_time * 60)), 
-						'+00:00', %s
-					)) <= TIME(%s)
-				)
+		query = """
+		SELECT hc.name AS coupon_id, hc.employee_id, hc.coupon_weight, hc.coupon_date,
+			hm.name AS meal_id, hm.meal_weight AS meal_amount, hm.category,
+			hm.meal_title, hm.surplus_scan_time,TIME(CONVERT_TZ(
+			ADDTIME(hm.end_time, SEC_TO_TIME(hm.surplus_scan_time * 60)),
+			'+00:00', 'Asia/Kolkata'
+			)) AS final_cutoff_time
+		FROM `tabHotpot Coupons` hc
+		INNER JOIN `tabHotpot Meal` hm ON hm.name = hc.parent
+		WHERE hc.coupon_status = "1"
+		AND (
+			DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
+			OR (
+				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
+				AND TIME(CONVERT_TZ(ADDTIME(hm.end_time, SEC_TO_TIME(hm.surplus_scan_time * 60)), '+00:00', %s)) <= TIME(%s)
 			)
-			""",
-			(user_tz, now_local, user_tz, now_local, user_tz, now_local),
-			as_dict=True,
 		)
+		"""
+
+		values = (user_tz, now_local, user_tz, now_local, user_tz, now_local)
+		expired_coupons = frappe.db.sql(query, values, as_dict=True)
+
 
 		if not expired_coupons:
 			return
+		
 
 		for row in expired_coupons:
 			frappe.db.set_value("Hotpot Coupons", row.coupon_id, "coupon_status", -1)
