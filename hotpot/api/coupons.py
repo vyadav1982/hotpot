@@ -946,7 +946,7 @@ def generate_coupon():
 			set_response(403, False, "Not Permitted to access this resource")
 			return
 		hotpot_config = frappe.get_single("Hotpot Configurations")
-		required_fields = ["meal_id", "date"]
+		required_fields = ["meal_id"]
 		for_guest = data.get("guest", False)
 		if for_guest and has_any_of_role(["Hotpot User", "Hotpot HR"]):
 			required_fields.append("approval_id")
@@ -972,7 +972,7 @@ def generate_coupon():
 					return set_response(404, False, "Meal not found")
 				# local_time_now = get_local_time_now()
 				# start_date = get_utc_datetime_obj(f"{date} {local_time_now}")
-				start_date = datetime.strptime(meal_doc.get("meal_date"), "%Y-%m-%d %H:%M:%S")
+				start_date = meal_doc.get("meal_date")
 				from_date = start_date.date()
 				is_secondary_loc = False
 
@@ -1019,10 +1019,7 @@ def generate_coupon():
 					if vendor_doc:
 						filters["location"] = vendor_doc.get("location")
 
-					if frappe.db.exists("Hotpot Holidays", filters) or (
-						datetime.strptime(from_date, "%Y-%m-%d").date().weekday() == 6
-						and not int(hotpot_config.get("allow_meal_on_sunday", 0))
-					):
+					if frappe.db.exists("Hotpot Holidays", filters) or from_date.weekday() == 6 and not int(hotpot_config.get("allow_meal_on_sunday", 0)):
 						return set_response(200, False, "Oops! Today is a day off in your location.")
 
 				vendor_doc = None
