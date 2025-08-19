@@ -1079,6 +1079,7 @@ def refresh_fetched_data(docname):
 	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time:
 		meal_doc.start_time = category_doc.start_time
 		meal_doc.end_time= category_doc.end_time
+		meal_doc.surplus_scan_time=category_doc.extra_scan_time
 		# meal_doc.lead_time=category_doc.lead_time
 		# meal_doc.cancellation_time=category_doc.cancellation_time
 		# meal_doc.actual_meal_rate=category_doc.meal_rate
