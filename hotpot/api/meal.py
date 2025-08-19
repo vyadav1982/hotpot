@@ -573,8 +573,8 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 					if c.coupon_date.date() == date_param_utc and c.coupon_status != "2"
 				]
 			for coupon in meal_doc.coupons:
-				if coupon.coupon_status != "2" or (coupon.approval_id and coupon.status=='Pending'):
-					meal["total_coupons"] += 1
+				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
+						meal["total_coupons"] += 1
 
 			# all_ratings = frappe.get_all(
 			# 	"Hotpot Meal Menu Items Rating",
