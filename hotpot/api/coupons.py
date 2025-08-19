@@ -460,7 +460,7 @@ def scan_coupon():
 				set_response(400, False, "NOTICE: Too Early to Serve")
 				return
 		extra_time = meal_doc.get("surplus_scan_time") or 0
-		end_time = get_local_datetime_obj(meal_doc.get("end_time")).time()
+		end_time = get_local_datetime_obj(meal_doc.get("end_time"))
 		if end_time:
 			allowed_end_time = end_time + timedelta(minutes=extra_time)
 			if current_time > allowed_end_time.time():
