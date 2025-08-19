@@ -564,17 +564,17 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and c.coupon_date.date() == date_param_utc and not c.guest_of 
+					if c.employee_id == user_data.name and get_local_datetime_obj((c.coupon_date.strftime("%Y-%m-%d %H:%M:%S"))).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.coupon_date.date() == date_param_utc and c.coupon_status != "2"
+					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
 				]
 			for coupon in meal_doc.coupons:
-				if coupon.coupon_status != "2":
-					meal["total_coupons"] += 1
+				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
+						meal["total_coupons"] += 1
 
 			# all_ratings = frappe.get_all(
 			# 	"Hotpot Meal Menu Items Rating",
@@ -1072,13 +1072,12 @@ def save_draft_meal():
 
 @frappe.whitelist()
 def refresh_fetched_data(docname):
-	print("**********")
-	print(docname)
 	meal_doc = frappe.get_doc("Hotpot Meal",docname)
 	category_doc  = frappe.get_doc("Hotpot Meal Category",meal_doc.category)
-	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time:
+	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time or meal_doc.surplus_scan_time != category_doc.extra_scan_time:
 		meal_doc.start_time = category_doc.start_time
 		meal_doc.end_time= category_doc.end_time
+		meal_doc.surplus_scan_time=category_doc.extra_scan_time
 		# meal_doc.lead_time=category_doc.lead_time
 		# meal_doc.cancellation_time=category_doc.cancellation_time
 		# meal_doc.actual_meal_rate=category_doc.meal_rate

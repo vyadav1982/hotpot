@@ -17,6 +17,7 @@
   "is_deleted",
   "section_break_ufcg",
   "meal_date",
+  "surplus_scan_time",
   "column_break_smxi",
   "start_time",
   "end_time",
@@ -252,11 +253,18 @@
    "label": "Actual Meal Rate",
    "non_negative": 1,
    "read_only": 1
+  },
+  {
+   "fetch_from": "category.extra_scan_time",
+   "fieldname": "surplus_scan_time",
+   "fieldtype": "Int",
+   "label": "Surplus Scan Time",
+   "non_negative": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-13 20:31:14.845384",
+ "modified": "2025-08-18 20:35:17.629965",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",

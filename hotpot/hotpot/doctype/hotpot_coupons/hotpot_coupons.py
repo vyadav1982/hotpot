@@ -21,7 +21,7 @@ class HotpotCoupons(Document):
 		coupon_weight: DF.Float
 		created_at: DF.Datetime | None
 		email: DF.Data | None
-		employee_code: DF.Data | None
+		employee_code: DF.Link | None
 		employee_id: DF.Data | None
 		guest_employee_code: DF.Data | None
 		guest_of: DF.Link | None
@@ -30,7 +30,7 @@ class HotpotCoupons(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
-		served_by: DF.Data | None
+		served_by: DF.Link | None
 		status: DF.Literal["Pending", "Approved", "Rejected", "System Rejected"]
 		title: DF.SmallText | None
 	# end: auto-generated types

@@ -49,8 +49,10 @@
   },
   {
    "fieldname": "served_by",
-   "fieldtype": "Data",
-   "label": "Served By"
+   "fieldtype": "Link",
+   "label": "Served By",
+   "link_filters": "[[\"Hotpot User\", \"is_active\", \"=\", 1],\n[\"Hotpot User\", \"is_vendor\", \"=\", 1]]",
+   "options": "Hotpot User"
   },
   {
    "fieldname": "guest_of",
@@ -71,6 +73,7 @@
    "label": "Joining Day"
   },
   {
+   "depends_on": "eval:!(frappe.user_roles.includes('Hotpot Admin') && !frappe.user_roles.includes('Administrator'))",
    "fieldname": "approval_id",
    "fieldtype": "Link",
    "label": "Approval Id",
@@ -84,9 +87,10 @@
   },
   {
    "fieldname": "employee_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "Employee Code"
+   "label": "Employee Code",
+   "options": "Hotpot User"
   },
   {
    "fieldname": "guest_employee_code",
@@ -107,6 +111,7 @@
    "label": "Created At"
   },
   {
+   "depends_on": "eval:!(frappe.user_roles.includes('Hotpot Admin') && !frappe.user_roles.includes('Administrator'))",
    "fieldname": "location",
    "fieldtype": "Link",
    "label": "Location",
@@ -114,6 +119,7 @@
    "search_index": 1
   },
   {
+   "depends_on": "eval:!(frappe.user_roles.includes('Hotpot Admin') && !frappe.user_roles.includes('Administrator'))",
    "fieldname": "status",
    "fieldtype": "Select",
    "label": "Status",
@@ -124,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-06 10:06:24.544540",
+ "modified": "2025-08-19 11:48:23.894298",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",

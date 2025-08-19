@@ -36,6 +36,7 @@ class HotpotMealCategory(Document):
 		cancellation_time: DF.Int
 		end_time: DF.Datetime | None
 		end_time_local: DF.Time
+		extra_scan_time: DF.Int
 		is_active: DF.Check
 		lead_time: DF.Int
 		max_meal_count: DF.Int
