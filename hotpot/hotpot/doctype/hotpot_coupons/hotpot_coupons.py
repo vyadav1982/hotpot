@@ -21,7 +21,7 @@ class HotpotCoupons(Document):
 		coupon_weight: DF.Float
 		created_at: DF.Datetime | None
 		email: DF.Data | None
-		employee_code: DF.Data | None
+		employee_code: DF.Link | None
 		employee_id: DF.Data | None
 		guest_employee_code: DF.Data | None
 		guest_of: DF.Link | None

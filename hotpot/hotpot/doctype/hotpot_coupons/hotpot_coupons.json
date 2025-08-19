@@ -87,9 +87,10 @@
   },
   {
    "fieldname": "employee_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_standard_filter": 1,
-   "label": "Employee Code"
+   "label": "Employee Code",
+   "options": "Hotpot User"
   },
   {
    "fieldname": "guest_employee_code",
@@ -129,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-18 20:40:46.598600",
+ "modified": "2025-08-19 11:48:23.894298",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
