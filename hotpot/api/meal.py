@@ -564,13 +564,13 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if c.employee_id == user_data.name and get_local_datetime_obj((c.coupon_date.strftime("%Y-%m-%d %H:%M:%S"))).date() == get_local_datetime_obj(f"{date} {local_time}").date() and not c.guest_of 
+					if c.employee_id == user_data.name and get_local_datetime_obj((c.coupon_date.strftime("%Y-%m-%d %H:%M:%S"))).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and not c.guest_of 
 				]
 			else:
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == get_local_datetime_obj(f"{date} {local_time}").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
+					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
 				]
 			for coupon in meal_doc.coupons:
 				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
