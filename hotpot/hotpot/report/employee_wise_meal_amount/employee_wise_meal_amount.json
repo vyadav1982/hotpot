@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "add_translate_data": 0,
  "columns": [],
  "creation": "2025-05-27 09:34:23.144395",
@@ -11,7 +11,7 @@
  "is_standard": "Yes",
  "json": "{}",
  "letterhead": null,
- "modified": "2025-05-27 09:35:18.137420",
+ "modified": "2025-08-19 16:49:04.647947",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Employee Wise Meal Amount",
