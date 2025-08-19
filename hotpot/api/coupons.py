@@ -1036,7 +1036,7 @@ def generate_coupon():
 
 				coupons_gener = 0
 				for c in meal_doc.get("coupons"):
-					if c.get("coupon_status") == "1" or c.get("coupon_status") == "0":
+					if (c.get("coupon_status") == "1" and (not c.approval_id or c.status == "Approved")) or c.get("coupon_status") == "0":
 						coupons_gener += 1
 
 				if meal_doc.get("max_meal_count") != -1 and coupons_gener >= meal_doc.get("max_meal_count"):

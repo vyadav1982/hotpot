@@ -570,7 +570,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 				meal["coupon"] = [
 					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
 					for c in meal_doc.coupons
-					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == get_local_datetime_obj(f"{date} {local_time}").date() and c.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved")
+					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == get_local_datetime_obj(f"{date} {local_time}").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
 				]
 			for coupon in meal_doc.coupons:
 				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
@@ -1072,8 +1072,6 @@ def save_draft_meal():
 
 @frappe.whitelist()
 def refresh_fetched_data(docname):
-	print("**********")
-	print(docname)
 	meal_doc = frappe.get_doc("Hotpot Meal",docname)
 	category_doc  = frappe.get_doc("Hotpot Meal Category",meal_doc.category)
 	if meal_doc.start_time != category_doc.start_time or meal_doc.end_time != category_doc.end_time or meal_doc.surplus_scan_time != category_doc.extra_scan_time:
