@@ -523,122 +523,92 @@ def get_dashboard_data():
 		return set_response(500, False, f"Server error: {str(e)}")
 
 
-@frappe.whitelist()
-def get_meals_dashboard(date):
-	try:
-		local_time = get_local_time_now()
-		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
-		utc_now = datetime.utcnow().replace(tzinfo=None)
-		update_coupon_status()
-		start_date = get_utc_datetime_obj(f"{date} 00:00:00")
-		end_date = get_utc_datetime_obj(f"{date} 23:59:59")
+# @frappe.whitelist()
+# def get_meals_dashboard(date):
+# 	try:
+# 		local_time = get_local_time_now()
+# 		date_param_utc = get_utc_datetime_obj(f"{date} {local_time}").date()
+# 		utc_now = datetime.utcnow().replace(tzinfo=None)
+# 		update_coupon_status()
+# 		start_date = get_utc_datetime_obj(f"{date} 00:00:00")
+# 		end_date = get_utc_datetime_obj(f"{date} 23:59:59")
 
-		base_fields = [
-			"name",
-			"meal_title",
-			"day",
-			"meal_items",
-			"start_time",
-			"end_time",
-			"buffer_coupon_count",
-			"meal_weight",
-			"meal_date",
-			"is_special",
-			"is_active",
-			"vendor_id",
-			"repeat_type",
-			"repeat_days",
-			"lead_time",
-			"cancellation_time",
-		]
+# 		base_fields = [
+# 			"name",
+# 			"meal_title",
+# 			"day",
+# 			"meal_items",
+# 			"start_time",
+# 			"end_time",
+# 			"buffer_coupon_count",
+# 			"meal_weight",
+# 			"meal_date",
+# 			"is_special",
+# 			"is_active",
+# 			"vendor_id",
+# 			"repeat_type",
+# 			"repeat_days",
+# 			"lead_time",
+# 			"cancellation_time",
+# 		]
 
-		filters = [["is_active", "=", 1], ["is_deleted", "=", 0]]
+# 		filters = [["is_active", "=", 1], ["is_deleted", "=", 0]]
 
-		meals = frappe.db.get_list(
-			"Hotpot Meal",
-			fields=base_fields,
-			filters=filters,
-			# start=start,
-			# limit=limit,
-		)
-		meals = [meal for meal in meals if meal["meal_date"] <= end_date]
-		processed_meals = []
-		for meal in meals:
-			meal_date = meal["meal_date"]
-			repeat_type = meal.get("repeat_type", "once")
-			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
-			valid = False
-			if repeat_type == "once":
-				valid = meal_date >= start_date and meal_date <= end_date
-			elif repeat_type == "daily":
-				valid = meal_date <= end_date
-			elif repeat_type == "specific_days":
-				weekday = date_param_utc.strftime("%A").upper()
-				valid = meal_date <= end_date and weekday in repeat_days
+# 		meals = frappe.db.get_list(
+# 			"Hotpot Meal",
+# 			fields=base_fields,
+# 			filters=filters,
+# 			# start=start,
+# 			# limit=limit,
+# 		)
+# 		meals = [meal for meal in meals if meal["meal_date"] <= end_date]
+# 		processed_meals = []
+# 		for meal in meals:
+# 			meal_date = meal["meal_date"]
+# 			repeat_type = meal.get("repeat_type", "once")
+# 			repeat_days = [d.strip() for d in meal.get("repeat_days", "").split(",") if d]
+# 			valid = False
+# 			if repeat_type == "once":
+# 				valid = meal_date >= start_date and meal_date <= end_date
+# 			elif repeat_type == "daily":
+# 				valid = meal_date <= end_date
+# 			elif repeat_type == "specific_days":
+# 				weekday = date_param_utc.strftime("%A").upper()
+# 				valid = meal_date <= end_date and weekday in repeat_days
 
-			if not valid:
-				continue
+# 			if not valid:
+# 				continue
 
-			if start_date <= utc_now and utc_now <= end_date:
-				if (
-					get_local_datetime_obj(meal["end_time"]).time()
-					<= get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time()
-				):
-					continue
+# 			if start_date <= utc_now and utc_now <= end_date:
+# 				if (
+# 					get_local_datetime_obj(meal["end_time"]).time()
+# 					<= get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None)).time()
+# 				):
+# 					continue
 
-			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "full_name")
-			meal["vendor_name"] = vendor
-			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
+# 			vendor = frappe.db.get_value("Hotpot User", meal["vendor_id"], "full_name")
+# 			meal["vendor_name"] = vendor
+# 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
 
-			meal["coupon"] = [
-				{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
-				for c in meal_doc.coupons
-				if c.coupon_date.date() == date_param_utc
-			]
+# 			meal["coupon"] = [
+# 				{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+# 				for c in meal_doc.coupons
+# 				if c.coupon_date.date() == date_param_utc
+# 			]
 
-			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
-			meal["meal_id"] = meal_doc.name
+# 			meal_doc = frappe.get_doc("Hotpot Meal", meal["name"])
+# 			meal["meal_id"] = meal_doc.name
 
-			processed_meals.append(meal)
+# 			processed_meals.append(meal)
 
-		return processed_meals
+# 		return processed_meals
 
-	except Exception as e:
-		f"Failed to get meal: {str(e)}"
-		raise
+# 	except Exception as e:
+# 		f"Failed to get meal: {str(e)}"
+# 		raise
 
 
-def update_coupon_status():
-	try:
-		user_doc = get_hotpot_user_by_email()
-		if not user_doc:
-			set_response(401, False, "User Not found")
-			return
-		user_tz = get_user_timezone()
-		now_local = get_local_datetime_obj(datetime.utcnow().replace(tzinfo=None))
 
-		query = """
-			UPDATE `tabHotpot Coupons` AS hc
-			INNER JOIN `tabHotpot Meal` AS hm ON hm.name = hc.parent
-			SET hc.coupon_status = "-1"
-			WHERE hc.coupon_status = "1"
-			AND (
-				DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) < DATE(%s)
-				OR (
-					DATE(CONVERT_TZ(hc.coupon_date, '+00:00', %s)) = DATE(%s)
-					AND TIME(CONVERT_TZ(hm.end_time, '+00:00', %s)) <= TIME(%s)
-				)
-			);
-		"""
-		params = (user_tz, now_local, user_tz, now_local, user_tz, now_local)
-		frappe.db.sql(query, params)
-		frappe.db.commit()
-		return
-	except Exception as e:
-		frappe.db.rollback()
-		frappe.log_error(frappe.get_traceback(), "Failed to update status")
-		set_response(500, False, f"Server error: {str(e)}")
-		return
 
 
 @frappe.whitelist(allow_guest=True)
