@@ -9,7 +9,7 @@ from frappe.utils import getdate
 from hotpot.utils.meal_utils import get_discount
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role, has_role
 from hotpot.utils.utc_time import *
-
+from hotpot.utils.send_fcm import *
 from ..api.users import *
 
 
@@ -490,6 +490,21 @@ def scan_coupon():
 				"coupon_title": coupon_found.get("title"),
 			}
 		)
+		try:
+			if user_doc.fcm_token:
+				send_notification_by_token(
+					user_doc.fcm_token,
+					"🍕 Done & Dusted!",
+					(f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[0].upper()
+					+ (f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[1:],
+					date=local_date,
+					doc_id=coupon_id,
+					text="coupons",
+				)
+		except Exception:
+			frappe.log_error(
+				frappe.get_traceback(), f"Failed to send notification to user {user_doc.name}"
+			)
 
 		set_response(200, True, "SUCCESS: Meal Ready to Be Served", data)
 
