@@ -87,6 +87,7 @@ def execute(filters=None):
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
 			AND hc.guest_of IS NULL
 			AND hc.coupon_weight > -1
+			AND (hc.approval_id IS NULL OR hc.status='Approved')
 	"""
 
 	params = [
