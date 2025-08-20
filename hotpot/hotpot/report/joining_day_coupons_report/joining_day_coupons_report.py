@@ -82,6 +82,7 @@ def execute(filters=None):
 			hc.joining_day = 1
 			AND hc.coupon_status != 1
 			AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			AND (hc.approval_id IS NULL OR hc.status='Approved')
 	"""
 
 	params = [user_timezone, user_timezone, start_date, end_date]
