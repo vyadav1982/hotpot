@@ -26,6 +26,8 @@ const allowed_routes_by_role = {
 		'query-report/coupon-report',
 		'query-report/outer-location-coupon-report',
 		'query-report/employee-wise-meal-amount',
+		'query-report/employee-wise-meal-amount',
+		"query-report/upcoming-coupons-report",
 		"hotpot-approvals",
 		"hotpot-configurations",
 		"generate-guest-qr",
