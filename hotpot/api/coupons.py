@@ -1418,7 +1418,7 @@ def get_admin_guest_coupon(date, qty=None, page=0, limit=1000):
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
-			WHERE hc.guest_of IS NOT NULL AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
+			WHERE hc.guest_of IS NOT NULL AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s AND hc.status='Approved'
 			ORDER BY hc.modified DESC
 			LIMIT %s, %s
 		"""
@@ -1816,6 +1816,7 @@ def generate_coupon_admin():
 							"email": email,
 							"created_at": datetime.utcnow(),
 							"location": vendor_doc.get("location"),
+							"status":'Approved',
 						},
 					)
 
