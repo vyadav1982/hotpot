@@ -1348,9 +1348,10 @@ def search_coupon(start_date, end_date, identifier):
 					`tabHotpot Meal Category` AS mc ON mc.name = hm.category
 				INNER JOIN
 					`tabHotpot Meal Types` AS mt ON mt.name = mc.type
-				WHERE employee_id = %s 
+				WHERE hc.employee_id = %s 
 				AND DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %s)) BETWEEN %s AND %s
-				ORDER BY coupon_date DESC;
+				AND (hc.approval_id is null or hc.status='Approved')
+				ORDER BY hc.coupon_date DESC;
 			""",
 			(user_doc[0]["name"], user_timezone, start_date, end_date),
 			as_dict=True,
