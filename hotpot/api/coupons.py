@@ -1920,16 +1920,16 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 				if meal_doc.get("max_meal_count") != -1 and coupons_gener >= meal_doc.get("max_meal_count"):
 					return {"status": "error", "msg": "Looks like this meal's all booked up!"}
 
-				if approval_id:
-					approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
-					if approval_doc.approval_status != "Approved":
-						return {"status": "error", "msg": "Approval is not approved"}
-					if approval_doc.meal_id != meal_id:
-						return {"status": "error", "msg": "Approval is not for this meal"}
-					if approval_doc.requested_by != user_doc.get("name"):
-						return {"status": "error", "msg": "Approval is not for this user"}
-					if approval_doc.date.date() != from_date:
-						return {"status": "error", "msg": "Approval is not for this date"}
+				# if approval_id:
+				# 	approval_doc = frappe.get_doc("Hotpot Approvals", approval_id)
+				# 	if approval_doc.approval_status != "Approved":
+				# 		return {"status": "error", "msg": "Approval is not approved"}
+				# 	if approval_doc.meal_id != meal_id:
+				# 		return {"status": "error", "msg": "Approval is not for this meal"}
+				# 	if approval_doc.requested_by != user_doc.get("name"):
+				# 		return {"status": "error", "msg": "Approval is not for this user"}
+				# 	if approval_doc.date.date() != from_date:
+				# 		return {"status": "error", "msg": "Approval is not for this date"}
 
 				current_datetime_local = get_local_datetime_obj(datetime.utcnow())
 				local_date_today = current_datetime_local.date()
