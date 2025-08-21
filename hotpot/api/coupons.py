@@ -37,34 +37,53 @@ def get_coupon_count(start_date, end_date):
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
 
+		where_clause = ""
+		params = {
+			"start_date": start_date,
+			"end_date": end_date,
+		}
+		if has_role("Hotpot Vendor"):
+			where_clause = "hi.vendor_id = %(vendor_name)s"
+			params["vendor_name"] = user_doc.get("email")
+		elif has_role("Hotpot Admin"):
+			where_clause = "1=1"
+	
+		select_fields = """
+			hi.name,
+			hi.item_name,
+			COUNT(hi.name) AS total_feedback,
+			ROUND(AVG(hr.rating) * 5, 1) AS avg_rating,
+			JSON_ARRAYAGG(JSON_OBJECT('review', hr.review)) AS all_reviews
+		"""
+		if has_role("Hotpot Admin"):
+			select_fields += ", hr.employee, hu.full_name"
 
 		feedback_query = f"""
 			SELECT
-				hi.name,
-				hi.item_name,
-				COUNT(hi.name) AS total_feedback,
-				ROUND(AVG(hr.rating) * 5, 1) AS avg_rating,
-				JSON_ARRAYAGG(JSON_OBJECT('review', hr.review)) AS all_reviews
-				{', hr.employee' if has_role("Hotpot Admin") else ''}
+				{select_fields}
 			FROM `tabHotpot Meal Menu Items Rating` AS hr
 			INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
-			WHERE hi.vendor_id = %(vendor_name)s
+			INNER JOIN `tabHotpot User` AS hu ON hu.name = hr.employee
+			WHERE {where_clause}
 			AND DATE(hr.creation) BETWEEN %(start_date)s AND %(end_date)s
 			GROUP BY hi.name
-			{', hr.employee' if has_role("Hotpot Admin") else ''};
 		"""
+		if has_role("Hotpot Admin"):
+			feedback_query += ", hr.employee"
+
 
 		feedbacks = frappe.db.sql(
 			feedback_query,
-			{
-				"vendor_name": user_doc.get("email"),
-				"start_date": start_date,
-				"end_date": end_date,
-			},
+			params,
 			as_dict=True,
 		)
 		for row in feedbacks:
-			row["all_reviews"] = [r["review"] for r in json.loads(row["all_reviews"])]
+			row["all_reviews"] = [
+				r["review"]
+				for r in json.loads(row["all_reviews"])
+				if r["review"].strip()
+			]
+
 
 		if has_any_of_role(["Hotpot User", "Hotpot Admin", "Hotpot HR"]):
 			coupon_query = """
@@ -851,8 +870,7 @@ def get_all_coupons(
 				WHERE
 					hc.coupon_date BETWEEN %(start_datetime)s AND %(end_datetime)s
 					AND hc.employee_id = %(user_name)s
-					AND hc.email IS NULL
-					AND (hc.guest_of IS NULL OR hc.guest_of = '')
+					AND (hc.approval_id is null or hc.status='Approved')
 				LIMIT %(start)s, %(limit)s;
 			""",
 				params,
