@@ -493,9 +493,9 @@ def scan_coupon():
 			}
 		)
 		try:
-			if user_doc.fcm_token:
+			if emp_doc.fcm_token:
 				send_notification_by_token(
-					user_doc.fcm_token,
+					emp_doc.fcm_token,
 					"🍕 Done & Dusted!",
 					(f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[0].upper()
 					+ (f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[1:],
@@ -505,7 +505,7 @@ def scan_coupon():
 				)
 		except Exception:
 			frappe.log_error(
-				frappe.get_traceback(), f"Failed to send notification to user {user_doc.name}"
+				frappe.get_traceback(), f"Failed to send notification to user {emp_doc.name}"
 			)
 
 		set_response(200, True, "SUCCESS: Meal Ready to Be Served", data)
