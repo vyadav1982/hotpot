@@ -1490,9 +1490,6 @@ def get_guest_coupon(date):
 		end_date = get_local_datetime_obj(end_date).date()
 
 		user_timezone = get_user_timezone() or "Asia/Kolkata"
-		# tz = pytz.timezone(user_timezone.zone)
-		# start_datetime = tz.localize(datetime.combine(start_date, time.min)).astimezone(pytz.utc)
-		# end_datetime = tz.localize(datetime.combine(end_date, time.max)).astimezone(pytz.utc)
 		query = """
 			SELECT
 				hc.name AS coupon_id,
@@ -1510,13 +1507,16 @@ def get_guest_coupon(date):
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
 				U.full_name AS vendor_name,
-				{approval_fields}
+				ap.guest_name AS guest_name,
+				ap.is_active AS approval_active,
+				ap.approval_remarks,
 				mt.type
 			FROM
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-			{approval_join}
+			LEFT JOIN
+				`tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			INNER JOIN
@@ -1524,18 +1524,10 @@ def get_guest_coupon(date):
 			INNER JOIN
 				`tabHotpot Meal Types` AS mt ON mt.name = mc.type
 			WHERE
-				DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) BETWEEN %(start_date)s AND %(end_date)s
+				DATE(CONVERT_TZ(hc.coupon_date, 'UTC', %(user_timezone)s)) 
+				BETWEEN %(start_date)s AND %(end_date)s
 				AND hc.guest_of = %(guestof)s
 		"""
-
-		if role == "Hotpot User":  
-			approval_join = "INNER JOIN `tabHotpot Approvals` AS ap ON ap.name = hc.approval_id"
-			approval_fields = "ap.guest_name AS guest_name, ap.is_active AS approval_active, ap.approval_remarks,"
-		else:
-			approval_join = "" 
-			approval_fields = "" 
-		query = query.format(approval_join=approval_join, approval_fields=approval_fields)
-
 
 		params = {
 			"user_timezone": user_timezone.zone,
