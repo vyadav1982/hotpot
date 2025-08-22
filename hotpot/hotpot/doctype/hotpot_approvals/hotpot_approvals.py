@@ -93,7 +93,7 @@ class HotpotApprovals(Document):
 				if res:
 					indicator_color = "green" if res.get("status") == "success" else "red"
 					frappe.msgprint(_(res.get("msg")), indicator=indicator_color)
-					if res.get("status") == "success" and user_doc.fcm_token:
+					if res.get("status") == "success":
 						meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 						to_remove = []
 
@@ -105,21 +105,21 @@ class HotpotApprovals(Document):
 							meal_doc.remove(coupon)
 
 						meal_doc.save()
+						if user_doc.fcm_token:
+							try:
+								send_notification_by_token(
+									user_doc.fcm_token,
+									"Guest Coupon Request ✅",
+									"Hurray! 😁 Your guest coupons have been successfully generated. Enjoy the treat!",
+									date=meal_doc.meal_date,
+									text="coupons",
+								)
+							except Exception:
+								frappe.log_error(
+									frappe.get_traceback(), f"FCM success notification failed for {user_doc.name}"
+								)
 
-						try:
-							send_notification_by_token(
-								user_doc.fcm_token,
-								"Guest Coupon Request ✅",
-								"Hurray! 😁 Your guest coupons have been successfully generated. Enjoy the treat!",
-								date=meal_doc.meal_date,
-								text="coupons",
-							)
-						except Exception:
-							frappe.log_error(
-								frappe.get_traceback(), f"FCM success notification failed for {user_doc.name}"
-							)
-
-					elif user_doc.fcm_token:
+					else:
 						try:
 							meal_doc = frappe.get_doc("Hotpot Meal", self.meal_id)
 							for coupon in meal_doc.coupons:
@@ -127,13 +127,14 @@ class HotpotApprovals(Document):
 									coupon.status = "System Rejected"
 
 							meal_doc.save()
-							send_notification_by_token(
-								user_doc.fcm_token,
-								"Guest Coupon Request Failed ⚠️",
-								f"😢 Couldn't generate your guest coupons. Reason: {res.get('msg')}",
-								date=meal_doc.meal_date,
-								text="coupons",
-							)
+							if user_doc.fcm_token:
+								send_notification_by_token(
+									user_doc.fcm_token,
+									"Guest Coupon Request Failed ⚠️",
+									f"😢 Couldn't generate your guest coupons. Reason: {res.get('msg')}",
+									date=meal_doc.meal_date,
+									text="coupons",
+								)
 						except Exception:
 							frappe.log_error(
 								frappe.get_traceback(), f"FCM failure notification failed for {user_doc.name}"
@@ -142,9 +143,9 @@ class HotpotApprovals(Document):
 					self.approval_remarks = res.get("msg")
 
 				else:
-					frappe.msgprint(_("Coupon generation failed"))
+					frappe.msgprint(_("Coupon generation failed. Contact your Admin for further inquiry."))
 				self.is_active = 0
-				self.save()
+				# self.save()
 				frappe.db.commit()
 				return
 			except Exception as e:

@@ -55,11 +55,11 @@ class HotpotMeal(Document):
 	def validate_dates(self):
 		"""Validate that start and end times are on the same day and start is before end."""
 
-		if not self.is_new():
-			# Get the document state before the current save
-			old_doc = self.get_doc_before_save()
-			if old_doc.buffer_coupon_count > self.buffer_coupon_count:
-				frappe.throw("Buffer coupon count cannot be decreased.")
+		# if not self.is_new():
+		# 	# Get the document state before the current save
+		# 	old_doc = self.get_doc_before_save()
+		# 	if old_doc.buffer_coupon_count > self.buffer_coupon_count:
+		# 		frappe.throw("Buffer coupon count cannot be decreased.")
 
 		if self.start_time and self.end_time:
 			if isinstance(self.start_time, str):
@@ -87,7 +87,7 @@ class HotpotMeal(Document):
 			return
 
 		old_doc = self.get_doc_before_save()
-		if old_doc.buffer_coupon_count!=self.buffer_coupon_count:
+		if old_doc and old_doc.buffer_coupon_count!=self.buffer_coupon_count:
 			self.remaining_coupon_count=self.buffer_coupon_count
 		
 		meal_str = self.meal_date

@@ -33,7 +33,7 @@ def execute(filters=None):
 		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 120},
 		{"label": "Guest Email", "fieldname": "email", "fieldtype": "Data", "width": 120},
 		{"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
-		{"label": "Guest Moble No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 120},
+		{"label": "Guest Mobile No.", "fieldname": "guest_mobile_no", "fieldtype": "Phone", "width": 120},
 		{"label": "Actual Rate", "fieldname": "actual_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Discounted Rate", "fieldname": "discounted_rate", "fieldtype": "Currency", "width": 120},
 		{"label": "Penalty", "fieldname": "penalty", "fieldtype": "Currency", "width": 120},
