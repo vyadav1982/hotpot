@@ -21,7 +21,8 @@
   "coupon_weight",
   "created_at",
   "location",
-  "status"
+  "status",
+  "scanned_at"
  ],
  "fields": [
   {
@@ -125,12 +126,17 @@
    "label": "Status",
    "options": "Pending\nApproved\nRejected\nSystem Rejected",
    "search_index": 1
+  },
+  {
+   "fieldname": "scanned_at",
+   "fieldtype": "Datetime",
+   "label": "Scanned At"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-19 11:48:23.894298",
+ "modified": "2025-08-22 17:26:39.530876",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",

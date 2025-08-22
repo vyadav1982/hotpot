@@ -512,6 +512,7 @@ def scan_coupon():
 			return
 
 		coupon_found.coupon_status = 0
+		coupon_found.scanned_at = datetime.utcnow()
 		coupon_found.served_by = user_doc.get("name")
 		meal_doc.save()
 		frappe.db.commit()

@@ -27,6 +27,7 @@ def execute(filters=None):
 		{"label": "Category", "fieldname": "category", "fieldtype": "Data", "width": 120},
 		{"label": "Email (Guest Only)", "fieldname": "email", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
+		{"label": "Scanned At ", "fieldname": "scan_time", "fieldtype": "time", "width": 120},
 		{"label": "Coupon Type", "fieldname": "coupon_type", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Location", "fieldname": "location", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
@@ -75,6 +76,13 @@ def execute(filters=None):
 				ELSE 0
 			END AS penalty,
 
+			CASE 
+				WHEN hc.coupon_status = '0' 
+					THEN TIME(CONVERT_TZ(hc.scanned_at, 'UTC', %s))
+				ELSE NULL
+			END AS scan_time,
+
+
 			hu_user.full_name AS employee_name,
 
 			hc.location AS location
@@ -90,7 +98,7 @@ def execute(filters=None):
 			AND (hc.approval_id IS NULL OR hc.status='Approved')
 	"""
 
-	params = [user_timezone, user_timezone, start_date, end_date]
+	params = [user_timezone,user_timezone, user_timezone, start_date, end_date]
 	roles = frappe.get_roles()
 
 	if "Hotpot Vendor" in roles and "Administrator" not in roles:

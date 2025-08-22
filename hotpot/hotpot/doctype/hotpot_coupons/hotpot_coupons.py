@@ -30,6 +30,7 @@ class HotpotCoupons(Document):
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		scanned_at: DF.Datetime | None
 		served_by: DF.Link | None
 		status: DF.Literal["Pending", "Approved", "Rejected", "System Rejected"]
 		title: DF.SmallText | None

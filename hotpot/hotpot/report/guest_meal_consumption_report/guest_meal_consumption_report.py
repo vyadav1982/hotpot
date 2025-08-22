@@ -30,6 +30,7 @@ def execute(filters=None):
 		{"label": "Meal Title", "fieldname": "meal_title", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Status", "fieldname": "coupon_status", "fieldtype": "Data", "width": 120},
 		{"label": "Coupon Date", "fieldname": "coupon_date", "fieldtype": "Date", "width": 120},
+		{"label": "Scanned At ", "fieldname": "scan_time", "fieldtype": "time", "width": 120},
 		{"label": "Vendor Name", "fieldname": "vendor_name", "fieldtype": "Data", "width": 120},
 		{"label": "Guest Email", "fieldname": "email", "fieldtype": "Data", "width": 120},
 		{"label": "Guest Name", "fieldname": "guest_name", "fieldtype": "Data", "width": 120},
@@ -72,6 +73,13 @@ def execute(filters=None):
 				ELSE 'Unknown'
 			END AS coupon_status,
 
+			CASE 
+				WHEN hc.coupon_status = '0' 
+					THEN TIME(CONVERT_TZ(hc.scanned_at, 'UTC', %s))
+				ELSE NULL
+			END AS scan_time,
+
+
 			hc.location AS location
 
 		FROM
@@ -91,7 +99,7 @@ def execute(filters=None):
 			AND hc.status='Approved'
     """
 
-	params = [user_timezone, user_timezone, start_date, end_date]
+	params = [user_timezone,user_timezone, user_timezone, start_date, end_date]
 
 	if vendor_id:
 		query += " AND hm.vendor_id = %s"
