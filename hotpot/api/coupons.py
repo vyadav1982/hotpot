@@ -870,7 +870,7 @@ def get_all_coupons(
 				WHERE
 					hc.coupon_date BETWEEN %(start_datetime)s AND %(end_datetime)s
 					AND hc.employee_id = %(user_name)s
-					AND (hc.approval_id is null or hc.status='Approved')
+					AND (hc.guest_of IS NULL OR hc.guest_of = '')
 				LIMIT %(start)s, %(limit)s;
 			""",
 				params,
