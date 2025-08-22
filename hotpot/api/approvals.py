@@ -337,7 +337,7 @@ def upload_attachment():
 		doctype = "Hotpot User"
 		docname = user_data.get("name")
 
-		file_doc = save_file(filename, uploaded_file.read(), is_private=0)
+		file_doc = save_file(filename, uploaded_file.read(),doctype,docname, is_private=0)
 
 		return {
 			"success": True,
