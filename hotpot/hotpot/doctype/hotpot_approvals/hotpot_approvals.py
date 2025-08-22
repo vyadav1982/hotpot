@@ -145,7 +145,7 @@ class HotpotApprovals(Document):
 				else:
 					frappe.msgprint(_("Coupon generation failed. Contact your Admin for further inquiry."))
 				self.is_active = 0
-				# self.save()
+				self.save()
 				frappe.db.commit()
 				return
 			except Exception as e:
