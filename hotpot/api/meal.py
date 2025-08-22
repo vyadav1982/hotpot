@@ -592,7 +592,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			# 	if r["rating"] is not None
 			# ]
 
-			items_rating={}
+			items_rating=[]
 
 			total_rating = 0
 			total_count = 0
@@ -611,7 +611,7 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 						item_rating += float(r["rating"])
 						item_count += 1
 						total_count += 1
-				items_rating[item_detail.item_name] = round((item_rating / item_count) * 5, 1) if item_count else 0
+				items_rating.append({"item_name":item_detail.item_name,"rating": round((item_rating / item_count) * 5, 1) if item_count else 0})
 
 
 			meal["avg_rating"] = round((total_rating / total_count) * 5, 1) if total_count else 0

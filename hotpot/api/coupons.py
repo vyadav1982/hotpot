@@ -512,6 +512,7 @@ def scan_coupon():
 			return
 
 		coupon_found.coupon_status = 0
+		coupon_found.scanned_at = datetime.utcnow()
 		coupon_found.served_by = user_doc.get("name")
 		meal_doc.save()
 		frappe.db.commit()
@@ -1506,17 +1507,13 @@ def get_guest_coupon(date):
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
 				U.full_name AS vendor_name,
-				ap.guest_name AS guest_name,
-				ap.is_active AS approval_active,
-				ap.approval_remarks,
+				{approval_fields}
 				mt.type
-
 			FROM
 				`tabHotpot Coupons` AS hc
 			LEFT JOIN
 				`tabHotpot Meal` AS hm ON hm.name = hc.parent
-			INNER JOIN
-				`tabHotpot Approvals` AS ap ON ap.name = hc.approval_id
+			{approval_join}
 			INNER JOIN
 				`tabHotpot User` AS U ON hm.vendor_id = U.name
 			INNER JOIN
@@ -1527,6 +1524,15 @@ def get_guest_coupon(date):
 				hc.coupon_date BETWEEN %(start_datetime)s AND %(end_datetime)s
 				AND hc.guest_of = %(guestof)s
 		"""
+
+		if has_role("Hotpot User"):  
+			approval_join = "INNER JOIN `tabHotpot Approvals` AS ap ON ap.name = hc.approval_id"
+			approval_fields = "ap.guest_name AS guest_name, ap.is_active AS approval_active, ap.approval_remarks,"
+		else:
+			approval_join = "" 
+			approval_fields = "" 
+		query = query.format(approval_join=approval_join, approval_fields=approval_fields)
+
 
 		params = {
 			"user_timezone": user_timezone.zone,
