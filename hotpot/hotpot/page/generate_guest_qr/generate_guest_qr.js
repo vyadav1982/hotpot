@@ -246,59 +246,77 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 
 		let unsentEmails = [];
 
+		let sendPromises = [];
+
 		for (let i = 0; i < emails.length; i++) {
 			if (i >= coupons.length) {
 				unsentEmails.push(emails[i]);
 				continue;
 			}
 
-			let coupon = coupons[i];
+			// let coupon = coupons[i];
+			// let qrData = `hotpot${coupon},${$("#mealSelect").val()},${userId}`;
 
-			let qrData = `hotpot${coupon},${$("#mealSelect").val()},${userId}`;
+			let qrContainer = document.createElement("div");
+			// let qrCode = new QRCode(qrContainer, {
+			// 	text: qrData,
+			// 	width: 128,
+			// 	height: 128,
+			// });
 
-			let qrContainer = document.getElementById("qrContainer");
-			qrContainer.innerHTML = "";
-			let qrCode = new QRCode(qrContainer, {
-				text: qrData,
-				width: 128,
-				height: 128,
+			let promise = new Promise((resolve, reject) => {
+				setTimeout(() => {
+					let qrImage = qrContainer.querySelector("img");
+					if (!qrImage) {
+						console.error(`QR Code image not found for ${emails[i]}`);
+						unsentEmails.push(emails[i]);
+						return reject(`QR not generated for ${emails[i]}`);
+					}
+
+					const rawDate = $("#datePicker").val();
+					const dateObj = new Date(rawDate);
+
+					const day = dateObj.getDate();
+					const month = dateObj.toLocaleString("default", { month: "short" });
+					const year = dateObj.getFullYear().toString().slice(-2);
+
+					const formattedDate = `${day} ${month} ${year}`;
+
+					let qrLink = qrImage.src;
+
+					frappe.call({
+						method: "hotpot.utils.email.send_email",
+						args: {
+							template_name: "qr_email",
+							to_email: emails[i],
+							context: JSON.stringify({
+								meal_title: meal_title,
+							}),
+							subject: `Your Meal QR Code - ${meal_title} on ${formattedDate}`,
+							qr_code_base64: qrLink,
+						},
+						callback: function (response) {
+							resolve(response);
+						},
+						error: function (err) {
+							unsentEmails.push(emails[i]);
+							reject(err);
+						},
+					});
+				}, 500);
 			});
-			await new Promise((resolve) => setTimeout(resolve, 500));
 
-			let qrImage = qrContainer.querySelector("img");
-			if (!qrImage) {
-				console.error(`QR Code image not found for ${emails[i]}`);
-				continue;
+			sendPromises.push(promise);
+		}
+
+		Promise.allSettled(sendPromises).then((results) => {
+			if (unsentEmails.length > 0) {
+				alert(`These emails did not receive a coupon: \n${unsentEmails.join("\n")}`);
+			} else {
+				alert("✅ All emails sent successfully!");
 			}
+		});
 
-			const rawDate = $("#datePicker").val();
-			const dateObj = new Date(rawDate);
-
-			const day = dateObj.getDate();
-			const month = dateObj.toLocaleString("default", { month: "short" });
-			const year = dateObj.getFullYear().toString().slice(-2);
-
-			const formattedDate = `${day} ${month} ${year}`;
-
-			let qrLink = qrImage.src;
-			await frappe.call({
-				method: "hotpot.utils.email.send_email",
-				args: {
-					template_name: "qr_email",
-					to_email: emails[i],
-					context: JSON.stringify({
-						meal_title: meal_title, // Ensure it's a string
-						// qr_code_url: qrLink,// Ensure it's a valid URL
-					}),
-					subject: `Your Meal QR Code - ${meal_title} on ${formattedDate}`,
-					qr_code_base64: qrLink,
-				},
-				callback: function (response) {},
-			});
-		}
-		if (unsentEmails.length > 0) {
-			alert(`These emails did not receive a coupon: \n${unsentEmails.join("\n")}`);
-		}
 	});
 
 	async function generateCoupon(d) {
