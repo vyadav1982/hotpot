@@ -39,7 +39,7 @@ class HotpotMeal(Document):
 		lead_time: DF.Int
 		max_meal_count: DF.Int
 		meal_date: DF.Datetime
-		meal_items: DF.Data
+		meal_items: DF.Text
 		meal_title: DF.Data
 		meal_weight: DF.Int
 		menu_items: DF.Table[HotpotMealMenuItems]

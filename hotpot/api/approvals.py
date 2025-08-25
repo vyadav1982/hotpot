@@ -8,6 +8,7 @@ from hotpot.utils.guest_coupon_generate import *
 from hotpot.utils.role_utils import *
 from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_of_role
 from hotpot.utils.utc_time import *
+from hotpot.utils.send_fcm import *
 
 from ..api.users import *
 
@@ -20,13 +21,12 @@ def send_approval_request_email(to_email, user_data, request_data, doc, meal_nam
 		"user_data": user_data,
 		"request_data": request_data,
 		"meal_name": meal_name,
-		"get_approval_link": "https://hotpot.bytepanda.in/app/hotpot-approvals/view/list?approval_status=Pending",
+		"get_approval_link": {get_approval_link(doc)},
 	}
 	send_email("approval_email", to_email, context, email_subject)
 
 
 def get_approval_link(doc):
-	# return f"http://shashi.localhost:8000/app/hotpot-approvals/{doc}"
 	return f"{frappe.utils.get_url()}/app/hotpot-approvals/{doc}"
 
 
@@ -182,7 +182,7 @@ def create_approval():
 				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
 				limit=1,
 			)
-		if existing_approval and get_dominant_role_for_current_user() != "Hotpot Admin":
+		if existing_approval and get_dominant_role_for_current_user() not in ["Hotpot Admin", "Hotpot HR"]:
 			return set_response(400, False, "Pending approval already exists for this mobile number.")
 
 		date = get_utc_datetime_obj(f"{data.get('date')} {get_local_time_now()}") if "date" in data else None
@@ -233,12 +233,34 @@ def create_approval():
 
 		approval_list.append(approval.name)
 		if (
-			get_dominant_role_for_current_user() == "Hotpot Admin"
-			or get_dominant_role_for_current_user() == "Hotpot HR"
+			get_dominant_role_for_current_user() != "Hotpot Admin"
+			or get_dominant_role_for_current_user() != "Hotpot HR"
 		):
 			send_approval_request_email(
 				"hotpot@blissgvs.com", user_data, data, approval.name, meal_doc.meal_title
 			)
+
+			admin_hr_users = frappe.get_all("Hotpot User", filters={"role": ["in", ["Hotpot Admin", "Hotpot HR"]], "is_active":1})
+			for user in admin_hr_users:
+				user_doc_admin_hr = frappe.get_doc("Hotpot User", user.name)
+				if user_doc_admin_hr.fcm_token:
+					try:
+						send_notification_by_token(
+							user_doc_admin_hr.fcm_token,
+							"⚡ Approval Needed",
+							f"👋 Hi {user_doc_admin_hr.full_name},\n\n"
+							f"📝 {user_data.full_name} has requested for **{data['request_type']}**.\n"
+							"✅ Please review and approve when you get a chance.",
+							date=approval.date if approval.date else None,
+							doc_id=approval.name,
+							text="approvals",
+						)
+
+					except Exception:
+						frappe.log_error(
+							frappe.get_traceback(),
+							f"Failed to send meal edit rejection notification to user {user_data.name}",
+						)
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()

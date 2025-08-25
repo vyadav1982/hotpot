@@ -300,16 +300,33 @@ class HotpotApprovals(Document):
 			draft_doc = frappe.get_doc("Hotpot Draft Meal", draft_name)
 			draft_values = json.loads(draft_doc.new_values)
 
+			changes = {}
+
 			for field, value in draft_values.items():
-				if hasattr(meal_doc, field):
-					try:
-						if field == "meal_items" and isinstance(value, list):
-							cleaned_items = [str(i).strip().lower() for i in value if i]
-							value = ", ".join(cleaned_items)
-							setattr(meal_doc, field, value)
+				if not hasattr(meal_doc, field):
+					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
+
+				try:
+					if field == "meal_items" and isinstance(value, list):
+						new_items = [str(i).strip().lower() for i in value if i]
+
+						old_items = [i.strip().lower() for i in (meal_doc.meal_items or "").split(",") if i]
+
+						added = [item for item in new_items if item not in old_items]
+						removed = [item for item in old_items if item not in new_items]
+
+						if added or removed:
+							changes[field] = {
+								"added": added,
+								"removed": removed,
+								"old": ", ".join(old_items),
+								"new": ", ".join(new_items),
+							}
+
+							meal_doc.meal_items = ", ".join(new_items)
 
 							meal_doc.menu_items = []
-							for item_name in cleaned_items:
+							for item_name in new_items:
 								meal_item_name = frappe.get_value(
 									"Hotpot Meal Items",
 									{"vendor_id": meal_doc.vendor_id, "item_name": item_name},
@@ -319,15 +336,23 @@ class HotpotApprovals(Document):
 									frappe.throw(
 										f"Meal Item '{item_name}' not found for vendor '{meal_doc.vendor_id}'."
 									)
-
 								meal_doc.append("menu_items", {"meal_item": meal_item_name})
-						else:
+
+					else:
+						old_value = getattr(meal_doc, field)
+						if old_value != value:
+							changes[field] = {"old": old_value, "new": value}
 							setattr(meal_doc, field, value)
 
-					except Exception as e:
-						frappe.throw(f"Error setting value for '{field}': {e}")
-				else:
-					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
+				except Exception as e:
+					frappe.throw(f"Error setting value for '{field}': {e}")
+
+			if changes:
+				frappe.msgprint(f"Changes detected: {frappe.as_json(changes)}")
+				meal_doc.save()
+			else:
+				frappe.msgprint("No actual changes found.")
+
 
 			meal_doc.approval_id = ""
 			meal_doc.save()
@@ -349,14 +374,37 @@ class HotpotApprovals(Document):
 					)
 
 			coupons = meal_doc.coupons
-			for coupon in coupons:
-				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
+			unique_emp_ids = {c["employee_id"] for c in coupons}
+			for emp_id in unique_emp_ids:
+				user_doc = frappe.get_doc("Hotpot User", emp_id)
 				if user_doc.fcm_token:
 					try:
+						change_msgs = []
+						for field, diff in changes.items():
+							if field == "meal_title":
+								change_msgs.append(f"🍽️ Title: '{diff['old']}' ➡️ '{diff['new']}'")
+							elif field == "meal_items":
+								msg = "🥗 Items updated!"
+								if diff.get("added"):
+									msg += f"\n   ➕ Added: {', '.join(diff['added'])}"
+								if diff.get("removed"):
+									msg += f"\n   ➖ Removed: {', '.join(diff['removed'])}"
+								change_msgs.append(msg)
+							elif field == "meal_category":
+								change_msgs.append(f"📂 Category: '{diff['old']}' ➡️ '{diff['new']}'")
+							elif field == "meal_date":
+								change_msgs.append(f"📅 Date: {diff['old']} ➡️ {diff['new']}")
+							elif field == "buffer_coupon_count":
+								change_msgs.append(f"🎟️ Buffer Coupons: {diff['old']} ➡️ {diff['new']}")
+
+						change_text = "\n".join(change_msgs) if change_msgs else "✨ Something got updated!"
+
 						send_notification_by_token(
 							user_doc.fcm_token,
-							"Meal Plot Twist!",
-							f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+							"🍴 Meal Plot Twist! 🔄",
+							f"Guess what? '{meal_doc.meal_title}' just got an update! 🎉\n\n"
+							f"Here’s what changed:\n{change_text}\n\n"
+							"👉 Check it out now!",
 							date=meal_doc.meal_date,
 							doc_id=meal_doc.name,
 							text="meals",

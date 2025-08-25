@@ -53,7 +53,7 @@
   },
   {
    "fieldname": "meal_items",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "in_list_view": 1,
    "label": "Meal Items",
    "reqd": 1
@@ -259,12 +259,13 @@
    "fieldname": "surplus_scan_time",
    "fieldtype": "Int",
    "label": "Surplus Scan Time",
-   "non_negative": 1
+   "non_negative": 1,
+   "precision": "1"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-18 20:35:17.629965",
+ "modified": "2025-08-25 13:43:11.564286",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Meal",
