@@ -15,32 +15,41 @@ frappe.ui.form.on("Hotpot Approvals", {
                         } catch (e) {
                             console.error("Invalid JSON in new_values:", e);
                         }
-
+                        let status = doc["approval_status"]
                         let changes = [];
                         Object.keys(newValues).forEach(key => {
                             if (key.startsWith("old_")) return;
                             let oldKey = "old_" + key;
                             if (oldKey in newValues) {
-                                // Try to get label from meta
                                 let fieldLabel = frappe.meta.get_docfield("Hotpot Draft Meal", key)?.label;
-                                // If not found, prettify fieldname (e.g., meal_title → Meal Title)
                                 if (!fieldLabel) {
                                     fieldLabel = key.replace(/_/g, " ")
                                         .replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1));
                                 }
                                 let oldVal = newValues[oldKey];
                                 let newVal = newValues[key];
-                                changes.push(`🔹 <b>${fieldLabel}</b><br> &nbsp;&nbsp;<b>${oldVal}</b> ➡️ <b>${newVal}</b>`);
+                                changes.push(
+                                    `🔹 <b>${fieldLabel}</b><br>` +
+                                    `&nbsp;&nbsp;${oldVal ? `<span style="color:#e74c3c"><b>${oldVal}</b></span>` : "—"} ` +
+                                    `➡️ ` +
+                                    `${newVal ? `<span style="color:#27ae60"><b>${newVal}</b></span>` : "—"}`
+                                );
                             }
                         });
 
                         if (changes.length > 0) {
-                            let msg = __("✨ Some updates were requested by the vendor:<br><br>") +
-                                changes.join("<br><br>");
+                            let msg = "";
+                            if (status === "Pending") {
+                                msg += "✨ <b>Some updates are requested by the vendor:</b><br><br>";
+                            } else {
+                                msg += "✨ <b>The vendor had requested the following updates:</b><br><br>";
+                            }
+                            msg += changes.join("<br><br>");
 
                             frm.dashboard.clear_headline();
                             frm.dashboard.set_headline_alert(msg, "blue");
                         }
+
                     });
                 }
             });
