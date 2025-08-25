@@ -303,6 +303,10 @@ class HotpotApprovals(Document):
 			changes = {}
 
 			for field, value in draft_values.items():
+				if field.startswith("old_"):
+					continue
+
+
 				if not hasattr(meal_doc, field):
 					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
 
@@ -341,6 +345,9 @@ class HotpotApprovals(Document):
 					else:
 						old_value = getattr(meal_doc, field)
 						if old_value != value:
+							if field == 'meal_date':
+								if get_local_datetime_obj(old_value).date() == get_local_datetime_obj(value).date():
+									continue
 							changes[field] = {"old": old_value, "new": value}
 							setattr(meal_doc, field, value)
 
@@ -374,7 +381,8 @@ class HotpotApprovals(Document):
 					)
 
 			coupons = meal_doc.coupons
-			unique_emp_ids = {c["employee_id"] for c in coupons}
+			unique_emp_ids = {c.employee_id for c in coupons}
+
 			for emp_id in unique_emp_ids:
 				user_doc = frappe.get_doc("Hotpot User", emp_id)
 				if user_doc.fcm_token:
