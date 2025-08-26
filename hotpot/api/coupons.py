@@ -11,6 +11,7 @@ from hotpot.utils.role_utils import get_dominant_role_for_current_user, has_any_
 from hotpot.utils.utc_time import *
 from hotpot.utils.send_fcm import *
 from ..api.users import *
+import random
 
 
 @frappe.whitelist()
@@ -533,14 +534,34 @@ def scan_coupon():
 		)
 		try:
 			if emp_doc.fcm_token:
+				meal_title = meal_doc.get("meal_title")
+				meal_title = meal_title[0].upper() + meal_title[1:]
+				messages = [
+					f"🍕 Done & Dusted! {meal_title} Coupon consumed. Now the best part — eating! 😍",
+					f"✅ Your {meal_title} Coupon is used. Time to enjoy your meal! 🍽️",
+					f"🎉 {meal_title} Coupon redeemed successfully. Dig in and enjoy!",
+					f"😋 Yum time! {meal_title} Coupon consumed. Bon appétit!",
+					f"🔥 {meal_title} Coupon checked out. Now let’s fuel up with some food!",
+					f"🍴 {meal_title} Coupon redeemed — time to feast! 🎉",
+					f"✅ {meal_title} Coupon consumed. Your tummy says thanks! 😍",
+					f"🔥 {meal_title} Coupon done. Now enjoy every bite!",
+					f"🎊 You just used your {meal_title} Coupon. Dig in & enjoy!",
+					f"😋 {meal_title} Coupon redeemed — happiness is on your plate!",
+					f"👌 Done! {meal_title} Coupon consumed. Bon appétit!",
+					f"🥳 {meal_title} Coupon is history — let the flavors begin!",
+					f"✨ {meal_title} Coupon scanned successfully. Enjoy your meal!",
+					f"🍕 {meal_title} Coupon done. Time to make your taste buds happy!",
+					f"💯 Success! {meal_title} Coupon consumed — enjoy guilt-free!",
+				]
+				chosen_message = random.choice(messages)
+
 				send_notification_by_token(
 					emp_doc.fcm_token,
-					"🍕 Done & Dusted!",
-					(f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[0].upper()
-					+ (f"{meal_doc.get('meal_title')} Coupon consumed. Now the best part — eating! 😍")[1:],
+					"🍽️ Meal Update",
+					chosen_message,
 					date=local_date,
 					doc_id=coupon_id,
-					text="coupons",
+					text="scanned_coupon",
 				)
 		except Exception:
 			frappe.log_error(
@@ -1381,7 +1402,7 @@ def search_coupon(start_date, end_date, identifier):
 		)
 
 		if not coupon_data:
-			return set_response(404, False, f"No coupon found for {identifier} in range {start_date.strftime("%-d %b %y")} to {end_date.strftime("%-d %b %y")}")
+			return set_response(404, False, f"No coupon found for {identifier} in range {start_date.strftime('%-d %b %y')} to {end_date.strftime('%-d %b %y')}")
 
 		return set_response(200, True, "Coupon Data fetched successfully", coupon_data)
 

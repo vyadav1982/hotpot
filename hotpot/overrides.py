@@ -6,13 +6,15 @@ import frappe
 import openpyxl
 from frappe.core.doctype.data_import.data_import import DataImport
 from frappe.utils import getdate, nowdate, today
+from hotpot.utils.role_utils import has_role
+
 
 from hotpot.utils.utc_time import *
 
 
 class CustomDataImport(DataImport):
 	def start_import(self):
-		if self.import_file:
+		if self.import_file and not has_role("Administrator"):
 			file_doc = frappe.get_doc("File", {"file_url": self.import_file})
 			file_path = file_doc.get_full_path()
 
