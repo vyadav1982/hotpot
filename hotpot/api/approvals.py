@@ -240,27 +240,31 @@ def create_approval():
 				"hotpot@blissgvs.com", user_data, data, approval.name, meal_doc.meal_title
 			)
 
-			admin_hr_users = frappe.get_all("Hotpot User", filters={"role": ["in", ["Hotpot Admin", "Hotpot HR"]], "is_active":1})
-			for user in admin_hr_users:
-				user_doc_admin_hr = frappe.get_doc("Hotpot User", user.name)
-				if user_doc_admin_hr.fcm_token:
-					try:
-						send_notification_by_token(
-							user_doc_admin_hr.fcm_token,
-							"⚡ Approval Needed",
-							f"👋 Hi {user_doc_admin_hr.full_name},\n\n"
-							f"📝 {user_data.full_name} has requested for **{data['request_type']}**.\n"
-							"✅ Please review and approve when you get a chance.",
-							date=approval.date if approval.date else None,
-							doc_id=approval.name,
-							text="approvals",
-						)
+			hotpot_users = frappe.get_all("Hotpot User", filters={"is_employee": 1, "is_active": 1}, fields=["email","name"])
+			for user in hotpot_users:
+				frappe_user = frappe.get_doc("User", user.email)
+				roles = [r.role for r in frappe_user.get("roles")]
+				
+				if "Hotpot Admin" in roles or "Hotpot HR" in roles:
+					user_doc_admin_hr = frappe.get_doc("Hotpot User", user.name)
+					if user_doc_admin_hr.fcm_token:
+						try:
+							send_notification_by_token(
+								user_doc_admin_hr.fcm_token,
+								"⚡ Approval Needed",
+								f"👋 Hi {user_doc_admin_hr.full_name},\n\n"
+								f"📝 {user_data.full_name} has requested for **{data['request_type']}**.\n"
+								"✅ Please review and approve when you get a chance.",
+								date=approval.date if approval.date else None,
+								doc_id=approval.name,
+								text="approvals",
+							)
 
-					except Exception:
-						frappe.log_error(
-							frappe.get_traceback(),
-							f"Failed to send meal edit rejection notification to user {user_data.name}",
-						)
+						except Exception:
+							frappe.log_error(
+								frappe.get_traceback(),
+								f"Failed to send meal edit rejection notification to user {user_data.name}",
+							)
 
 		frappe.db.set_value("Hotpot User", user_data.get("name"), "approval_id", json.dumps(approval_list))
 		frappe.db.commit()

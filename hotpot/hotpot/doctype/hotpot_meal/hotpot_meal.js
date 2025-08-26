@@ -46,6 +46,16 @@ frappe.ui.form.on("Hotpot Meal", {
 			}
 
 			if (isVendor) {
+				let msg = `
+					⚠️ <b>Heads up!</b><br>
+					If you're only changing the <b>Buffer Coupon Count</b>.  
+					This <b>won’t create any new request</b> and <span style="color:red;">may affect the Remaining Coupon Count</span>.  
+					Please double-check before saving ✅
+					`;
+
+				frm.dashboard.clear_headline();
+				frm.dashboard.set_headline_alert(msg, "blue");
+
 				frm.toggle_display("coupons", false);
 				frm.toggle_display("ratings", false);
 			}
@@ -150,11 +160,31 @@ frappe.ui.form.on("Hotpot Meal", {
 														}
 													});
 
+													if ("buffer_coupon_count" in draft_payload) {
+														frappe.call({
+															method: "frappe.client.set_value",
+															args: {
+																doctype: "Hotpot Meal",
+																name: frm.doc.name,
+																fieldname: "buffer_coupon_count",
+																value: draft_payload["buffer_coupon_count"]
+															},
+															callback: function (r) {
+																if (!r.exc) {
+																	frappe.msgprint("✅ Buffer Coupon Count updated successfully!");
+																}
+															}
+														});
+
+														delete draft_payload["buffer_coupon_count"];
+														delete draft_payload["old_buffer_coupon_count"];
+													}
 
 													if (Object.keys(draft_payload).length === 0) {
 														frappe.msgprint("⚠️ No actual changes detected. Approval request not created.");
 														return;
 													}
+
 
 													const new_approval = {
 														request_type: "Meal Edit",
@@ -194,7 +224,7 @@ frappe.ui.form.on("Hotpot Meal", {
 																		}
 																	}
 																});
-																
+
 																editable_fields.forEach(field => {
 																	frm.set_df_property(field, "read_only", 1);
 																});
