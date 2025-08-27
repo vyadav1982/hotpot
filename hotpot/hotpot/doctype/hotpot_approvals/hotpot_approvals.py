@@ -360,7 +360,10 @@ class HotpotApprovals(Document):
 					frappe.throw(f"Error setting value for '{field}': {e}")
 
 			if changes:
-				frappe.msgprint(f"Changes detected: {frappe.as_json(changes)}")
+				msg = "We noticed the following updates:\n\n"
+				for field, diff in changes.items():
+					msg += f"• {field.replace('_', ' ').title()}: {diff['old']} ➝ {diff['new']}\n"
+				frappe.msgprint(msg)
 				meal_doc.save()
 			else:
 				frappe.msgprint("No actual changes found.")
@@ -429,6 +432,7 @@ class HotpotApprovals(Document):
 						)
 
 			self.is_active = 0
+			self.save()
 
 
 def is_frappe_ui_request():
