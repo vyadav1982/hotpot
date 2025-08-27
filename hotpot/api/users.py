@@ -211,15 +211,10 @@ def get_hotpot_user_by_email():
 				"email",
 				"mobile_no",
 				"is_active",
-				"role",
-				"is_guest",
 				"discount",
-				"guest_of",
 				"coupon_count",
 				"approval_id",
 				"location",
-				"latitude",
-				"longitude",
 			],
 		)
 		if user:
@@ -228,15 +223,28 @@ def get_hotpot_user_by_email():
 
 			emp = None
 			if any(role in user_info["role"] for role in ["Hotpot User", "Hotpot HR", "Hotpot Admin"]):
-				emp = frappe.get_doc("Employee", user_info["name"])
+				emp = frappe.db.get_value(
+					"Employee",
+					user_info["name"],
+					["company", "date_of_birth", "department", "date_of_joining", "image", "status", "user_id"],
+					as_dict=True
+				)
+
 			if emp:
-				emp_info = emp.as_dict()
-				user_info.update({"employee_details": emp_info})
-				if emp_info.get("company"):
-					company = frappe.get_doc("Company", emp_info["company"])
-					user_info.update({"company_details": company.as_dict()})
+				user_info.update({"employee_details": emp})
+
+				if emp.get("company"):
+					company = frappe.db.get_value(
+						"Company",
+						emp["company"],
+						["company_name", "company_logo", "name"],
+						as_dict=True
+					)
+					if company:
+						user_info.update({"company_details": company})
 
 			return user_info
+
 
 		return None
 
@@ -780,6 +788,22 @@ def get_hotpot_history(start_date, end_date, category=None):
 			params,
 			as_dict=True,
 		)
+		remove_fields = [
+			"parent"
+			"parentfield",
+			"parenttype",
+			"_user_tags",
+			"_assign",
+			"_comments",
+			"_liked_by",
+			"surplus_scan_time",
+			"repeat_days",
+			"repeat_type"
+		]
+
+		for row in data:
+			for field in remove_fields:
+				row.pop(field, None)
 		set_response(200, True, "Coupon data fetched successfully", data)
 		return
 	except Exception as e:
