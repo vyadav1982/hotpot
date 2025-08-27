@@ -28,12 +28,36 @@ frappe.ui.form.on("Hotpot Approvals", {
                                 }
                                 let oldVal = newValues[oldKey];
                                 let newVal = newValues[key];
-                                changes.push(
-                                    `🔹 <b>${fieldLabel}</b><br>` +
-                                    `&nbsp;&nbsp;${oldVal ? `<span style="color:#e74c3c"><b>${oldVal}</b></span>` : "—"} ` +
-                                    `➡️ ` +
-                                    `${newVal ? `<span style="color:#27ae60"><b>${newVal}</b></span>` : "—"}`
-                                );
+                                if (fieldLabel === "Meal Items") {
+                                    let oldItems = oldVal ? oldVal.split(",") : [];
+                                    let newItems = newVal ? newVal.split(",") : [];
+
+                                    let added = newItems.filter(i => !oldItems.includes(i));
+                                    let removed = oldItems.filter(i => !newItems.includes(i));
+                                    let unchanged = newItems.filter(i => oldItems.includes(i));
+
+                                    let message = `🍽️ <b>${fieldLabel}</b><br>`;
+
+                                    if (added.length) {
+                                        message += `&nbsp;&nbsp;✅ Added: <span style="color:#27ae60"><b>${added.join(", ")}</b></span><br>`;
+                                    }
+                                    if (removed.length) {
+                                        message += `&nbsp;&nbsp;❌ Removed: <span style="color:#e74c3c"><b>${removed.join(", ")}</b></span><br>`;
+                                    }
+                                    if (unchanged.length && (added.length || removed.length)) {
+                                        message += `&nbsp;&nbsp;↔️ Unchanged: ${unchanged.join(", ")}<br>`;
+                                    }
+
+                                    changes.push(message);
+                                } else {
+                                    changes.push(
+                                        `🔹 <b>${fieldLabel}</b><br>` +
+                                        `&nbsp;&nbsp;${oldVal ? `<span style="color:#e74c3c"><b>${oldVal}</b></span>` : "—"} ` +
+                                        `➡️ ` +
+                                        `${newVal ? `<span style="color:#27ae60"><b>${newVal}</b></span>` : "—"}`
+                                    );
+                                }
+
                             }
                         });
 
