@@ -243,19 +243,21 @@ class HotpotMeal(Document):
 			start_time_today = datetime.combine(meal_date.date(), start_time_local.time())
 
 			time_difference = (start_time_today - ready_time).total_seconds()
+			calculated_time = start_time_local - lead_time_delta
 
 			if time_difference < 0:
 				frappe.throw(
 					_(
-						"Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}."
+						"Meal ({0}) on {1} cannot be created. Based on the lead time of {2} hours, "
+						"it should be created {2} hours before lunch time, which falls at {3}."
 					).format(
 						self.meal_title,
 						meal_date.strftime("%d %b").lstrip("0"),
 						self.lead_time,
-						ready_time.strftime("%I:%M %p"),
-						(get_local_datetime_obj(self.start_time)).strftime("%I:%M %p"),
+						calculated_time.strftime("%I:%M %p"),
 					)
 				)
+
 
 
 def is_frappe_ui_request():
