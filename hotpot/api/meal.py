@@ -86,7 +86,7 @@ def give_feedback():
 				}
 			)
 			rating_doc.insert(ignore_permissions=True)
-		meal_doc.save()
+		# meal_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Ratings submitted successfully!")
 		return
@@ -519,7 +519,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			"is_active",
 			"vendor_id",
 			"repeat_type",
-			"repeat_days",
 			"lead_time",
 			"cancellation_time",
 			"category",
@@ -600,11 +599,12 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 					if c.employee_id == user_data.name and get_local_datetime_obj((c.coupon_date.strftime("%Y-%m-%d %H:%M:%S"))).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and not c.guest_of 
 				]
 			else:
-				meal["coupon"] = [
-					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
-					for c in meal_doc.coupons
-					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
-				]
+				# meal["coupon"] = [
+				# 	{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+				# 	for c in meal_doc.coupons
+				# 	if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
+				# ]
+				meal["coupon"] = []
 			for coupon in meal_doc.coupons:
 				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
 						meal["total_coupons"] += 1
