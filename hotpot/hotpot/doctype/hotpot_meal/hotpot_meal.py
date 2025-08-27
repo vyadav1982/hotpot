@@ -249,11 +249,12 @@ class HotpotMeal(Document):
 				frappe.throw(
 					_(
 						"Meal ({0}) on {1} cannot be created. Based on the lead time of {2} hours, "
-						"it should be created {2} hours before lunch time, which falls at {3}."
+						"it should be created {2} hours before {3}, which falls at {4}."
 					).format(
 						self.meal_title,
 						meal_date.strftime("%d %b").lstrip("0"),
 						self.lead_time,
+						self.meal_title,
 						calculated_time.strftime("%I:%M %p"),
 					)
 				)
