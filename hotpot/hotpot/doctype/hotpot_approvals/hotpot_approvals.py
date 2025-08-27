@@ -311,8 +311,13 @@ class HotpotApprovals(Document):
 					frappe.throw(f"Field '{field}' does not exist in Hotpot Meal.")
 
 				try:
-					if field == "meal_items" and isinstance(value, list):
-						new_items = [str(i).strip().lower() for i in value if i]
+					if field == "meal_items" :
+						if isinstance(value, list):
+							new_items = [str(i).strip().lower() for i in value if i]
+						elif isinstance(value, str):
+							new_items = [i.strip().lower() for i in value.split(",") if i]
+						else:
+							new_items = []
 
 						old_items = [i.strip().lower() for i in (meal_doc.meal_items or "").split(",") if i]
 
