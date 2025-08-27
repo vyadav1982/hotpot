@@ -245,6 +245,7 @@ def update_meal():
 
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
 		if(meal_doc.buffer_coupon_count != data.get("buffer_coupon_count")):
+			old_value = meal_doc.buffer_coupon_count
 			meal_doc.buffer_coupon_count = data.get("buffer_coupon_count")
 			coupons = meal_doc.coupons
 			unique_emp_ids = {c.employee_id for c in coupons}
@@ -254,7 +255,7 @@ def update_meal():
 				if user_doc.fcm_token:
 					try:
 						change_msgs = []
-						change_msgs.append(f"🎟️ Buffer Coupons: {meal_doc.buffer_coupon_count} ➡️ {data.get("buffer_coupon_count")}")
+						change_msgs.append(f"🎟️ Buffer Coupons: {old_value} ➡️ {data.get("buffer_coupon_count")}")
 						change_text = "\n".join(change_msgs) if change_msgs else "✨ Something got updated!"
 
 						send_notification_by_token(
@@ -274,6 +275,9 @@ def update_meal():
 						)
 			meal_doc.save()
 			frappe.db.commit()
+			if data.get("only_buffer"):
+				set_response(200,True, "Buffer coupon count updated successfully")
+				return
 
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
@@ -361,23 +365,23 @@ def update_meal():
 			approval_doc.save()
 		meal_doc.save()
 		frappe.db.commit()
-		coupons = meal_doc.coupons
-		for coupon in coupons:
-			try:
-				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
-				if user_doc.fcm_token and coupon.coupon_status == "1":
-					send_notification_by_token(
-						user_doc.fcm_token,
-						"Meal Plot Twist!",
-						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
-						date=meal_doc.meal_date,
-						doc_id=meal_doc.name,
-						text="meals",
-					)
-			except Exception:
-				frappe.log_error(
-					frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
-				)
+		# coupons = meal_doc.coupons
+		# for coupon in coupons:
+		# 	try:
+		# 		user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
+		# 		if user_doc.fcm_token and coupon.coupon_status == "1":
+		# 			send_notification_by_token(
+		# 				user_doc.fcm_token,
+		# 				"Meal Plot Twist!",
+		# 				f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+		# 				date=meal_doc.meal_date,
+		# 				doc_id=meal_doc.name,
+		# 				text="meals",
+		# 			)
+		# 	except Exception:
+		# 		frappe.log_error(
+		# 			frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
+		# 		)
 		
 		set_response(200, True, "Meal updated successfully", {"meal_id": meal_doc.name})
 		return
