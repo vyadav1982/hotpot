@@ -244,7 +244,7 @@ def update_meal():
 			return
 
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
-		if(meal_doc.buffer_coupon_count != data.get("buffer_coupon_count")):
+		if int(meal_doc.buffer_coupon_count or 0) != int(data.get("buffer_coupon_count") or 0):
 			old_value = meal_doc.buffer_coupon_count
 			meal_doc.buffer_coupon_count = data.get("buffer_coupon_count")
 			coupons = meal_doc.coupons
