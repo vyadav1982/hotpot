@@ -35,6 +35,8 @@ class CustomDataImport(DataImport):
 	def get_preview_from_template(self, import_file=None, google_sheets_url=None):
 		try:
 			preview_data = super().get_preview_from_template(import_file, google_sheets_url)
+			if has_role("Administrator"):
+				return preview_data
 
 			if not preview_data or not isinstance(preview_data, dict):
 				return preview_data
