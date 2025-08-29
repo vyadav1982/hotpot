@@ -39,7 +39,7 @@ class HotpotMeal(Document):
 		lead_time: DF.Int
 		max_meal_count: DF.Int
 		meal_date: DF.Datetime
-		meal_items: DF.Data
+		meal_items: DF.Text
 		meal_title: DF.Data
 		meal_weight: DF.Int
 		menu_items: DF.Table[HotpotMealMenuItems]
@@ -87,9 +87,23 @@ class HotpotMeal(Document):
 			return
 
 		old_doc = self.get_doc_before_save()
-		if old_doc and old_doc.buffer_coupon_count!=self.buffer_coupon_count:
-			self.remaining_coupon_count=self.buffer_coupon_count
-		
+		if old_doc:
+			old_count = int(old_doc.buffer_coupon_count or 0)
+			new_count = int(self.buffer_coupon_count or 0)
+			current_datetime_local = get_local_datetime_obj(datetime.utcnow())
+			current_time = current_datetime_local.time()
+			if old_count != new_count:
+				is_buffer_time = (
+					get_local_datetime_obj(self.start_time).time()
+					<= current_time
+					<= get_local_datetime_obj(self.end_time).time()
+				)
+				if is_buffer_time:
+					frappe.throw("Cannot update buffer coupon count during meal running time.")
+				
+				self.remaining_coupon_count = new_count
+				
+
 		meal_str = self.meal_date
 
 		if not isinstance(meal_str, str):
@@ -229,19 +243,22 @@ class HotpotMeal(Document):
 			start_time_today = datetime.combine(meal_date.date(), start_time_local.time())
 
 			time_difference = (start_time_today - ready_time).total_seconds()
+			calculated_time = start_time_local - lead_time_delta
 
 			if time_difference < 0:
 				frappe.throw(
 					_(
-						"Meal ({0}) on {1} cannot be created. Lead time ({2} hours) results in time {3}, which is past the start time {4}."
+						"Meal ({0}) on {1} cannot be created. Based on the lead time of {2} hours, "
+						"it should be created {2} hours before {3}, which falls at {4}."
 					).format(
 						self.meal_title,
 						meal_date.strftime("%d %b").lstrip("0"),
 						self.lead_time,
-						ready_time.strftime("%I:%M %p"),
-						(get_local_datetime_obj(self.start_time)).strftime("%I:%M %p"),
+						self.meal_title,
+						calculated_time.strftime("%I:%M %p"),
 					)
 				)
+
 
 
 def is_frappe_ui_request():

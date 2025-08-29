@@ -14,15 +14,15 @@ frappe.ui.form.on("Hotpot Meal", {
 		});
 
 		frm.set_df_property("vendor_id", "only_select", true);
-		frm.add_custom_button(__('Refresh Fetched Data'), function() {
-            frappe.call({
-                method: 'hotpot.api.meal.refresh_fetched_data',
-                args: { docname: frm.doc.name },
-                callback: function(r) {
-                    frm.reload_doc();
-                }
-            });
-        });
+		frm.add_custom_button(__('Refresh Fetched Data'), function () {
+			frappe.call({
+				method: 'hotpot.api.meal.refresh_fetched_data',
+				args: { docname: frm.doc.name },
+				callback: function (r) {
+					frm.reload_doc();
+				}
+			});
+		});
 
 		if (!isAdmin) {
 			frm.page.wrapper.find(".comment-box").css({ display: "none" });
@@ -35,7 +35,7 @@ frappe.ui.form.on("Hotpot Meal", {
 			frm.toggle_display("menu_items", false);
 			frm.toggle_display("ratings", false);
 			// frm.toggle_display("coupons", false);
-			
+
 
 			if (frm.doc.__islocal == 1) {
 				frm.toggle_display("start_time", false);
@@ -46,6 +46,16 @@ frappe.ui.form.on("Hotpot Meal", {
 			}
 
 			if (isVendor) {
+				let msg = `
+					⚠️ <b>Heads up!</b><br>
+					If you're only changing the <b>Buffer Coupon Count</b>.  
+					This <b>won’t create any new request</b> and <span style="color:red;">may affect the Remaining Coupon Count</span>.  
+					Please double-check before saving ✅
+					`;
+
+				frm.dashboard.clear_headline();
+				frm.dashboard.set_headline_alert(msg, "blue");
+
 				frm.toggle_display("coupons", false);
 				frm.toggle_display("ratings", false);
 			}
@@ -71,8 +81,7 @@ frappe.ui.form.on("Hotpot Meal", {
 					"meal_title",
 					"meal_items",
 					"meal_date",
-					"buffer_coupon_count",
-					"remaining_coupon_count"
+					"buffer_coupon_count"
 				];
 				let coupons = false;
 
@@ -101,79 +110,7 @@ frappe.ui.form.on("Hotpot Meal", {
 							if (doc.is_active === 1 && doc.approval_status === "Pending") {
 								frappe.msgprint("Approval is pending. You cannot edit this document.");
 								frm.disable_save();
-							} else if (doc.is_active === 1 && doc.approval_status === "Approved") {
-								frappe.msgprint("Yayy!! your request is approved, now you can edit the meal.")
-								editable_fields.forEach(field => {
-									frm.set_df_property(field, "read_only", 0);
-								});
-								frm.deactivate_approval_on_save = true;
-
-								// ✅ Use Frappe's after_save event
-								frappe.ui.form.on('Hotpot Meal', {
-									after_save: function (frm) {
-										if (frm.deactivate_approval_on_save && frm.doc.approval_id) {
-											frappe.call({
-												method: "frappe.client.set_value",
-												args: {
-													doctype: "Hotpot Approvals",
-													name: frm.doc.approval_id,
-													fieldname: "is_active",
-													value: 0
-												},
-												callback: function () {
-													// console.log("Approval doc deactivated.");
-												}
-											});
-											frappe.call({
-												method: "frappe.client.set_value",
-												args: {
-													doctype: "Hotpot Meal",
-													name: frm.doc.name,
-													fieldname: "approval_id",
-													value: ""
-												},
-												callback: function () {
-													// console.log("Approval id removed.");
-												}
-											});
-										}
-										if (frm.doc.coupon && frm.doc.coupon.length > 0) {
-											frm.doc.coupon.forEach(coupon => {
-												if (coupon.employee_id) {
-													frappe.call({
-														method: "frappe.client.get",
-														args: {
-															doctype: "Hotpot User",
-															name: coupon.employee_id
-														},
-														callback: function (res) {
-															const user_doc = res.message;
-															if (user_doc && user_doc.fcm_token) {
-																frappe.call({
-																	method: "hotpot.utils.send_fcm.send_notification_by_token",
-																	args: {
-																		fcm_token: user_doc.fcm_token,
-																		title: "Meal Plot Twist!",
-																		message: `Guess what? The vendor just spiced things up in '${frm.doc.meal_title}'. Go check it out!`
-																	},
-																	callback: function () {
-																		console.log("Notification sent to:", user_doc.name);
-																	}
-																});
-															}
-														}
-													});
-												}
-											});
-										}
-
-									}
-								});
 							}
-							// else {
-							// 	frappe.msgprint("Unknown approval status. Editing disabled.");
-							// 	frm.disable_save();
-							// }
 						})
 						.catch(err => {
 							frappe.msgprint(`Error fetching document: ${err.message}`);
@@ -204,69 +141,103 @@ frappe.ui.form.on("Hotpot Meal", {
 												}
 											],
 											(values) => {
-												const new_approval = {
-													request_type: "Meal Edit",
-													requested_by: frappe.session.user,
-													meal_id: frm.doc.name,
-													description: values.reason
-												};
+												frappe.db.get_doc("Hotpot Meal", frm.doc.name).then(original_doc => {
+													const draft_payload = {};
+													const editable_fields = [
+														"meal_title",
+														"meal_items",
+														"meal_date",
+														"buffer_coupon_count"
+													];
 
-												frappe.call({
-													method: "frappe.client.insert",
-													args: {
-														doc: {
-															doctype: "Hotpot Approvals",
-															...new_approval
+													editable_fields.forEach(field => {
+														let current_value = frm.get_field(field).get_value();
+														let original_value = original_doc[field];
+
+														if ((current_value ?? "").toString().trim() !== (original_value ?? "").toString().trim()) {
+															draft_payload[field] = current_value;
+															draft_payload[`old_${field}`] = original_value;
 														}
-													},
-													callback: function (response) {
-														if (!response.exc) {
-															frappe.msgprint(`Request Created with reason: ${values.reason}. To edit the fields, please wait for approval.`);
-															const approval_id = response.message.name;
-															const meal_id = frm.doc.name;
-															const draft_payload = {};
+													});
 
-
-															const editable_fields = [
-																"meal_title",
-																"meal_items",
-																"meal_date",
-																"buffer_coupon_count",
-																"remaining_coupon_count"
-															];
-															editable_fields.forEach(field => {
-																draft_payload[field] = frm.doc[field];
-															});
-															frappe.call({
-																method: "frappe.client.insert",
-																args: {
-																	doc: {
-																		doctype: "Hotpot Draft Meal",
-																		meal: meal_id,
-																		approval: approval_id,
-																		new_values: JSON.stringify(draft_payload)
-																	}
-																},
-																callback: function (r) {
-																	if (!r.exc) {
-																		// frappe.msgprint("Draft meal created successfully.");
-																	} else {
-																		frappe.msgprint("Failed to create draft meal.");
-																	}
+													if ("buffer_coupon_count" in draft_payload) {
+														frappe.call({
+															method: "frappe.client.set_value",
+															args: {
+																doctype: "Hotpot Meal",
+																name: frm.doc.name,
+																fieldname: "buffer_coupon_count",
+																value: draft_payload["buffer_coupon_count"]
+															},
+															callback: function (r) {
+																if (!r.exc) {
+																	frappe.msgprint("✅ Buffer Coupon Count updated successfully!");
 																}
-															});
-															editable_fields.forEach(field => {
-																frm.set_df_property(field, "read_only", 1);
-															});
-															frm.disable_save();
+															}
+														});
 
-															// Optionally refresh or update approval_id field
-															// frm.set_value("approval_id", response.message.name);
-															// frm.refresh_fields();
-														} else {
-															frappe.msgprint("Failed to create request. Please try again.");
-														}
+														delete draft_payload["buffer_coupon_count"];
+														delete draft_payload["old_buffer_coupon_count"];
 													}
+
+													if (Object.keys(draft_payload).length === 0) {
+														frappe.msgprint("⚠️ No actual changes detected. Approval request not created.");
+														return;
+													}
+
+
+													const new_approval = {
+														request_type: "Meal Edit",
+														requested_by: frappe.session.user,
+														meal_id: frm.doc.name,
+														description: values.reason
+													};
+
+													frappe.call({
+														method: "frappe.client.insert",
+														args: {
+															doc: {
+																doctype: "Hotpot Approvals",
+																...new_approval
+															}
+														},
+														callback: function (response) {
+															if (!response.exc) {
+																frappe.msgprint(`Request Created with reason: ${values.reason}. To edit the fields, please wait for approval.`);
+																const approval_id = response.message.name;
+																const meal_id = frm.doc.name;
+																frappe.call({
+																	method: "frappe.client.insert",
+																	args: {
+																		doc: {
+																			doctype: "Hotpot Draft Meal",
+																			meal: meal_id,
+																			approval: approval_id,
+																			new_values: JSON.stringify(draft_payload)
+																		}
+																	},
+																	callback: function (r) {
+																		if (!r.exc) {
+																			// frappe.msgprint("Draft meal created successfully.");
+																		} else {
+																			frappe.msgprint("Failed to create draft meal.");
+																		}
+																	}
+																});
+
+																editable_fields.forEach(field => {
+																	frm.set_df_property(field, "read_only", 1);
+																});
+																frm.disable_save();
+
+																// Optionally refresh or update approval_id field
+																// frm.set_value("approval_id", response.message.name);
+																// frm.refresh_fields();
+															} else {
+																frappe.msgprint("Failed to create request. Please try again.");
+															}
+														}
+													});
 												});
 											},
 											'Create Request',
@@ -274,8 +245,10 @@ frappe.ui.form.on("Hotpot Meal", {
 										);
 									});
 								}
+
 							};
 						}
+
 					});
 				}
 

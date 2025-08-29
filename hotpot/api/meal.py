@@ -86,7 +86,7 @@ def give_feedback():
 				}
 			)
 			rating_doc.insert(ignore_permissions=True)
-		meal_doc.save()
+		# meal_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Ratings submitted successfully!")
 		return
@@ -244,10 +244,46 @@ def update_meal():
 			return
 
 		meal_doc = frappe.get_doc("Hotpot Meal", meal_id)
+		if int(meal_doc.buffer_coupon_count or 0) != int(data.get("buffer_coupon_count") or 0):
+			old_value = meal_doc.buffer_coupon_count
+			meal_doc.buffer_coupon_count = data.get("buffer_coupon_count")
+			coupons = meal_doc.coupons
+			unique_emp_ids = {c.employee_id for c in coupons}
+
+			for emp_id in unique_emp_ids:
+				user_doc = frappe.get_doc("Hotpot User", emp_id)
+				if user_doc.fcm_token:
+					try:
+						change_msgs = []
+						change_msgs.append(f"🎟️ Buffer Coupons: {old_value} ➡️ {data.get("buffer_coupon_count")}")
+						change_text = "\n".join(change_msgs) if change_msgs else "✨ Something got updated!"
+
+						send_notification_by_token(
+							user_doc.fcm_token,
+							"🍴 Meal Plot Twist! 🔄",
+							f"Guess what? '{meal_doc.meal_title}' just got an update! 🎉\n\n"
+							f"Here’s what changed:\n{change_text}\n\n"
+							"👉 Check it out now!",
+							date=meal_doc.meal_date,
+							doc_id=meal_doc.name,
+							text="meals",
+						)
+					except Exception:
+						frappe.log_error(
+							frappe.get_traceback(),
+							f"Failed to send plot twist notification to user {user_doc.name}",
+						)
+			meal_doc.save()
+			frappe.db.commit()
+			if data.get("only_buffer"):
+				set_response(200,True, "Buffer coupon count updated successfully")
+				return
 
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
 			return
+		
+		meal_doc.reload()
 
 		upcoming_coupons = False
 		coupons = meal_doc.coupons
@@ -329,23 +365,23 @@ def update_meal():
 			approval_doc.save()
 		meal_doc.save()
 		frappe.db.commit()
-		coupons = meal_doc.coupons
-		for coupon in coupons:
-			try:
-				user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
-				if user_doc.fcm_token and coupon.coupon_status == "1":
-					send_notification_by_token(
-						user_doc.fcm_token,
-						"Meal Plot Twist!",
-						f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
-						date=meal_doc.meal_date,
-						doc_id=meal_doc.name,
-						text="meals",
-					)
-			except Exception:
-				frappe.log_error(
-					frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
-				)
+		# coupons = meal_doc.coupons
+		# for coupon in coupons:
+		# 	try:
+		# 		user_doc = frappe.get_doc("Hotpot User", coupon.employee_id)
+		# 		if user_doc.fcm_token and coupon.coupon_status == "1":
+		# 			send_notification_by_token(
+		# 				user_doc.fcm_token,
+		# 				"Meal Plot Twist!",
+		# 				f"Guess what? The vendor just spiced things up in '{meal_doc.meal_title}'. Go check it out!",
+		# 				date=meal_doc.meal_date,
+		# 				doc_id=meal_doc.name,
+		# 				text="meals",
+		# 			)
+		# 	except Exception:
+		# 		frappe.log_error(
+		# 			frappe.get_traceback(), f"Notification failed for employee: {coupon.employee_id}"
+		# 		)
 		
 		set_response(200, True, "Meal updated successfully", {"meal_id": meal_doc.name})
 		return
@@ -487,7 +523,6 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 			"is_active",
 			"vendor_id",
 			"repeat_type",
-			"repeat_days",
 			"lead_time",
 			"cancellation_time",
 			"category",
@@ -568,11 +603,12 @@ def get_meals(date, vendor_id=None, page=1, limit=10, for_kiosk=False):
 					if c.employee_id == user_data.name and get_local_datetime_obj((c.coupon_date.strftime("%Y-%m-%d %H:%M:%S"))).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and not c.guest_of 
 				]
 			else:
-				meal["coupon"] = [
-					{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
-					for c in meal_doc.coupons
-					if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
-				]
+				# meal["coupon"] = [
+				# 	{"id": c.name, "status": c.coupon_status, "date": c.coupon_date}
+				# 	for c in meal_doc.coupons
+				# 	if get_local_datetime_obj(c.coupon_date.strftime("%Y-%m-%d %H:%M:%S")).date() == datetime.strptime(f"{date} {local_time}", "%Y-%m-%d %H:%M:%S").date() and c.coupon_status != "2" and (not c.approval_id or c.status == "Approved")
+				# ]
+				meal["coupon"] = []
 			for coupon in meal_doc.coupons:
 				if coupon.coupon_status != "2" and (not coupon.approval_id or coupon.status == "Approved"):
 						meal["total_coupons"] += 1
