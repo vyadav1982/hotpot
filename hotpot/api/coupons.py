@@ -2142,7 +2142,7 @@ def generate_for_all(docname):
 					)
 			except Exception:
 				frappe.log_error(
-					frappe.get_traceback(), f"Failed to send notification to user {emp_doc.name}"
+					frappe.get_traceback(), f"Failed to send notification to user {users.full_name}"
 				)
 
 		return {"status": "success", "msg": "All coupons generated successfully", "errors": []}
