@@ -24,7 +24,7 @@
   },
   {
    "fieldname": "message",
-   "fieldtype": "Data",
+   "fieldtype": "Text",
    "label": "Message"
   },
   {
@@ -69,7 +69,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-10 12:49:26.497738",
+ "modified": "2025-09-05 10:01:58.883367",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Transaction History",

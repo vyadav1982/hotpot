@@ -20,7 +20,7 @@ class HotpotTransactionHistory(Document):
 		coupon_status: DF.Data | None
 		employee_id: DF.Link | None
 		meal: DF.Link | None
-		message: DF.Data | None
+		message: DF.Text | None
 		title: DF.Data | None
 		type: DF.Literal["Credit", "Debit"]
 	# end: auto-generated types
