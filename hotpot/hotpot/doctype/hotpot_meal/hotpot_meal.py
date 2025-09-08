@@ -55,30 +55,22 @@ class HotpotMeal(Document):
 	def validate_dates(self):
 		"""Validate that start and end times are on the same day and start is before end."""
 
-		# if not self.is_new():
-		# 	# Get the document state before the current save
-		# 	old_doc = self.get_doc_before_save()
-		# 	if old_doc.buffer_coupon_count > self.buffer_coupon_count:
-		# 		frappe.throw("Buffer coupon count cannot be decreased.")
-
 		if self.start_time and self.end_time:
 			if isinstance(self.start_time, str):
 				self.start_time = datetime.strptime(self.start_time, "%Y-%m-%d %H:%M:%S")
 			elif isinstance(self.start_time, timedelta):
-				# Convert timedelta to datetime using today's date
 				today = datetime.now().date()
 				self.start_time = datetime.combine(today, (datetime.min + self.start_time).time())
 
 			if isinstance(self.end_time, str):
 				self.end_time = datetime.strptime(self.end_time, "%Y-%m-%d %H:%M:%S")
 			elif isinstance(self.end_time, timedelta):
-				# Convert timedelta to datetime using today's date
 				today = datetime.now().date()
 				self.end_time = datetime.combine(today, (datetime.min + self.end_time).time())
 
-			if self.start_time.date() != self.end_time.date():
+			if get_local_datetime_obj(self.start_time).date() != get_local_datetime_obj(self.end_time).date():
 				frappe.throw("Start time and End time must be on the same date.")
-			if self.start_time >= self.end_time:
+			if get_local_datetime_obj(self.start_time) >= get_local_datetime_obj(self.end_time):
 				frappe.throw("Start time must be before End time.")
 
 	def before_save(self):

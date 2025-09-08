@@ -13,10 +13,67 @@ frappe.ui.form.on("Hotpot Meal", {
 			};
 		});
 
+		if (isAdmin || isHotpotAdmin) {
+			frm.add_custom_button(__('Bulk Booking'), function () {
+				frappe.confirm(
+					'Are you sure you want to generate coupons for all employees?',
+					() => {
+						frappe.call({
+							method: 'hotpot.api.coupons.generate_for_all',
+							args: { docname: frm.doc.name },
+							callback: function (r) {
+								if (!r.message) return;
+
+								if (r.message.status === "success") {
+									frappe.show_alert({ message: r.message.msg, indicator: 'green' });
+								} else if (r.message.status === "error") {
+									frappe.msgprint({
+										title: __('Error'),
+										indicator: 'red',
+										message: r.message.msg
+									});
+
+									if (r.message.errors && r.message.errors.length > 0) {
+										let error_list = "<ul>";
+										r.message.errors.forEach(err => {
+											error_list += `<li>${err}</li>`;
+										});
+										error_list += "</ul>";
+
+										frappe.msgprint({
+											title: __('Details'),
+											indicator: 'orange',
+											message: error_list
+										});
+									}
+								}
+
+								frm.reload_doc();
+							},
+							error: function (err) {
+								frappe.msgprint({
+									title: __('Server Error'),
+									indicator: 'red',
+									message: __('Something went wrong while generating coupons.')
+								});
+								console.error(err);
+							}
+						});
+					},
+					() => {
+						frappe.show_alert({ message: 'Bulk booking cancelled', indicator: 'orange' });
+					}
+				);
+			});
+		}
+
+
+
+		console.log(!isVendor)
 		frm.set_df_property("vendor_id", "only_select", true);
 		frm.add_custom_button(__('Refresh Fetched Data'), function () {
 			frappe.call({
-				method: 'hotpot.api.meal.refresh_fetched_data',
+				method: 'hotpot.api.coupons.refresh_fetched_data',
 				args: { docname: frm.doc.name },
 				callback: function (r) {
 					frm.reload_doc();
