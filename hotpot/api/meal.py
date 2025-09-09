@@ -328,35 +328,42 @@ def update_meal():
 
 		for field in [
 			"meal_title",
-			"day",
 			"meal_date",
 			"meal_items",
-			"meal_items_ids",
-			"start_time",
-			"end_time",
+			"meal_item_ids",
 			"buffer_coupon_count",
-			"meal_weight",
 			"is_active",
 			"is_special",
-			"cancellation_time",
-			"repeat_type",
-			"repeat_days",
-			"lead_time",
 		]:
 			if field in data:
 				if field in ["meal_items", "repeat_days"] and isinstance(data[field], list):
 					setattr(meal_doc, field, str(",".join(data[field])))
-				elif field == "meal_items_ids" and isinstance(data[field], list):
-					meal_doc.menu_items.clear()
-					for item_id in data[field]:
-						meal_doc.append(
-							"menu_items",
-							{
-								"meal_item": item_id,
-							},
+
+				elif field == "meal_item_ids":
+					meal_doc.menu_items = []
+
+					raw_items = data[field]
+					if isinstance(raw_items, str):
+						raw_items = raw_items.split(",")
+					elif not isinstance(raw_items, list):
+						raw_items = ",".join([str(item).strip() for item in raw_items if isinstance(item, str) and item.strip()])
+
+					item_list = list(
+						{item.strip().lower() for item in raw_items if isinstance(item, str) and item.strip()}
+					)
+
+					for item_name in item_list:
+						menu_item = frappe.get_value(
+							"Hotpot Meal Items", {"vendor_id": meal_doc.vendor_id, "name": item_name}, "name"
 						)
+						if menu_item:
+							meal_doc.append("menu_items", {"meal_item": menu_item})
+						else:
+							frappe.throw(f"Meal Item '{item_name}' not found for vendor '{meal_doc.vendor_id}'.")
+
 				else:
 					setattr(meal_doc, field, data[field])
+
 
 		if approval_id:
 			approval_doc = frappe.get_doc("Hotpot Approvals", meal_doc.approval_id)

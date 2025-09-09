@@ -69,11 +69,10 @@ frappe.ui.form.on("Hotpot Meal", {
 
 
 
-		console.log(!isVendor)
 		frm.set_df_property("vendor_id", "only_select", true);
 		frm.add_custom_button(__('Refresh Fetched Data'), function () {
 			frappe.call({
-				method: 'hotpot.api.coupons.refresh_fetched_data',
+				method: 'hotpot.api.meal.refresh_fetched_data',
 				args: { docname: frm.doc.name },
 				callback: function (r) {
 					frm.reload_doc();
