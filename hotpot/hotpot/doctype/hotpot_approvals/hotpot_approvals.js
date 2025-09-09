@@ -29,8 +29,13 @@ frappe.ui.form.on("Hotpot Approvals", {
                                 let oldVal = newValues[oldKey];
                                 let newVal = newValues[key];
                                 if (fieldLabel === "Meal Items") {
-                                    let oldItems = oldVal ? oldVal.split(",") : [];
-                                    let newItems = newVal ? newVal.split(",") : [];
+                                    let oldItems = Array.isArray(oldVal)
+                                        ? oldVal
+                                        : (oldVal ? oldVal.split(",") : []);
+
+                                    let newItems = Array.isArray(newVal)
+                                        ? newVal
+                                        : (newVal ? newVal.split(",") : []);
 
                                     let added = newItems.filter(i => !oldItems.includes(i));
                                     let removed = oldItems.filter(i => !newItems.includes(i));
