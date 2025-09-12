@@ -31,6 +31,7 @@ const allowed_routes_by_role = {
 		"hotpot-approvals",
 		"hotpot-configurations",
 		"generate-guest-qr",
+		"meal-bulk-booking",
 		'load-wallet-balance',
 		"data-import",
 	],
@@ -49,6 +50,7 @@ const allowed_routes_by_role = {
 		"hotpot-draft-meal",
 		"generate-guest-qr",
 		'load-wallet-balance',
+		"meal-bulk-booking",
 	],
 	"Hotpot Finance": [
 		"hotpot-finance",

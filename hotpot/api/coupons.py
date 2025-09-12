@@ -2044,7 +2044,7 @@ def generate_coupon_guest(userId, approval_id, meal_ids, date, qty):
 		return {"status": "error", "msg": f"Server error: {str(e)}"}
 	
 @frappe.whitelist()
-def generate_for_all(docname):
+def generate_for_all(docname,employees):
 	try:
 		meal_doc = frappe.get_doc("Hotpot Meal", docname)
 		if not meal_doc:
@@ -2053,14 +2053,19 @@ def generate_for_all(docname):
 		if meal_doc.get("is_deleted") == 1 or meal_doc.get("is_active") == 0:
 			return {"status": "error", "msg": "Meal is inactive or deleted", "errors": []}
 
-		user_docs = frappe.get_all("Hotpot User", filters={"is_employee": 1, "is_active": 1},fields={"name","full_name","fcm_token"})
+		user_docs = frappe.get_all("Hotpot User", filters={"is_employee": 1, "is_active": 1},fields={"name","full_name","fcm_token","employee"})
 		vendor_doc = frappe.get_doc("Hotpot User", meal_doc.get("vendor_id"))
 		start_date = meal_doc.get("meal_date")
 		user_tz = get_user_timezone()
 
 		errors = []
-
+		# employees = [str(e) for e in employees]
 		for users in user_docs:
+			print(str(users.get("employee")))
+			print(employees)
+			print(str(users.get("employee")) not in employees)
+			if(str(users.get("employee")) not in employees):
+				continue
 			query = """
 				SELECT 1
 				FROM `tabHotpot Coupons`
