@@ -1098,6 +1098,12 @@ def save_draft_meal():
 		elif not isinstance(old_doc, dict):
 			set_response(400, False, "Old doc must be a dict or valid JSON string")
 			return
+		
+		if "meal_items" in old_doc:
+			old_doc["meal_items"] = list(set(old_doc.get("meal_items", [])))
+
+		if "old_meal_items" in old_doc:
+			old_doc["old_meal_items"] = list(set(old_doc.get("old_meal_items", [])))
 
 		meal_draft_doc = frappe.get_doc(
 			{
