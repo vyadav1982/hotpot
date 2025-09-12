@@ -335,7 +335,17 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 			method: 'hotpot.api.coupons.generate_for_all',
 			args: { docname: meal, employees: selected_employees },
 			callback: function (r) {
-				frappe.msgprint('Booking successful!');
+				if (r.message.status === "success") {
+					frappe.msgprint('Booking successful!');
+				}
+				else {
+					let errors = r.message.errors;
+
+					// Join array into single string with line breaks
+					let errorMsg = errors.join("<br>");
+
+					frappe.msgprint(errorMsg);
+				}
 			}
 		});
 	});
