@@ -101,7 +101,7 @@
    "label": "Description"
   },
   {
-   "depends_on": "eval:doc.request_type == \"Meal Edit\";",
+   "depends_on": "eval: frappe.user_roles.includes('Administrator') && doc.request_type == \"Meal Edit\";",
    "fieldname": "draft_meal",
    "fieldtype": "Link",
    "label": "Draft Meal",
@@ -110,7 +110,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-11 13:31:29.548612",
+ "modified": "2025-09-12 20:04:23.499932",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Approvals",
