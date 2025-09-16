@@ -21,6 +21,7 @@ class HotpotConfigurations(Document):
 		free_birthday_meal: DF.Check
 		free_joining_day_meal: DF.Check
 		initial_tokens: DF.Int
+		mode: DF.Literal["Production", "Development"]
 		todays_new_login: DF.Int
 	# end: auto-generated types
 

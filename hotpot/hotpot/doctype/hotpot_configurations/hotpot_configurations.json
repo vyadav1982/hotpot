@@ -12,7 +12,8 @@
   "allow_free_meal_for_outer_location",
   "discount",
   "initial_tokens",
-  "todays_new_login"
+  "todays_new_login",
+  "mode"
  ],
  "fields": [
   {
@@ -67,12 +68,18 @@
    "fieldtype": "Int",
    "label": "Today's New Login",
    "read_only": 1
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "Production\nDevelopment"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-08-12 08:01:16.276140",
+ "modified": "2025-09-16 16:46:12.707351",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Configurations",

@@ -9,6 +9,9 @@ from firebase_config import messaging
 
 
 def send_notification_by_token(device_token, title, body, date=None, doc_id=None, text=None):
+	hotpot_config = frappe.get_single("Hotpot Configurations")
+	if hotpot_config.get("mode") != "Production":
+		return
 	data_payload = {"date": str(date) or "", "id": str(doc_id) if doc_id else "", "text": text or ""}
 	message = messaging.Message(
 		notification=messaging.Notification(
