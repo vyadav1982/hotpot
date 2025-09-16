@@ -12,6 +12,7 @@ from hotpot.utils.utc_time import *
 from hotpot.utils.send_fcm import *
 from ..api.users import *
 import random
+import ast
 
 
 @frappe.whitelist()
@@ -2054,17 +2055,18 @@ def generate_for_all(docname,employees):
 			return {"status": "error", "msg": "Meal is inactive or deleted", "errors": []}
 
 		user_docs = frappe.get_all("Hotpot User", filters={"is_employee": 1, "is_active": 1},fields={"name","full_name","fcm_token","employee"})
+
 		vendor_doc = frappe.get_doc("Hotpot User", meal_doc.get("vendor_id"))
 		start_date = meal_doc.get("meal_date")
 		user_tz = get_user_timezone()
-
+		if isinstance(employees, str):
+			employees = ast.literal_eval(employees)
+		employee_set = {str(emp).strip() for emp in employees}
+	
 		errors = []
-		# employees = [str(e) for e in employees]
 		for users in user_docs:
-			print(str(users.get("employee")))
-			print(employees)
-			print(str(users.get("employee")) not in employees)
-			if(str(users.get("employee")) not in employees):
+			emp_id = str(users.get("employee") or "").strip()
+			if emp_id not in employee_set:
 				continue
 			query = """
 				SELECT 1
@@ -2092,7 +2094,7 @@ def generate_for_all(docname,employees):
 				"coupons",
 				{
 					"employee_id": users.get("name"),
-					"employee_code": users.get("employee_id"),
+					"employee_code": users.get("employee"),
 					"coupon_date": start_date,
 					"coupon_weight": 0,
 					"title": meal_doc.meal_title,
@@ -2119,6 +2121,9 @@ def generate_for_all(docname,employees):
 
 		for users in user_docs:
 			try:
+				emp_id = str(users.get("employee") or "").strip()
+				if emp_id not in employee_set:
+					continue
 				if users.get("fcm_token"):
 					meal_title = meal_doc.get("meal_title")
 					meal_title = meal_title[0].upper() + meal_title[1:]
