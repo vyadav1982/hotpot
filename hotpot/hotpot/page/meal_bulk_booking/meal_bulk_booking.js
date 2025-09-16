@@ -257,7 +257,7 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 					method: 'frappe.client.get_list',
 					args: {
 						doctype: 'Employee',
-						fields: ['first_name', 'name'],
+						fields: ['employee_name', 'name'],
 						filters: { company: company_name, status: 'Active' },
 						limit_page_length: 1000
 					},
@@ -275,7 +275,7 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 								col_div.append(`
 									<div>
 										<input type="checkbox" class="employee-checkbox" data-employee="${emp.name}" ${checked ? "checked" : ""}>
-										${emp.first_name}
+										${emp.employee_name}(${emp.name})
 									</div>
 								`);
 							});
