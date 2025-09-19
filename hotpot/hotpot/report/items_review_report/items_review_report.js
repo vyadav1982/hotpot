@@ -3,47 +3,43 @@
 
 frappe.query_reports["Items Review Report"] = {
 	formatter: function (value, row, column, data, default_formatter) {
-        if (column.fieldname === "all_feedbacks" && value) {
-            return value;
-        }
-        return default_formatter(value, row, column, data);
-    },
+		if (column.fieldname === "all_feedbacks" && value) {
+			return value;
+		}
+		return default_formatter(value, row, column, data);
+	},
 	onload: function (report) {
 		report.page.trigger_ready = false;
 		const roles = frappe.user_roles;
 		const hasAdminRole = roles.includes('Administrator');
 		const custom_css = `
-            /* Allow rows to expand */
-            .datatable .dt-row {
-                height: auto !important;
-            }
-
-            /* Allow cells to wrap multi-line content */
-            .datatable .dt-cell, 
+            .datatable .dt-row,
+            .datatable .dt-cell,
             .datatable .dt-cell__content {
                 height: auto !important;
+            }
+            .datatable .dt-cell__content {
                 white-space: normal !important;
                 overflow: visible !important;
-                line-height: 1.4em !important;
-                padding-top: 4px !important;
-                padding-bottom: 4px !important;
             }
         `;
 
-        // inject only once
-        if (!document.getElementById("datatable-row-height-fix")) {
-            const style_element = document.createElement("style");
-            style_element.id = "datatable-row-height-fix";
-            style_element.innerHTML = custom_css;
-            document.head.appendChild(style_element);
-        }
+		if (!document.getElementById("datatable-row-height-fix")) {
+			const style_element = document.createElement("style");
+			style_element.id = "datatable-row-height-fix";
+			style_element.innerHTML = custom_css;
+			document.head.appendChild(style_element);
+		}
 
+		report.toggle_message(true, "Rendering report...");
 		setTimeout(() => {
-            if (report.datatable) {
-                report.datatable.refresh();
-            }
-        }, 300);
-        
+			if (report.datatable) {
+				report.datatable.options.layout = 'fluid';
+				report.datatable.refresh();
+				report.toggle_message(false);
+			}
+		}, 500)
+
 		if (!hasAdminRole) {
 			report.page.clear_menu();
 			report.add_card_button_to_toolbar = () => { };
@@ -75,7 +71,7 @@ frappe.query_reports["Items Review Report"] = {
 		}
 
 	},
-	
+
 	filters: [
 		{
 			fieldname: "vendor_id",
@@ -87,6 +83,18 @@ frappe.query_reports["Items Review Report"] = {
 			get_query: () => {
 				return {
 					query: "hotpot.hotpot.doctype.hotpot_user.get_all_vendor",
+				};
+			},
+		},
+		{
+			fieldname: "employee",
+			label: __("Employee"),
+			fieldtype: "Link",
+			width: "80",
+			options: "Hotpot User",
+			get_query: () => {
+				return {
+					query: "hotpot.hotpot.doctype.hotpot_user.get_all_employee",
 				};
 			},
 		},

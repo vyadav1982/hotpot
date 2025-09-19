@@ -13,6 +13,7 @@ def execute(filters=None):
 	start_date = filters.get("from_date")
 	end_date = filters.get("to_date")
 	vendor_id = filters.get("vendor_id")
+	employee = filters.get("employee")
 
 	if not start_date or not end_date:
 		frappe.throw("Please select both Start Date and End Date")
@@ -20,6 +21,7 @@ def execute(filters=None):
 	columns = [
 		{"label": "Item Name", "fieldname": "item_name", "fieldtype": "Data", "width": 200},
 		{"label": "Vendor", "fieldname": "vendor_id", "fieldtype": "Data", "width": 180},
+		{"label": "Total Ratings", "fieldname": "ratings", "fieldtype": "Data", "width": 200},
 		{"label": "Average Rating", "fieldname": "avg_rating", "fieldtype": "Data", "width": 150},
 		{"label": "All Feedbacks", "fieldname": "all_feedbacks", "fieldtype": "HTML", "width": 500},
 	]
@@ -27,31 +29,39 @@ def execute(filters=None):
 	where_clause = "1=1"
 	if vendor_id:
 		where_clause += " AND hi.vendor_id = %(vendor_id)s"
+	if employee:
+		where_clause += " AND hr.employee = %(employee)s"
 
 	frappe.db.sql("SET SESSION group_concat_max_len = 1000000")
 
 	query = f"""
 		SELECT
+			COUNT(hr.rating ) AS ratings,
 			hi.name AS item_id,
 			hi.item_name,
 			hi.vendor_id,
 			COUNT(hi.name) AS total_feedback,
 			ROUND(AVG(hr.rating) * 5, 1) AS avg_rating,
 			GROUP_CONCAT(
-				CONCAT(hu.full_name, ' (', hu.name, '): ', hr.review)
-				SEPARATOR '||'
+				CONCAT(
+					hu.full_name, ' (', hu.name, '): ',
+					hr.review, ' (',
+					FORMAT(hr.rating * 5, 1), ' ⭐',
+					')'
+				)
+				SEPARATOR ' || '
 			) AS all_reviews
+
+
 		FROM `tabHotpot Meal Menu Items Rating` AS hr
 		INNER JOIN `tabHotpot Meal Items` AS hi ON hi.name = hr.meal_item
 		INNER JOIN `tabHotpot User` AS hu ON hu.name = hr.employee
 		WHERE {where_clause}
 		AND DATE(hr.creation) BETWEEN %(start_date)s AND %(end_date)s
-		AND hr.review IS NOT NULL
-		AND hr.review != ''
 		GROUP BY hi.name, hi.vendor_id
 	"""
 
-	data = frappe.db.sql(query, {"start_date": start_date, "end_date": end_date, "vendor_id": vendor_id}, as_dict=True)
+	data = frappe.db.sql(query, {"start_date": start_date, "end_date": end_date, "vendor_id": vendor_id, "employee":employee}, as_dict=True)
 
 	result = []
 	for d in data:
@@ -69,6 +79,7 @@ def execute(filters=None):
 		result.append({
 			"item_name": d.item_name,
 			"vendor_id": d.vendor_id,
+			 "ratings": d.ratings,
 			"avg_rating": f"{d.avg_rating} ({stars})",
 			"all_feedbacks": feedbacks_html
 		})
