@@ -19,6 +19,24 @@ def get_all_vendor(doctype, txt, searchfield, start, page_len, filters):
 
 	return [[u["name"], u["full_name"]] for u in users]
 
+@frappe.whitelist()
+def get_all_employee(doctype, txt, searchfield, start, page_len, filters):
+	filters = {"is_employee": 1}
+
+	roles = frappe.get_roles()
+	if "Hotpot HR" in roles and "Administrator" not in roles:
+		filters["is_active"] = 1
+		filters["is_deleted"] = 0
+
+	users = frappe.get_all(
+		"Hotpot User",
+		filters=filters,
+		fields=["name", "full_name"],
+		or_filters=[["name", "like", f"%{txt}%"], ["full_name", "like", f"%{txt}%"]],
+	)
+
+	return [[u["name"], u["full_name"]] for u in users]
+
 
 @frappe.whitelist()
 def disable_users(user_list):

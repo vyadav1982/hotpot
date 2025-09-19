@@ -8,6 +8,20 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 	let container = $('<div></div>').appendTo(page.body);
 
 	// -------------------------
+	// Loader wrapper
+	async function withLoader(promise, message = "Loading...") {
+		try {
+			frappe.dom.freeze(message);   // show loader
+			let result = await promise;
+			return result;
+		} catch (err) {
+			throw err;
+		} finally {
+			frappe.dom.unfreeze();       // hide loader
+		}
+	}
+
+	// -------------------------
 	// Location dropdown
 	let location_field = frappe.ui.form.make_control({
 		df: { fieldname: 'location', label: 'Select Location', fieldtype: 'Select', options: [], reqd: 1 },
@@ -22,9 +36,8 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		parent: container,
 		render_input: 1
 	});
-	vendor_field.$input.prop('disabled', true); // initially disabled
+	vendor_field.$input.prop('disabled', true);
 	vendor_field.refresh();
-
 
 	// Date picker
 	let date_field = frappe.ui.form.make_control({
@@ -44,9 +57,6 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 	meals_field.$input.prop('disabled', true);
 	meals_field.refresh();
 
-	// Employee search bar
-	// let search_input = $('<input type="text" placeholder="Search Employees..." class="input-xs form-control mb-2">').appendTo(container);
-
 	// Companies container
 	let companies_container = $('<div class="companies-container mb-3"></div>').appendTo(container);
 
@@ -56,22 +66,26 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 	let userId = null;
 
 	// -------------------------
-	// Fetch user first
+	// Fetch user
 	async function fetchUser() {
 		try {
-			let response = await frappe.call({
-				method: "hotpot.api.users.get_hotpot_user_by_email",
-				type: "GET",
-			});
+			let response = await withLoader(
+				frappe.call({
+					method: "hotpot.api.users.get_hotpot_user_by_email",
+					type: "GET",
+				}),
+				"Fetching user..."
+			);
+
 			if (response.message) {
 				userId = response.message.name;
 				fetchLocations();
 			} else {
-				alert("Could not find user.");
+				frappe.msgprint("Could not find user.");
 			}
 		} catch (error) {
 			console.error("Error fetching user:", error);
-			alert("Failed to load user.");
+			frappe.msgprint("Failed to load user.");
 		}
 	}
 
@@ -79,21 +93,24 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 	// Fetch locations
 	async function fetchLocations() {
 		try {
-			const response = await frappe.call({
-				method: "frappe.client.get_list",
-				args: {
-					doctype: "Company Locations",
-					fields: ["name", "location_name"],
-					limit_page_length: 100
-				}
-			});
+			const response = await withLoader(
+				frappe.call({
+					method: "frappe.client.get_list",
+					args: {
+						doctype: "Company Locations",
+						fields: ["name", "location_name"],
+						limit_page_length: 100
+					}
+				}),
+				"Fetching locations..."
+			);
 
 			const locations = response.message || [];
 			location_field.df.options = [''].concat(locations.map(loc => loc.name));
 			location_field.refresh();
 		} catch (error) {
 			console.error("Error fetching locations:", error);
-			alert("Failed to retrieve locations.");
+			frappe.msgprint("Failed to retrieve locations.");
 		}
 	}
 
@@ -109,7 +126,7 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		vendor_field.$input.prop('disabled', false);
 
 		try {
-			let vendorSelect = vendor_field.$input[0]; // get native <select> element
+			let vendorSelect = vendor_field.$input[0];
 			vendorSelect.innerHTML = '<option value="">Loading...</option>';
 
 			const filters = JSON.stringify([
@@ -120,19 +137,15 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 
 			const fields = JSON.stringify(["name", "full_name"]);
 
-			const response = await fetch(
-				`/api/v2/document/Hotpot User?filters=${encodeURIComponent(filters)}&fields=${encodeURIComponent(fields)}`,
-				{
+			const response = await withLoader(
+				fetch(`/api/v2/document/Hotpot User?filters=${encodeURIComponent(filters)}&fields=${encodeURIComponent(fields)}`, {
 					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
+					headers: { "Content-Type": "application/json" },
+				}),
+				"Fetching vendors..."
 			);
 
 			const data = await response.json();
-
-			// Reset vendor options
 			vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
 
 			if (data.data && data.data.length > 0) {
@@ -149,7 +162,6 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 				vendorSelect.appendChild(option);
 			}
 
-			// reset dependent fields
 			date_field.$input.prop('disabled', true).val('');
 			meals_field.$input.prop('disabled', true).val('');
 
@@ -159,7 +171,6 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		}
 	});
 
-
 	// Enable date picker when vendor is selected
 	vendor_field.$input.on('change', function () {
 		let vendor = vendor_field.get_value();
@@ -167,6 +178,7 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		meals_field.$input.prop('disabled', true).val('');
 	});
 
+	// -------------------------
 	// Fetch meals when vendor and date are selected
 	let last_date_value = null;
 
@@ -174,7 +186,6 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		let vendor = vendor_field.get_value();
 		let date = date_field.get_value();
 
-		// Prevent duplicate triggers
 		if (date === last_date_value) return;
 		last_date_value = date;
 
@@ -185,21 +196,21 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 
 		meals_field.$input.prop('disabled', true);
 		try {
-			let response = await frappe.call({
-				method: "hotpot.api.meal.get_meals",
-				args: { vendor_id: vendor, date: date },
-				type: "GET",
-			});
+			let response = await withLoader(
+				frappe.call({
+					method: "hotpot.api.meal.get_meals",
+					args: { vendor_id: vendor, date: date },
+					type: "GET",
+				}),
+				"Fetching meals..."
+			);
 
 			let meals = response.data || [];
-			meals_field.df.options = ['']
-				.concat(meals.map(m => ({ label: m.meal_title, value: m.name })));
+			meals_field.df.options = [''].concat(meals.map(m => ({ label: m.meal_title, value: m.name })));
 			meals_field.refresh();
 			meals_field.$input.prop('disabled', meals.length === 0);
 
-			if (meals.length === 0) {
-				frappe.msgprint("No meal found.");
-			}
+			if (meals.length === 0) frappe.msgprint("No meal found.");
 		} catch (error) {
 			console.error(error);
 			meals_field.$input.prop('disabled', true).val('');
@@ -207,27 +218,29 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		}
 	});
 
-
 	// -------------------------
 	// Load companies
 	function loadCompanies() {
-		frappe.call({
-			method: 'frappe.client.get_list',
-			args: { doctype: 'Company', fields: ['name'] },
-			callback: function (res) {
-				companies_container.empty();
-				res.message.forEach(company => {
-					let company_div = $(`
-                        <div class="company mb-2" data-company="${company.name}">
-                            <input type="checkbox" class="company-checkbox"> ${company.name}
-                            <input type="checkbox" class="select-all-emp ml-2"> Select All
-                            <div class="employees ml-4 mt-1"></div>
-                        </div>
-                    `);
-					companies_container.append(company_div);
-				});
-			}
-		});
+		withLoader(
+			frappe.call({
+				method: 'frappe.client.get_list',
+				args: { doctype: 'Company', fields: ['name'] },
+				callback: function (res) {
+					companies_container.empty();
+					res.message.forEach(company => {
+						let company_div = $(`
+							<div class="company mb-2" data-company="${company.name}">
+								<input type="checkbox" class="company-checkbox"> ${company.name}
+								<input type="checkbox" class="select-all-emp ml-2"> Select All
+								<div class="employees ml-4 mt-1"></div>
+							</div>
+						`);
+						companies_container.append(company_div);
+					});
+				}
+			}),
+			"Fetching companies..."
+		);
 	}
 
 	// -------------------------
@@ -239,49 +252,47 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		let emp_container = company_div.find('.employees');
 
 		if (!company_div.data('loaded')) {
-			frappe.call({
-				method: 'frappe.client.get_list',
-				args: {
-					doctype: 'Employee',
-					fields: ['first_name', 'name'],
-					filters: { company: company_name, status: 'Active' },
-					limit_page_length: 1000   // fetch all employees
-				},
-				callback: function (res) {
-					let employees = res.message || [];
-					emp_container.empty(); // clear any old data
+			withLoader(
+				frappe.call({
+					method: 'frappe.client.get_list',
+					args: {
+						doctype: 'Employee',
+						fields: ['employee_name', 'name'],
+						filters: { company: company_name, status: 'Active' },
+						limit_page_length: 1000
+					},
+					callback: function (res) {
+						let employees = res.message || [];
+						emp_container.empty();
 
-					// Wrap in a row for flex layout
-					let row = $('<div class="employee-row" style="display:flex; flex-wrap:wrap; gap:20px;"></div>');
+						let row = $('<div class="employee-row" style="display:flex; flex-wrap:wrap; gap:20px;"></div>');
 
-					// Split into columns of 20
-					for (let i = 0; i < employees.length; i += 20) {
-						let chunk = employees.slice(i, i + 20);
-						let col_div = $('<div class="employee-col" style="flex:0 0 auto;"></div>');
+						for (let i = 0; i < employees.length; i += 20) {
+							let chunk = employees.slice(i, i + 20);
+							let col_div = $('<div class="employee-col" style="flex:0 0 auto;"></div>');
 
-						chunk.forEach(emp => {
-							col_div.append(`
-                            <div>
-                                <input type="checkbox" class="employee-checkbox" data-employee="${emp.name}" ${checked ? "checked" : ""}>
-                                ${emp.first_name}
-                            </div>
-                        `);
-						});
+							chunk.forEach(emp => {
+								col_div.append(`
+									<div>
+										<input type="checkbox" class="employee-checkbox" data-employee="${emp.name}" ${checked ? "checked" : ""}>
+										${emp.employee_name}(${emp.name})
+									</div>
+								`);
+							});
 
-						row.append(col_div);
+							row.append(col_div);
+						}
+
+						emp_container.append(row);
+						company_div.data('loaded', true);
 					}
-
-					emp_container.append(row);
-					company_div.data('loaded', true);
-				}
-			});
+				}),
+				"Fetching employees..."
+			);
 		} else {
-			// Toggle existing employees
 			emp_container.find('.employee-checkbox').prop('checked', checked);
 		}
 	});
-
-
 
 	// -------------------------
 	// Select All per company
@@ -292,32 +303,6 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 		company_div.find('.company-checkbox').prop('checked', checked);
 	});
 
-	// -------------------------
-	// Server-side employee search
-	// search_input.on('input', function () {
-	// 	let query = $(this).val();
-	// 	frappe.call({
-	// 		method: 'your_app.api.search_employees',
-	// 		args: { search_text: query },
-	// 		callback: function (res) {
-	// 			$('.employees').empty();
-	// 			let employees_by_company = {};
-	// 			res.message.forEach(emp => {
-	// 				if (!employees_by_company[emp.company]) employees_by_company[emp.company] = [];
-	// 				employees_by_company[emp.company].push(emp);
-	// 			});
-	// 			for (let company_name in employees_by_company) {
-	// 				let company_div = $(`.company[data-company="${company_name}"]`);
-	// 				let emp_container = company_div.find('.employees');
-	// 				employees_by_company[company_name].forEach(emp => {
-	// 					emp_container.append(`<div>
-	//                         <input type="checkbox" class="employee-checkbox" data-employee="${emp.name}">${emp.employee_name}
-	//                     </div>`);
-	// 				});
-	// 			}
-	// 		}
-	// 	});
-	// });
 	// -------------------------
 	// Book button
 	book_btn.on('click', function () {
@@ -331,27 +316,26 @@ frappe.pages['meal-bulk-booking'].on_page_load = async function (wrapper) {
 
 		if (selected_employees.length === 0) return frappe.msgprint('Please select at least one employee!');
 
-		frappe.call({
-			method: 'hotpot.api.coupons.generate_for_all',
-			args: { docname: meal, employees: selected_employees },
-			callback: function (r) {
-				if (r.message.status === "success") {
-					frappe.msgprint('Booking successful!');
+		withLoader(
+			frappe.call({
+				method: 'hotpot.api.coupons.generate_for_all',
+				args: { docname: meal, employees: selected_employees },
+				callback: function (r) {
+					if (r.message.status === "success") {
+						frappe.msgprint('Booking successful!');
+					} else {
+						let errors = r.message.errors;
+						let errorMsg = errors.join("<br>");
+						frappe.msgprint(errorMsg);
+					}
 				}
-				else {
-					let errors = r.message.errors;
-
-					// Join array into single string with line breaks
-					let errorMsg = errors.join("<br>");
-
-					frappe.msgprint(errorMsg);
-				}
-			}
-		});
+			}),
+			"Booking in progress..."
+		);
 	});
 
 	// -------------------------
 	// Initialize
-	await fetchUser(); // only if user exists, locations will be fetched
+	await fetchUser();
 	loadCompanies();
 };

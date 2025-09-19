@@ -182,8 +182,8 @@ def create_approval():
 				filters={"guest_mobile_no": mobile_no, "approval_status": "Pending"},
 				limit=1,
 			)
-		if existing_approval and get_dominant_role_for_current_user() not in ["Hotpot Admin", "Hotpot HR"]:
-			return set_response(400, False, "Pending approval already exists for this mobile number.")
+		# if existing_approval and get_dominant_role_for_current_user() not in ["Hotpot Admin", "Hotpot HR"]:
+		# 	return set_response(400, False, "Pending approval already exists for this mobile number.")
 
 		date = get_utc_datetime_obj(f"{data.get('date')} {get_local_time_now()}") if "date" in data else None
 		approval_data = {
