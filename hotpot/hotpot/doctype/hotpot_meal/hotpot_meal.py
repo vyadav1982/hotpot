@@ -78,22 +78,22 @@ class HotpotMeal(Document):
 		if role == "Hotpot User":
 			return
 
-		old_doc = self.get_doc_before_save()
-		if old_doc:
-			old_count = int(old_doc.buffer_coupon_count or 0)
-			new_count = int(self.buffer_coupon_count or 0)
-			current_datetime_local = get_local_datetime_obj(datetime.utcnow())
-			current_time = current_datetime_local.time()
-			if old_count != new_count:
-				is_buffer_time = (
-					get_local_datetime_obj(self.start_time).time()
-					<= current_time
-					<= get_local_datetime_obj(self.end_time).time()
-				)
-				if is_buffer_time:
-					frappe.throw("Cannot update buffer coupon count during meal running time.")
+		# old_doc = self.get_doc_before_save()
+		# if old_doc:
+		# 	old_count = int(old_doc.buffer_coupon_count or 0)
+		# 	new_count = int(self.buffer_coupon_count or 0)
+		# 	current_datetime_local = get_local_datetime_obj(datetime.utcnow())
+		# 	current_time = current_datetime_local.time()
+		# 	if old_count != new_count:
+		# 		is_buffer_time = (
+		# 			get_local_datetime_obj(self.start_time).time()
+		# 			<= current_time
+		# 			<= get_local_datetime_obj(self.end_time).time()
+		# 		)
+		# 		if is_buffer_time:
+		# 			frappe.throw("Cannot update buffer coupon count during meal running time.")
 				
-				self.remaining_coupon_count = new_count
+		# 		self.remaining_coupon_count = new_count
 				
 
 		meal_str = self.meal_date
