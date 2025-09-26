@@ -1192,8 +1192,8 @@ def update_buffer_coupon_count():
 		if meal_doc.remaining_coupon_count != 0:
 			set_response(400, False, "Buffer coupon count can only be updated when remaining coupon count is zero.")
 			return
-		meal_doc.buffer_coupon_count = data["buffer_coupon_count"]
-		meal_doc.remaining_coupon_count = data["buffer_coupon_count"]
+		meal_doc.buffer_coupon_count += data["buffer_coupon_count"]
+		meal_doc.remaining_coupon_count += data["buffer_coupon_count"]
 		meal_doc.save()
 		frappe.db.commit()
 		set_response(200, True, "Buffer coupon count updated successfully", {"meal_id": meal_doc.name})
