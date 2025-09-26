@@ -1,6 +1,7 @@
 # from firebase_config import messaging
 # from .firebase_config import messaging
 import os
+import frappe
 import sys
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))

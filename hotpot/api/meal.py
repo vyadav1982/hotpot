@@ -1147,3 +1147,58 @@ def refresh_fetched_data(docname):
 		# meal_doc.actual_meal_rate=category_doc.meal_rate
 		meal_doc.save(ignore_permissions=True)
 		frappe.db.commit()
+
+@frappe.whitelist()
+def update_buffer_coupon_count():
+	try:
+		if frappe.request.method != "PUT":
+			set_response(405, False, "Only PUT method is allowed")
+			return
+
+		user_data = get_hotpot_user_by_email()
+		if not user_data:
+			set_response(401, False, "User Not found")
+			return
+		if user_data["role"] not in ["Hotpot Vendor"]:
+			set_response(403, False, "Not Permitted to access this resource")
+			return
+
+		data = json.loads(frappe.request.data or "{}")
+		required_fields = [
+			"meal_id",
+			"buffer_coupon_count",
+		]
+		if missing := [field for field in required_fields if not data.get(field)]:
+			set_response(400, False, f"Missing required fields: {', '.join(missing)}")
+			return
+		meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
+		if not meal_doc:
+			set_response(404, False, "Meal not found")
+			return 
+
+		current_datetime_local = get_local_datetime_obj(datetime.utcnow())
+		current_time = current_datetime_local.time()
+		
+		is_buffer_time = (
+			get_local_datetime_obj(meal_doc.start_time).time()
+			<= current_time
+			<= get_local_datetime_obj(meal_doc.end_time).time()
+		)
+
+		if not is_buffer_time:
+			set_response(400, False, "Buffer coupon count can only be updated during meal time.")
+			return
+
+		if meal_doc.remaining_coupon_count != 0:
+			set_response(400, False, "Buffer coupon count can only be updated when remaining coupon count is zero.")
+			return
+		meal_doc.buffer_coupon_count += int(data["buffer_coupon_count"])
+		meal_doc.remaining_coupon_count = data["buffer_coupon_count"]
+		meal_doc.save()
+		frappe.db.commit()
+		set_response(200, True, "Buffer coupon count updated successfully", {"meal_id": meal_doc.name})
+		return
+	except Exception as e:
+		set_response(500, False, f"Failed to update buffer coupon count: {str(e)}")
+		return
+
