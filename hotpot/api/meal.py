@@ -1171,7 +1171,7 @@ def update_buffer_coupon_count():
 		if missing := [field for field in required_fields if not data.get(field)]:
 			set_response(400, False, f"Missing required fields: {', '.join(missing)}")
 			return
-		meal_doc = frappe.get_doc("Hotpot Meal", data["meal"])
+		meal_doc = frappe.get_doc("Hotpot Meal", data["meal_id"])
 		if not meal_doc:
 			set_response(404, False, "Meal not found")
 			return 
