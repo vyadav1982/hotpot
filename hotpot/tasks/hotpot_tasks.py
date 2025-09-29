@@ -183,7 +183,7 @@ def update_meals_future():
 											"Wallet Update 💼",
 											message2,
 											doc_id=transaction_doc.name,
-											text="transactions",
+											text="transaction",
 										)
 									except Exception:
 											frappe.log_error(
