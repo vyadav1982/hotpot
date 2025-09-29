@@ -404,7 +404,7 @@ def update_meals(self):
 								"Wallet Update 💼",
 								message2,
 								doc_id=transaction_doc.name,
-								text="transactions",
+								text="transaction",
 							)
 						except Exception:
 								frappe.log_error(
