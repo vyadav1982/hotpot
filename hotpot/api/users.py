@@ -728,7 +728,7 @@ def bulk_insert_employee():
 
 
 @frappe.whitelist()
-def get_hotpot_history(start_date, end_date, category=None):
+def get_hotpot_history(start_date, end_date, category=None,vendor=None):
 	if frappe.request.method != "GET":
 		set_response(405, False, "Only GET method is allowed")
 		return
@@ -770,6 +770,8 @@ def get_hotpot_history(start_date, end_date, category=None):
 		"""
 		if category:
 			query += " AND hm.category = %(category)s"
+		if vendor:
+			query += " AND hm.vendor_id = %(vendor)s"
 
 		query += " ORDER BY hm.meal_date DESC"
 
@@ -782,6 +784,9 @@ def get_hotpot_history(start_date, end_date, category=None):
 
 		if category:
 			params["category"] = category
+		
+		if vendor:
+			params["vendor"] = vendor
 
 		data = frappe.db.sql(
 			query,
