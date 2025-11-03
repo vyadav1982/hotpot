@@ -131,6 +131,9 @@ def add_user_to_hotpot(doc, method):
 
 
 def validate_employee(doc, method):
+	print(doc.as_dict())
+	if not doc.company_email:
+		frappe.throw("Company email is missing.")
 	doc.create_user_permission = 0
 
 
