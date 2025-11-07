@@ -1530,7 +1530,7 @@ def get_guest_coupon(date):
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
 				U.full_name AS vendor_name,
-				ap.guest_name AS guest_name,
+				COALESCE(ap.guest_name, hc.guest_name_for_web_only) AS guest_name,
 				ap.is_active AS approval_active,
 				ap.approval_remarks,
 				mt.type
@@ -1619,14 +1619,14 @@ def generate_coupon_admin():
 		hotpot_config = frappe.get_single("Hotpot Configurations")
 
 		#Define required fields
-		required_fields = ["meal_id", "date", "email"]
+		required_fields = ["meal_id", "date", "guests"]
 
 		#variable for tracking guest (we can remove it because this funtion is always used for guest coupon gen only)
 		for_guest = data.get("guest", False)
 		
 		#Check for emails
-		if not data.get("email"):
-			return set_response(400, False, "Email cannot be empty")
+		if not data.get("guests"):
+			return set_response(400, False, "Guest info cannot be empty")
 		
 		#Check for required fields
 		missing = [field for field in required_fields if not data.get(field)]
@@ -1636,7 +1636,10 @@ def generate_coupon_admin():
 		#Extract required fields
 		meal_ids = data.get("meal_id")
 		date = data.get("date")
-		emails = data.get("email")
+		guests = data.get("guests", [])
+		emails = [g.get("email") for g in guests if g.get("email")]
+		names = [g.get("name") for g in guests if g.get("name")]
+		# emails = data.get("email")
 
 		#No. of coupon to be generated
 		qty = data.get("qty", 1)
@@ -1666,6 +1669,7 @@ def generate_coupon_admin():
 			for i in range(len(meal_ids)):
 				meal_id = meal_ids[i]
 				email = emails[j]
+				name = names[j]
 
 				#try to find meal
 				try:
@@ -1806,6 +1810,7 @@ def generate_coupon_admin():
 							"created_at": datetime.utcnow(),
 							"location": vendor_doc.get("location"),
 							"status":'Approved',
+							"guest_name_for_web_only":name,
 						},
 					)
 

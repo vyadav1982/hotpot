@@ -27,6 +27,7 @@ const allowed_routes_by_role = {
 		'query-report/outer-location-coupon-report',
 		'query-report/employee-wise-meal-amount',
 		'query-report/employee-wise-meal-amount',
+		"query-report/items-review-report",
 		"query-report/upcoming-coupons-report",
 		"hotpot-approvals",
 		"hotpot-configurations",
@@ -43,6 +44,7 @@ const allowed_routes_by_role = {
 		"query-report/birthday-coupons-report",
 		"query-report/joining-day-coupons-report",
 		"query-report/meal-consumption-report",
+		"query-report/items-review-report",
 		'query-report/coupon-report',
 		'query-report/employee-wise-meal-amount',
 		'query-report/outer-location-coupon-report',
@@ -298,10 +300,10 @@ frappe.set_route = function (...args) {
 			args.length > 1
 				? args.join("/")
 				: typeof args[0] === "string"
-				? args[0]
-				: Array.isArray(args[0])
-				? args[0].join("/")
-				: "";
+					? args[0]
+					: Array.isArray(args[0])
+						? args[0].join("/")
+						: "";
 
 		redirectAttempts++;
 
