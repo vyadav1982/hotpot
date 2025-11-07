@@ -24,6 +24,7 @@ class HotpotCoupons(Document):
 		employee_code: DF.Link | None
 		employee_id: DF.Data | None
 		guest_employee_code: DF.Data | None
+		guest_name_for_web_only: DF.Data | None
 		guest_of: DF.Link | None
 		joining_day: DF.Check
 		location: DF.Link | None

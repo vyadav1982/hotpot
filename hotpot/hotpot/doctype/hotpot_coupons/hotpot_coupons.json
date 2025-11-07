@@ -22,7 +22,8 @@
   "created_at",
   "location",
   "status",
-  "scanned_at"
+  "scanned_at",
+  "guest_name_for_web_only"
  ],
  "fields": [
   {
@@ -131,12 +132,17 @@
    "fieldname": "scanned_at",
    "fieldtype": "Datetime",
    "label": "Scanned At"
+  },
+  {
+   "fieldname": "guest_name_for_web_only",
+   "fieldtype": "Data",
+   "label": "Guest Name(for web only)"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-22 17:26:39.530876",
+ "modified": "2025-11-07 14:20:12.362772",
  "modified_by": "Administrator",
  "module": "Hotpot",
  "name": "Hotpot Coupons",
