@@ -140,7 +140,6 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 		$("#locationSelect").on("change", function () {
 			const location = $(this).val();
 			if (location) {
-				console.log('if')
 				fetchVendors(location);
 			} else {
 				$("#vendorSelect").html('<option value="">Select Vendor</option>');
@@ -245,8 +244,18 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				continue;
 			}
 
-			let qrContainer = document.createElement("div");
-			console.log(qrContainer)
+			let coupon = coupons[i];
+
+			let qrData = `hotpot${coupon},${$("#mealSelect").val()},${userId}`;
+
+			let qrContainer = document.getElementById("qrContainer");
+			qrContainer.innerHTML = "";
+			let qrCode = new QRCode(qrContainer, {
+				text: qrData,
+				width: 128,
+				height: 128,
+			});
+
 
 			let promise = new Promise((resolve, reject) => {
 				setTimeout(() => {
@@ -477,7 +486,6 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				method: "hotpot.api.users.get_hotpot_user_by_email",
 				type: "GET",
 			});
-			console.log(response)
 			if (response.message) {
 				userId = response.message.name;
 			} else {
