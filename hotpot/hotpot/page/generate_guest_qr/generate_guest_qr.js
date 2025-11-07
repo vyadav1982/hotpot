@@ -40,9 +40,8 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
                 </div>
                 <div class="form-group col-md-4">
                     <label for="datePicker">Date:</label>
-                    <input type="date" id="datePicker" class="form-control" value="${
-						new Date().toISOString().split("T")[0]
-					}">
+                    <input type="date" id="datePicker" class="form-control" value="${new Date().toISOString().split("T")[0]
+		}">
                 </div>
             </div>
 
@@ -77,9 +76,8 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
         <div class="d-flex align-items-center mt-3">
             <div class="text-center">
                 <label for="prevDatePicker">Select Date:</label>
-                <input type="date" id="prevDatePicker" value="${
-					new Date().toISOString().split("T")[0]
-				}" class="form-control" style="width: 150px; display: inline-block;">
+                <input type="date" id="prevDatePicker" value="${new Date().toISOString().split("T")[0]
+		}" class="form-control" style="width: 150px; display: inline-block;">
             </div>
             <button class="btn btn-secondary ml-3" id="refreshTable">Refresh Table</button>
         </div>
@@ -101,23 +99,34 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 		let qty = parseInt($("#quantity").val());
 		let emailContainer = $("#emailFields");
 
-		let existingEmails = {};
-		emailContainer.find("input[type='email']").each(function () {
-			existingEmails[$(this).attr("id")] = $(this).val();
+		let existingData = {};
+		emailContainer.find(".guest-row").each(function () {
+			let id = $(this).find("input[type='email']").attr("id");
+			existingData[id] = {
+				email: $(this).find("input[type='email']").val(),
+				name: $(this).find("input[type='text']").val()
+			};
 		});
 
 		emailContainer.empty();
 
 		for (let i = 1; i <= qty; i++) {
 			let emailId = `email${i}`;
-			let savedValue = existingEmails[emailId] || "";
+			let nameId = `name${i}`;
+			let savedData = existingData[emailId] || { email: "", name: "" };
 
 			emailContainer.append(`
-                <div class="form-group" style="width: 40%;">
-                    <label for="${emailId}">Email ${i}:</label>
-                    <input type="email" id="${emailId}" class="form-control" placeholder="Enter email" value="${savedValue}">
-                </div>
-            `);
+				<div class="guest-row form-group d-flex gap-3" style="width: 40%;">
+					<div class="flex-grow-1">
+						<label for="${nameId}">Guest Name ${i}:</label>
+						<input type="text" id="${nameId}" class="form-control" placeholder="Enter guest name" value="${savedData.name}" required>
+					</div>
+					<div class="flex-grow-1">
+						<label for="${emailId}">Email ${i}:</label>
+						<input type="email" id="${emailId}" class="form-control" placeholder="Enter email" value="${savedData.email}" required>
+					</div>
+				</div>
+			`);
 		}
 	}
 
@@ -166,29 +175,40 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 	});
 
 	$("#generateQR").click(async () => {
-		let emails = [];
+		let guests = [];
 		let isValid = true;
-		$("#emailFields input").each(function () {
-			let email = $(this).val().trim();
-			if (email) emails.push(email);
-			else {
-				alert("Please enter all emails");
+
+		$("#emailFields .guest-row").each(function () {
+			let email = $(this).find("input[type='email']").val().trim();
+			let name = $(this).find("input[type='text']").val().trim();
+
+			if (email && name) {
+				guests.push({
+					email: email,
+					name: name
+				});
+			} else {
+				alert("Please enter both name and email for all guests");
 				isValid = false;
 				return false;
 			}
 		});
+
 		if (!isValid) return;
 
-		let qrData = {
-			vendor: $("#vendorSelect").val(),
+		// Update the data object to include guest names
+		let d = {
+			meal_id: $("#mealSelect").val(),
 			date: $("#datePicker").val(),
-			meal: $("#mealSelect").val(),
-			quantity: $("#quantity").val(),
+			guest: true,
+			qty: $("#quantity").val(),
+			guests: guests // Send the array of guest objects instead of just emails
 		};
+
 		var meal_title = $("#mealSelect option:selected").text();
 
-		for (let key in qrData) {
-			if (!qrData[key] || qrData[key].toString().trim() === "") {
+		for (let key in d) {
+			if (!d[key] || d[key].toString().trim() === "") {
 				isValid = false;
 				alert(`Please fill in the ${key} field`);
 				return false;
@@ -201,14 +221,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			return false;
 		}
 		if (!isValid) return;
-		let d = {
-			meal_id: $("#mealSelect").val(),
-			date: $("#datePicker").val(),
-			guest: true,
-			qty: $("#quantity").val(),
-			email: emails,
-		};
-
+		let couponsToSend = [];
 		try {
 			var couponGenerated = await generateCoupon(d);
 			if (!couponGenerated) return;
@@ -222,55 +235,26 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			return;
 		}
 
-		// try {
-		// 	let response = await frappe.call({
-		// 		method: "hotpot.api.coupons.get_admin_guest_coupon",
-		// 		type: "GET",
-		// 		args: {
-		// 			date: $("#datePicker").val(),
-		// 			qty: $("#quantity").val(),
-		// 		},
-		// 	});
-		// 	console.log(response);
-		// 	if (response.status === false) {
-		// 		alert(response.message);
-		// 		return;
-		// 	} else {
-		// 		coupons = response.data;
-		// 	}
-		// } catch (error) {
-		// 	console.error("Error in fetching coupon:", error);
-		// 	alert("Failed to fetch coupons. Please try again.");
-		// 	return;
-		// }
-
 		let unsentEmails = [];
 
 		let sendPromises = [];
 
-		for (let i = 0; i < emails.length; i++) {
+		for (let i = 0; i < guests.length; i++) {
 			if (i >= coupons.length) {
-				unsentEmails.push(emails[i]);
+				unsentEmails.push(guests[i].email);
 				continue;
 			}
 
-			// let coupon = coupons[i];
-			// let qrData = `hotpot${coupon},${$("#mealSelect").val()},${userId}`;
-
 			let qrContainer = document.createElement("div");
-			// let qrCode = new QRCode(qrContainer, {
-			// 	text: qrData,
-			// 	width: 128,
-			// 	height: 128,
-			// });
+			console.log(qrContainer)
 
 			let promise = new Promise((resolve, reject) => {
 				setTimeout(() => {
 					let qrImage = qrContainer.querySelector("img");
 					if (!qrImage) {
-						console.error(`QR Code image not found for ${emails[i]}`);
-						unsentEmails.push(emails[i]);
-						return reject(`QR not generated for ${emails[i]}`);
+						console.error(`QR Code image not found for ${guests[i].email}`);
+						unsentEmails.push(guests[i].email);
+						return reject(`QR not generated for ${guests[i].email}`);
 					}
 
 					const rawDate = $("#datePicker").val();
@@ -288,7 +272,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 						method: "hotpot.utils.email.send_email",
 						args: {
 							template_name: "qr_email",
-							to_email: emails[i],
+							to_email: guests[i].email,
 							context: JSON.stringify({
 								meal_title: meal_title,
 							}),
@@ -299,7 +283,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 							resolve(response);
 						},
 						error: function (err) {
-							unsentEmails.push(emails[i]);
+							unsentEmails.push(guests[i].email);
 							reject(err);
 						},
 					});
@@ -333,18 +317,18 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				success: function (response) {
 					if (response.message && response.message.status === false) {
 						alert(response.message.message || "Failed to generate coupon");
-						reject(false); // Rejecting promise to indicate failure
+						reject(false);
 					} else {
 						alert("Coupon generated successfully and emails sent!");
 						console.log("Response:", response.message);
-						resolve(response.data); // Resolving promise to indicate success
+						resolve(response.data);
 					}
 				},
 				error: function (xhr, status, error) {
 					console.error("AJAX Error:", status, error);
 					console.log("Response Text:", xhr.responseText);
 					alert("Error generating coupon: " + JSON.parse(xhr.responseText).message);
-					reject(false); // Rejecting promise on error
+					reject(false);
 				},
 			});
 		});
@@ -411,9 +395,9 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				["location", "=", locationName],
 				["is_vendor", "=", 1]
 			]);
-	
+
 			const fields = JSON.stringify(["name", "full_name"]);
-	
+
 			const response = await fetch(
 				`/api/v2/document/Hotpot User?filters=${encodeURIComponent(filters)}&fields=${encodeURIComponent(fields)}`,
 				{
@@ -437,7 +421,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				mealSelect.disabled = true;
 				return;
 			}
-	
+
 			vendorSelect.disabled = false;
 			vendorSelect.innerHTML = '<option value="">Select Vendor</option>';
 
@@ -463,7 +447,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 				type: "GET",
 				args: {
 					doctype: "Company Locations",
-					fields: ["name","location_name"],
+					fields: ["name", "location_name"],
 					limit_page_length: 10
 				}
 			});
@@ -476,7 +460,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
 			const locations = response.message || response.data;
 			const $locationSelect = $("#locationSelect");
 			$locationSelect.html('<option value="">Select Location</option>');
-	
+
 			locations.forEach(location => {
 				$locationSelect.append(
 					`<option value="${location.name}">${location.location_name}</option>`
