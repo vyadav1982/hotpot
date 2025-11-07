@@ -1530,7 +1530,7 @@ def get_guest_coupon(date):
 				hm.end_time AS end_time,
 				hm.name AS meal_id,
 				U.full_name AS vendor_name,
-				ap.guest_name AS guest_name,
+				COALESCE(ap.guest_name, hc.guest_name_for_web_only) AS guest_name,
 				ap.is_active AS approval_active,
 				ap.approval_remarks,
 				mt.type
