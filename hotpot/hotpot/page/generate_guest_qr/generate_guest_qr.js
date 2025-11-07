@@ -75,7 +75,7 @@ frappe.pages["generate-guest-qr"].on_page_load = function (wrapper) {
         <div id="qrContainer" class="mt-3 text-center hidden"></div>
         <div class="d-flex align-items-center mt-3">
             <div class="text-center">
-                <label for="prevDatePicker">Select Date:</label>
+                <label for="prevDatePicker">Select Coupon Date:</label>
                 <input type="date" id="prevDatePicker" value="${new Date().toISOString().split("T")[0]
 		}" class="form-control" style="width: 150px; display: inline-block;">
             </div>
