@@ -13,6 +13,7 @@ def execute(filters=None):
 	start_date = filters.get("from_date")
 	end_date = filters.get("to_date")
 	employee = filters.get("employee_id")
+	vendor_id = filters.get("vendor_id")
 
 	if not start_date or not end_date:
 		frappe.throw("Please select both Start Date and End Date")
@@ -98,6 +99,9 @@ def execute(filters=None):
 	if employee:
 		query += " AND hc.employee_code = %s"
 		params.append(employee)
+	if vendor_id:
+		query += " AND hm.vendor_id = %s"
+		params.append(vendor_id)
 
 	query += "GROUP BY hc.employee_code  ORDER BY total_price DESC"
 
