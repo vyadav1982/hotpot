@@ -38,14 +38,27 @@ frappe.query_reports["Employee Wise Meal Amount"] = {
 	},
 	filters: [
 		{
+			fieldname: "vendor_id",
+			label: __("Vendor"),
+			fieldtype: "Link",
+			width: "80",
+			options: "Hotpot User",
+			hidden: frappe.user.has_role("Hotpot Vendor") && !frappe.user.has_role("Administrator"),
+			get_query: () => {
+				return {
+					query: "hotpot.hotpot.doctype.hotpot_user.get_all_vendor",
+				};
+			},
+		},
+		{
 			fieldname: "employee_id",
 			label: __("Employee"),
 			fieldtype: "Link",
-			options: "Hotpot User", 
+			options: "Hotpot User",
 			get_query: () => {
 				return {
 					filters: {
-						is_employee : 1
+						is_employee: 1
 					}
 				};
 			}

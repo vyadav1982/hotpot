@@ -489,6 +489,11 @@ def scan_coupon():
 		current_datetime = get_local_datetime_obj(datetime.utcnow())
 		current_time = current_datetime.time()
 		local_date = current_datetime.date()
+		approval_id = coupon_found.get("approval_id")
+		guest_name = coupon_found.get("guest_name_for_web_only")
+		if approval_id:
+			approval_doc = frappe.get_doc("Hotpot Approvals",approval_id)
+			guest_name = approval_doc.get("guest_name")
 
 		# print(coupon_found, meal_id, current_time_num)
 
@@ -526,7 +531,7 @@ def scan_coupon():
 				"meal_date": meal_doc.get("meal_date"),
 				"meal_time": f"{meal_doc.get('start_time')} - {meal_doc.get('end_time')}",
 				"employee_id": emp_doc.get("employee_id"),
-				"full_name": emp_doc.get("full_name"),
+				"full_name": guest_name or emp_doc.get("full_name"),
 				"coupon_id": coupon_found.get("name"),
 				"coupon_status": coupon_found.get("coupon_status"),
 				"coupon_date": coupon_found.get("coupon_date"),
