@@ -3142,5 +3142,29 @@
   "share": 0,
   "submit": 0,
   "write": 1
+ },
+ {
+  "amend": 0,
+  "cancel": 0,
+  "create": 1,
+  "delete": 1,
+  "docstatus": 0,
+  "doctype": "Custom DocPerm",
+  "email": 0,
+  "export": 1,
+  "if_owner": 0,
+  "import": 1,
+  "modified": "2025-12-17 16:36:18.604796",
+  "name": "4lap6v0jaq",
+  "parent": "Company",
+  "permlevel": 0,
+  "print": 0,
+  "read": 1,
+  "report": 1,
+  "role": "Hotpot Admin",
+  "select": 1,
+  "share": 0,
+  "submit": 0,
+  "write": 0
  }
 ]

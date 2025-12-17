@@ -3,8 +3,9 @@ frappe.listview_settings["Hotpot User"] = {
     onload(listview) {
         const roles = frappe.user_roles;
         const isAdmin = roles.includes("Administrator");
+        const isHotpotAdmin = roles.includes("Hotpot Admin");
         const doctype = this.doctype;
-        if (!isAdmin) {
+        if (!isAdmin && !isHotpotAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
             listview.page.hide_menu();
@@ -58,7 +59,8 @@ frappe.listview_settings["Hotpot User"] = {
         const roles = frappe.user_roles;
         const doctype = this.doctype;
         const isAdmin = roles.includes("Administrator");
-        if(!isAdmin){
+        const isHotpotAdmin = roles.includes("Hotpot Admin");
+        if (!isAdmin && !isHotpotAdmin) {
             listview.page.clear_menu();
             listview.page.clear_actions();
             listview.page.hide_menu();
