@@ -19,6 +19,7 @@ const allowed_routes_by_role = {
 		"hotpot-holidays",
 		"hotpot-meal-category",
 		"hotpot-meal-types",
+		'hotpot-transaction-history',
 		"query-report/guest-meal-consumption-report",
 		"query-report/birthday-coupons-report",
 		"query-report/joining-day-coupons-report",
@@ -34,6 +35,7 @@ const allowed_routes_by_role = {
 		"generate-guest-qr",
 		"meal-bulk-booking",
 		'load-wallet-balance',
+		'company',
 		"data-import",
 	],
 	"Hotpot HR": [
